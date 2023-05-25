@@ -27,7 +27,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -193,8 +192,8 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Override
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
             final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
-        final List<YangInstanceIdentifier.PathArgument> yangArgs = new LinkedList<>();
-        final DataContainerCodecContext<?,?> codecContext = getCodecContextNode(path, yangArgs);
+        final var yangArgs = new ArrayList<YangInstanceIdentifier.PathArgument>();
+        final var codecContext = getCodecContextNode(path, yangArgs);
         return Map.entry(YangInstanceIdentifier.create(yangArgs), codecContext.createWriter(domWriter));
     }
 
