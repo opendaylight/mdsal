@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d9a2c6a_f253bcb4",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-05-25T10:58:06Z",
+      "side": 1,
+      "message": "Can\u0027t we use link here?",
+      "range": {
+        "startLine": 208,
+        "startChar": 18,
+        "endLine": 208,
+        "endChar": 32
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3703435_55f249f2",
+        "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-05-25T10:58:06Z",
+      "side": 1,
+      "message": "the one, given as a parameter",
+      "range": {
+        "startLine": 117,
+        "startChar": 92,
+        "endLine": 117,
+        "endChar": 120
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
