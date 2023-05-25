@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
@@ -55,14 +54,14 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     private final DataTreeCandidateNode domData;
     private final PathArgument identifier;
 
-    private volatile Collection<LazyDataObjectModification<? extends DataObject>> childNodesCache;
+    private volatile List<DataObjectModification<?>> childNodesCache;
     private volatile ModificationType modificationType;
 
     private LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec,
             final DataTreeCandidateNode domData) {
         this.codec = requireNonNull(codec);
         this.domData = requireNonNull(domData);
-        this.identifier = codec.deserializePathArgument(domData.getIdentifier());
+        identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 
     static <T extends DataObject> LazyDataObjectModification<T> create(final BindingDataObjectCodecTreeNode<T> codec,
@@ -70,18 +69,17 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         return new LazyDataObjectModification<>(codec, domData);
     }
 
-    private static Collection<LazyDataObjectModification<? extends DataObject>> from(
-            final BindingDataObjectCodecTreeNode<?> parentCodec,
+    private static List<DataObjectModification<?>> from(final BindingDataObjectCodecTreeNode<?> parentCodec,
             final Collection<DataTreeCandidateNode> domChildNodes) {
-        final List<LazyDataObjectModification<? extends DataObject>> result = new ArrayList<>(domChildNodes.size());
+        final var result = new ArrayList<DataObjectModification<?>>(domChildNodes.size());
         populateList(result, parentCodec, domChildNodes);
         return result;
     }
 
-    private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
+    private static void populateList(final List<DataObjectModification<?>> result,
             final BindingDataObjectCodecTreeNode<?> parentCodec,
             final Collection<DataTreeCandidateNode> domChildNodes) {
-        for (final DataTreeCandidateNode domChildNode : domChildNodes) {
+        for (var domChildNode : domChildNodes) {
             if (domChildNode.getModificationType() != UNMODIFIED) {
                 final BindingStructuralType type = BindingStructuralType.from(domChildNode);
                 if (type != BindingStructuralType.NOT_ADDRESSABLE) {
@@ -91,8 +89,8 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
                      *  debug log.
                      */
                     try {
-                        final BindingCodecTreeNode childCodec = parentCodec.yangPathArgumentChild(
-                            domChildNode.getIdentifier());
+                        final var childCodec = parentCodec.yangPathArgumentChild(domChildNode.getIdentifier());
+                        // FIXME: MDSAL-820: this no longer holds
                         verify(childCodec instanceof BindingDataObjectCodecTreeNode, "Unhandled codec %s for type %s",
                             childCodec, type);
                         populateList(result, type, (BindingDataObjectCodecTreeNode<?>) childCodec, domChildNode);
@@ -108,7 +106,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         }
     }
 
-    private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
+    private static void populateList(final List<DataObjectModification<?>> result,
             final BindingStructuralType type, final BindingDataObjectCodecTreeNode<?> childCodec,
             final DataTreeCandidateNode domChildNode) {
         switch (type) {
@@ -127,7 +125,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         }
     }
 
-    private static void populateListWithSingleCodec(final List<LazyDataObjectModification<? extends DataObject>> result,
+    private static void populateListWithSingleCodec(final List<DataObjectModification<?>> result,
             final BindingDataObjectCodecTreeNode<?> codec, final Collection<DataTreeCandidateNode> childNodes) {
         for (final DataTreeCandidateNode child : childNodes) {
             if (child.getModificationType() != UNMODIFIED) {
@@ -202,8 +200,8 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     @Override
-    public Collection<LazyDataObjectModification<? extends DataObject>> getModifiedChildren() {
-        Collection<LazyDataObjectModification<? extends DataObject>> local = childNodesCache;
+    public List<DataObjectModification<?>> getModifiedChildren() {
+        var local = childNodesCache;
         if (local == null) {
             childNodesCache = local = from(codec, domData.getChildNodes());
         }
