@@ -11,10 +11,15 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -28,7 +33,10 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
+import org.opendaylight.yangtools.yang.model.api.meta.DeclaredStatement;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.AnydataEffectiveStatement;
@@ -471,15 +479,15 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
         for (var stmt : statement.effectiveSubstatements()) {
             if (stmt instanceof ActionEffectiveStatement action) {
-                if (!isAugmenting(action)) {
+                if (!isAugmenting(action, statement)) {
                     tmp.add(new ActionGenerator(action, this));
                 }
             } else if (stmt instanceof AnydataEffectiveStatement anydata) {
-                if (!isAugmenting(anydata)) {
+                if (!isAugmenting(anydata, statement)) {
                     tmp.add(new OpaqueObjectGenerator.Anydata(anydata, this));
                 }
             } else if (stmt instanceof AnyxmlEffectiveStatement anyxml) {
-                if (!isAugmenting(anyxml)) {
+                if (!isAugmenting(anyxml, statement)) {
                     tmp.add(new OpaqueObjectGenerator.Anyxml(anyxml, this));
                 }
             } else if (stmt instanceof CaseEffectiveStatement cast) {
@@ -502,11 +510,11 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
             } else if (stmt instanceof InputEffectiveStatement input) {
                 tmp.add(new InputGenerator(input, this));
             } else if (stmt instanceof LeafEffectiveStatement leaf) {
-                if (!isAugmenting(leaf)) {
+                if (!isAugmenting(leaf, statement)) {
                     tmp.add(new LeafGenerator(leaf, this));
                 }
             } else if (stmt instanceof LeafListEffectiveStatement leafList) {
-                if (!isAugmenting(leafList)) {
+                if (!isAugmenting(leafList, statement)) {
                     tmp.add(new LeafListGenerator(leafList, this));
                 }
             } else if (stmt instanceof ListEffectiveStatement list) {
@@ -520,7 +528,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                     }
                 }
             } else if (stmt instanceof NotificationEffectiveStatement notification) {
-                if (!isAugmenting(notification)) {
+                if (!isAugmenting(notification, statement)) {
                     tmp.add(new NotificationGenerator(notification, this));
                 }
             } else if (stmt instanceof OutputEffectiveStatement output) {
@@ -607,7 +615,71 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return stmt instanceof AddedByUsesAware aware && aware.isAddedByUses();
     }
 
-    private static boolean isAugmenting(final EffectiveStatement<?, ?> stmt) {
+    private static boolean isAugmenting(final EffectiveStatement<?, ?> stmt,
+            final EffectiveStatement<?, ?> parent) {
+        System.out.println("stmt: " + stmt.toString() + "\n\t\t"
+                + " | isAugmenting()=" + (stmt instanceof CopyableNode copyable && copyable.isAugmenting())
+                + " | customIntrod()=" + notIntroducedByAugmentation(stmt, parent));
         return stmt instanceof CopyableNode copyable && copyable.isAugmenting();
+    }
+
+    private static boolean isAugmentingByParent(final AbstractExplicitGenerator<?, ?> self, final EffectiveStatement<?, ?> stmt) {
+        if (self instanceof ModuleGenerator) {
+            return false;
+        }
+        Optional<AbstractExplicitGenerator<? extends AugmentationTarget, ?>> maybeGenWithTarget =
+                getClosestGeneratorWithTarget(self);
+
+        while (maybeGenWithTarget.isPresent()) {
+            final AbstractExplicitGenerator<? extends AugmentationTarget, ?> candidate = maybeGenWithTarget.orElseThrow();
+            for (final AugmentationSchemaNode augment : candidate.statement().getAvailableAugmentations()) {
+                if (isAugmentingVia(stmt, augment)) {
+                    return true;
+                }
+            }
+
+            maybeGenWithTarget = getClosestGeneratorWithTarget(candidate);
+        }
+        return false;
+    }
+
+    private static Optional<AbstractExplicitGenerator<? extends AugmentationTarget, ?>> getClosestGeneratorWithTarget(
+            final AbstractExplicitGenerator<?, ?> parent) {
+        AbstractExplicitGenerator<?, ?> possibleTarget = parent;
+
+        while (!(possibleTarget instanceof ModuleGenerator)) {
+            final EffectiveStatement<?, ? extends DeclaredStatement<?>> stmt = possibleTarget.statement();
+            if (stmt instanceof AugmentationTarget) {
+                return Optional.of(((AbstractExplicitGenerator<? extends AugmentationTarget, ?>) possibleTarget));
+            }
+            possibleTarget = possibleTarget.getParent();
+        }
+
+        return Optional.empty();
+    }
+
+
+    //FIXME: MDSAL-713 - this method only tells us whether it WAS NOT introduced by augmentation,
+    // not necessarily whether it was introduced by AUGMENTATION
+    private static boolean notIntroducedByAugmentation(final EffectiveStatement<?, ?> child,
+            final EffectiveStatement<?, ?> parent) {
+        return !isOriginalDeclaration(child, parent);
+        // child instanceof CopyableNode copyable && copyable.isAugmenting()
+    }
+
+    // FIXME: not ideal, does not work as the previous:
+    // if (stmt instanceof AddedByUsesAware aware
+    //            && (aware.isAddedByUses() || stmt instanceof CopyableNode copyable && copyable.isAugmenting())) {
+    //            return false;
+    //        }
+    //        return true;
+    private static boolean isOriginalDeclaration(final EffectiveStatement<?, ?> child,
+            final EffectiveStatement<?, ?> parent) {
+        final DeclaredStatement<?> declaredParent = parent.getDeclared();
+        final DeclaredStatement<?> declaredChild = child.getDeclared();
+        if (declaredParent == null || declaredChild == null) {
+            return false;   // not having declared statement means the effective one was not in the original module
+        }
+        return declaredParent.declaredSubstatements().contains(declaredChild);
     }
 }

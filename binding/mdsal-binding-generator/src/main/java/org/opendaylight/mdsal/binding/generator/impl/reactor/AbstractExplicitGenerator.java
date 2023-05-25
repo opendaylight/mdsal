@@ -167,6 +167,25 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
         return statement instanceof CopyableNode copyable && copyable.isAugmenting();
     }
 
+    // FIXME this commented is an unsuccessful try
+//    private final boolean introducedByAugmentation() {
+//        if (this instanceof ModuleGenerator) {
+//            return false;
+//        }
+//        final var parent = getParent();
+//        final var effectiveParent = parent.statement();
+//        effectiveParent
+//        final var declaredParent = effectiveParent.getDeclared();
+//        final var declaredStmt = statement.getDeclared();
+//
+//        // TODO: something must be done here, not yet sure what
+//        if (declaredParent == null || declaredStmt == null) {
+//            return false;
+//        }
+//
+//
+//    }
+
     /**
      * Attempt to link the generator corresponding to the original definition for this generator.
      *
