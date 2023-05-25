@@ -26,6 +26,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "63d37808_c0ff1c8b",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-05-25T11:00:44Z",
+      "side": 1,
+      "message": "{@link CaseRuntimeType#javaType()}",
+      "range": {
+        "startLine": 208,
+        "startChar": 38,
+        "endLine": 208,
+        "endChar": 64
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e3703435_55f249f2",
         "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
         "patchSetId": 10
