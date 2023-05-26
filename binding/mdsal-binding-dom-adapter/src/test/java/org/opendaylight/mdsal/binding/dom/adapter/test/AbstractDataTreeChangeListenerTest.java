@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -35,13 +34,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBrokerTest {
     protected static final class TestListener<T extends DataObject> implements DataTreeChangeListener<T> {
-        private final SettableFuture<Collection<DataTreeModification<T>>> future = SettableFuture.create();
+        private final SettableFuture<List<DataTreeModification<T>>> future = SettableFuture.create();
         private final List<DataTreeModification<T>> accumulatedChanges = new ArrayList<>();
         private final Function<DataTreeModification<T>, Boolean>[] matchers;
         private final int expChangeCount;
 
         private TestListener(final Function<DataTreeModification<T>, Boolean>[] matchers) {
-            this.expChangeCount = matchers.length;
+            expChangeCount = matchers.length;
             this.matchers = matchers;
         }
 
@@ -49,15 +48,15 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
             synchronized (accumulatedChanges) {
                 accumulatedChanges.addAll(changes);
-                if (expChangeCount == accumulatedChanges.size()) {
-                    future.set(new ArrayList<>(accumulatedChanges));
+                if (expChangeCount <= accumulatedChanges.size()) {
+                    future.set(List.copyOf(accumulatedChanges));
                 }
             }
         }
 
-        public Collection<DataTreeModification<T>> changes() {
+        public List<DataTreeModification<T>> changes() {
             try {
-                final Collection<DataTreeModification<T>> changes = future.get(5, TimeUnit.SECONDS);
+                final var changes = future.get(5, TimeUnit.SECONDS);
                 Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
                 return changes;
             } catch (InterruptedException | TimeoutException | ExecutionException e) {
@@ -68,11 +67,11 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         }
 
         public void verify() {
-            Collection<DataTreeModification<T>> changes = new ArrayList<>(changes());
-            Iterator<DataTreeModification<T>> iter = changes.iterator();
+            final var changes = new ArrayList<>(changes());
+            final var iter = changes.iterator();
             while (iter.hasNext()) {
-                DataTreeModification<T> dataTreeModification = iter.next();
-                for (Function<DataTreeModification<T>, Boolean> matcher: matchers) {
+                final var dataTreeModification = iter.next();
+                for (var matcher : matchers) {
                     if (matcher.apply(dataTreeModification)) {
                         iter.remove();
                         break;
@@ -81,10 +80,11 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
             }
 
             if (!changes.isEmpty()) {
-                DataTreeModification<T> mod = changes.iterator().next();
-                fail(String.format("Received unexpected notification: type: %s, path: %s, before: %s, after: %s",
-                        mod.getRootNode().getModificationType(), mod.getRootPath().getRootIdentifier(),
-                        mod.getRootNode().getDataBefore(), mod.getRootNode().getDataAfter()));
+                final var mod = changes.iterator().next();
+                final var rootNode = mod.getRootNode();
+                fail("Received unexpected notification: type: %s, path: %s, before: %s, after: %s".formatted(
+                    rootNode.getModificationType(), mod.getRootPath().getRootIdentifier(), rootNode.getDataBefore(),
+                    rootNode.getDataAfter()));
             }
         }
 
