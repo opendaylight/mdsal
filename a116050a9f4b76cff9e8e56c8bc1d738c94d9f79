@@ -16,6 +16,24 @@
       "message": "Copyright (c) 2023 PANTHEON.tech, s.r.o. and others.  All rights reserved.",
       "revId": "a116050a9f4b76cff9e8e56c8bc1d738c94d9f79",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "beaf8ec1_fda35cef",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingChangeListenerHelper.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-26T21:18:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa4efff6_5b561d9d",
+      "revId": "a116050a9f4b76cff9e8e56c8bc1d738c94d9f79",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
