@@ -26,9 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.ConstraintMetaDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.ValueRange;
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.Int16TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.Uint16TypeDefinition;
 import org.opendaylight.yangtools.yang.model.ri.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.ri.type.DerivedTypes;
 import org.opendaylight.yangtools.yang.model.ri.type.InvalidLengthConstraintException;
@@ -70,14 +68,24 @@ public class BindingGeneratorUtilTest {
     }
 
     @Test
+    public void getRedundantRestrictionsTest() {
+        final var builder = RestrictedTypes.newUint16Builder(BaseTypes.uint16Type(), ROOT);
+        builder.setRangeConstraint(mock(ConstraintMetaDefinition.class), List.of(ValueRange.of(0, 65535)));
+        final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(builder.build());
+
+        assertNotNull(restrictions);
+        assertTrue(restrictions.isEmpty());
+        assertEquals(Optional.empty(), restrictions.getLengthConstraint());
+        assertEquals(List.of(), restrictions.getPatternConstraints());
+    }
+
+    @Test
     public void getDefaultIntegerRestrictionsTest() {
         final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.int16Type(), ROOT).build();
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
-        assertFalse(restrictions.isEmpty());
-        assertEquals(((Int16TypeDefinition) type.getBaseType()).getRangeConstraint(),
-                restrictions.getRangeConstraint());
+        assertTrue(restrictions.isEmpty());
         assertEquals(Optional.empty(), restrictions.getLengthConstraint());
         assertEquals(List.of(), restrictions.getPatternConstraints());
     }
@@ -88,9 +96,7 @@ public class BindingGeneratorUtilTest {
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
-        assertFalse(restrictions.isEmpty());
-        assertEquals(((Uint16TypeDefinition) type.getBaseType()).getRangeConstraint(),
-                restrictions.getRangeConstraint());
+        assertTrue(restrictions.isEmpty());
         assertEquals(Optional.empty(), restrictions.getLengthConstraint());
         assertEquals(List.of(), restrictions.getPatternConstraints());
     }

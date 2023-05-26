@@ -115,13 +115,28 @@ public final class BindingGeneratorUtil {
         }
     }
 
+    /*
+     * We don't want to include redundant range constraints in Restrictions we emit.
+     *
+     * Range constraints are inherited from base type and range statement is not mandatory or can contain same
+     * range constraints as base type. In these cases range constraints are same as in base type, and we don't want
+     * to perform duplicate checks.
+     *
+     * If range constraints are same as in base type we emit empty Restrictions. We can do it like this since
+     * range constraints can only be same or stricter than in base type. And in case they are the same they are
+     * already enforced by the base type.
+    */
     private static <T extends RangeRestrictedTypeDefinition<?, ?>> Optional<? extends RangeConstraint<?>>
             extractRangeConstraint(final T def) {
         final T base = (T) def.getBaseType();
-        if (base != null && base.getBaseType() != null) {
-            return currentOrEmpty(def.getRangeConstraint(), base.getRangeConstraint());
+        if (base != null) {
+            final var defConstrains = def.getRangeConstraint().orElse(null);
+            final var baseConstrains = base.getRangeConstraint().orElse(null);
+            if (defConstrains != null && baseConstrains != null) {
+                return defConstrains.getAllowedRanges().equals(baseConstrains.getAllowedRanges())
+                        ? Optional.empty() : def.getRangeConstraint();
+            }
         }
-
         return def.getRangeConstraint();
     }
 
