@@ -118,10 +118,14 @@ public final class BindingGeneratorUtil {
     private static <T extends RangeRestrictedTypeDefinition<?, ?>> Optional<? extends RangeConstraint<?>>
             extractRangeConstraint(final T def) {
         final T base = (T) def.getBaseType();
-        if (base != null && base.getBaseType() != null) {
-            return currentOrEmpty(def.getRangeConstraint(), base.getRangeConstraint());
+        if (base != null) {
+            final var defConstrains = def.getRangeConstraint().orElse(null);
+            final var baseConstrains = base.getRangeConstraint().orElse(null);
+            if (defConstrains != null && baseConstrains != null) {
+                return defConstrains.getAllowedRanges().equals(baseConstrains.getAllowedRanges())
+                        ? Optional.empty() : def.getRangeConstraint();
+            }
         }
-
         return def.getRangeConstraint();
     }
 
