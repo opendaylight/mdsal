@@ -17,12 +17,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
-import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
@@ -159,10 +157,9 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
         barListener.verify();
     }
 
-    private static Function<DataTreeModification<Top>, Boolean> topSubtreeModified(final TopLevelList topFoo,
-            final TopLevelList topBar) {
+    private static Matcher<Top> topSubtreeModified(final TopLevelList topFoo, final TopLevelList topBar) {
         return match(ModificationType.SUBTREE_MODIFIED, TOP,
-            (Function<Top, Boolean>) dataBefore -> Objects.equals(top(topFoo), dataBefore),
+            (DataMatcher<Top>) dataBefore -> Objects.equals(top(topFoo), dataBefore),
             dataAfter -> {
                 Set<TopLevelList> expList = new HashSet<>(top(topBar, topFoo).getTopLevelList().values());
                 Set<TopLevelList> actualList = dataAfter.getTopLevelList().values().stream()
