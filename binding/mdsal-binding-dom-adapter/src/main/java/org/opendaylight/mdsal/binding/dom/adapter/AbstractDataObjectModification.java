@@ -61,6 +61,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         permits LazyAugmentationModification, LazyDataObjectModification {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDataObjectModification.class);
     private static final VarHandle MODIFICATION_TYPE;
+    private static final VarHandle MODIFIED_CHILDREN;
 
     static {
         final var lookup = MethodHandles.lookup();
@@ -68,6 +69,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         try {
             MODIFICATION_TYPE = lookup.findVarHandle(AbstractDataObjectModification.class, "modificationType",
                 ModificationType.class);
+            MODIFIED_CHILDREN = lookup.findVarHandle(AbstractDataObjectModification.class, "modifiedChildren",
+                ImmutableList.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -77,7 +80,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     final @NonNull PathArgument identifier;
     final @NonNull N codec;
 
-    private volatile ImmutableList<AbstractDataObjectModification<?, ?>> childNodesCache;
+    @SuppressWarnings("unused")
+    private volatile ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren;
     @SuppressWarnings("unused")
     private volatile ModificationType modificationType;
     private volatile @Nullable T dataBefore;
@@ -178,13 +182,9 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     @Override
     public final ImmutableList<AbstractDataObjectModification<?, ?>> getModifiedChildren() {
-        var local = childNodesCache;
-        if (local == null) {
-            childNodesCache = local = createModifiedChilden(codec, domData, domChildNodes());
-        }
-        return local;
+        final var local = (ImmutableList<AbstractDataObjectModification<?, ?>>) MODIFIED_CHILDREN.getAcquire(this);
+        return local != null ? local : loadModifiedChilden();
     }
-
     @Override
     public final <C extends ChildOf<? super T>> List<DataObjectModification<C>> getModifiedChildren(
             final Class<C> childType) {
@@ -197,6 +197,16 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         return streamModifiedChildren(childType)
             .filter(child -> caseType.equals(child.identifier.getCaseType().orElse(null)))
             .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    private @NonNull ImmutableList<AbstractDataObjectModification<?, ?>> loadModifiedChilden() {
+        final var builder = ImmutableList.<AbstractDataObjectModification<?, ?>>builder();
+        populateList(builder, codec, domData, domChildNodes());
+        final var computed = builder.build();
+        // Non-trivial return: use CAS to ensure we reuse concurrent loads
+        final var witness = MODIFIED_CHILDREN.compareAndExchangeRelease(this, null, computed);
+        return witness == null ? computed : (ImmutableList<AbstractDataObjectModification<?, ?>>) witness;
     }
 
     @SuppressWarnings("unchecked")
@@ -280,14 +290,6 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                 yield ModificationType.SUBTREE_MODIFIED;
             }
         };
-    }
-
-    private static @NonNull ImmutableList<AbstractDataObjectModification<?, ?>> createModifiedChilden(
-            final CommonDataObjectCodecTreeNode<?> parentCodec, final DataTreeCandidateNode parent,
-            final Collection<DataTreeCandidateNode> children) {
-        final var result = ImmutableList.<AbstractDataObjectModification<?, ?>>builder();
-        populateList(result, parentCodec, parent, children);
-        return result.build();
     }
 
     private static void populateList(final ImmutableList.Builder<AbstractDataObjectModification<?, ?>> result,
