@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -32,7 +30,7 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(Root.class));
+        return Set.of(BindingReflections.getModuleInfo(Root.class));
     }
 
     @Test
@@ -47,17 +45,16 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
             );
         }
 
-        final Root root = new RootBuilder().setListInRoot(BindingMap.of(listInRoots)).build();
+        final var root = new RootBuilder().setListInRoot(BindingMap.of(listInRoots)).build();
 
-        final TestListener<Root> listener = createListener(LogicalDatastoreType.CONFIGURATION, ROOT_PATH,
-                match(ModificationType.WRITE, ROOT_PATH, Objects::isNull,
-                    (DataMatcher<Root>) dataAfter -> checkData(root, dataAfter)));
+        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, ROOT_PATH)) {
+            final var readWriteTransaction = getDataBroker().newReadWriteTransaction();
+            readWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, ROOT_PATH, root);
+            assertCommit(readWriteTransaction.commit());
 
-        final ReadWriteTransaction readWriteTransaction = getDataBroker().newReadWriteTransaction();
-        readWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, ROOT_PATH, root);
-        assertCommit(readWriteTransaction.commit());
-
-        listener.verify();
+            collector.assertModifications(match(ModificationType.WRITE, ROOT_PATH, Objects::isNull,
+                (DataMatcher<Root>) dataAfter -> checkData(root, dataAfter)));
+        }
     }
 
     private static boolean checkData(final Root expected, final Root actual) {
@@ -65,8 +62,8 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
             return false;
         }
 
-        Set<ListInRoot> expListInRoot = new HashSet<>(expected.getListInRoot().values());
-        Set<ListInRoot> actualListInRoot = actual.getListInRoot().values().stream()
+        var expListInRoot = new HashSet<>(expected.nonnullListInRoot().values());
+        var actualListInRoot = actual.nonnullListInRoot().values().stream()
                 .map(list -> new ListInRootBuilder(list).build()).collect(Collectors.toSet());
         return expListInRoot.equals(actualListInRoot);
     }
