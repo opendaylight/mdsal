@@ -15,6 +15,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.VerifyException;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -58,12 +60,25 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         implements DataObjectModification<T>
         permits LazyAugmentationModification, LazyDataObjectModification {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDataObjectModification.class);
+    private static final VarHandle MODIFICATION_TYPE;
+
+    static {
+        final var lookup = MethodHandles.lookup();
+
+        try {
+            MODIFICATION_TYPE = lookup.findVarHandle(AbstractDataObjectModification.class, "modificationType",
+                ModificationType.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     final @NonNull DataTreeCandidateNode domData;
     final @NonNull PathArgument identifier;
     final @NonNull N codec;
 
     private volatile ImmutableList<AbstractDataObjectModification<?, ?>> childNodesCache;
+    @SuppressWarnings("unused")
     private volatile ModificationType modificationType;
     private volatile @Nullable T dataBefore;
     private volatile @Nullable T dataAfter;
@@ -97,13 +112,13 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     @Override
     public final ModificationType getModificationType() {
-        var localType = modificationType;
-        if (localType != null) {
-            return localType;
-        }
+        final var local = (ModificationType) MODIFICATION_TYPE.getAcquire(this);
+        return local != null ? local : loadModificationType();
+    }
 
+    private @NonNull ModificationType loadModificationType() {
         final var domModificationType = domModificationType();
-        modificationType = localType = switch (domModificationType) {
+        final var computed = switch (domModificationType) {
             case APPEARED, WRITE -> ModificationType.WRITE;
             case DISAPPEARED, DELETE -> ModificationType.DELETE;
             case SUBTREE_MODIFIED -> resolveSubtreeModificationType();
@@ -111,7 +126,9 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                 // TODO: Should we lie about modification type instead of exception?
                 throw new IllegalStateException("Unsupported DOM Modification type " + domModificationType);
         };
-        return localType;
+
+        MODIFICATION_TYPE.setRelease(this, computed);
+        return computed;
     }
 
     @Override
@@ -252,7 +269,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                 // is the case, we need to turn this modification into a WRITE operation, so that the user is able
                 // to observe those nodes being introduced. This is not efficient, but unfortunately unavoidable,
                 // as we cannot accurately represent such changes.
-                for (DataTreeCandidateNode child : domChildNodes()) {
+                for (var child : domChildNodes()) {
                     if (BindingStructuralType.recursiveFrom(child) == BindingStructuralType.NOT_ADDRESSABLE) {
                         // We have a non-addressable child, turn this modification into a write
                         yield ModificationType.WRITE;
