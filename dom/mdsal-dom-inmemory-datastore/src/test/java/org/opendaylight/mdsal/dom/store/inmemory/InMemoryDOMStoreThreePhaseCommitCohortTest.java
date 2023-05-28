@@ -73,7 +73,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
 
     @Test
     public void canCommitTestWithOptimisticLockFailedException() throws Exception {
-        final var cause = new ConflictingModificationAppliedException(YangInstanceIdentifier.empty(), "testException");
+        final var cause = new ConflictingModificationAppliedException(YangInstanceIdentifier.of(), "testException");
         doThrow(cause).when(dataStore).validate(any());
 
         final var ex = assertFailsCanCommit(prepareSimpleCohort());
@@ -89,7 +89,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
 
     @Test
     public void canCommitTestWithTransactionCommitFailedException() throws Exception {
-        final var cause = new DataValidationFailedException(YangInstanceIdentifier.empty(), "testException");
+        final var cause = new DataValidationFailedException(YangInstanceIdentifier.of(), "testException");
         doThrow(cause).when(dataStore).validate(any());
 
         final var ex = assertFailsCanCommit(prepareSimpleCohort());

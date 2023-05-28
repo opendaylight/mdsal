@@ -92,7 +92,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             new ContainerBuilder().build());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.create(CONTAINER_NID).node(Keyed.QNAME),
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CONTAINER_NID).node(Keyed.QNAME),
             Builders.orderedMapBuilder()
             .withNodeIdentifier(new NodeIdentifier(Keyed.QNAME))
             .addChild(Builders.mapEntryBuilder()
@@ -147,7 +147,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             new ContainerBuilder().build());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.create(CONTAINER_NID).node(Unkeyed.QNAME),
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CONTAINER_NID).node(Unkeyed.QNAME),
             Builders.unkeyedListBuilder()
             .withNodeIdentifier(new NodeIdentifier(Unkeyed.QNAME))
             .withChild(Builders.unkeyedListEntryBuilder()
@@ -255,7 +255,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.create(UNADDRESSABLE_CONTAINER_NID)
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(UNADDRESSABLE_CONTAINER_NID)
             .node(QName.create(UnaddressableCont.QNAME, "baz")),
             ImmutableNodes.leafNode(BAZ_QNAME, "baz"));
         domTx.commit().get();
@@ -282,7 +282,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.create(CHOICE_CONTAINER_NID).node(Foo.QNAME),
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID).node(Foo.QNAME),
             Builders.choiceBuilder()
             .withNodeIdentifier(new NodeIdentifier(Foo.QNAME))
             .withChild(Builders.leafSetBuilder()
@@ -320,7 +320,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         getDataBroker().registerDataTreeChangeListener(dti, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.create(new NodeIdentifier(qname)),
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(new NodeIdentifier(qname)),
             ImmutableNodes.containerNode(qname));
         domTx.commit().get();
 
@@ -353,7 +353,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         getDataBroker().registerDataTreeChangeListener(CHOICE_CONTAINER_TID, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.create(CHOICE_CONTAINER_NID),
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID),
             Builders.containerBuilder()
             .withNodeIdentifier(CHOICE_CONTAINER_NID)
             .withChild(Builders.choiceBuilder().withNodeIdentifier(CHOICE_NID).build())

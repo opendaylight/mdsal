@@ -24,10 +24,10 @@ public class SimpleDOMMountPointTest {
         final var classToInstanceMap = ImmutableClassToInstanceMap.of(DOMService.class, domService);
 
         final SimpleDOMMountPoint simpleDOMMountPoint =
-                SimpleDOMMountPoint.create(YangInstanceIdentifier.empty(), classToInstanceMap);
+                SimpleDOMMountPoint.create(YangInstanceIdentifier.of(), classToInstanceMap);
         assertNotNull(simpleDOMMountPoint);
 
-        assertSame(YangInstanceIdentifier.empty(), simpleDOMMountPoint.getIdentifier());
+        assertSame(YangInstanceIdentifier.of(), simpleDOMMountPoint.getIdentifier());
         assertTrue(simpleDOMMountPoint.getService(DOMService.class).isPresent());
         assertSame(domService, simpleDOMMountPoint.getService(DOMService.class).orElseThrow());
     }

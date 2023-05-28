@@ -60,7 +60,7 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
             LogicalDatastoreType.OPERATIONAL, Set.of(InstanceIdentifier.create(Cont.class)));
 
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
-            LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.create(new NodeIdentifier(Cont.QNAME)))));
+            LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of(new NodeIdentifier(Cont.QNAME)))));
     }
 
     @Test
@@ -83,6 +83,6 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
     public void testWildcardRegistration() {
         adapter.registerImplementation(ActionSpec.builder(Cont.class).build(Foo.class), FOO);
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
-            LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty())));
+            LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of())));
     }
 }

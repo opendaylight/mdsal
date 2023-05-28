@@ -30,7 +30,7 @@ public class LazyDataTreeModificationTest {
         final AdapterContext codec = new ConstantAdapterContext(registry);
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
         final DOMDataTreeIdentifier domDataTreeIdentifier =
-                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
+                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of());
         final var bindingPath = InstanceIdentifier.create(BooleanContainer.class);
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
         final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);

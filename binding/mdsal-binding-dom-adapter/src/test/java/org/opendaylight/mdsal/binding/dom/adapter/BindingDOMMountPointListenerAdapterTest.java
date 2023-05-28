@@ -59,14 +59,14 @@ public class BindingDOMMountPointListenerAdapterTest {
     @Test
     public void onMountPointCreatedWithExceptionTest() throws Exception {
         reset(listener);
-        bindingDOMMountPointListenerAdapter.onMountPointCreated(YangInstanceIdentifier.empty());
+        bindingDOMMountPointListenerAdapter.onMountPointCreated(YangInstanceIdentifier.of());
         verifyNoInteractions(listener);
     }
 
     @Test
     public void onMountPointRemovedWithExceptionTest() throws Exception {
         reset(listener);
-        bindingDOMMountPointListenerAdapter.onMountPointRemoved(YangInstanceIdentifier.empty());
+        bindingDOMMountPointListenerAdapter.onMountPointRemoved(YangInstanceIdentifier.of());
         verifyNoInteractions(listener);
     }
 }

@@ -48,7 +48,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         doNothing().when(listener).onInitialData();
 
-        domStore.registerTreeChangeListener(YangInstanceIdentifier.empty(), listener);
+        domStore.registerTreeChangeListener(YangInstanceIdentifier.of(), listener);
         verify(listener, timeout(1000)).onInitialData();
     }
 

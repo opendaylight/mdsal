@@ -561,7 +561,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             List<DOMActionImplementation> impls = entry.getImplementations(path);
             if (impls == null) {
                 impls = entry.getImplementations(
-                    new DOMDataTreeIdentifier(path.getDatastoreType(), YangInstanceIdentifier.empty()));
+                    new DOMDataTreeIdentifier(path.getDatastoreType(), YangInstanceIdentifier.of()));
                 if (impls == null) {
                     return Futures.immediateFailedFuture(new DOMActionNotAvailableException(
                         "No implementation of Action %s available for %s", type, path));
@@ -608,7 +608,7 @@ public final class DOMRpcRouter extends AbstractRegistration
                     // Find a DOMRpcImplementation for a wild card. Usually remote-rpc-connector would register an
                     // implementation this way
                     final List<DOMRpcImplementation> mayBeRemoteImpls =
-                        entry.getImplementations(YangInstanceIdentifier.empty());
+                        entry.getImplementations(YangInstanceIdentifier.of());
 
                     if (mayBeRemoteImpls != null) {
                         return mayBeRemoteImpls.get(0)
@@ -632,7 +632,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
                 final GlobalDOMRpcRoutingTableEntry entry, final ContainerNode input) {
-            return entry.getImplementations(YangInstanceIdentifier.empty()).get(0).invokeRpc(entry.getRpcId(), input);
+            return entry.getImplementations(YangInstanceIdentifier.of()).get(0).invokeRpc(entry.getRpcId(), input);
         }
     }
 }

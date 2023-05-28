@@ -111,7 +111,7 @@ public class CurrentAdapterSerializerTest {
             new DefaultBindingRuntimeContext(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
                     TestingModuleInfoSnapshot.INSTANCE)));
 
-        final YangInstanceIdentifier path = YangInstanceIdentifier.create(NodeIdentifier.create(QName.create(
+        final YangInstanceIdentifier path = YangInstanceIdentifier.of(NodeIdentifier.create(QName.create(
             "urn:test", "2017-01-01", "cont")));
         return codec.fromNormalizedNode(path, data);
     }

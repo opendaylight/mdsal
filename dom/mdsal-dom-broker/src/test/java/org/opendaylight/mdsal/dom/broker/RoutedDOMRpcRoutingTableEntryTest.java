@@ -41,10 +41,10 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class RoutedDOMRpcRoutingTableEntryTest {
     public static final YangInstanceIdentifier CTX_IN_INPUT =
-        YangInstanceIdentifier.create(new NodeIdentifier(Rpcs.CTX));
-    public static final YangInstanceIdentifier ONE_PATH = YangInstanceIdentifier.create(
+        YangInstanceIdentifier.of(new NodeIdentifier(Rpcs.CTX));
+    public static final YangInstanceIdentifier ONE_PATH = YangInstanceIdentifier.of(
         new NodeIdentifier(Rpcs.BAZ), NodeIdentifierWithPredicates.of(Rpcs.BAZ, Rpcs.NAME, "one"));
-    public static final YangInstanceIdentifier TWO_PATH = YangInstanceIdentifier.create(
+    public static final YangInstanceIdentifier TWO_PATH = YangInstanceIdentifier.of(
         new NodeIdentifier(Rpcs.BAZ), NodeIdentifierWithPredicates.of(Rpcs.BAZ, Rpcs.NAME, "two"));
 
     public static final ContainerNode ONE_INPUT = Builders.containerBuilder()
@@ -121,7 +121,7 @@ public class RoutedDOMRpcRoutingTableEntryTest {
 
     @Test
     public void testRemote() {
-        setPaths(YangInstanceIdentifier.empty());
+        setPaths(YangInstanceIdentifier.of());
         assertRpcAvailable(ONE_INPUT);
     }
 

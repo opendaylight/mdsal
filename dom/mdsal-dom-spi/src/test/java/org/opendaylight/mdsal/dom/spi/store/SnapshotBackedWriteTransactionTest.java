@@ -56,24 +56,24 @@ public class SnapshotBackedWriteTransactionTest {
         doReturn(DOM_STORE_THREE_PHASE_COMMIT_COHORT)
                 .when(TRANSACTION_READY_PROTOTYPE)
                 .transactionReady(any(),any(), any());
-        doReturn(NORMALIZED_NODE_OPTIONAL).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.empty());
+        doReturn(NORMALIZED_NODE_OPTIONAL).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.of());
         snapshotBackedWriteTransaction = new SnapshotBackedWriteTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
                 TRANSACTION_READY_PROTOTYPE);
     }
 
     @Test
     public void basicTest() throws Exception {
-        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.empty(), NORMALIZED_NODE);
+        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
         verify(DATA_TREE_MODIFICATION).write(any(), any());
 
-        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.empty(), NORMALIZED_NODE);
+        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE);
         verify(DATA_TREE_MODIFICATION).merge(any(), any());
 
-        snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.empty());
+        snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of());
         verify(DATA_TREE_MODIFICATION).delete(any());
 
         assertEquals(NORMALIZED_NODE_OPTIONAL,
-                snapshotBackedWriteTransaction.readSnapshotNode(YangInstanceIdentifier.empty()));
+                snapshotBackedWriteTransaction.readSnapshotNode(YangInstanceIdentifier.of()));
         verify(DATA_TREE_MODIFICATION).readNode(any());
 
         assertTrue(snapshotBackedWriteTransaction.addToStringAttributes(
@@ -103,7 +103,7 @@ public class SnapshotBackedWriteTransactionTest {
         doAnswer(inv -> {
             throw new TestException();
         }).when(DATA_TREE_MODIFICATION).write(any(), any());
-        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.empty(), NORMALIZED_NODE);
+        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -111,7 +111,7 @@ public class SnapshotBackedWriteTransactionTest {
         doAnswer(inv -> {
             throw new TestException();
         }).when(DATA_TREE_MODIFICATION).merge(any(), any());
-        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.empty(), NORMALIZED_NODE);
+        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -119,7 +119,7 @@ public class SnapshotBackedWriteTransactionTest {
         doAnswer(inv -> {
             throw new TestException();
         }).when(DATA_TREE_MODIFICATION).delete(any());
-        snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.empty());
+        snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of());
     }
 
     private static final class TestException extends Exception {

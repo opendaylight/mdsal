@@ -27,10 +27,10 @@ public class DOMDataTreeIdentifierTest {
     private static final String COMPARE_SECOND_LISTS = "B-test-lists";
     private static final QNameModule TEST_MODULE = QNameModule.create(XMLNamespace.of(
             "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
-    private static final YangInstanceIdentifier REF_YII_IID = YangInstanceIdentifier.create(
-            new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, REF_LISTS)));
-    private static final YangInstanceIdentifier TEST_YII_IID = YangInstanceIdentifier.create(
-            new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, TEST_LISTS)));
+    private static final YangInstanceIdentifier REF_YII_IID = YangInstanceIdentifier.of(
+            QName.create(TEST_MODULE, REF_LISTS));
+    private static final YangInstanceIdentifier TEST_YII_IID = YangInstanceIdentifier.of(
+            QName.create(TEST_MODULE, TEST_LISTS));
     private static final DOMDataTreeIdentifier REF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
             REF_YII_IID);
     private static final DOMDataTreeIdentifier
@@ -62,28 +62,24 @@ public class DOMDataTreeIdentifierTest {
 
     @Test
     public void compareToTest() {
-        final YangInstanceIdentifier compareFirstIid = YangInstanceIdentifier.create(
-                new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, COMPARE_FIRST_LISTS)));
-        final YangInstanceIdentifier compareSecondIid = YangInstanceIdentifier.create(
-                new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, COMPARE_SECOND_LISTS)));
+        final var compareFirstIid = YangInstanceIdentifier.of(QName.create(TEST_MODULE, COMPARE_FIRST_LISTS));
+        final var compareSecondIid = YangInstanceIdentifier.of(QName.create(TEST_MODULE, COMPARE_SECOND_LISTS));
 
         assertEquals("Compare same to same", REF_TREE.compareTo(
-                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 REF_YII_IID)), 0);
         assertNotEquals("Compare same to same with different datastore", REF_TREE.compareTo(new DOMDataTreeIdentifier(
-                LogicalDatastoreType.CONFIGURATION, REF_YII_IID)), 0);
+            LogicalDatastoreType.CONFIGURATION, REF_YII_IID)), 0);
         assertEquals("Compare same to same with different datastore",
-                new DOMDataTreeIdentifier(
-                        LogicalDatastoreType.OPERATIONAL,
-                        YangInstanceIdentifier.create(
-                                YangInstanceIdentifier.NodeIdentifier.create(QName.create(TEST_MODULE, REF_LISTS)),
-                                YangInstanceIdentifier.NodeIdentifier.create(QName.create(TEST_MODULE, TEST_LISTS))))
-                .compareTo(REF_TREE), 1);
+            new DOMDataTreeIdentifier(
+                LogicalDatastoreType.OPERATIONAL,
+                YangInstanceIdentifier.of(QName.create(TEST_MODULE, REF_LISTS), QName.create(TEST_MODULE, TEST_LISTS)))
+            .compareTo(REF_TREE), 1);
         assertTrue("Compare first to second", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                compareFirstIid).compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+            compareFirstIid).compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 compareSecondIid)) < 0);
         assertTrue("Compare second to first", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                compareSecondIid).compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+            compareSecondIid).compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 compareFirstIid)) > 0);
     }
 

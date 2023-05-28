@@ -101,7 +101,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
 
         // verify the connection was established and MSG_EMPTY_DATA was transferred
         verify(sinkBroker, timeout(1000)).createMergingTransactionChain(any());
-        verify(sinkTx, timeout(1000)).put(eq(LogicalDatastoreType.CONFIGURATION), eq(YangInstanceIdentifier.empty()),
+        verify(sinkTx, timeout(1000)).put(eq(LogicalDatastoreType.CONFIGURATION), eq(YangInstanceIdentifier.of()),
             any(ContainerNode.class));
 
         // generate some deltas

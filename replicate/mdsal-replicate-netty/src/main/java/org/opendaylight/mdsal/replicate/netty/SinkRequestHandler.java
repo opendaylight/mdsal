@@ -76,7 +76,7 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
 
         if (tree.getRootIdentifier().isEmpty()) {
-            tx.put(tree.getDatastoreType(), YangInstanceIdentifier.empty(), EMPTY_ROOT);
+            tx.put(tree.getDatastoreType(), YangInstanceIdentifier.of(), EMPTY_ROOT);
         } else {
             tx.delete(tree.getDatastoreType(), tree.getRootIdentifier());
         }

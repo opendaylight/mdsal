@@ -17,7 +17,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 public class DOMRpcIdentifierTest {
     private static final String LOCAL_IDENT = "local";
@@ -27,7 +26,7 @@ public class DOMRpcIdentifierTest {
 
     private static final DOMRpcIdentifier GLOBAL = DOMRpcIdentifier.create(LOCAL_QNAME, null);
     private static final DOMRpcIdentifier LOCAL = DOMRpcIdentifier.create(LOCAL_QNAME,
-        YangInstanceIdentifier.create(new NodeIdentifier(LOCAL_QNAME)));
+            YangInstanceIdentifier.of(LOCAL_QNAME));
 
     @Test
     public void createTest() {

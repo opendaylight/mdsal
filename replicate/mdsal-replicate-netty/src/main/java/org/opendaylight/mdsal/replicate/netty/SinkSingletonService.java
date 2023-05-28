@@ -46,7 +46,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
             ServiceGroupIdentifier.create(SinkSingletonService.class.getName());
     // TODO: allow different trees?
     private static final DOMDataTreeIdentifier TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
-        YangInstanceIdentifier.empty());
+        YangInstanceIdentifier.of());
     private static long CHANNEL_CLOSE_TIMEOUT_S = 10;
     private static final ByteBuf TREE_REQUEST;
 

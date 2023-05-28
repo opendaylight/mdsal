@@ -133,31 +133,31 @@ public class PingPongTransactionChainTest {
 
     private void assertReadOperations(final DOMDataTreeReadOperations tx) {
         doReturn(FluentFutures.immediateTrueFluentFuture()).when(rwTx).exists(
-            LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
-        final var exists = tx.exists(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
-        verify(rwTx).exists(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
+            LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
+        final var exists = tx.exists(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
+        verify(rwTx).exists(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
         assertEquals(Boolean.TRUE, assertDone(exists));
 
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty())).when(rwTx).read(
-            LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
-        final var read = tx.read(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
-        verify(rwTx).read(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
+            LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
+        final var read = tx.read(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
+        verify(rwTx).read(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
         assertEquals(Optional.empty(), assertDone(read));
     }
 
     private void assertWriteOperations(final DOMDataTreeWriteOperations tx) {
-        doNothing().when(rwTx).delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
-        tx.delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
-        verify(rwTx).delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
+        doNothing().when(rwTx).delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
+        tx.delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
+        verify(rwTx).delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
 
         final var data = mock(NormalizedNode.class);
-        doNothing().when(rwTx).merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), data);
-        tx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), data);
-        verify(rwTx).merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), data);
+        doNothing().when(rwTx).merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
+        verify(rwTx).merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
 
-        doNothing().when(rwTx).put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), data);
-        tx.put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), data);
-        verify(rwTx).put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), data);
+        doNothing().when(rwTx).put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
+        tx.put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
+        verify(rwTx).put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
     }
 
     private void assertCommit(final Runnable commitMethod) {

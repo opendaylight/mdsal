@@ -146,7 +146,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         if (parentPath != null && !parentPath.isEmpty()) {
             final var parentNode = ImmutableNodes.fromInstanceId(
                 serializer.getRuntimeContext().getEffectiveModelContext(), parentPath);
-            getDelegate().merge(store, YangInstanceIdentifier.create(parentNode.getIdentifier()), parentNode);
+            getDelegate().merge(store, YangInstanceIdentifier.of(parentNode.getIdentifier()), parentNode);
         }
     }
 

@@ -255,7 +255,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     // Construct child path. This concatenates currentPath and child's identifier.
     private YangInstanceIdentifier createIdentifier(final NormalizedNode child) {
         currentPath.addLast(child.getIdentifier());
-        final YangInstanceIdentifier ret = YangInstanceIdentifier.create(currentPath);
+        final YangInstanceIdentifier ret = YangInstanceIdentifier.of(currentPath);
         currentPath.removeLast();
         return ret;
     }

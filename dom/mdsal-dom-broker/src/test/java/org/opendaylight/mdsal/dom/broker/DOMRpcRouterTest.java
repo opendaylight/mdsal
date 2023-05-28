@@ -60,9 +60,9 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMRpcRouterTest {
-    private static final YangInstanceIdentifier BAZ_PATH_BAD = YangInstanceIdentifier.create(
+    private static final YangInstanceIdentifier BAZ_PATH_BAD = YangInstanceIdentifier.of(
         new NodeIdentifier(Actions.FOO), NodeIdentifierWithPredicates.of(Actions.FOO, Actions.BAR, "bad"));
-    private static final YangInstanceIdentifier BAZ_PATH_GOOD = YangInstanceIdentifier.create(
+    private static final YangInstanceIdentifier BAZ_PATH_GOOD = YangInstanceIdentifier.of(
         new NodeIdentifier(Actions.FOO), NodeIdentifierWithPredicates.of(Actions.FOO, Actions.BAR, "good"));
 
     private static final DOMActionImplementation IMPL =
@@ -224,7 +224,7 @@ public class DOMRpcRouterTest {
 
             try (ObjectRegistration<?> reg = actionProvider.registerActionImplementation(IMPL,
                 DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL,
-                    YangInstanceIdentifier.empty()))) {
+                    YangInstanceIdentifier.of()))) {
 
                 assertAvailable(actionConsumer, BAZ_PATH_GOOD);
                 assertAvailable(actionConsumer, BAZ_PATH_BAD);

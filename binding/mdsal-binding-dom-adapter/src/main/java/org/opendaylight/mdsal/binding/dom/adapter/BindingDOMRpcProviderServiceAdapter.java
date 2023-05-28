@@ -35,7 +35,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 @VisibleForTesting
 public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<DOMRpcProviderService>
         implements RpcProviderService {
-    private static final ImmutableSet<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.empty());
+    private static final ImmutableSet<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.of());
 
     public BindingDOMRpcProviderServiceAdapter(final AdapterContext adapterContext,
             final DOMRpcProviderService domRpcRegistry) {

@@ -83,7 +83,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         final Impl impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);
         final DOMActionInstance instance = validNodes.isEmpty()
             // Register on the entire datastore
-            ? DOMActionInstance.of(actionPath, new DOMDataTreeIdentifier(datastore, YangInstanceIdentifier.empty()))
+            ? DOMActionInstance.of(actionPath, new DOMDataTreeIdentifier(datastore, YangInstanceIdentifier.of()))
                 // Register on specific instances
                 : DOMActionInstance.of(actionPath, validNodes.stream()
                     .map(node -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.create(datastore, node)))
