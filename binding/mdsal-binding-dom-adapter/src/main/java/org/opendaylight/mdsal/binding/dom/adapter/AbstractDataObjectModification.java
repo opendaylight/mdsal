@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.yangtools.yang.data.tree.api.ModificationType.UNMODIFIED;
 
@@ -60,8 +61,11 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         implements DataObjectModification<T>
         permits LazyAugmentationModification, LazyDataObjectModification {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDataObjectModification.class);
+    private static final @NonNull Object NULL_DATA_OBJECT = new Object();
     private static final VarHandle MODIFICATION_TYPE;
     private static final VarHandle MODIFIED_CHILDREN;
+    private static final VarHandle DATA_BEFORE;
+    private static final VarHandle DATA_AFTER;
 
     static {
         final var lookup = MethodHandles.lookup();
@@ -71,6 +75,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                 ModificationType.class);
             MODIFIED_CHILDREN = lookup.findVarHandle(AbstractDataObjectModification.class, "modifiedChildren",
                 ImmutableList.class);
+            DATA_BEFORE = lookup.findVarHandle(AbstractDataObjectModification.class, "dataBefore", Object.class);
+            DATA_AFTER = lookup.findVarHandle(AbstractDataObjectModification.class, "dataAfter", Object.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -84,8 +90,10 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     private volatile ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren;
     @SuppressWarnings("unused")
     private volatile ModificationType modificationType;
-    private volatile @Nullable T dataBefore;
-    private volatile @Nullable T dataAfter;
+    @SuppressWarnings("unused")
+    private volatile Object dataBefore;
+    @SuppressWarnings("unused")
+    private volatile Object dataAfter;
 
     AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec, final PathArgument identifier) {
         this.domData = requireNonNull(domData);
@@ -137,20 +145,35 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     @Override
     public final T getDataBefore() {
-        var local = dataBefore;
-        if (local == null) {
-            dataBefore = local = deserialize(domData.getDataBefore());
-        }
-        return local;
+        final var local = DATA_BEFORE.getAcquire(this);
+        return local != null ? unmask(local) : loadDataBefore();
+    }
+
+    private @Nullable T loadDataBefore() {
+        final var computed = deserialize(domData.getDataBefore());
+        final var witness = DATA_BEFORE.compareAndExchangeRelease(this, null, mask(computed));
+        return witness == null ? computed : unmask(witness);
     }
 
     @Override
     public final T getDataAfter() {
-        var local = dataAfter;
-        if (local == null) {
-            dataAfter = local = deserialize(domData.getDataAfter());
-        }
-        return local;
+        final var local = DATA_AFTER.getAcquire(this);
+        return local != null ? unmask(local) : loadDataAfter();
+    }
+
+    private @Nullable T loadDataAfter() {
+        final var computed = deserialize(domData.getDataAfter());
+        final var witness = DATA_AFTER.compareAndExchangeRelease(this, null, mask(computed));
+        return witness == null ? computed : unmask(witness);
+    }
+
+    private static <T extends DataObject> @NonNull Object mask(final @Nullable T obj) {
+        return obj != null ? obj : NULL_DATA_OBJECT;
+    }
+
+    @SuppressWarnings("unchecked")
+    private @Nullable T unmask(final @NonNull Object obj) {
+        return obj == NULL_DATA_OBJECT ? null : (T) verifyNotNull(obj);
     }
 
     private @Nullable T deserialize(final Optional<NormalizedNode> normalized) {
