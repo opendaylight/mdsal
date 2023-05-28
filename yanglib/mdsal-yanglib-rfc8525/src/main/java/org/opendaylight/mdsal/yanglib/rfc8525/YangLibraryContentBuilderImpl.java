@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verifyNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +48,7 @@ final class YangLibraryContentBuilderImpl implements YangLibraryContentBuilder {
 
     YangLibraryContentBuilderImpl(final BindingCodecTree codecTree) {
         this.codecTree = Objects.requireNonNull(codecTree);
-        codec = (BindingDataObjectCodecTreeNode<YangLibrary>)
-            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
+        codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));
     }
 
     @Override

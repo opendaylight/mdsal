@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -41,8 +40,7 @@ final class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy 
 
     LegacyContentBuilder(final YangLibraryContentBuilderImpl delegate, final BindingCodecTree codecTree) {
         this.delegate = requireNonNull(delegate);
-        legacyCodec = (BindingDataObjectCodecTreeNode<ModulesState>)
-            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
+        legacyCodec = codecTree.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
     }
 
     @Override
