@@ -64,7 +64,7 @@ class LazySerializedContainerNode
         @Override
         public DataContainerChild childByArg(final NodeIdentifier child) {
             // Use pre-cached value of routing field and do not run full serialization if we are accessing it.
-            return contextRef.getIdentifier().equals(child) ? contextRef : super.childByArg(child);
+            return contextRef.name().equals(child) ? contextRef : super.childByArg(child);
         }
     }
 }

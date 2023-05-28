@@ -61,7 +61,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
         }
 
         protected ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-            return helper.add("data", data.getIdentifier()).add("select", select);
+            return helper.add("data", data.name()).add("select", select);
         }
     }
 
@@ -169,7 +169,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
                 if (iter.hasNext()) {
                     final MapEntryNode child = iter.next();
                     frames.push(current);
-                    currentPath.addLast(child.getIdentifier());
+                    currentPath.addLast(child.name());
                     current = new Frame(child, next);
                     continue;
                 }
@@ -213,7 +213,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
                             // finally a frame for the map entry.
                             remainingSelect.pop();
                             frames.push(current);
-                            currentPath.addLast(map.getIdentifier());
+                            currentPath.addLast(map.name());
                             frames.push(new Frame(map, next));
                             currentPath.addLast(target);
                             current = new Frame(entry, target);
@@ -239,7 +239,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
             } else {
                 // Next step in iteration, deal with it
                 frames.push(current);
-                currentPath.addLast(child.getIdentifier());
+                currentPath.addLast(child.name());
                 current = new Frame(child, next);
             }
         }
@@ -254,7 +254,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
 
     // Construct child path. This concatenates currentPath and child's identifier.
     private YangInstanceIdentifier createIdentifier(final NormalizedNode child) {
-        currentPath.addLast(child.getIdentifier());
+        currentPath.addLast(child.name());
         final YangInstanceIdentifier ret = YangInstanceIdentifier.of(currentPath);
         currentPath.removeLast();
         return ret;

@@ -72,7 +72,7 @@ public class Mdsal739Test {
         assertThrows(ExecutionException.class, () -> Futures.getDone(result));
         final var input = captor.getValue();
         assertThat(input, instanceOf(ContainerNode.class));
-        assertSame(NodeIdentifier.create(RockTheHouseInput.QNAME), input.getIdentifier());
+        assertSame(NodeIdentifier.create(RockTheHouseInput.QNAME), input.name());
         final var body = input.body();
         assertEquals(1, body.size());
         assertEquals(ImmutableNodes.leafNode(QName.create(RockTheHouseInput.QNAME, "zip-code"), "12345"),

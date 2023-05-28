@@ -57,7 +57,7 @@ abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImple
             return (RpcInput) lazy.getDataObject();
         }
 
-        checkArgument(inputName.equals(input.getIdentifier().getNodeType()),
+        checkArgument(inputName.equals(input.name().getNodeType()),
             "Unexpected RPC %s input %s", rpcName, input);
 
         // TODO: this is a bit inefficient: typically we get the same CurrentAdapterSerializer and the path is also

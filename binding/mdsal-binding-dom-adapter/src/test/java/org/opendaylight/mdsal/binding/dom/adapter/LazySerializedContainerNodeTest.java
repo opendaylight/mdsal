@@ -51,11 +51,11 @@ public class LazySerializedContainerNodeTest {
                 (LazySerializedContainerNode) LazySerializedContainerNode.withContextRef(name, dataObject, leafNode,
                         codec);
         assertNotNull(lazySerializedContainerNode);
-        assertEquals(leafNode, lazySerializedContainerNode.childByArg(leafNode.getIdentifier()));
+        assertEquals(leafNode, lazySerializedContainerNode.childByArg(leafNode.name()));
         assertNull(lazySerializedContainerNode.childByArg(new NodeIdentifier(QName.create("", "mismatch"))));
 
         assertTrue(lazySerializedContainerNode.body().isEmpty());
-        assertSame(name, lazySerializedContainerNode.getIdentifier());
+        assertSame(name, lazySerializedContainerNode.name());
         assertEquals(dataObject, lazySerializedContainerNode.getDataObject());
     }
 }

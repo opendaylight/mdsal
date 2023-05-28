@@ -46,7 +46,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
             // Augmentation: put() child nodes provided with augmentation, delete() those having no data
             final var putIds = new HashSet<YangInstanceIdentifier.PathArgument>();
             for (var child : augment.children()) {
-                final var childId = child.getIdentifier();
+                final var childId = child.name();
                 delegate.put(store, domPath.node(childId), child);
                 putIds.add(childId);
             }
@@ -85,7 +85,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         if (normalized instanceof AugmentationResult augment) {
             // Augmentation: merge individual children
             for (var child : augment.children()) {
-                delegate.merge(store, domPath.node(child.getIdentifier()), child);
+                delegate.merge(store, domPath.node(child.name()), child);
             }
         } else if (normalized instanceof NodeResult node) {
             delegate.merge(store, domPath, node.node());
@@ -146,7 +146,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         if (parentPath != null && !parentPath.isEmpty()) {
             final var parentNode = ImmutableNodes.fromInstanceId(
                 serializer.getRuntimeContext().getEffectiveModelContext(), parentPath);
-            getDelegate().merge(store, YangInstanceIdentifier.of(parentNode.getIdentifier()), parentNode);
+            getDelegate().merge(store, YangInstanceIdentifier.of(parentNode.name()), parentNode);
         }
     }
 
