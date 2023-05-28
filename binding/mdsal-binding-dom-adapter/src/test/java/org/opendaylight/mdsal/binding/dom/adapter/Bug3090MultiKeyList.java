@@ -48,11 +48,13 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
         final var root = new RootBuilder().setListInRoot(BindingMap.of(listInRoots)).build();
 
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, ROOT_PATH)) {
+            collector.verifyModifications();
+
             final var readWriteTransaction = getDataBroker().newReadWriteTransaction();
             readWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, ROOT_PATH, root);
             assertCommit(readWriteTransaction.commit());
 
-            collector.assertModifications(match(ModificationType.WRITE, ROOT_PATH, Objects::isNull,
+            collector.verifyModifications(match(ModificationType.WRITE, ROOT_PATH, Objects::isNull,
                 (DataMatcher<Root>) dataAfter -> checkData(root, dataAfter)));
         }
     }

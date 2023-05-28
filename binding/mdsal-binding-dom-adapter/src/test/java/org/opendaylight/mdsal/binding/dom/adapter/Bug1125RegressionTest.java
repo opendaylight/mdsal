@@ -59,13 +59,13 @@ public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
     private void deleteAndListenAugment(final InstanceIdentifier<?> path) {
         final var augment = writeInitialState();
         try (var collector = createCollector(LogicalDatastoreType.OPERATIONAL, WILDCARDED_AUGMENT_PATH)) {
+            collector.verifyModifications(added(FOO_AUGMENT_PATH, augment));
+
             final var tx = getDataBroker().newWriteOnlyTransaction();
             tx.delete(LogicalDatastoreType.OPERATIONAL, path);
             assertCommit(tx.commit());
 
-            collector.assertModifications(
-                added(FOO_AUGMENT_PATH, augment),
-                deleted(FOO_AUGMENT_PATH, augment));
+            collector.verifyModifications(deleted(FOO_AUGMENT_PATH, augment));
         }
     }
 

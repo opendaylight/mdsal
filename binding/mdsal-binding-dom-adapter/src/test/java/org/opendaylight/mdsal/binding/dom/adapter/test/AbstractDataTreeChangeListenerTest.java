@@ -16,7 +16,6 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
@@ -57,26 +56,25 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         }
 
         @SafeVarargs
-        public final void assertModifications(final Matcher<T>... inOrder) {
+        public final void verifyModifications(final Matcher<T>... inOrder) {
             final var matchers = new ArrayDeque<>(Arrays.asList(inOrder));
-            final var changes = new ArrayDeque<>(listener.awaitChanges(matchers.size()));
+            final var changes = listener.awaitChanges(matchers.size());
 
             while (!changes.isEmpty()) {
                 final var mod = changes.pop();
-                final var matcher = matchers.peek();
-                if (matcher == null || !matcher.apply(mod)) {
+                final var matcher = matchers.pop();
+                if (!matcher.apply(mod)) {
                     final var rootNode = mod.getRootNode();
                     fail("Received unexpected notification: type: %s, path: %s, before: %s, after: %s".formatted(
                         rootNode.getModificationType(), mod.getRootPath().getRootIdentifier(), rootNode.getDataBefore(),
                         rootNode.getDataAfter()));
                     return;
                 }
-
-                matchers.pop();
             }
 
-            if (!matchers.isEmpty()) {
-                fail("Unsatisfied matchers " + matchers);
+            final var count = listener.changeCount();
+            if (count != 0) {
+                throw new AssertionError("Expected no more changes, %s remain".formatted(count));
             }
         }
 
@@ -102,7 +100,7 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
             synced = true;
         }
 
-        private void awaitSync() {
+        void awaitSync() {
             final var sw = Stopwatch.createStarted();
 
             do {
@@ -118,23 +116,35 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
             throw new AssertionError("Failed to achieve initial sync");
         }
 
-        private List<DataTreeModification<T>> awaitChanges(final int expectedCount) {
+        Deque<DataTreeModification<T>> awaitChanges(final int expectedCount) {
+            final var ret = new ArrayDeque<DataTreeModification<T>>(expectedCount);
             final var sw = Stopwatch.createStarted();
+            int remaining = expectedCount;
 
             do {
                 synchronized (this) {
-                    if (accumulatedChanges.size() >= expectedCount) {
-                        return List.copyOf(accumulatedChanges);
+                    while (remaining != 0) {
+                        final var change = accumulatedChanges.poll();
+                        if (change == null) {
+                            break;
+                        }
+
+                        remaining--;
+                        ret.add(change);
                     }
                 }
 
+                if (remaining == 0) {
+                    return ret;
+                }
                 Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
             } while (sw.elapsed(TimeUnit.SECONDS) < 5);
 
-            synchronized (this) {
-                throw new AssertionError("Expected %s changes, received only %s".formatted(expectedCount,
-                    accumulatedChanges.size()));
-            }
+            throw new AssertionError("Expected %s changes, received only %s".formatted(expectedCount, ret.size()));
+        }
+
+        synchronized int changeCount() {
+            return accumulatedChanges.size();
         }
     }
 

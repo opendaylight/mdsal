@@ -37,11 +37,13 @@ public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeLi
         final var root = new RootBuilder().setFooroot(List.of(fooRoot)).build();
 
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, ROOT_PATH)) {
+            collector.verifyModifications();
+
             final var readWriteTransaction = getDataBroker().newReadWriteTransaction();
             readWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, ROOT_PATH, root);
             assertCommit(readWriteTransaction.commit());
 
-            collector.assertModifications(added(ROOT_PATH, root));
+            collector.verifyModifications(added(ROOT_PATH, root));
         }
     }
 }

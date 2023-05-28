@@ -70,16 +70,16 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
                         writeTx.put(CONFIGURATION, TOP, top);
                         assertCommit(writeTx.commit());
 
-                        barListener.assertModifications(added(TOP_BAR, topBar));
+                        barListener.verifyModifications(added(TOP_BAR, topBar));
                     }
-                    fooListener.assertModifications(added(TOP_FOO, topFoo), deleted(TOP_FOO, topFoo));
+                    fooListener.verifyModifications(added(TOP_FOO, topFoo), deleted(TOP_FOO, topFoo));
                 }
-                allListener.assertModifications(
+                allListener.verifyModifications(
                     added(TOP_FOO, topFoo),
                     added(TOP_BAR, topBar),
                     deleted(TOP_FOO, topFoo));
             }
-            topListener.assertModifications(
+            topListener.verifyModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))),
                 replaced(TOP, top(topFoo), top));
         }
@@ -98,13 +98,13 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
                         writeTx.merge(CONFIGURATION, TOP, top(topLevelList(TOP_BAR_KEY)));
                         assertCommit(writeTx.commit());
 
-                        barListener.assertModifications(added(TOP_BAR, topBar));
+                        barListener.verifyModifications(added(TOP_BAR, topBar));
                     }
-                    fooListener.assertModifications(added(TOP_FOO, topFoo));
+                    fooListener.verifyModifications(added(TOP_FOO, topFoo));
                 }
-                allListener.assertModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+                allListener.verifyModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
             }
-            topListener.assertModifications(
+            topListener.verifyModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
         }
     }
@@ -122,13 +122,13 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
                         writeTx.put(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
                         assertCommit(writeTx.commit());
 
-                        barListener.assertModifications(added(TOP_BAR, topBar));
+                        barListener.verifyModifications(added(TOP_BAR, topBar));
                     }
-                    fooListener.assertModifications(added(TOP_FOO, topFoo));
+                    fooListener.verifyModifications(added(TOP_FOO, topFoo));
                 }
-                allListener.assertModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+                allListener.verifyModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
             }
-            topListener.assertModifications(
+            topListener.verifyModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
         }
     }
@@ -146,13 +146,13 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
                         writeTx.merge(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
                         assertCommit(writeTx.commit());
 
-                        barListener.assertModifications(added(TOP_BAR, topBar));
+                        barListener.verifyModifications(added(TOP_BAR, topBar));
                     }
-                    fooListener.assertModifications(added(TOP_FOO, topFoo));
+                    fooListener.verifyModifications(added(TOP_FOO, topFoo));
                 }
-                allListener.assertModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+                allListener.verifyModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
             }
-            topListener.assertModifications(
+            topListener.verifyModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
         }
     }

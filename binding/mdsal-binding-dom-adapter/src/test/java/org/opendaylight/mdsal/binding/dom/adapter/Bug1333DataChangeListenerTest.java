@@ -66,18 +66,22 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
     @Test
     public void writeTopWithListItemAugmentedListenTopSubtree() {
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, TOP_PATH)) {
+            collector.verifyModifications();
+
             writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
-            collector.assertModifications(added(TOP_PATH, topWithListItem()));
+            collector.verifyModifications(added(TOP_PATH, topWithListItem()));
         }
     }
 
     @Test
     public void writeTopWithListItemAugmentedListenAugmentSubtreeWildcarded() {
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, AUGMENT_WILDCARD)) {
+            collector.verifyModifications();
+
             writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
-            collector.assertModifications(
+            collector.verifyModifications(
                 added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)));
         }
     }
@@ -87,10 +91,11 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
         final var top = writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, TOP_PATH)) {
+            collector.verifyModifications(added(TOP_PATH, top));
+
             deleteItem(LogicalDatastoreType.CONFIGURATION, path(TOP_FOO_KEY, USES_ONE_KEY));
 
-            collector.assertModifications(
-                added(TOP_PATH, top),
+            collector.verifyModifications(
                 subtreeModified(TOP_PATH, top, top(topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_TWO_KEY)))));
         }
     }
@@ -100,10 +105,12 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
         writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, AUGMENT_WILDCARD)) {
+            collector.verifyModifications(
+                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)));
+
             deleteItem(LogicalDatastoreType.CONFIGURATION, path(TOP_FOO_KEY, USES_ONE_KEY));
 
-            collector.assertModifications(
-                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)),
+            collector.verifyModifications(
                 subtreeModified(path(TOP_FOO_KEY, TreeComplexUsesAugment.class),
                     complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY), complexUsesAugment(USES_TWO_KEY)));
         }

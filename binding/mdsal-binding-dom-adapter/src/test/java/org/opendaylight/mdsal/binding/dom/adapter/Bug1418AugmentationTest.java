@@ -50,13 +50,16 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
     public void leafOnlyAugmentationCreatedTest() {
         final var leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
         try (var collector = createCollector(CONFIGURATION, SIMPLE_AUGMENT)) {
+            collector.verifyModifications();
+
             final var writeTx = getDataBroker().newWriteOnlyTransaction();
             writeTx.put(CONFIGURATION, TOP, top());
             writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
             writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
             assertCommit(writeTx.commit());
 
-            collector.assertModifications(added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
+            collector.verifyModifications(
+                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
         }
     }
 
@@ -71,12 +74,14 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
 
         final var leafOnlyUsesAugmentAfter = leafOnlyUsesAugment("test leaf changed");
         try (var collector = createCollector(CONFIGURATION, SIMPLE_AUGMENT)) {
+            collector.verifyModifications(
+                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore));
+
             writeTx = getDataBroker().newWriteOnlyTransaction();
             writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentAfter);
             assertCommit(writeTx.commit());
 
-            collector.assertModifications(
-                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore),
+            collector.verifyModifications(
                 replaced(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore,
                     leafOnlyUsesAugmentAfter));
         }
@@ -92,12 +97,14 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
         assertCommit(writeTx.commit());
 
         try (var collector = createCollector(CONFIGURATION, SIMPLE_AUGMENT)) {
+            collector.verifyModifications(
+                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
+
             writeTx = getDataBroker().newWriteOnlyTransaction();
             writeTx.delete(CONFIGURATION, SIMPLE_AUGMENT);
             assertCommit(writeTx.commit());
 
-            collector.assertModifications(
-                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment),
+            collector.verifyModifications(
                 deleted(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
         }
     }
@@ -112,7 +119,8 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
             writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugment);
             assertCommit(writeTx.commit());
 
-            collector.assertModifications(added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment));
+            collector.verifyModifications(
+                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment));
         }
     }
 
@@ -126,13 +134,15 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
         assertCommit(writeTx.commit());
 
         try (var collector = createCollector(CONFIGURATION, COMPLEX_AUGMENT)) {
+            collector.verifyModifications(
+                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore));
+
             final var complexUsesAugmentAfter = complexUsesAugment(LIST_VIA_USES_KEY_MOD);
             writeTx = getDataBroker().newWriteOnlyTransaction();
             writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentAfter);
             assertCommit(writeTx.commit());
 
-            collector.assertModifications(
-                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore),
+            collector.verifyModifications(
                 // While we are overwriting the augment, at the transaction ends up replacing one child with another,
                 // so the Augmentation ends up not being overwritten, but modified
                 subtreeModified(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
