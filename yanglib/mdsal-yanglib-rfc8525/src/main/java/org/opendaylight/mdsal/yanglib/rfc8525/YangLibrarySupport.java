@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
-import static com.google.common.base.Verify.verifyNotNull;
-
 import com.google.common.annotations.Beta;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -67,10 +65,8 @@ public final class YangLibrarySupport implements YangLibSupport {
             generator.generateTypeMapping(context), snapshot));
 
         identityCodec = codecTree.getIdentityCodec();
-        codec = (BindingDataObjectCodecTreeNode<YangLibrary>)
-            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
-        legacyCodec = (BindingDataObjectCodecTreeNode<ModulesState>)
-            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
+        codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));
+        legacyCodec = codecTree.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
     }
 
     @Override

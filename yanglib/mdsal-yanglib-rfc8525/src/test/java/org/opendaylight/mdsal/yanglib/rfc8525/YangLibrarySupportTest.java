@@ -12,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.RevisionIdentifier;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
@@ -29,8 +28,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 public class YangLibrarySupportTest extends AbstractYangLibraryTest {
     @Test
     public void testFormatSchema() {
-        final var codec = (BindingDataObjectCodecTreeNode<YangLibrary>)
-            codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class));
+        final var codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));
 
         final ContainerNode nonLegacyContent = yangLib.newContentBuilder()
                 .defaultContext(runtimeContext.getEffectiveModelContext()).formatYangLibraryContent();

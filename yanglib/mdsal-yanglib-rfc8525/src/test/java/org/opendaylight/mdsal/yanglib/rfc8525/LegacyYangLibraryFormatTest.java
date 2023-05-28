@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.RevisionIdentifier;
@@ -31,8 +30,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 public class LegacyYangLibraryFormatTest extends AbstractYangLibraryTest {
     @Test
     public void testLegacyFormat() {
-        final var legacyCodec = (BindingDataObjectCodecTreeNode<ModulesState>)
-            codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class));
+        final var legacyCodec = codecTree.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
 
         final Optional<ContainerNode> legacyContent = yangLib.newContentBuilder()
             .defaultContext(runtimeContext.getEffectiveModelContext())
