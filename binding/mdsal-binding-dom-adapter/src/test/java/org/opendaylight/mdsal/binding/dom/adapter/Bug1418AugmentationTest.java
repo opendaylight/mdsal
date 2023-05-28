@@ -15,10 +15,8 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.t
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
@@ -43,106 +41,102 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
             new ListViaUsesKey("list key modified");
 
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(Top.class),
-                BindingReflections.getModuleInfo(TreeComplexUsesAugment.class),
-                BindingReflections.getModuleInfo(TreeLeafOnlyUsesAugment.class));
+    protected Set<YangModuleInfo> getModuleInfos() {
+        return Set.of(BindingReflections.getModuleInfo(Top.class),
+                BindingReflections.getModuleInfo(TreeComplexUsesAugment.class));
     }
 
     @Test
     public void leafOnlyAugmentationCreatedTest() {
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
-        final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
+        final var leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
+        try (var collector = createCollector(CONFIGURATION, SIMPLE_AUGMENT)) {
+            final var writeTx = getDataBroker().newWriteOnlyTransaction();
+            writeTx.put(CONFIGURATION, TOP, top());
+            writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+            writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
+            assertCommit(writeTx.commit());
 
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
-        assertCommit(writeTx.commit());
-
-        listener.verify();
+            collector.assertModifications(added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
+        }
     }
 
     @Test
     public void leafOnlyAugmentationUpdatedTest() {
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
         writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugmentBefore = leafOnlyUsesAugment("test leaf");
+        final var leafOnlyUsesAugmentBefore = leafOnlyUsesAugment("test leaf");
         writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentBefore);
         assertCommit(writeTx.commit());
 
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugmentAfter = leafOnlyUsesAugment("test leaf changed");
-        final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
+        final var leafOnlyUsesAugmentAfter = leafOnlyUsesAugment("test leaf changed");
+        try (var collector = createCollector(CONFIGURATION, SIMPLE_AUGMENT)) {
+            writeTx = getDataBroker().newWriteOnlyTransaction();
+            writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentAfter);
+            assertCommit(writeTx.commit());
+
+            collector.assertModifications(
                 added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore),
                 replaced(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore,
                     leafOnlyUsesAugmentAfter));
-
-        writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentAfter);
-        assertCommit(writeTx.commit());
-
-        listener.verify();
+        }
     }
 
     @Test
     public void leafOnlyAugmentationDeletedTest() {
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
         writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
+        final var leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
         writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
         assertCommit(writeTx.commit());
 
-        final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
+        try (var collector = createCollector(CONFIGURATION, SIMPLE_AUGMENT)) {
+            writeTx = getDataBroker().newWriteOnlyTransaction();
+            writeTx.delete(CONFIGURATION, SIMPLE_AUGMENT);
+            assertCommit(writeTx.commit());
+
+            collector.assertModifications(
                 added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment),
                 deleted(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
-
-        writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.delete(CONFIGURATION, SIMPLE_AUGMENT);
-        assertCommit(writeTx.commit());
-
-        listener.verify();
+        }
     }
 
     @Test
     public void complexAugmentationCreatedTest() {
-        TreeComplexUsesAugment complexUsesAugment = complexUsesAugment(LIST_VIA_USES_KEY);
-        final TestListener<TreeComplexUsesAugment>  listener = createListener(CONFIGURATION, COMPLEX_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment));
+        try (var collector = createCollector(CONFIGURATION, COMPLEX_AUGMENT)) {
+            final var complexUsesAugment = complexUsesAugment(LIST_VIA_USES_KEY);
+            final var writeTx = getDataBroker().newWriteOnlyTransaction();
+            writeTx.put(CONFIGURATION, TOP, top());
+            writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+            writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugment);
+            assertCommit(writeTx.commit());
 
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugment);
-        assertCommit(writeTx.commit());
-
-        listener.verify();
+            collector.assertModifications(added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment));
+        }
     }
 
     @Test
     public void complexAugmentationUpdatedTest() {
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
         writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        TreeComplexUsesAugment complexUsesAugmentBefore = complexUsesAugment(LIST_VIA_USES_KEY);
+        final var complexUsesAugmentBefore = complexUsesAugment(LIST_VIA_USES_KEY);
         writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentBefore);
         assertCommit(writeTx.commit());
 
-        TreeComplexUsesAugment complexUsesAugmentAfter = complexUsesAugment(LIST_VIA_USES_KEY_MOD);
+        try (var collector = createCollector(CONFIGURATION, COMPLEX_AUGMENT)) {
+            final var complexUsesAugmentAfter = complexUsesAugment(LIST_VIA_USES_KEY_MOD);
+            writeTx = getDataBroker().newWriteOnlyTransaction();
+            writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentAfter);
+            assertCommit(writeTx.commit());
 
-        final TestListener<TreeComplexUsesAugment> listener = createListener(CONFIGURATION, COMPLEX_AUGMENT,
+            collector.assertModifications(
                 added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore),
                 // While we are overwriting the augment, at the transaction ends up replacing one child with another,
                 // so the Augmentation ends up not being overwritten, but modified
                 subtreeModified(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
                         complexUsesAugmentAfter));
-
-        writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentAfter);
-        assertCommit(writeTx.commit());
-
-        listener.verify();
+        }
     }
 }

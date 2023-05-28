@@ -14,17 +14,14 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.c
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
-import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ListViaUses;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -53,63 +50,62 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
     }
 
     public Top writeTopWithListItem(final LogicalDatastoreType store) {
-        ReadWriteTransaction tx = getDataBroker().newReadWriteTransaction();
-        Top topItem = topWithListItem();
+        var tx = getDataBroker().newWriteOnlyTransaction();
+        var topItem = topWithListItem();
         tx.put(store, TOP_PATH, topItem);
         assertCommit(tx.commit());
         return topItem;
     }
 
     public void deleteItem(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
-        ReadWriteTransaction tx = getDataBroker().newReadWriteTransaction();
+        var tx = getDataBroker().newWriteOnlyTransaction();
         tx.delete(store, path);
         assertCommit(tx.commit());
     }
 
     @Test
     public void writeTopWithListItemAugmentedListenTopSubtree() {
-        TestListener<Top> listener = createListener(CONFIGURATION, TOP_PATH, added(TOP_PATH, topWithListItem()));
+        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, TOP_PATH)) {
+            writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
-        writeTopWithListItem(CONFIGURATION);
-
-        listener.verify();
+            collector.assertModifications(added(TOP_PATH, topWithListItem()));
+        }
     }
 
     @Test
     public void writeTopWithListItemAugmentedListenAugmentSubtreeWildcarded() {
-        TestListener<TreeComplexUsesAugment> listener = createListener(CONFIGURATION, AUGMENT_WILDCARD,
+        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, AUGMENT_WILDCARD)) {
+            writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
+
+            collector.assertModifications(
                 added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)));
-
-        writeTopWithListItem(CONFIGURATION);
-
-        listener.verify();
+        }
     }
 
     @Test
     public void deleteAugmentChildListenTopSubtree() {
-        Top top = writeTopWithListItem(CONFIGURATION);
+        final var top = writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
-        TestListener<Top> listener = createListener(CONFIGURATION, TOP_PATH, added(TOP_PATH, top),
+        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, TOP_PATH)) {
+            deleteItem(LogicalDatastoreType.CONFIGURATION, path(TOP_FOO_KEY, USES_ONE_KEY));
+
+            collector.assertModifications(
+                added(TOP_PATH, top),
                 subtreeModified(TOP_PATH, top, top(topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_TWO_KEY)))));
-
-        InstanceIdentifier<ListViaUses> deletePath = path(TOP_FOO_KEY, USES_ONE_KEY);
-        deleteItem(CONFIGURATION, deletePath);
-
-        listener.verify();
+        }
     }
 
     @Test
     public void deleteAugmentChildListenAugmentSubtreeWildcarded() {
-        writeTopWithListItem(CONFIGURATION);
+        writeTopWithListItem(LogicalDatastoreType.CONFIGURATION);
 
-        TestListener<TreeComplexUsesAugment> listener = createListener(CONFIGURATION, AUGMENT_WILDCARD,
+        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, AUGMENT_WILDCARD)) {
+            deleteItem(LogicalDatastoreType.CONFIGURATION, path(TOP_FOO_KEY, USES_ONE_KEY));
+
+            collector.assertModifications(
                 added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)),
                 subtreeModified(path(TOP_FOO_KEY, TreeComplexUsesAugment.class),
                     complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY), complexUsesAugment(USES_TWO_KEY)));
-
-        InstanceIdentifier<?> deletePath = path(TOP_FOO_KEY, USES_ONE_KEY);
-        deleteItem(CONFIGURATION, deletePath);
-
-        listener.verify();
+        }
     }
 }

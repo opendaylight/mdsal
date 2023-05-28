@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -60,109 +59,110 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
         final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
 
         // Listener for TOP element
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
-                added(TOP, top(topLevelList(TOP_FOO_KEY))), replaced(TOP, top(topFoo), top));
+        try (var topListener = createCollector(CONFIGURATION, TOP)) {
+            // Listener for all list items. This one should see Foo item deleted and Bar item added.
+            try (var allListener = createCollector(CONFIGURATION, WILDCARDED)) {
+                // Listener for all Foo item. This one should see only Foo item deleted.
+                try (var fooListener = createCollector(CONFIGURATION, TOP_FOO)) {
+                    // Listener for bar list items.
+                    try (var barListener = createCollector(CONFIGURATION, TOP_BAR)) {
+                        final var writeTx = getDataBroker().newWriteOnlyTransaction();
+                        writeTx.put(CONFIGURATION, TOP, top);
+                        assertCommit(writeTx.commit());
 
-        // Listener for all list items. This one should see Foo item deleted and Bar item added.
-        final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
-                added(TOP_FOO, topFoo), added(TOP_BAR, topBar), deleted(TOP_FOO, topFoo));
-
-        // Listener for all Foo item. This one should see only Foo item deleted.
-        final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
-                added(TOP_FOO, topFoo), deleted(TOP_FOO, topFoo));
-
-        // Listener for bar list items.
-        final TestListener<TopLevelList> barListener = createListener(CONFIGURATION, TOP_BAR,
-                added(TOP_BAR, topBar));
-
-        ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
-        writeTx.put(CONFIGURATION, TOP, top);
-        assertCommit(writeTx.commit());
-
-        topListener.verify();
-        allListener.verify();
-        fooListener.verify();
-        barListener.verify();
+                        barListener.assertModifications(added(TOP_BAR, topBar));
+                    }
+                    fooListener.assertModifications(added(TOP_FOO, topFoo), deleted(TOP_FOO, topFoo));
+                }
+                allListener.assertModifications(
+                    added(TOP_FOO, topFoo),
+                    added(TOP_BAR, topBar),
+                    deleted(TOP_FOO, topFoo));
+            }
+            topListener.assertModifications(
+                added(TOP, top(topLevelList(TOP_FOO_KEY))),
+                replaced(TOP, top(topFoo), top));
+        }
     }
 
     @Test
     public void mergeTopNodeSubtreeListeners() {
-        final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
-        final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
+        final var topBar = topLevelList(TOP_BAR_KEY);
+        final var topFoo = topLevelList(TOP_FOO_KEY);
 
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
+        try (var topListener = createCollector(CONFIGURATION, TOP)) {
+            try (var allListener = createCollector(CONFIGURATION, WILDCARDED)) {
+                try (var fooListener = createCollector(CONFIGURATION, TOP_FOO)) {
+                    try (var barListener = createCollector(CONFIGURATION, TOP_BAR)) {
+                        final var writeTx = getDataBroker().newWriteOnlyTransaction();
+                        writeTx.merge(CONFIGURATION, TOP, top(topLevelList(TOP_BAR_KEY)));
+                        assertCommit(writeTx.commit());
+
+                        barListener.assertModifications(added(TOP_BAR, topBar));
+                    }
+                    fooListener.assertModifications(added(TOP_FOO, topFoo));
+                }
+                allListener.assertModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+            }
+            topListener.assertModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
-        final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
-                added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
-        final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
-                added(TOP_FOO, topFoo));
-        final TestListener<TopLevelList> barListener = createListener(CONFIGURATION, TOP_BAR,
-                added(TOP_BAR, topBar));
-
-        ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
-        writeTx.merge(CONFIGURATION, TOP, top(topLevelList(TOP_BAR_KEY)));
-        assertCommit(writeTx.commit());
-
-        topListener.verify();
-        allListener.verify();
-        fooListener.verify();
-        barListener.verify();
+        }
     }
 
     @Test
     public void putTopBarNodeSubtreeListeners() {
-        final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
-        final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
+        final var topBar = topLevelList(TOP_BAR_KEY);
+        final var topFoo = topLevelList(TOP_FOO_KEY);
 
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
+        try (var topListener = createCollector(CONFIGURATION, TOP)) {
+            try (var allListener = createCollector(CONFIGURATION, WILDCARDED)) {
+                try (var fooListener = createCollector(CONFIGURATION, TOP_FOO)) {
+                    try (var barListener = createCollector(CONFIGURATION, TOP_BAR)) {
+                        var writeTx = getDataBroker().newWriteOnlyTransaction();
+                        writeTx.put(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
+                        assertCommit(writeTx.commit());
+
+                        barListener.assertModifications(added(TOP_BAR, topBar));
+                    }
+                    fooListener.assertModifications(added(TOP_FOO, topFoo));
+                }
+                allListener.assertModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+            }
+            topListener.assertModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
-        final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
-                added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
-        final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
-                added(TOP_FOO, topFoo));
-        final TestListener<TopLevelList> barListener = createListener(CONFIGURATION, TOP_BAR,
-                added(TOP_BAR, topBar));
-
-        ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
-        writeTx.put(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
-        assertCommit(writeTx.commit());
-
-        topListener.verify();
-        allListener.verify();
-        fooListener.verify();
-        barListener.verify();
+        }
     }
 
     @Test
     public void mergeTopBarNodeSubtreeListeners() {
-        final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
-        final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
+        final var topBar = topLevelList(TOP_BAR_KEY);
+        final var topFoo = topLevelList(TOP_FOO_KEY);
 
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
+        try (var topListener = createCollector(CONFIGURATION, TOP)) {
+            try (var allListener = createCollector(CONFIGURATION, WILDCARDED)) {
+                try (var fooListener = createCollector(CONFIGURATION, TOP_FOO)) {
+                    try (var barListener = createCollector(CONFIGURATION, TOP_BAR)) {
+                        final var writeTx = getDataBroker().newWriteOnlyTransaction();
+                        writeTx.merge(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
+                        assertCommit(writeTx.commit());
+
+                        barListener.assertModifications(added(TOP_BAR, topBar));
+                    }
+                    fooListener.assertModifications(added(TOP_FOO, topFoo));
+                }
+                allListener.assertModifications(added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+            }
+            topListener.assertModifications(
                 added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
-        final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
-                added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
-        final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
-                added(TOP_FOO, topFoo));
-        final TestListener<TopLevelList> barListener = createListener(CONFIGURATION, TOP_BAR,
-                added(TOP_BAR, topBar));
-
-        ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
-        writeTx.merge(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
-        assertCommit(writeTx.commit());
-
-        topListener.verify();
-        allListener.verify();
-        fooListener.verify();
-        barListener.verify();
+        }
     }
 
     private static Matcher<Top> topSubtreeModified(final TopLevelList topFoo, final TopLevelList topBar) {
         return match(ModificationType.SUBTREE_MODIFIED, TOP,
             (DataMatcher<Top>) dataBefore -> Objects.equals(top(topFoo), dataBefore),
             dataAfter -> {
-                Set<TopLevelList> expList = new HashSet<>(top(topBar, topFoo).getTopLevelList().values());
-                Set<TopLevelList> actualList = dataAfter.getTopLevelList().values().stream()
+                var expList = new HashSet<>(top(topBar, topFoo).nonnullTopLevelList().values());
+                var actualList = dataAfter.nonnullTopLevelList().values().stream()
                         .map(list -> new TopLevelListBuilder(list).build()).collect(Collectors.toSet());
                 return expList.equals(actualList);
             });

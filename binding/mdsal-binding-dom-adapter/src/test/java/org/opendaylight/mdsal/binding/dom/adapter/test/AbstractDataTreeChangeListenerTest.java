@@ -7,25 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.fail;
 
-import com.google.common.util.concurrent.SettableFuture;
+import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -47,41 +47,20 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         boolean apply(T data);
     }
 
-    protected static final class TestListener<T extends DataObject> implements DataTreeChangeListener<T> {
-        private final SettableFuture<List<DataTreeModification<T>>> future = SettableFuture.create();
-        private final List<DataTreeModification<T>> accumulatedChanges = new ArrayList<>();
-        private final Deque<Matcher<T>> matchers;
-        private final int expChangeCount;
+    protected static final class ModificationCollector<T extends DataObject> implements AutoCloseable {
+        private final TestListener<T> listener;
+        private final Registration reg;
 
-        private TestListener(final List<Matcher<T>> matchers) {
-            this.matchers = new ArrayDeque<>(matchers);
-            expChangeCount = this.matchers.size();
+        private ModificationCollector(final TestListener<T> listener, final Registration reg) {
+            this.listener = requireNonNull(listener);
+            this.reg = requireNonNull(reg);
         }
 
-        @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
-            synchronized (accumulatedChanges) {
-                accumulatedChanges.addAll(changes);
-                if (expChangeCount == accumulatedChanges.size()) {
-                    future.set(List.copyOf(accumulatedChanges));
-                }
-            }
-        }
+        @SafeVarargs
+        public final void assertModifications(final Matcher<T>... inOrder) {
+            final var matchers = new ArrayDeque<>(Arrays.asList(inOrder));
+            final var changes = new ArrayDeque<>(listener.awaitChanges(matchers.size()));
 
-        public List<DataTreeModification<T>> changes() {
-            try {
-                final var changes = future.get(5, TimeUnit.SECONDS);
-                Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-                return changes;
-            } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                throw new AssertionError(String.format(
-                    "Data tree change notifications not received. Expected: %s. Actual: %s - %s",
-                        expChangeCount, accumulatedChanges.size(), accumulatedChanges), e);
-            }
-        }
-
-        public void verify() {
-            final var changes = new ArrayDeque<>(changes());
             while (!changes.isEmpty()) {
                 final var mod = changes.pop();
                 final var matcher = matchers.peek();
@@ -101,9 +80,60 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
             }
         }
 
-        public boolean hasChanges() {
-            synchronized (accumulatedChanges) {
-                return !accumulatedChanges.isEmpty();
+        @Override
+        public void close() {
+            reg.close();
+        }
+    }
+
+    private static final class TestListener<T extends DataObject> implements DataTreeChangeListener<T> {
+        private final Deque<DataTreeModification<T>> accumulatedChanges = new ArrayDeque<>();
+
+        private boolean synced;
+
+        @Override
+        public synchronized void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
+            accumulatedChanges.addAll(changes);
+            synced = true;
+        }
+
+        @Override
+        public synchronized void onInitialData() {
+            synced = true;
+        }
+
+        private void awaitSync() {
+            final var sw = Stopwatch.createStarted();
+
+            do {
+                synchronized (this) {
+                    if (synced) {
+                        return;
+                    }
+                }
+
+                Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
+            } while (sw.elapsed(TimeUnit.SECONDS) < 5);
+
+            throw new AssertionError("Failed to achieve initial sync");
+        }
+
+        private List<DataTreeModification<T>> awaitChanges(final int expectedCount) {
+            final var sw = Stopwatch.createStarted();
+
+            do {
+                synchronized (this) {
+                    if (accumulatedChanges.size() >= expectedCount) {
+                        return List.copyOf(accumulatedChanges);
+                    }
+                }
+
+                Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
+            } while (sw.elapsed(TimeUnit.SECONDS) < 5);
+
+            synchronized (this) {
+                throw new AssertionError("Expected %s changes, received only %s".formatted(expectedCount,
+                    accumulatedChanges.size()));
             }
         }
     }
@@ -112,42 +142,45 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         super(true);
     }
 
-    @SafeVarargs
-    protected final <T extends DataObject> TestListener<T> createListener(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final Matcher<T>... matchers) {
-        final var listener = new TestListener<>(Arrays.asList(matchers));
-        getDataBroker().registerDataTreeChangeListener(DataTreeIdentifier.create(store, path), listener);
-        return listener;
+    protected final <T extends DataObject> @NonNull ModificationCollector<T> createCollector(
+            final LogicalDatastoreType store, final InstanceIdentifier<T> path) {
+        final var listener = new TestListener<T>();
+        final var reg = getDataBroker().registerDataTreeChangeListener(DataTreeIdentifier.create(store, path),
+            listener);
+        listener.awaitSync();
+        return new ModificationCollector<>(listener, reg);
     }
 
-    public static <T extends DataObject> Matcher<T> match(final ModificationType type, final InstanceIdentifier<T> path,
-            final DataMatcher<T> checkDataBefore, final DataMatcher<T> checkDataAfter) {
+    public static <T extends DataObject> @NonNull Matcher<T> match(final ModificationType type,
+            final InstanceIdentifier<T> path, final DataMatcher<T> checkDataBefore,
+            final DataMatcher<T> checkDataAfter) {
         return modification -> type == modification.getRootNode().getModificationType()
                 && path.equals(modification.getRootPath().getRootIdentifier())
                 && checkDataBefore.apply(modification.getRootNode().getDataBefore())
                 && checkDataAfter.apply(modification.getRootNode().getDataAfter());
     }
 
-    public static <T extends DataObject> Matcher<T> match(final ModificationType type, final InstanceIdentifier<T> path,
-            final T expDataBefore, final T expDataAfter) {
+    public static <T extends DataObject> @NonNull Matcher<T> match(final ModificationType type,
+            final InstanceIdentifier<T> path, final T expDataBefore, final T expDataAfter) {
         return match(type, path, dataBefore -> Objects.equals(expDataBefore, dataBefore),
             (DataMatcher<T>) dataAfter -> Objects.equals(expDataAfter, dataAfter));
     }
 
-    public static <T extends DataObject> Matcher<T> added(final InstanceIdentifier<T> path, final T data) {
+    public static <T extends DataObject> @NonNull Matcher<T> added(final InstanceIdentifier<T> path, final T data) {
         return match(ModificationType.WRITE, path, null, data);
     }
 
-    public static <T extends DataObject> Matcher<T> replaced(final InstanceIdentifier<T> path, final T dataBefore,
-            final T dataAfter) {
+    public static <T extends DataObject> @NonNull Matcher<T> replaced(final InstanceIdentifier<T> path,
+            final T dataBefore, final T dataAfter) {
         return match(ModificationType.WRITE, path, dataBefore, dataAfter);
     }
 
-    public static <T extends DataObject> Matcher<T> deleted(final InstanceIdentifier<T> path, final T dataBefore) {
+    public static <T extends DataObject> @NonNull Matcher<T> deleted(final InstanceIdentifier<T> path,
+            final T dataBefore) {
         return match(ModificationType.DELETE, path, dataBefore, null);
     }
 
-    public static <T extends DataObject> Matcher<T> subtreeModified(final InstanceIdentifier<T> path,
+    public static <T extends DataObject> @NonNull Matcher<T> subtreeModified(final InstanceIdentifier<T> path,
             final T dataBefore, final T dataAfter) {
         return match(ModificationType.SUBTREE_MODIFIED, path, dataBefore, dataAfter);
     }

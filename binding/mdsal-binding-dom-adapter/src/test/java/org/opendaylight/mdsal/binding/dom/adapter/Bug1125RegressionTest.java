@@ -11,10 +11,8 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.T
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -45,7 +43,7 @@ public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(Top.class),
+        return Set.of(BindingReflections.getModuleInfo(Top.class),
                 BindingReflections.getModuleInfo(TreeComplexUsesAugment.class));
     }
 
@@ -59,19 +57,22 @@ public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
     }
 
     private void deleteAndListenAugment(final InstanceIdentifier<?> path) {
-        TreeComplexUsesAugment augment = writeInitialState();
-        TestListener<TreeComplexUsesAugment> listener = createListener(LogicalDatastoreType.OPERATIONAL,
-                WILDCARDED_AUGMENT_PATH, added(FOO_AUGMENT_PATH, augment), deleted(FOO_AUGMENT_PATH, augment));
-        WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
-        tx.delete(LogicalDatastoreType.OPERATIONAL, path);
-        assertCommit(tx.commit());
-        listener.verify();
+        final var augment = writeInitialState();
+        try (var collector = createCollector(LogicalDatastoreType.OPERATIONAL, WILDCARDED_AUGMENT_PATH)) {
+            final var tx = getDataBroker().newWriteOnlyTransaction();
+            tx.delete(LogicalDatastoreType.OPERATIONAL, path);
+            assertCommit(tx.commit());
+
+            collector.assertModifications(
+                added(FOO_AUGMENT_PATH, augment),
+                deleted(FOO_AUGMENT_PATH, augment));
+        }
     }
 
     private TreeComplexUsesAugment writeInitialState() {
-        WriteTransaction initialTx = getDataBroker().newWriteOnlyTransaction();
+        var initialTx = getDataBroker().newWriteOnlyTransaction();
         initialTx.put(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
-        TreeComplexUsesAugment fooAugment = new TreeComplexUsesAugmentBuilder()
+        var fooAugment = new TreeComplexUsesAugmentBuilder()
                 .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build())
                 .build();
         initialTx.put(LogicalDatastoreType.OPERATIONAL, path(TOP_FOO_KEY), topLevelList(TOP_FOO_KEY, fooAugment));
