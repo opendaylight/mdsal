@@ -28,9 +28,12 @@ import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.DescriptionEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeAwareEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +167,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
 
     @Override
     public final boolean isAugmenting() {
-        return statement instanceof CopyableNode copyable && copyable.isAugmenting();
+        return introducedByAugmentation(statement);
     }
 
     /**
@@ -364,5 +367,62 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
             helper.addValue("augmenting");
         }
         return helper;
+    }
+
+    protected final boolean introducedByAugmentation(final EffectiveStatement<?, ?> stmt) {
+        if (this instanceof ModuleGenerator) {
+            return false;
+        }
+        Optional<GeneratorWithTarget> maybeGenWithTarget = getClosestGeneratorWithTarget(this);
+
+        while (maybeGenWithTarget.isPresent()) {
+            final GeneratorWithTarget candidate = maybeGenWithTarget.orElseThrow();
+            for (final AugmentationSchemaNode augmentation : candidate.target().getAvailableAugmentations()) {
+                if (isAugmentingVia(stmt, augmentation)) {
+                    return true;
+                }
+            }
+            maybeGenWithTarget = getClosestGeneratorWithTarget(candidate.generator().getParent());
+        }
+        return false;
+    }
+
+    private boolean isAugmentingVia(final EffectiveStatement<?, ?> stmt, final AugmentationSchemaNode augmentation) {
+        if (stmt.argument() instanceof QName qName
+                && augmentation instanceof SchemaTreeAwareEffectiveStatement<?, ?> schemaTree) {
+            return isInSchemaTree(qName, schemaTree);
+        }
+        return false;
+    }
+
+    private Optional<GeneratorWithTarget> getClosestGeneratorWithTarget(
+            final AbstractExplicitGenerator<?, ?> parent) {
+        AbstractExplicitGenerator<?, ?> possibleTarget = parent;
+
+        while (!(possibleTarget instanceof ModuleGenerator)) {
+            if (possibleTarget.statement() instanceof AugmentationTarget augTarget) {
+                return Optional.of(new GeneratorWithTarget(possibleTarget, augTarget));
+            }
+            possibleTarget = possibleTarget.getParent();
+        }
+        return Optional.empty();
+    }
+
+    private boolean isInSchemaTree(final QName child, final SchemaTreeAwareEffectiveStatement<?, ?> stmt) {
+        if (stmt.findSchemaTreeNode(child).isPresent()) {
+            return true;
+        }
+
+        for (final EffectiveStatement<?, ?> s : stmt.effectiveSubstatements()) {
+            if (s instanceof SchemaTreeAwareEffectiveStatement<?, ?> schemaAware) {
+                if (isInSchemaTree(child, schemaAware)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private record GeneratorWithTarget(AbstractExplicitGenerator<?, ?> generator, AugmentationTarget target) {
     }
 }
