@@ -11,5 +11,5 @@ module org.opendaylight.mdsal.model.ietf.type.util {
     requires com.google.common;
 
     // Annotations
-    requires static org.eclipse.jdt.annotation;
+    requires static transitive org.eclipse.jdt.annotation;
 }
