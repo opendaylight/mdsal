@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
-class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature {
+final class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature {
     private final List<Parameter> params;
     private final @NonNull ValueMechanics mechanics;
     private final boolean isAbstract;
@@ -46,7 +46,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @Override
     public boolean isAbstract() {
-        return this.isAbstract;
+        return isAbstract;
     }
 
     @Override
@@ -56,7 +56,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @Override
     public List<Parameter> getParameters() {
-        return this.params;
+        return params;
     }
 
     @Override
@@ -69,7 +69,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
         final int prime = 31;
         int result = 1;
         result = prime * result + Objects.hashCode(getName());
-        result = prime * result + Objects.hashCode(this.params);
+        result = prime * result + Objects.hashCode(params);
         result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
@@ -84,7 +84,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
         }
         final MethodSignatureImpl other = (MethodSignatureImpl) obj;
         return Objects.equals(getName(), other.getName())
-                && Objects.equals(this.params, other.params)
+                && Objects.equals(params, other.params)
                 && Objects.equals(getReturnType(), other.getReturnType());
     }
 
@@ -94,7 +94,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
             .append("MethodSignatureImpl [name=").append(getName())
             .append(", comment=").append(getComment())
             .append(", returnType=").append(getReturnType())
-            .append(", params=").append(this.params)
+            .append(", params=").append(params)
             .append(", annotations=").append(getAnnotations())
             .append(']')
             .toString();
