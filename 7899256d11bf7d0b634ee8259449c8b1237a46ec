@@ -35,6 +35,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d21362e_d96d8cb8",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-30T08:16:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc820fad_4f7c78e0",
+      "revId": "7899256d11bf7d0b634ee8259449c8b1237a46ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b8f65e7_ec14f053",
@@ -48,6 +66,24 @@
       "writtenOn": "2023-05-24T11:10:11Z",
       "side": 1,
       "message": "same here",
+      "revId": "7899256d11bf7d0b634ee8259449c8b1237a46ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6b34504_9afce75c",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-30T08:16:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b8f65e7_ec14f053",
       "revId": "7899256d11bf7d0b634ee8259449c8b1237a46ec",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
