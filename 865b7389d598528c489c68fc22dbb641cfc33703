@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4310b235_e3ad8176",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-06-01T15:43:46Z",
+      "side": 1,
+      "message": "Signed-off should be last",
+      "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "228c55fe_ea67e308",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-06-01T15:43:46Z",
+      "side": 1,
+      "message": "why change indent?",
+      "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a5b0198_a2da858f",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-06-01T15:43:46Z",
+      "side": 1,
+      "message": "why change indent?",
+      "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
