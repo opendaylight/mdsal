@@ -41,6 +41,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ad01846_076e19de",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/PingPongTransactionChainTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-01T10:28:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a0591f3_ae1dd123",
+      "revId": "13844a2d22be45c0a548e3462b10f2702c4fb878",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4a442a05_e9d0c33e",
@@ -54,6 +72,30 @@
       "writtenOn": "2023-05-31T17:34:44Z",
       "side": 1,
       "message": "Revert pls",
+      "range": {
+        "startLine": 199,
+        "startChar": 8,
+        "endLine": 200,
+        "endChar": 11
+      },
+      "revId": "13844a2d22be45c0a548e3462b10f2702c4fb878",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ef9dd0a_918a26d5",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/PingPongTransactionChainTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-01T10:28:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a442a05_e9d0c33e",
       "range": {
         "startLine": 199,
         "startChar": 8,
