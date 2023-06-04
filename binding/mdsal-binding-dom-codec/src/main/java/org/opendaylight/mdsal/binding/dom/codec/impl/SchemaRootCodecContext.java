@@ -203,7 +203,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         });
 
     SchemaRootCodecContext(final CodecContextFactory factory) {
-        super(DataContainerCodecPrototype.rootPrototype(factory));
+        super(new SchemaRootCodecPrototype(factory));
     }
 
     @Override
