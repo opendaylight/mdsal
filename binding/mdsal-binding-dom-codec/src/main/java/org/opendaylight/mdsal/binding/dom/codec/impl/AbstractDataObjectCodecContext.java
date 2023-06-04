@@ -49,7 +49,7 @@ public abstract class AbstractDataObjectCodecContext<D extends DataObject, T ext
         extends DataContainerCodecContext<D, T> {
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
-    private final ImmutableMap<PathArgument, NodeContextSupplier> byYang;
+    private final ImmutableMap<NodeIdentifier, NodeContextSupplier> byYang;
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
     private final MethodHandle proxyConstructor;
 
@@ -154,7 +154,7 @@ public abstract class AbstractDataObjectCodecContext<D extends DataObject, T ext
         return value;
     }
 
-    final @NonNull ImmutableSet<PathArgument> byYangKeySet() {
+    final @NonNull ImmutableSet<NodeIdentifier> byYangKeySet() {
         return byYang.keySet();
     }
 
