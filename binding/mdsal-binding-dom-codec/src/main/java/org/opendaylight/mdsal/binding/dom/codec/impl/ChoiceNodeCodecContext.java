@@ -188,9 +188,9 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
         byClass = ImmutableMap.copyOf(byClassBuilder);
     }
 
-    private static DataContainerCodecPrototype<CaseRuntimeType> loadCase(final CodecContextFactory factory,
+    private static CaseNodeCodecContext.Prototype loadCase(final CodecContextFactory factory,
             final CaseRuntimeType caseType) {
-        return DataContainerCodecPrototype.from(loadCase(factory.getRuntimeContext(), caseType), caseType, factory);
+        return new CaseNodeCodecContext.Prototype(loadCase(factory.getRuntimeContext(), caseType), caseType, factory);
     }
 
     private static Class<?> loadCase(final BindingRuntimeContext context, final CaseRuntimeType caseType) {
