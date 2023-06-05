@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "201ef36e_2f8c5b85",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-06-05T16:21:23Z",
+      "side": 1,
+      "message": "Convert what? Make more meaningful message please. And use correct time too: Converted in this case. IMO: I prefer \u0027Refactored\u0027 here but it is your choice",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 11
+      },
+      "revId": "5d7358cb9206241fd2bd6ff7ac8f639f5a57791c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bf0468f_6a288685",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-06-05T16:21:23Z",
+      "side": 1,
+      "message": "Should be before \u0027Signed-off-by\u0027",
+      "revId": "5d7358cb9206241fd2bd6ff7ac8f639f5a57791c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "64d99d9f_35d4c717",
+        "filename": "entityownership/mdsal-eos-binding-api/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-06-05T16:21:23Z",
+      "side": 1,
+      "message": "Do we need it? I mean all other dependencies specified without it",
+      "revId": "5d7358cb9206241fd2bd6ff7ac8f639f5a57791c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
