@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6f87854_e2c5eefe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-06-05T16:33:15Z",
+      "side": 1,
+      "message": "Remove it",
+      "revId": "ec29cef688625a2907d88fb015569716365de9a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86c587c6_8f212101",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/BindingGeneratorUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-06-05T16:33:15Z",
+      "side": 1,
+      "message": "IMO this looks better \"...same - they...\"",
+      "range": {
+        "startLine": 126,
+        "startChar": 98,
+        "endLine": 126,
+        "endChar": 107
+      },
+      "revId": "ec29cef688625a2907d88fb015569716365de9a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
