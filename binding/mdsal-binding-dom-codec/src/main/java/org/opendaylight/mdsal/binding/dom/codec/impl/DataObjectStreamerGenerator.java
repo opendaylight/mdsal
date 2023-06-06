@@ -62,6 +62,7 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnydataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
@@ -75,6 +76,9 @@ import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeAwareEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,7 +216,7 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
         final ImmutableMap<String, Type> props = collectAllProperties(genType);
         final List<ChildStream> children = new ArrayList<>(props.size());
         for (final DataSchemaNode schemaChild : schema.getChildNodes()) {
-            if (!schemaChild.isAugmenting()) {
+            if (!introducedByAugmentation(schemaChild.getQName())) {
                 final String getterName = BindingSchemaMapping.getGetterMethodName(schemaChild);
                 final Method getter;
                 try {
@@ -244,6 +248,35 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
 
         LOG.trace("Definition of {} done", fqcn);
         return result;
+    }
+
+    /**
+     * Determine, whether the given {@code child} was introduced into the {@link DataObjectStreamerGenerator#schema}'s
+     * effective substatements by augmentation.
+     *
+     * <p>
+     * This method looks for {@link AugmentEffectiveStatement}s in the {@link DataObjectStreamerGenerator#schema}'s
+     * effective substatements and then searches for the specified {@link QName} in the found augmentations
+     * @param child {@link QName} of the direct descendant of the {@link DataObjectStreamerGenerator#schema}
+     * @return {@code true} if the given {@code child} is a direct descendant of any
+     *          of the {@link AugmentEffectiveStatement}s, which are a direct children
+     *          of the {@link DataObjectStreamerGenerator#schema}, otherwise return {@code false}
+     */
+    private boolean introducedByAugmentation(final QName child) {
+        verify(schema instanceof EffectiveStatement<?,?>,
+                "Unexpected type of %s. Schema must be instance of EffectiveStatement", schema);
+        final var stmt = (EffectiveStatement<?,?>) schema;
+        final var augs = stmt.effectiveSubstatements()
+                .stream()
+                .filter(s -> s instanceof AugmentEffectiveStatement)
+                .toList();
+        for (final var aug : augs) {
+            // check the direct children of the augment statement
+            if (((SchemaTreeAwareEffectiveStatement<?, ?>) aug).findSchemaTreeNode(child).isPresent()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ChildStream createStream(final BindingClassLoader loader, final ImmutableMap<String, Type> props,
