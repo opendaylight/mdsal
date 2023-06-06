@@ -63,6 +63,7 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnydataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
@@ -76,6 +77,9 @@ import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeAwareEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,7 +217,7 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
         final ImmutableMap<String, Type> props = collectAllProperties(genType);
         final List<ChildStream> children = new ArrayList<>(props.size());
         for (final DataSchemaNode schemaChild : schema.getChildNodes()) {
-            if (!schemaChild.isAugmenting()) {
+            if (!inAugs(schemaChild.getQName())) {
                 final String getterName = BindingSchemaMapping.getGetterMethodName(schemaChild);
                 final Method getter;
                 try {
@@ -246,6 +250,37 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
         LOG.trace("Definition of {} done", fqcn);
         return result;
     }
+
+    private boolean inAugs(final QName child) {
+        verify(schema instanceof EffectiveStatement<?,?>,
+                "Unexpected type of %s. Schema must be instance of EffectiveStatement", schema);
+        final var stmt = (EffectiveStatement<?,?>) schema;
+        final var augs = stmt.effectiveSubstatements()
+                .stream()
+                .filter(s -> s instanceof AugmentEffectiveStatement)
+                .toList();
+        for (final var aug : augs) {
+            if (inSchemaTree(child, (SchemaTreeAwareEffectiveStatement<?, ?>) aug)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean inSchemaTree(final QName child, final SchemaTreeAwareEffectiveStatement<?, ?> stmt) {
+        if (stmt.findSchemaTreeNode(child).isPresent()) {
+            return true;
+        }
+        for (final EffectiveStatement<?, ?> s : stmt.effectiveSubstatements()) {
+            if (s instanceof SchemaTreeAwareEffectiveStatement<?, ?> schemaAware) {
+                if (inSchemaTree(child, schemaAware)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     private ChildStream createStream(final BindingClassLoader loader, final ImmutableMap<String, Type> props,
             final DataSchemaNode childSchema, final Method getter) {
