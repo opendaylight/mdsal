@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 
 module org.opendaylight.mdsal.binding.dom.codec.impl {
     exports org.opendaylight.mdsal.binding.dom.codec.impl.di;
+    exports org.opendaylight.mdsal.binding.dom.codec.impl.gen;
 
     uses BindingRuntimeContext;
     provides BindingDOMCodecFactory with SimpleBindingDOMCodecFactory;
