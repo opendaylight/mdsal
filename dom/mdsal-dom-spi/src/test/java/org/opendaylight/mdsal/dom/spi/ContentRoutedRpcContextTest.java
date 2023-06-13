@@ -29,8 +29,8 @@ public class ContentRoutedRpcContextTest {
     @BeforeClass
     public static void beforeClass() {
         final var ctx = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT, null,
-            YangTextSchemaSource.delegateForByteSource("yang-ext.yang",
-                $YangModuleInfoImpl.getInstance().getYangTextByteSource()),
+            YangTextSchemaSource.delegateForCharSource("yang-ext.yang",
+                $YangModuleInfoImpl.getInstance().getYangTextCharSource()),
             YangTextSchemaSource.forResource(ContentRoutedRpcContext.class, "/rpc-routing-strategy.yang"));
 
         RPCS = ctx.findModuleStatements("foo").iterator().next()

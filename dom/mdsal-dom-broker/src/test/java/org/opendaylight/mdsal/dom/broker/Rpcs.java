@@ -19,8 +19,8 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 final class Rpcs {
     static final EffectiveModelContext CONTEXT = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT,
         null,
-        YangTextSchemaSource.delegateForByteSource("yang-ext.yang",
-            $YangModuleInfoImpl.getInstance().getYangTextByteSource()),
+        YangTextSchemaSource.delegateForCharSource("yang-ext.yang",
+            $YangModuleInfoImpl.getInstance().getYangTextCharSource()),
         YangTextSchemaSource.forResource(Rpcs.class, "/rpcs.yang"));
 
     static final QName FOO = QName.create("rpcs", "foo");
