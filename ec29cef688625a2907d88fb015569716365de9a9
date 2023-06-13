@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8091e397_0e691c46",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-06-13T12:27:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d6f87854_e2c5eefe",
+      "revId": "ec29cef688625a2907d88fb015569716365de9a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "86c587c6_8f212101",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-06-05T16:33:15Z",
       "side": 1,
       "message": "IMO this looks better \"...same - they...\"",
+      "range": {
+        "startLine": 126,
+        "startChar": 98,
+        "endLine": 126,
+        "endChar": 107
+      },
+      "revId": "ec29cef688625a2907d88fb015569716365de9a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f952ebf_87a5f40c",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/BindingGeneratorUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-06-13T12:27:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86c587c6_8f212101",
       "range": {
         "startLine": 126,
         "startChar": 98,
