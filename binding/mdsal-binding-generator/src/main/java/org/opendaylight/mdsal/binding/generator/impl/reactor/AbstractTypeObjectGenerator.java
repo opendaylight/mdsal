@@ -372,11 +372,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
                 .map(context::resolveIdentity)
                 .collect(Collectors.toUnmodifiableList()));
         } else if (TypeDefinitions.LEAFREF.equals(arg)) {
-            final AbstractTypeObjectGenerator<?, ?> targetGenerator = context.resolveLeafref(
-                type.findFirstEffectiveSubstatementArgument(PathEffectiveStatement.class).orElseThrow());
-            checkArgument(targetGenerator != this, "Effective model contains self-referencing leaf %s",
-                statement().argument());
-            refType = TypeReference.leafRef(targetGenerator);
+            refType = resolveLeafref(context);
         } else if (TypeDefinitions.UNION.equals(arg)) {
             unionDependencies = new UnionDependencies(type, context);
             LOG.trace("Resolved union {} to dependencies {}", type, unionDependencies);
@@ -384,6 +380,20 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
 
         LOG.trace("Resolved base {} to generator {}", type, refType);
         bindDerivedGenerators(refType);
+    }
+
+    private @NonNull TypeReference resolveLeafref(final GeneratorContext context) {
+        final AbstractTypeObjectGenerator<?, ?> targetGenerator;
+        try {
+            targetGenerator = context.resolveLeafref(
+                type.findFirstEffectiveSubstatementArgument(PathEffectiveStatement.class).orElseThrow());
+        } catch (IllegalArgumentException e) {
+            return TypeReference.leafRef(e);
+        }
+
+        checkArgument(targetGenerator != this, "Effective model contains self-referencing leaf %s",
+            statement().argument());
+        return TypeReference.leafRef(targetGenerator);
     }
 
     final void bindTypeDefinition(final @Nullable TypeReference reference) {
