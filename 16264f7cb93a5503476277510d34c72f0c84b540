@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "02c53dae_3017e494",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-13T10:47:11Z",
+      "side": 1,
+      "message": "this indicates a problem with mdsal-binding-dom-codec\u0027s layout, which needs to be fixed first",
+      "range": {
+        "startLine": 139,
+        "startChar": 24,
+        "endLine": 139,
+        "endChar": 139
+      },
+      "revId": "16264f7cb93a5503476277510d34c72f0c84b540",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b12f77c7_c780938f",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/module-info.java",
         "patchSetId": 3
