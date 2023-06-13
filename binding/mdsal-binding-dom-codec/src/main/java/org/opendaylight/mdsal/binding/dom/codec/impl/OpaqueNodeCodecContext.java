@@ -21,6 +21,7 @@ import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.jar.asm.Opcodes;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingOpaqueObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.impl.gen.CodecOpaqueObject;
 import org.opendaylight.mdsal.binding.loader.BindingClassLoader;
 import org.opendaylight.mdsal.binding.loader.BindingClassLoader.GeneratorResult;
 import org.opendaylight.yangtools.yang.binding.OpaqueData;
