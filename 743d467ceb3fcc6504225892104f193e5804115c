@@ -47,6 +47,54 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a99266b_0b944908",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-06-14T12:50:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "63d37808_c0ff1c8b",
+      "range": {
+        "startLine": 208,
+        "startChar": 38,
+        "endLine": 208,
+        "endChar": 64
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3efaf847_92717f38",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-06-14T12:50:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d9a2c6a_f253bcb4",
+      "range": {
+        "startLine": 208,
+        "startChar": 18,
+        "endLine": 208,
+        "endChar": 32
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8a97935d_b8fa6f95",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-05-25T11:04:28Z",
       "side": 1,
       "message": "Replace with link to proper type pls",
+      "range": {
+        "startLine": 226,
+        "startChar": 43,
+        "endLine": 226,
+        "endChar": 52
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "587b9807_db9856f5",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-06-14T12:50:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a97935d_b8fa6f95",
       "range": {
         "startLine": 226,
         "startChar": 43,
@@ -93,6 +165,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "46a0342c_4870715d",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-06-14T12:50:57Z",
+      "side": 1,
+      "message": "checked, no problems encountered",
+      "parentUuid": "9ac4355e_c4043d64",
+      "range": {
+        "startLine": 327,
+        "startChar": 8,
+        "endLine": 327,
+        "endChar": 92
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3703435_55f249f2",
@@ -106,6 +202,30 @@
       "writtenOn": "2023-05-25T10:58:06Z",
       "side": 1,
       "message": "the one, given as a parameter",
+      "range": {
+        "startLine": 117,
+        "startChar": 92,
+        "endLine": 117,
+        "endChar": 120
+      },
+      "revId": "743d467ceb3fcc6504225892104f193e5804115c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f04167af_c73f02a7",
+        "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-06-14T12:50:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3703435_55f249f2",
       "range": {
         "startLine": 117,
         "startChar": 92,
