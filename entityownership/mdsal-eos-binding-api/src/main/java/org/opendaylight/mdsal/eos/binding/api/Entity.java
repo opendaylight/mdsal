@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.eos.binding.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
@@ -23,7 +22,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 @Beta
 public class Entity extends GenericEntity<InstanceIdentifier<?>> {
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     /** Constructs an instance.
