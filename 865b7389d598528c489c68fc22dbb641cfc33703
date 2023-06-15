@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ca395af_2727fff0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:45:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4310b235_e3ad8176",
+      "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "228c55fe_ea67e308",
@@ -35,6 +53,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f6eaa5e_0d3082a9",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:45:12Z",
+      "side": 1,
+      "message": "Didn\u0027t notice. Must be some Idea issue",
+      "parentUuid": "228c55fe_ea67e308",
+      "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a5b0198_a2da858f",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-06-01T15:43:46Z",
       "side": 1,
       "message": "why change indent?",
+      "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3c243d6_e46a2745",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:45:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a5b0198_a2da858f",
       "revId": "865b7389d598528c489c68fc22dbb641cfc33703",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
