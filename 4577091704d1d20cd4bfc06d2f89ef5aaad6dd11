@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a70e1606_959df295",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:33:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1d8c57b_ab88f02b",
+      "range": {
+        "startLine": 49,
+        "startChar": 71,
+        "endLine": 49,
+        "endChar": 83
+      },
+      "revId": "4577091704d1d20cd4bfc06d2f89ef5aaad6dd11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eee783b3_e2afd33f",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-05-16T13:30:50Z",
       "side": 1,
       "message": "a.k.a. \u0027max\u0027",
+      "range": {
+        "startLine": 53,
+        "startChar": 35,
+        "endLine": 53,
+        "endChar": 66
+      },
+      "revId": "4577091704d1d20cd4bfc06d2f89ef5aaad6dd11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18f53b84_6faa58b2",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:33:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eee783b3_e2afd33f",
       "range": {
         "startLine": 53,
         "startChar": 35,
@@ -72,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5effacdd_21269b51",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:33:21Z",
+      "side": 1,
+      "message": "This leads to some tests failing even though value fits the range.\nE.g scale \u003d 2; range \u003d [1.23...3.21]; value \u003d 2.111 \nShould this be the right behavior?",
+      "parentUuid": "d6185f67_ee8a1d93",
+      "range": {
+        "startLine": 57,
+        "startChar": 41,
+        "endLine": 57,
+        "endChar": 43
+      },
+      "revId": "4577091704d1d20cd4bfc06d2f89ef5aaad6dd11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "070cd3e7_78af606e",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
         "patchSetId": 8
@@ -83,6 +155,30 @@
       "writtenOn": "2023-05-16T13:30:50Z",
       "side": 1,
       "message": "store this in a local variable",
+      "range": {
+        "startLine": 58,
+        "startChar": 31,
+        "endLine": 58,
+        "endChar": 50
+      },
+      "revId": "4577091704d1d20cd4bfc06d2f89ef5aaad6dd11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d56b843_81941440",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T07:33:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "070cd3e7_78af606e",
       "range": {
         "startLine": 58,
         "startChar": 31,
