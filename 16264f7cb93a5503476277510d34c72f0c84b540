@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddc58ac9_0541b8a8",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-15T13:34:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02c53dae_3017e494",
+      "range": {
+        "startLine": 139,
+        "startChar": 24,
+        "endLine": 139,
+        "endChar": 139
+      },
+      "revId": "16264f7cb93a5503476277510d34c72f0c84b540",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b12f77c7_c780938f",
