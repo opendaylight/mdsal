@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d13e3868_cf703eb9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T08:29:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "201ef36e_2f8c5b85",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 11
+      },
+      "revId": "5d7358cb9206241fd2bd6ff7ac8f639f5a57791c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5bf0468f_6a288685",
@@ -54,6 +78,24 @@
       "writtenOn": "2023-06-05T16:21:23Z",
       "side": 1,
       "message": "Do we need it? I mean all other dependencies specified without it",
+      "revId": "5d7358cb9206241fd2bd6ff7ac8f639f5a57791c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f6cb12a_1b7b0889",
+        "filename": "entityownership/mdsal-eos-binding-api/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-06-15T08:29:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "64d99d9f_35d4c717",
       "revId": "5d7358cb9206241fd2bd6ff7ac8f639f5a57791c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
