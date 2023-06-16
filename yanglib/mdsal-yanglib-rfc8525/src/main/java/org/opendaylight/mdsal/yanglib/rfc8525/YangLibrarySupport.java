@@ -34,13 +34,11 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.RequireServiceComponentRuntime;
 
 @Beta
 @NonNullByDefault
 @Singleton
 @Component
-@RequireServiceComponentRuntime
 public final class YangLibrarySupport implements YangLibSupport {
     private static final Revision REVISION = YangLibrary.QNAME.getRevision().orElseThrow();
 
