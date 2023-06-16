@@ -7,14 +7,12 @@
  */
 package org.opendaylight.mdsal.rfc8294.netty;
 
-import com.google.common.annotations.Beta;
 import io.netty.buffer.ByteBuf;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.routing.types.rev171204.Uint24;
 import org.opendaylight.yangtools.yang.common.Uint32;
 
-@Beta
 public final class RFC8294ByteBufUtils {
     private RFC8294ByteBufUtils() {
         // Hidden on purpose
