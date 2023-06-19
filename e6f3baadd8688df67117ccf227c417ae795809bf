@@ -73,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e1193b67_b986de5a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-19T11:26:54Z",
+      "side": 1,
+      "message": "What kernel version is that? Have you confirmed downgrading the kernel (only!) fixes the issue?\n\nI am not observing any issues on:\n\nLinux nitebug 6.3.8-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Jun 15 02:15:40 UTC 2023 x86_64 GNU/Linux\n\nwhich is much newer than 5.19.x by 22.04.2. Is the issue reproducible with 23.04?",
+      "parentUuid": "d119c5c6_3e813f0c",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 75
+      },
+      "revId": "e6f3baadd8688df67117ccf227c417ae795809bf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c8c1725_cdc98fde",
         "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataNamingStrategy.java",
         "patchSetId": 1
