@@ -144,6 +144,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3b0f672e_b21312ed",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-19T10:05:29Z",
+      "side": 1,
+      "message": "we are dealing with https://en.wikipedia.org/wiki/Fixed-point_arithmetic, and \"2.111\" (exactly) has only representation at scale \u003e\u003d 3. \u0027type decimal64\u0027 requires exact specification -- i.e. if fraction-digits \u003d 2, then only Decimal64 objects with scale\u003d2 are valid.",
+      "parentUuid": "5effacdd_21269b51",
+      "range": {
+        "startLine": 57,
+        "startChar": 41,
+        "endLine": 57,
+        "endChar": 43
+      },
+      "revId": "4577091704d1d20cd4bfc06d2f89ef5aaad6dd11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "070cd3e7_78af606e",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
         "patchSetId": 8
