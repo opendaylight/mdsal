@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c040a088_a277a752",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectStreamerGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-20T21:54:53Z",
+      "side": 1,
+      "message": "just use a formal for() loop instead of collecting. this will allow also to use an instanceof pattern instead of weird casting",
+      "range": {
+        "startLine": 265,
+        "startChar": 8,
+        "endLine": 268,
+        "endChar": 26
+      },
+      "revId": "bab64caddf6586e1909dfa3217d1e1082e6b8f9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
