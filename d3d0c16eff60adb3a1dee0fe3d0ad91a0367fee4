@@ -16,6 +16,46 @@
       "message": "looks good to me",
       "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59f6ba92_a0f9184d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-20T21:45:05Z",
+      "side": 1,
+      "message": "Needs a manual rebase",
+      "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c92e52b_ed216ce1",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 14
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-20T21:45:05Z",
+      "side": 1,
+      "message": "normal dependency: should be among its peers, not at the end of test dependencies",
+      "range": {
+        "startLine": 108,
+        "startChar": 22,
+        "endLine": 108,
+        "endChar": 47
+      },
+      "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
