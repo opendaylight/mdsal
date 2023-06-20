@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -105,17 +106,24 @@ public final class BindingRuntimeHelpers {
         return new DefaultBindingRuntimeContext(generator.generateTypeMapping(infos.getEffectiveModelContext()), infos);
     }
 
-    public static @NonNull YangModuleInfo extractYangModuleInfo(final Class<?> clazz) {
-        final var namespace = BindingReflections.findQName(clazz).getNamespace();
-        return loadModuleInfos().stream()
-            .filter(info -> namespace.equals(info.getName().getNamespace()))
+    static @NonNull YangModuleInfo extractYangModuleInfo(final Class<?> clazz) {
+        final String packageName = Naming.getModelRootPackageName(clazz.getPackage().getName());
+        final String expectedClassName = BindingReflections.getModuleInfoClassName(packageName);
+
+        return loadModuleInfos(clazz.getClassLoader()).stream()
+            .filter(info -> expectedClassName.equals(info.getClass().getName()))
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Failed to extract module info from " + clazz));
+            .orElseThrow(
+                () -> new IllegalStateException("Failed to find YangModuleInfo " + expectedClassName + "for " + clazz));
     }
 
     public static @NonNull ImmutableSet<YangModuleInfo> loadModuleInfos() {
+        return loadModuleInfos(Thread.currentThread().getContextClassLoader());
+    }
+
+    private static @NonNull ImmutableSet<YangModuleInfo> loadModuleInfos(final ClassLoader classLoader) {
         final var moduleInfoSet = ImmutableSet.<YangModuleInfo>builder();
-        for (var bindingProvider : ServiceLoader.load(YangModelBindingProvider.class)) {
+        for (var bindingProvider : ServiceLoader.load(YangModelBindingProvider.class, classLoader)) {
             var moduleInfo = bindingProvider.getModuleInfo();
             checkState(moduleInfo != null, "Module Info for %s is not available.", bindingProvider.getClass());
             collectYangModuleInfo(bindingProvider.getModuleInfo(), moduleInfoSet);
