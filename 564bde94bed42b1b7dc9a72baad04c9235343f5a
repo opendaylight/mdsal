@@ -140,6 +140,30 @@
       },
       "revId": "564bde94bed42b1b7dc9a72baad04c9235343f5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16ea73b8_d934e69d",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentityCodec.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-20T21:48:17Z",
+      "side": 1,
+      "message": "Actually a check that the runtimeType is IdentityRuntimeType -- which in turn guarantees IdentityEffectiveStatement, which in turn guarantees a QName",
+      "parentUuid": "f8c8d3c5_d5c069d3",
+      "range": {
+        "startLine": 96,
+        "startChar": 15,
+        "endLine": 96,
+        "endChar": 23
+      },
+      "revId": "564bde94bed42b1b7dc9a72baad04c9235343f5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
