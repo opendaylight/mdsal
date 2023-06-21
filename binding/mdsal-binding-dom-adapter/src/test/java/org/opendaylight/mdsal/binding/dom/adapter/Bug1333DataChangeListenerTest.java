@@ -15,11 +15,10 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.p
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
@@ -41,8 +40,8 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(Top.class),
-                BindingReflections.getModuleInfo(TreeComplexUsesAugment.class));
+        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Top.class),
+            BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
     }
 
     private static Top topWithListItem() {

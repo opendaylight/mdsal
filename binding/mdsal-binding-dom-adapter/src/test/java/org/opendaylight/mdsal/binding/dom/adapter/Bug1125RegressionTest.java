@@ -14,7 +14,7 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.t
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
@@ -43,8 +43,9 @@ public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return Set.of(BindingReflections.getModuleInfo(Top.class),
-                BindingReflections.getModuleInfo(TreeComplexUsesAugment.class));
+        return Set.of(
+            BindingRuntimeHelpers.getYangModuleInfo(Top.class),
+            BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
     }
 
     @Test

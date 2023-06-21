@@ -8,33 +8,33 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.Root;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.RootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.FoorootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.fooroot.BarrootBuilder;
-import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.fooroot.BarrootKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 
 public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeListenerTest {
     private static final InstanceIdentifier<Root> ROOT_PATH = InstanceIdentifier.create(Root.class);
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return Set.of(BindingReflections.getModuleInfo(Root.class));
+        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Root.class));
     }
 
     @Test
     public void writeListToList2562Root() {
-        final var barRoot = new BarrootBuilder().setType(2).setValue(2).withKey(new BarrootKey(2)).build();
-        final var fooRoot = new FoorootBuilder().setBarroot(Map.of(barRoot.key(), barRoot)).build();
-        final var root = new RootBuilder().setFooroot(List.of(fooRoot)).build();
+        final var root = new RootBuilder()
+            .setFooroot(List.of(new FoorootBuilder()
+                .setBarroot(BindingMap.of(new BarrootBuilder().setType(2).setValue(2).build()))
+            .build())).build();
 
         try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, ROOT_PATH)) {
             collector.verifyModifications();

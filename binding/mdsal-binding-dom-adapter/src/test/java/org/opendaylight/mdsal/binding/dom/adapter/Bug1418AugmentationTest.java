@@ -18,7 +18,7 @@ import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATI
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ListViaUsesKey;
@@ -42,8 +42,8 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
-        return Set.of(BindingReflections.getModuleInfo(Top.class),
-                BindingReflections.getModuleInfo(TreeComplexUsesAugment.class));
+        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Top.class),
+            BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
     }
 
     @Test

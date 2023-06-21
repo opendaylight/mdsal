@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.Root;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.RootBuilder;
@@ -30,7 +30,7 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return Set.of(BindingReflections.getModuleInfo(Root.class));
+        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Root.class));
     }
 
     @Test

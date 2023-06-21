@@ -14,11 +14,11 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +29,7 @@ import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -65,8 +65,8 @@ public class Mdsal500Test {
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         testContext = testFactory.getTestContext();
 
-        testContext.setSchemaModuleInfos(ImmutableSet.of(
-                BindingReflections.getModuleInfo(Mdsal500Service.class)));
+        testContext.setSchemaModuleInfos(Set.of(
+            BindingRuntimeHelpers.getYangModuleInfo(Mdsal500Service.class)));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
         baRpcConsumerService = testContext.getBindingRpcConsumerRegistry();
