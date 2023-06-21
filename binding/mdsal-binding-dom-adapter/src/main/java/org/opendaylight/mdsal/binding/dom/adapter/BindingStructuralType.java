@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.Beta;
-import java.util.Optional;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -68,14 +67,11 @@ public enum BindingStructuralType {
     UNKNOWN;
 
     public static BindingStructuralType from(final DataTreeCandidateNode domChildNode) {
-        Optional<NormalizedNode> dataBased = domChildNode.getDataAfter();
-        if (!dataBased.isPresent()) {
-            dataBased = domChildNode.getDataBefore();
+        var dataBased = domChildNode.dataAfter();
+        if (dataBased == null) {
+            dataBased = domChildNode.dataBefore();
         }
-        if (dataBased.isPresent()) {
-            return from(dataBased.orElseThrow());
-        }
-        return from(domChildNode.getIdentifier());
+        return dataBased != null ? from(dataBased) : from(domChildNode.name());
     }
 
     private static BindingStructuralType from(final PathArgument identifier) {
@@ -105,12 +101,12 @@ public enum BindingStructuralType {
     }
 
     public static BindingStructuralType recursiveFrom(final DataTreeCandidateNode node) {
-        final BindingStructuralType type = BindingStructuralType.from(node);
+        final var type = BindingStructuralType.from(node);
         return switch (type) {
             case INVISIBLE_CONTAINER, INVISIBLE_LIST -> {
                 // This node is invisible, try to resolve using a child node
-                for (final DataTreeCandidateNode child : node.getChildNodes()) {
-                    final BindingStructuralType childType = recursiveFrom(child);
+                for (var child : node.childNodes()) {
+                    final var childType = recursiveFrom(child);
                     yield switch (childType) {
                             case INVISIBLE_CONTAINER, INVISIBLE_LIST ->
                                 // Invisible nodes are not addressable

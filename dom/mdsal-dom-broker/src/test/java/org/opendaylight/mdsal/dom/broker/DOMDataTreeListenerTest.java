@@ -8,9 +8,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
@@ -39,7 +37,7 @@ import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
@@ -66,12 +64,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
             .build();
 
     private static final NormalizedNode TEST_CONTAINER = Builders.containerBuilder()
-            .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST)
             .build();
 
     private static final NormalizedNode TEST_CONTAINER_2 = Builders.containerBuilder()
-            .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST_2)
             .build();
 
@@ -265,7 +263,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         candidateRoot = candidate.getRootNode();
         checkChange(TEST_CONTAINER, TEST_CONTAINER_2, ModificationType.SUBTREE_MODIFIED, candidateRoot);
         final DataTreeCandidateNode modifiedChild = candidateRoot.getModifiedChild(
-                new YangInstanceIdentifier.NodeIdentifier(TestModel.OUTER_LIST_QNAME)).orElseThrow();
+                new NodeIdentifier(TestModel.OUTER_LIST_QNAME));
         checkChange(OUTER_LIST, OUTER_LIST_2, ModificationType.WRITE, modifiedChild);
         listenerReg.close();
     }
@@ -369,32 +367,20 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(OUTER_LIST, listAfter, ModificationType.SUBTREE_MODIFIED, candidateRoot);
-        final DataTreeCandidateNode entry1Canditate = candidateRoot.getModifiedChild(outerListEntryId1).orElseThrow();
+        final DataTreeCandidateNode entry1Canditate = candidateRoot.getModifiedChild(outerListEntryId1);
         checkChange(outerListEntry1, null, ModificationType.DELETE, entry1Canditate);
-        final DataTreeCandidateNode entry2Canditate = candidateRoot.getModifiedChild(outerListEntryId2).orElseThrow();
+        final DataTreeCandidateNode entry2Canditate = candidateRoot.getModifiedChild(outerListEntryId2);
         checkChange(null, outerListEntry2, ModificationType.WRITE, entry2Canditate);
-        final DataTreeCandidateNode entry3Canditate = candidateRoot.getModifiedChild(outerListEntryId3).orElseThrow();
+        final DataTreeCandidateNode entry3Canditate = candidateRoot.getModifiedChild(outerListEntryId3);
         checkChange(null, outerListEntry3, ModificationType.WRITE, entry3Canditate);
         listenerReg.close();
     }
 
     private static void checkChange(final NormalizedNode expectedBefore, final NormalizedNode expectedAfter,
                                     final ModificationType expectedMod, final DataTreeCandidateNode candidateNode) {
-        if (expectedBefore != null) {
-            assertTrue(candidateNode.getDataBefore().isPresent());
-            assertEquals(expectedBefore, candidateNode.getDataBefore().orElseThrow());
-        } else {
-            assertFalse(candidateNode.getDataBefore().isPresent());
-        }
-
-        if (expectedAfter != null) {
-            assertTrue(candidateNode.getDataAfter().isPresent());
-            assertEquals(expectedAfter, candidateNode.getDataAfter().orElseThrow());
-        } else {
-            assertFalse(candidateNode.getDataAfter().isPresent());
-        }
-
-        assertEquals(expectedMod, candidateNode.getModificationType());
+        assertEquals(expectedBefore, candidateNode.dataBefore());
+        assertEquals(expectedAfter, candidateNode.dataAfter());
+        assertEquals(expectedMod, candidateNode.modificationType());
     }
 
     private DOMDataTreeChangeService getDOMDataTreeChangeService() {
