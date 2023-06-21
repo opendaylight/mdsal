@@ -18,13 +18,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.common.QName;
 
@@ -36,9 +36,6 @@ import org.opendaylight.yangtools.yang.common.QName;
  * via {@link #invokeNotification(NotificationListener, QName, DataContainer)} method.
  */
 public final class NotificationListenerInvoker {
-
-    private static final Lookup LOOKUP = MethodHandles.publicLookup();
-
     private static final LoadingCache<Class<? extends NotificationListener>, NotificationListenerInvoker> INVOKERS =
             CacheBuilder.newBuilder().weakKeys()
             .build(new CacheLoader<Class<? extends NotificationListener>, NotificationListenerInvoker>() {
@@ -51,14 +48,13 @@ public final class NotificationListenerInvoker {
                         final Class<? extends NotificationListener> key) {
                     final Builder<QName, MethodHandle> ret = ImmutableMap.builder();
                     for (final Method method : key.getMethods()) {
-                        if (BindingReflections.isNotificationCallback(method)) {
-
+                        if (isNotificationCallback(method)) {
                             final Class<?> notification = method.getParameterTypes()[0];
                             final QName name = BindingReflections.findQName(notification);
                             MethodHandle handle;
                             try {
-                                handle = LOOKUP.unreflect(method).asType(MethodType.methodType(void.class,
-                                    NotificationListener.class, DataContainer.class));
+                                handle = MethodHandles.publicLookup().unreflect(method).asType(
+                                    MethodType.methodType(void.class, NotificationListener.class, DataContainer.class));
                                 ret.put(name, handle);
                             } catch (final IllegalAccessException e) {
                                 throw new IllegalStateException("Can not access public method.", e);
@@ -73,7 +69,7 @@ public final class NotificationListenerInvoker {
     private final ImmutableMap<QName, MethodHandle> methodInvokers;
 
     NotificationListenerInvoker(final ImmutableMap<QName, MethodHandle> map) {
-        this.methodInvokers = map;
+        methodInvokers = map;
     }
 
     /**
@@ -109,5 +105,22 @@ public final class NotificationListenerInvoker {
             Throwables.throwIfUnchecked(e);
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * Checks if supplied method is callback for notifications.
+     *
+     * @param method method to check
+     * @return true if method is notification callback.
+     */
+    public static boolean isNotificationCallback(final Method method) {
+        if (method.getName().startsWith("on") && method.getParameterCount() == 1) {
+            Class<?> potentialNotification = method.getParameterTypes()[0];
+            if (Notification.class.isAssignableFrom(potentialNotification)
+                    && method.getName().equals("on" + potentialNotification.getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
