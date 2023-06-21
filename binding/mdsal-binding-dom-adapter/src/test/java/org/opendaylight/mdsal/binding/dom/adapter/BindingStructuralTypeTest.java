@@ -9,21 +9,24 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
-import java.util.Optional;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingStructuralTypeTest {
+    @Mock
+    private NormalizedNode normalizedNode;
+    @Mock
+    private DataTreeCandidateNode dataTreeCandidateNode;
+
     @Test
-    public void basicTest() throws Exception {
-        final NormalizedNode normalizedNode = mock(NormalizedNode.class);
-        final Optional<?> optional = Optional.of(normalizedNode);
-        final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
-        doReturn(optional).when(dataTreeCandidateNode).getDataAfter();
-        doReturn(optional).when(dataTreeCandidateNode).getDataBefore();
+    public void basicTest() {
+        doReturn(normalizedNode).when(dataTreeCandidateNode).dataBefore();
         assertEquals(BindingStructuralType.UNKNOWN, BindingStructuralType.from(dataTreeCandidateNode));
     }
 }
