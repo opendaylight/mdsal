@@ -21,8 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Uint8;
@@ -66,7 +66,7 @@ public class InstanceIdentifierTest extends AbstractBindingCodecTest {
                 QName.create(OspfStatLsdbBrief.QNAME, "LsId"), 3,
                 QName.create(OspfStatLsdbBrief.QNAME, "AdvRtr"), "foo"))));
         assertTrue(result instanceof KeyedInstanceIdentifier);
-        final Identifier<?> key = ((KeyedInstanceIdentifier<?, ?>) result).getKey();
+        final Key<?> key = ((KeyedInstanceIdentifier<?, ?>) result).getKey();
         assertEquals(new OspfStatLsdbBriefKey("foo", 1, 3, Uint8.valueOf(2)), key);
     }
 }

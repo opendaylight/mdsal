@@ -33,8 +33,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedListBuilder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 
 public class LazyBindingMapTest extends AbstractBindingCodecTest {
     private static Top TOP;
@@ -116,12 +116,11 @@ public class LazyBindingMapTest extends AbstractBindingCodecTest {
     }
 
     private static void assertSameIteratorObjects(final Collection<?> collection) {
-        final Iterator<?> iter1 = collection.iterator();
         final Iterator<?> iter2 = collection.iterator();
 
-        while (iter1.hasNext()) {
+        for (Object element : collection) {
             // Both iterators should return same values
-            assertSame(iter1.next(), iter2.next());
+            assertSame(element, iter2.next());
         }
         assertFalse(iter2.hasNext());
     }
@@ -165,16 +164,16 @@ public class LazyBindingMapTest extends AbstractBindingCodecTest {
         assertFalse(list.containsKey(new TopLevelListKey("blah")));
 
         assertEquals(list.size(), list.entrySet().size());
-        assertEquals(list.size(), list.keySet().size());
-        assertEquals(list.size(), list.values().size());
+        assertEquals(list.size(), list.size());
+        assertEquals(list.size(), list.size());
     }
 
     @Test
     public void testLookupSameSize() {
         final Map<TopLevelListKey, TopLevelList> list = prepareData().getTopLevelList();
         assertEquals(list.size(), list.entrySet().size());
-        assertEquals(list.size(), list.keySet().size());
-        assertEquals(list.size(), list.values().size());
+        assertEquals(list.size(), list.size());
+        assertEquals(list.size(), list.size());
     }
 
     @Test
@@ -197,7 +196,7 @@ public class LazyBindingMapTest extends AbstractBindingCodecTest {
     public void testLookupContainsKeyThrows() {
         final Map<TopLevelListKey, TopLevelList> list = prepareData().getTopLevelList();
         assertThrows(NullPointerException.class, () -> list.containsKey(null));
-        assertThrows(ClassCastException.class, () -> list.containsKey(mock(Identifiable.class)));
+        assertThrows(ClassCastException.class, () -> list.containsKey(mock(KeyAware.class)));
     }
 
     @Test

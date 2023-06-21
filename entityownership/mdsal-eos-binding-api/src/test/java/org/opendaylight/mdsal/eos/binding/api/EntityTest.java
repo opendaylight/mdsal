@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -65,10 +64,8 @@ public class EntityTest {
     public void testEntityNameConstructor() {
         Entity entity = new Entity(ENTITY_TYPE1, "foo");
 
-        Identifier<org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
-            .mdsal.core.general.entity.rev150930.Entity> keyID = entity.getIdentifier().firstKeyOf(
-                org.opendaylight.yang.gen.v1.urn
-                    .opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.Entity.class);
+        var keyID = entity.getIdentifier().firstKeyOf(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
+            .mdsal.core.general.entity.rev150930.Entity.class);
         assertNotNull("List key not found", keyID);
     }
 

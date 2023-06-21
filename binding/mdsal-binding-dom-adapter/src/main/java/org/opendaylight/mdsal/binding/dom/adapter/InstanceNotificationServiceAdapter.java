@@ -24,10 +24,10 @@ import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 
@@ -69,7 +69,7 @@ final class InstanceNotificationServiceAdapter implements InstanceNotificationSe
     }
 
     @Override
-    public <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>>
+    public <P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
             Registration registerListener(final InstanceNotificationSpec<N, P> spec,
                 final KeyedInstanceIdentifier<P, K> path, final KeyedListListener<P, N, K> listener,
                 final Executor executor) {
