@@ -12,13 +12,13 @@ import static com.google.common.base.Verify.verify;
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationService.KeyedListListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 
-final class KeyedInstanceNotificationListenerAdapter<P extends DataObject & Identifiable<K>, K extends Identifier<P>,
+final class KeyedInstanceNotificationListenerAdapter<P extends DataObject & KeyAware<K>, K extends Key<P>,
             N extends KeyedListNotification<N, P, K>>
         extends AbstractInstanceNotificationListenerAdapter<P, N, KeyedListListener<P, N, K>> {
     KeyedInstanceNotificationListenerAdapter(final AdapterContext adapterContext, final Class<N> notificationClass,

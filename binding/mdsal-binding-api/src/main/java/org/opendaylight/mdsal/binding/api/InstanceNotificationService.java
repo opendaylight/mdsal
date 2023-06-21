@@ -14,10 +14,10 @@ import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 
@@ -37,11 +37,11 @@ public interface InstanceNotificationService extends BindingService {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
     }
 
-    <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>>
+    <P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
         @NonNull Registration registerListener(InstanceNotificationSpec<N, P> spec, KeyedInstanceIdentifier<P, K> path,
             KeyedListListener<P, N, K> listener, Executor executor);
 
-    default <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>>
+    default <P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
             @NonNull Registration registerListener(final InstanceNotificationSpec<N, P> spec,
                 final KeyedInstanceIdentifier<P, K> path, final KeyedListListener<P, N, K> listener) {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
@@ -65,8 +65,8 @@ public interface InstanceNotificationService extends BindingService {
      * Interface for listeners on instance (YANG 1.1) notifications defined in a {@code list} with a {@code key}.
      */
     @FunctionalInterface
-    interface KeyedListListener<P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>,
-            K extends Identifier<P>> extends EventListener {
+    interface KeyedListListener<P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>,
+            K extends Key<P>> extends EventListener {
         /**
          * Process an instance notification.
          *
