@@ -40,7 +40,7 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
             final Collection<DataTreeCandidateNode> children) {
         // Filter out any unmodified children first
         final var domChildren = children.stream()
-            .filter(childMod -> childMod.getModificationType() != UNMODIFIED)
+            .filter(childMod -> childMod.modificationType() != UNMODIFIED)
             .collect(ImmutableList.toImmutableList());
         // Only return a modification if there is something left
         return domChildren.isEmpty() ? null : new LazyAugmentationModification<>(codec, parent, domChildren);
@@ -50,7 +50,10 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
             final BindingAugmentationCodecTreeNode<A> codec, final DataTreeCandidateNode parent) {
         final var builder = ImmutableList.<DataTreeCandidateNode>builder();
         for (var pathArg : codec.childPathArguments()) {
-            parent.getModifiedChild(pathArg).ifPresent(builder::add);
+            final var child = parent.modifiedChild(pathArg);
+            if (child != null) {
+                builder.add(child);
+            }
         }
         final var domChildren = builder.build();
         return domChildren.isEmpty() ? null : new LazyAugmentationModification<>(codec, parent, domChildren);
@@ -83,7 +86,7 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
     DataTreeCandidateNode firstModifiedChild(final PathArgument arg) {
         // Not entirely efficient linear search, but otherwise we'd have to index, which is even slower
         return domChildNodes.stream()
-            .filter(child -> arg.equals(child.getIdentifier()))
+            .filter(child -> arg.equals(child.name()))
             .findFirst()
             .orElse(null);
     }
@@ -91,7 +94,7 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
     @Override
     ToStringHelper addToStringAttributes(final ToStringHelper helper) {
         return super.addToStringAttributes(helper)
-            .add("domType", domData.getModificationType())
+            .add("domType", domData.modificationType())
             .add("domChildren", domChildNodes);
     }
 }

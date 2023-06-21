@@ -28,17 +28,17 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 final class LazyDataObjectModification<T extends DataObject>
         extends AbstractDataObjectModification<T, BindingDataObjectCodecTreeNode<T>> {
     LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec, final DataTreeCandidateNode domData) {
-        super(domData, codec, codec.deserializePathArgument(domData.getIdentifier()));
+        super(domData, codec, codec.deserializePathArgument(domData.name()));
     }
 
     @Override
     Collection<DataTreeCandidateNode> domChildNodes() {
-        return domData.getChildNodes();
+        return domData.childNodes();
     }
 
     @Override
     org.opendaylight.yangtools.yang.data.tree.api.ModificationType domModificationType() {
-        return domData.getModificationType();
+        return domData.modificationType();
     }
 
     @Override
@@ -48,7 +48,7 @@ final class LazyDataObjectModification<T extends DataObject>
 
     @Override
     DataTreeCandidateNode firstModifiedChild(final PathArgument arg) {
-        return domData.getModifiedChild(arg).orElse(null);
+        return domData.modifiedChild(arg);
     }
 
     @Override

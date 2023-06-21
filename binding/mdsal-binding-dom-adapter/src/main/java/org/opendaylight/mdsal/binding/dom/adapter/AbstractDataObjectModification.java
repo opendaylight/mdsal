@@ -21,7 +21,6 @@ import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
@@ -150,7 +149,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     private @Nullable T loadDataBefore() {
-        final var computed = deserialize(domData.getDataBefore());
+        final var computed = deserializeNullable(domData.dataBefore());
         final var witness = DATA_BEFORE.compareAndExchangeRelease(this, null, mask(computed));
         return witness == null ? computed : unmask(witness);
     }
@@ -162,7 +161,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     private @Nullable T loadDataAfter() {
-        final var computed = deserialize(domData.getDataAfter());
+        final var computed = deserializeNullable(domData.dataAfter());
         final var witness = DATA_AFTER.compareAndExchangeRelease(this, null, mask(computed));
         return witness == null ? computed : unmask(witness);
     }
@@ -176,8 +175,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         return obj == NULL_DATA_OBJECT ? null : (T) verifyNotNull(obj);
     }
 
-    private @Nullable T deserialize(final Optional<NormalizedNode> normalized) {
-        return normalized.isEmpty() ? null : deserialize(normalized.orElseThrow());
+    private @Nullable T deserializeNullable(final @Nullable NormalizedNode normalized) {
+        return normalized == null ? null : deserialize(normalized);
     }
 
     abstract @Nullable T deserialize(@NonNull NormalizedNode normalized);
@@ -192,10 +191,10 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         var current = toEnter.hasNext() ? firstModifiedChild(toEnter.next()) : domData;
         // ... and for everything else we can just go wild
         while (toEnter.hasNext() && current != null) {
-            current = current.getModifiedChild(toEnter.next()).orElse(null);
+            current = current.modifiedChild(toEnter.next());
         }
 
-        if (current == null || current.getModificationType() == UNMODIFIED) {
+        if (current == null || current.modificationType() == UNMODIFIED) {
             return null;
         }
         return from(childCodec, current);
@@ -322,8 +321,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         final var augmentChildren =
             ArrayListMultimap.<BindingAugmentationCodecTreeNode<?>, DataTreeCandidateNode>create();
 
-        for (var domChildNode : parent.getChildNodes()) {
-            if (domChildNode.getModificationType() != UNMODIFIED) {
+        for (var domChildNode : parent.childNodes()) {
+            if (domChildNode.modificationType() != UNMODIFIED) {
                 final var type = BindingStructuralType.from(domChildNode);
                 if (type != BindingStructuralType.NOT_ADDRESSABLE) {
                     /*
@@ -331,7 +330,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                      * We will use that type to further specify debug log.
                      */
                     try {
-                        final var childCodec = parentCodec.yangPathArgumentChild(domChildNode.getIdentifier());
+                        final var childCodec = parentCodec.yangPathArgumentChild(domChildNode.name());
                         if (childCodec instanceof BindingDataObjectCodecTreeNode<?> childDataObjectCodec) {
                             populateList(result, type, childDataObjectCodec, domChildNode);
                         } else if (childCodec instanceof BindingAugmentationCodecTreeNode<?> childAugmentationCodec) {
@@ -366,10 +365,10 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         switch (type) {
             case INVISIBLE_LIST:
                 // We use parent codec intentionally.
-                populateListWithSingleCodec(result, childCodec, domChildNode.getChildNodes());
+                populateListWithSingleCodec(result, childCodec, domChildNode.childNodes());
                 break;
             case INVISIBLE_CONTAINER:
-                populateList(result, childCodec, domChildNode, domChildNode.getChildNodes());
+                populateList(result, childCodec, domChildNode, domChildNode.childNodes());
                 break;
             case UNKNOWN:
             case VISIBLE_CONTAINER:
@@ -383,7 +382,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
             final ImmutableList.Builder<AbstractDataObjectModification<?, ?>> result,
             final BindingDataObjectCodecTreeNode<?> codec, final Collection<DataTreeCandidateNode> childNodes) {
         for (var child : childNodes) {
-            if (child.getModificationType() != UNMODIFIED) {
+            if (child.modificationType() != UNMODIFIED) {
                 result.add(new LazyDataObjectModification<>(codec, child));
             }
         }
