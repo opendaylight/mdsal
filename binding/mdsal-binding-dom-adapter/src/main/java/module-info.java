@@ -34,6 +34,7 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.mdsal.dom.spi;
     requires org.slf4j;
+    requires failureaccess;
 
     // OSGi is optional
     requires static org.osgi.framework;
