@@ -26,7 +26,7 @@ import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -69,8 +69,8 @@ public class BindingDOMRpcIntegrationTest {
         testContext = testFactory.getTestContext();
 
         testContext.setSchemaModuleInfos(ImmutableSet.of(
-                BindingReflections.getModuleInfo(OpendaylightKnockKnockRpcService.class),
-                BindingReflections.getModuleInfo(Top.class)));
+            BindingRuntimeHelpers.getYangModuleInfo(OpendaylightKnockKnockRpcService.class),
+            BindingRuntimeHelpers.getYangModuleInfo(Top.class)));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
         baRpcConsumerService = testContext.getBindingRpcConsumerRegistry();

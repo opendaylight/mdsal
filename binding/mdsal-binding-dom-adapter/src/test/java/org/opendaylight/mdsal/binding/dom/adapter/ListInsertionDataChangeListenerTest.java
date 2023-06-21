@@ -13,7 +13,6 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.t
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,7 +22,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
@@ -42,7 +41,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(Top.class));
+        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Top.class));
     }
 
     @Before

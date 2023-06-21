@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractNotificationBrokerTest;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChanged;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChangedBuilder;
@@ -31,15 +31,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ForwardedNotificationAdapterTest extends AbstractNotificationBrokerTest {
-    private static final Logger LOG = LoggerFactory.getLogger(ForwardedNotificationAdapterTest.class);
-
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return Set.of(BindingReflections.getModuleInfo(TwoLevelListChanged.class));
+        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(TwoLevelListChanged.class));
     }
 
     @Test
