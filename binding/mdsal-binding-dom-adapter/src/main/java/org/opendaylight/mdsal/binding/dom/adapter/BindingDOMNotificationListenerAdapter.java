@@ -66,11 +66,29 @@ final class BindingDOMNotificationListenerAdapter extends AbstractDOMNotificatio
         // it from NotificationListenerInvoker
         final Set<Absolute> ret = new HashSet<>();
         for (final Method method : type.getMethods()) {
-            if (BindingReflections.isNotificationCallback(method)) {
+            if (isNotificationCallback(method)) {
                 final Class<?> notification = method.getParameterTypes()[0];
                 ret.add(Absolute.of(BindingReflections.findQName(notification)));
             }
         }
         return ret;
+    }
+
+
+    /**
+     * Checks if supplied method is callback for notifications.
+     *
+     * @param method method to check
+     * @return true if method is notification callback.
+     */
+    public static boolean isNotificationCallback(final Method method) {
+        if (method.getName().startsWith("on") && method.getParameterCount() == 1) {
+            Class<?> potentialNotification = method.getParameterTypes()[0];
+            if (Notification.class.isAssignableFrom(potentialNotification)
+                    && method.getName().equals("on" + potentialNotification.getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
