@@ -14,9 +14,9 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 
 final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataObject>
         implements DescendantQueryBuilder<T> {
@@ -45,8 +45,8 @@ final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataOb
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-            DescendantQueryBuilder<N> extractChild(final Class<@NonNull N> listItem, final K listKey) {
+    public <N extends KeyAware<K> & ChildOf<? super T>, K extends Key<N>> DescendantQueryBuilder<N> extractChild(
+            final Class<@NonNull N> listItem, final K listKey) {
         childPath.child(listItem, listKey);
         return (DefaultDescendantQueryBuilder<R, N>) this;
     }
