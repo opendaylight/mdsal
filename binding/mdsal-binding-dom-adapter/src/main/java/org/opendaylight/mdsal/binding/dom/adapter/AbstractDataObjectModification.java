@@ -33,11 +33,11 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -242,15 +242,15 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <C extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<C>> DataObjectModification<C>
+    public final <C extends KeyAware<K> & ChildOf<? super T>, K extends Key<C>> DataObjectModification<C>
             getModifiedChildListItem(final Class<C> listItem, final K listKey) {
         return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(listItem, listKey));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends Identifiable<K> & ChildOf<? super H>,
-            K extends Identifier<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
+    public final <H extends ChoiceIn<? super T> & DataObject, C extends KeyAware<K> & ChildOf<? super H>,
+            K extends Key<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
                     final Class<C> listItem, final K listKey) {
         return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(caseType, listItem, listKey));
     }

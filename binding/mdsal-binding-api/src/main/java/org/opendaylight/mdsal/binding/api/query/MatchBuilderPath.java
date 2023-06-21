@@ -15,8 +15,8 @@ import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
@@ -60,8 +60,8 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @return This builder
      * @throws NullPointerException if childClass is null
      */
-    <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-        @NonNull MatchBuilderPath<O, N> extractChild(Class<@NonNull N> listItem, K listKey);
+    <N extends KeyAware<K> & ChildOf<? super T>, K extends Key<N>> @NonNull MatchBuilderPath<O, N> extractChild(
+        Class<@NonNull N> listItem, K listKey);
 
     /**
      * Match an {@code boolean} leaf's value.
