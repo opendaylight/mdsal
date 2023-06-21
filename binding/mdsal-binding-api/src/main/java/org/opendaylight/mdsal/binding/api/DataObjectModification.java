@@ -14,9 +14,9 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
@@ -163,7 +163,7 @@ public interface DataObjectModification<T extends DataObject> extends
      * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
      *         to generated model.
      */
-    <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> @Nullable DataObjectModification<N>
+    <N extends KeyAware<K> & ChildOf<? super T>, K extends Key<N>> @Nullable DataObjectModification<N>
             getModifiedChildListItem(@NonNull Class<N> listItem, @NonNull K listKey);
 
     /**
@@ -175,8 +175,8 @@ public interface DataObjectModification<T extends DataObject> extends
      * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
      *         to generated model.
      */
-    <H extends ChoiceIn<? super T> & DataObject, C extends Identifiable<K> & ChildOf<? super H>,
-            K extends Identifier<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
+    <H extends ChoiceIn<? super T> & DataObject, C extends KeyAware<K> & ChildOf<? super H>,
+            K extends Key<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
                     @NonNull Class<H> caseType, @NonNull Class<C> listItem, @NonNull K listKey);
 
     /**
