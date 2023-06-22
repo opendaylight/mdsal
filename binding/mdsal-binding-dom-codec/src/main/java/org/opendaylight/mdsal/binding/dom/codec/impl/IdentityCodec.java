@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -57,6 +57,17 @@ final class IdentityCodec extends AbstractValueCodec<QName, BaseIdentity> implem
                 }
             }
         });
+    private final LoadingCache<@NonNull BaseIdentity, @NonNull QName> qnames = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
+            @Override
+            public QName load(final BaseIdentity key) {
+                final var schema = context.getTypeWithSchema(key.implementedInterface());
+                if (schema instanceof IdentityRuntimeType identitySchema) {
+                    return identitySchema.statement().argument();
+                }
+                throw new IllegalStateException("Unexpected schema " + schema + " for value " + key);
+            }
+        });
 
     private final BindingRuntimeContext context;
 
@@ -87,6 +98,11 @@ final class IdentityCodec extends AbstractValueCodec<QName, BaseIdentity> implem
 
     @Override
     public QName fromBinding(final BaseIdentity bindingValue) {
-        return BindingReflections.getQName(bindingValue);
+        try {
+            return qnames.get(requireNonNull(bindingValue));
+        } catch (ExecutionException e) {
+            Throwables.throwIfUnchecked(e.getCause());
+            throw new IllegalStateException("Unexpected error translating " + bindingValue, e);
+        }
     }
 }
