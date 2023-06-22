@@ -35,6 +35,23 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc3871f3_df674b7a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-22T11:34:08Z",
+      "side": 1,
+      "message": "This needs to be completely reworked",
+      "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c92e52b_ed216ce1",
@@ -53,6 +70,52 @@
         "startChar": 22,
         "endLine": 108,
         "endChar": 47
+      },
+      "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f536021_883c812d",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMNotificationListenerAdapter.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-22T11:34:08Z",
+      "side": 1,
+      "message": "UGH, most definitely not!",
+      "range": {
+        "startLine": 71,
+        "startChar": 8,
+        "endLine": 71,
+        "endChar": 98
+      },
+      "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5abace93_5c722865",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/invoke/NotificationListenerInvoker.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-22T11:34:08Z",
+      "side": 1,
+      "message": "nope",
+      "range": {
+        "startLine": 54,
+        "startChar": 65,
+        "endLine": 54,
+        "endChar": 107
       },
       "revId": "d3d0c16eff60adb3a1dee0fe3d0ad91a0367fee4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
