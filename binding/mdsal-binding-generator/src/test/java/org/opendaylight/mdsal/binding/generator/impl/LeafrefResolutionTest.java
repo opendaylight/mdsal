@@ -26,7 +26,7 @@ public class LeafrefResolutionTest {
         final IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
             () -> DefaultBindingGenerator.generateFor(schemaContext));
         assertEquals(
-            "Effective model contains self-referencing leaf (urn:xml:ns:yang:lrr?revision=2015-02-25)neighbor-id",
+            "Circular leafref chain detected at leaf (urn:xml:ns:yang:lrr?revision=2015-02-25)neighbor-id",
             iae.getMessage());
     }
 
@@ -37,7 +37,7 @@ public class LeafrefResolutionTest {
         final IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
             () -> DefaultBindingGenerator.generateFor(schemaContext));
         assertEquals(
-            "Effective model contains self-referencing leaf (urn:xml:ns:yang:lra?revision=2015-02-25)neighbor-id",
+            "Circular leafref chain detected at leaf (urn:xml:ns:yang:lra?revision=2015-02-25)neighbor-id",
             iae.getMessage());
     }
 
