@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ * Copyright (c) 2023 PANTHEON.tech, s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -18,33 +18,24 @@ import org.opendaylight.mdsal.binding.model.ri.Types;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public class LeafrefResolutionTest {
+public class Mdsal505Test {
     @Test
-    public void testLeafRefRelativeSelfReference() {
+    public void testLeafRefCircularReference() {
+        // Test that leafref cycle is detected and exception is thrown
         final EffectiveModelContext schemaContext =
-            YangParserTestUtils.parseYangResource("/leafref-relative-invalid.yang");
+            YangParserTestUtils.parseYangResource("/mdsal-505/leafref-relative-circular.yang");
         final IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
             () -> DefaultBindingGenerator.generateFor(schemaContext));
         assertEquals(
-            "Circular leafref chain detected at leaf (urn:xml:ns:yang:lrr?revision=2015-02-25)neighbor-id",
+            "Circular leafref chain detected at leaf (urn:xml:ns:yang:lrc?revision=2023-06-22)neighbor3-id",
             iae.getMessage());
     }
 
     @Test
-    public void testLeafRefAbsoluteSelfReference() {
-        final EffectiveModelContext schemaContext =
-            YangParserTestUtils.parseYangResource("/leafref-absolute-invalid.yang");
-        final IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-            () -> DefaultBindingGenerator.generateFor(schemaContext));
-        assertEquals(
-            "Circular leafref chain detected at leaf (urn:xml:ns:yang:lra?revision=2015-02-25)neighbor-id",
-            iae.getMessage());
-    }
-
-    @Test
-    public void testLeafRefRelativeAndAbsoluteValidReference() {
+    public void testLeafRefValidCircularReference() {
+        // Test if valid leafref chain is resolved correctly
         final List<GeneratedType> types = DefaultBindingGenerator.generateFor(
-            YangParserTestUtils.parseYangResource("/leafref-valid.yang"));
+            YangParserTestUtils.parseYangResource("/mdsal-505/leafref-valid-chain.yang"));
         assertEquals(2, types.size());
 
         final List<MethodSignature> neighborMethods = types.stream()
@@ -52,7 +43,7 @@ public class LeafrefResolutionTest {
             .findFirst()
             .orElseThrow()
             .getMethodDefinitions();
-        assertEquals(10, neighborMethods.size());
+        assertEquals(14, neighborMethods.size());
 
         final MethodSignature getNeighborId = neighborMethods.stream()
             .filter(method -> method.getName().equals("getNeighborId"))
