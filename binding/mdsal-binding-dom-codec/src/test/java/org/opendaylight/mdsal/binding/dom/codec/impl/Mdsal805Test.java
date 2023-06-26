@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -21,7 +20,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedYangData;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class Mdsal805Test extends AbstractBindingCodecTest {
-    @Ignore
     @Test
     public void testFromBinding() {
         final var binding = new YangDataWithContainerBuilder()
@@ -32,7 +30,6 @@ public class Mdsal805Test extends AbstractBindingCodecTest {
         assertNotNull(dom);
     }
 
-    @Ignore
     @Test
     public void testToBinding() {
         final var dom = mock(NormalizedYangData.class);

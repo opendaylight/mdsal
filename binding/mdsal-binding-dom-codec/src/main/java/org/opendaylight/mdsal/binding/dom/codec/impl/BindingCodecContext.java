@@ -66,6 +66,7 @@ import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.OutputRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.YangDataRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -324,6 +325,24 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 return getRpc(container);
             }
         });
+    private final LoadingCache<Class<? extends YangData<?>>, YangDataCodecContext<?>> yangDataByClass =
+        CacheBuilder.newBuilder() .build(new CacheLoader<>() {
+            @Override
+            public YangDataCodecContext<?> load(final Class<? extends YangData<?>> key) {
+                final var schema = context.getSchemaDefinition(key);
+                if (schema instanceof YangDataRuntimeType yangData) {
+                    return new YangDataCodecContext(key, yangData, BindingCodecContext.this);
+                }
+                throw new IllegalArgumentException(key + " maps to non-YangData " + schema);
+            }
+        });
+    private final LoadingCache<YangDataName, BindingYangDataCodecTreeNode<?>> yangDataByName = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
+            @Override
+            public BindingYangDataCodecTreeNode<?> load(final YangDataName key) throws ExecutionException {
+                return yangDataByClass.get(context.getYangDataClass(key));
+            }
+        });
 
     private final @NonNull BindingClassLoader loader =
         BindingClassLoader.create(BindingCodecContext.class, BYTECODE_DIRECTORY);
@@ -363,13 +382,14 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends YangData<T>> BindingYangDataCodecTreeNode<T> getYangDataCodec(final Class<T> yangDataClass) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return (BindingYangDataCodecTreeNode<T>) yangDataByClass.getUnchecked(requireNonNull(yangDataClass));
     }
 
     @Override
     public BindingYangDataCodecTreeNode<?> getYangDataCodec(final YangDataName yangDataName) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return yangDataByName.getUnchecked(requireNonNull(yangDataName));
     }
 
     @Override
