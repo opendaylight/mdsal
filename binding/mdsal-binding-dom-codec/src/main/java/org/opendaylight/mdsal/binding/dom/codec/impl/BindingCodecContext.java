@@ -45,6 +45,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingYangDataCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
@@ -69,7 +70,9 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
+import org.opendaylight.yangtools.yang.binding.YangData;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.YangDataName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
@@ -129,6 +132,23 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 return new DataContainerSerializer(BindingCodecContext.this, streamers.get(key));
             }
         });
+    private final LoadingCache<Class<?>, BindingYangDataCodecTreeNode<?>> yangDataByClass = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
+            @Override
+            public BindingYangDataCodecTreeNode<?> load(final Class<?> key) {
+                final var schema = context.getSchemaDefinition(key);
+
+                // FIXME: implement this
+                throw new UnsupportedOperationException();
+            }
+        });
+    private final LoadingCache<YangDataName, BindingYangDataCodecTreeNode<?>> yangDataByName = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
+            @Override
+            public BindingYangDataCodecTreeNode<?> load(final YangDataName key) throws ExecutionException {
+                return yangDataByClass.get(context.getYangDataClass(key));
+            }
+        });
 
     private final @NonNull BindingClassLoader loader =
         BindingClassLoader.create(BindingCodecContext.class, BYTECODE_DIRECTORY);
@@ -167,6 +187,18 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Override
     public BindingInstanceIdentifierCodec getInstanceIdentifierCodec() {
         return instanceIdentifierCodec;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends YangData<T>> BindingYangDataCodecTreeNode<T> getYangDataCodec(final Class<T> yangDataClass) {
+        return (BindingYangDataCodecTreeNode<T>) yangDataByClass.getUnchecked(requireNonNull(yangDataClass));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public BindingYangDataCodecTreeNode<?> getYangDataCodec(final YangDataName yangDataName) {
+        return yangDataByName.getUnchecked(requireNonNull(yangDataName));
     }
 
     @Override
