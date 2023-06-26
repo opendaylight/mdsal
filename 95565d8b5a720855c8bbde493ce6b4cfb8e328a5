@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42b3ecc9_4ded7fc9",
+        "filename": "model/ietf/rfc8525/src/main/yang/ietf-yang-library@2019-01-04.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-26T19:25:09Z",
+      "side": 1,
+      "message": "this is a standard model -- this change must work without modifying it",
+      "range": {
+        "startLine": 86,
+        "startChar": 32,
+        "endLine": 86,
+        "endChar": 37
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
