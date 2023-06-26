@@ -25,7 +25,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * </ul>
  */
 abstract sealed class CodecContext implements BindingCodecTreeNode
-        permits DataContainerCodecContext, ValueNodeCodecContext {
+        permits DataContainerCodecContext, ValueNodeCodecContext, YangDataCodecContext {
     /**
      * Returns {@link NodeIdentifier} of current node, if applicable.
      *
