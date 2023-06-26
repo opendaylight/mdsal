@@ -76,6 +76,10 @@
              artifacts -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-dom-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
         <dependency>

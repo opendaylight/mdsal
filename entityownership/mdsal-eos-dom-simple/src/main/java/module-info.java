@@ -18,7 +18,6 @@ module org.opendaylight.mdsal.eos.dom.simple {
     provides DOMEntityOwnershipService with SimpleDOMEntityOwnershipService;
 
     // Annotations
-    requires static com.github.spotbugs.annotations;
     requires static javax.inject;
     requires static org.eclipse.jdt.annotation;
     requires static org.checkerframework.checker.qual;

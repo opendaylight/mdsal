@@ -37,7 +37,6 @@ module org.opendaylight.mdsal.yanglib.rfc8525 {
     requires org.slf4j;
 
     // Annotations
-    requires static com.github.spotbugs.annotations;
     requires static javax.inject;
     requires static org.kohsuke.metainf_services;
     requires static org.osgi.service.component.annotations;
