@@ -3,6 +3,75 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fe8bdf03_ddec5448",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/opendaylight-default-value-test.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-26T19:26:32Z",
+      "side": 1,
+      "message": "create a dedicated model for testing this issue, please",
+      "range": {
+        "startLine": 250,
+        "startChar": 3,
+        "endLine": 250,
+        "endChar": 29
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "362093bc_7fa69b19",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/UnionsPatternEnforcementTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-26T19:26:32Z",
+      "side": 1,
+      "message": "JUnit4 or JUnit5?",
+      "range": {
+        "startLine": 13,
+        "startChar": 7,
+        "endLine": 13,
+        "endChar": 17
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0097a19e_bc6d663b",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/UnionsPatternEnforcementTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-26T19:26:32Z",
+      "side": 1,
+      "message": "should be called Mdsal405Test",
+      "range": {
+        "startLine": 19,
+        "startChar": 13,
+        "endLine": 19,
+        "endChar": 41
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42b3ecc9_4ded7fc9",
         "filename": "model/ietf/rfc8525/src/main/yang/ietf-yang-library@2019-01-04.yang",
         "patchSetId": 13
