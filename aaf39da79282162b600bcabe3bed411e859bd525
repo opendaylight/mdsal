@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "527fba8f_104977dc",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-06-26T19:23:39Z",
+      "side": 1,
+      "message": "This is going to incur huge overhead -- we need similar encoding to what yang-data-codec-binfmt does for values.",
+      "range": {
+        "startLine": 177,
+        "startChar": 26,
+        "endLine": 177,
+        "endChar": 35
+      },
+      "revId": "aaf39da79282162b600bcabe3bed411e859bd525",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
