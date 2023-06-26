@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
  * Base implementation of {@link CommonDataObjectCodecTreeNode}.
  */
 abstract sealed class CommonDataObjectCodecContext<D extends DataObject, T extends CompositeRuntimeType>
-        extends DataContainerCodecContext<D, T> implements CommonDataObjectCodecTreeNode<D>
+        extends BaseDataContainerCodecContext<D, T> implements CommonDataObjectCodecTreeNode<D>
         permits AbstractDataObjectCodecContext, ChoiceCodecContext {
     final @NonNull CommonDataObjectCodecPrototype<T> prototype;
 
