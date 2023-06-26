@@ -26,16 +26,6 @@ public class BindingReflectionsTest {
     public void testBindingWithDummyObject() throws Exception {
         assertFalse("Should not be RpcType", BindingReflections.isRpcType(DataObject.class));
         assertTrue("Should be BindingClass", BindingReflections.isBindingClass(DataObject.class));
-
-        assertEquals(QName.create("test", "test"), BindingReflections.getQName(TestIdentity.VALUE));
-    }
-
-    interface TestIdentity extends BaseIdentity {
-        QName QNAME = QName.create("test", "test");
-        TestIdentity VALUE = () -> TestIdentity.class;
-
-        @Override
-        Class<? extends TestIdentity> implementedInterface();
     }
 
     static final class TestImplementation implements Augmentation<TestImplementation>, RpcService {
