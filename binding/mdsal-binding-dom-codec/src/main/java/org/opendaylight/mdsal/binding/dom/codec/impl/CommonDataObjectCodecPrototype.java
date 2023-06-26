@@ -72,7 +72,7 @@ abstract sealed class CommonDataObjectCodecPrototype<T extends RuntimeTypeContai
                 : ChildAddressabilitySummary.MIXED;
     }
 
-    private static @NonNull ChildAddressabilitySummary computeChildAddressabilitySummary(final Object nodeSchema) {
+    static @NonNull ChildAddressabilitySummary computeChildAddressabilitySummary(final Object nodeSchema) {
         // FIXME: rework this to work on EffectiveStatements
         if (nodeSchema instanceof DataNodeContainer contaner) {
             boolean haveAddressable = false;
