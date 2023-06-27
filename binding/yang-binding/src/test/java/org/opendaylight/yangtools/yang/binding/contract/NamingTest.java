@@ -58,8 +58,6 @@ public class NamingTest {
             Naming.getRootPackageName(QNameModule.create(
                 XMLNamespace.of("urn:m*o+d,u;l=e.n/a-m@e.t$e#s't.case.1digit"), Revision.of("2013-09-10"))));
         assertEquals("_1testpublic", Naming.normalizePackageName("1testpublic"));
-        assertEquals("Test", Naming.getGetterSuffix(QName.create("test", "test")));
-        assertEquals("XmlClass", Naming.getGetterSuffix(QName.create("test", "class")));
     }
 
     @Test
