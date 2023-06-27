@@ -26,10 +26,10 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataContainerCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
-import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingClassInLoadingStrategyException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
@@ -48,16 +48,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract sealed class DataContainerCodecContext<D extends DataObject, T extends RuntimeTypeContainer>
-        extends CodecContext implements CommonDataObjectCodecTreeNode<D>
-        permits AbstractDataObjectCodecContext, ChoiceCodecContext, RootCodecContext {
+abstract sealed class DataContainerCodecContext<D extends BindingObject & DataContainer, T extends RuntimeTypeContainer>
+        extends CodecContext implements BindingDataContainerCodecTreeNode<D>
+        permits CommonDataObjectCodecContext, RootCodecContext {
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecContext.class);
     private static final VarHandle EVENT_STREAM_SERIALIZER;
 
@@ -70,37 +69,13 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
         }
     }
 
-    final @NonNull DataContainerCodecPrototype<T> prototype;
-
     // Accessed via a VarHandle
     @SuppressWarnings("unused")
     private volatile DataContainerSerializer eventStreamSerializer;
 
-    DataContainerCodecContext(final DataContainerCodecPrototype<T> prototype) {
-        this.prototype = requireNonNull(prototype);
-    }
+    protected abstract @NonNull CodecContextFactory factory();
 
-    @Override
-    public final ChildAddressabilitySummary getChildAddressabilitySummary() {
-        return prototype.getChildAddressabilitySummary();
-    }
-
-    protected final QNameModule namespace() {
-        return prototype.getNamespace();
-    }
-
-    protected final CodecContextFactory factory() {
-        return prototype.getFactory();
-    }
-
-    protected final @NonNull T type() {
-        return prototype.getType();
-    }
-
-    @Override
-    protected NodeIdentifier getDomPathArgument() {
-        return prototype.getYangArg();
-    }
+    protected abstract @NonNull T type();
 
     /**
      * Returns nested node context using supplied YANG Instance Identifier.
@@ -121,7 +96,7 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
      * @throws IllegalArgumentException If supplied argument does not represent valid child.
      */
     @Override
-    public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
+    public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
         final var child = getStreamChild(arg.getType());
         child.addYangPathArgument(arg, builder);
@@ -147,25 +122,8 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
         }
     }
 
-    /**
-     * Returns deserialized Binding Path Argument from YANG instance identifier.
-     */
-    protected PathArgument getBindingPathArgument(final YangInstanceIdentifier.PathArgument domArg) {
-        return bindingArg();
-    }
-
-    protected final PathArgument bindingArg() {
-        return prototype.getBindingArg();
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
-    public final Class<D> getBindingClass() {
-        return Class.class.cast(prototype.getBindingClass());
-    }
-
-    @Override
-    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> getStreamChild(Class<C> childClass);
+    public abstract <C extends DataObject> CommonDataObjectCodecContext<C, ?> getStreamChild(Class<C> childClass);
 
     /**
      * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case, one
@@ -175,11 +133,11 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
      * @return Context of child or Optional.empty is supplied class is not applicable in context.
      */
     @Override
-    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(Class<C> childClass);
+    public abstract <C extends DataObject> CommonDataObjectCodecContext<C, ?> streamChild(Class<C> childClass);
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [" + prototype.getBindingClass() + "]";
+        return getClass().getSimpleName() + " [" + getBindingClass() + "]";
     }
 
     static final <T extends DataObject, C extends DataContainerCodecContext<T, ?> & BindingNormalizedNodeCodec<T>>

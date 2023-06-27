@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode.ChildAddressabilitySummary;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataContainerCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeTypeContainer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
@@ -31,16 +31,16 @@ import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract sealed class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implements CodecContextSupplier
+abstract sealed class CommonDataObjectCodecPrototype<T extends RuntimeTypeContainer> implements CodecContextSupplier
         permits AugmentationCodecPrototype, DataObjectCodecPrototype {
-    private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecPrototype.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CommonDataObjectCodecPrototype.class);
 
     private static final VarHandle INSTANCE;
 
     static {
         try {
-            INSTANCE = MethodHandles.lookup().findVarHandle(DataContainerCodecPrototype.class,
-                "instance", DataContainerCodecContext.class);
+            INSTANCE = MethodHandles.lookup().findVarHandle(CommonDataObjectCodecPrototype.class,
+                "instance", CommonDataObjectCodecContext.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -57,9 +57,9 @@ abstract sealed class DataContainerCodecPrototype<T extends RuntimeTypeContainer
 
     // Accessed via INSTANCE
     @SuppressWarnings("unused")
-    private volatile DataContainerCodecContext<?, T> instance;
+    private volatile CommonDataObjectCodecContext<?, T> instance;
 
-    DataContainerCodecPrototype(final Item<?> bindingArg, final QNameModule namespace, final T type,
+    CommonDataObjectCodecPrototype(final Item<?> bindingArg, final QNameModule namespace, final T type,
             final CodecContextFactory factory) {
         this.bindingArg = requireNonNull(bindingArg);
         this.namespace = requireNonNull(namespace);
@@ -173,17 +173,17 @@ abstract sealed class DataContainerCodecPrototype<T extends RuntimeTypeContainer
     abstract @NonNull NodeIdentifier getYangArg();
 
     @Override
-    public final DataContainerCodecContext<?, T> get() {
-        final var existing = (DataContainerCodecContext<?, T>) INSTANCE.getAcquire(this);
+    public final CommonDataObjectCodecContext<?, T> get() {
+        final var existing = (CommonDataObjectCodecContext<?, T>) INSTANCE.getAcquire(this);
         return existing != null ? existing : loadInstance();
     }
 
-    private @NonNull DataContainerCodecContext<?, T> loadInstance() {
+    private @NonNull CommonDataObjectCodecContext<?, T> loadInstance() {
         final var tmp = createInstance();
-        final var witness = (DataContainerCodecContext<?, T>) INSTANCE.compareAndExchangeRelease(this, null, tmp);
+        final var witness = (CommonDataObjectCodecContext<?, T>) INSTANCE.compareAndExchangeRelease(this, null, tmp);
         return witness == null ? tmp : witness;
     }
 
     // This method must allow concurrent loading, i.e. nothing in it may have effects outside of the loaded object
-    abstract @NonNull DataContainerCodecContext<?, T> createInstance();
+    abstract @NonNull CommonDataObjectCodecContext<?, T> createInstance();
 }
