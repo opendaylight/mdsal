@@ -160,11 +160,10 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
                         final ContainerLike schema = getRpcDataSchema(potential, qname);
                         checkArgument(schema != null, "Schema for %s does not define input / output.", potentialQName);
 
-                        final ContainerLikeRuntimeType<?, ?> type = lookup.apply(context.getTypes(), potentialQName)
+                        final var type = lookup.apply(context.getTypes(), potentialQName)
                             .orElseThrow(() -> new IllegalArgumentException("Cannot find runtime type for " + key));
 
-                        return (ContainerLikeCodecContext) DataContainerCodecPrototype.from(key,
-                            (ContainerLikeRuntimeType<?, ?>) type, factory).get();
+                        return (ContainerLikeCodecContext) new ContainerLikeCodecPrototype<>(key, type, factory).get();
                     }
                 }
 
@@ -313,10 +312,10 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
         checkArgument(args.length == expectedArgsLength, "Unexpected (%s) Action generatic arguments", args.length);
         final ActionRuntimeType schema = factory().getRuntimeContext().getActionDefinition(action);
         return new ActionCodecContext(
-            DataContainerCodecPrototype.from(asClass(args[inputOffset], RpcInput.class), schema.input(),
-                factory()).getDataObject(),
-            DataContainerCodecPrototype.from(asClass(args[outputOffset], RpcOutput.class), schema.output(),
-                factory()).getDataObject());
+            new ContainerLikeCodecPrototype<>(asClass(args[inputOffset], RpcInput.class), schema.input(), factory())
+                .getDataObject(),
+            new ContainerLikeCodecPrototype<>(asClass(args[outputOffset], RpcOutput.class), schema.output(), factory())
+                .getDataObject());
     }
 
     private static <T extends DataObject> Class<? extends T> asClass(final Type type, final Class<T> target) {

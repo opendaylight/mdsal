@@ -11,15 +11,12 @@ import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.ContainerLikeRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.ContainerRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeTypeContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.model.api.stmt.PresenceEffectiveStatement;
 
 // FIXME: abstract and sealed
 non-sealed class DataObjectCodecPrototype<T extends RuntimeTypeContainer> extends DataContainerCodecPrototype<T> {
@@ -46,14 +43,7 @@ non-sealed class DataObjectCodecPrototype<T extends RuntimeTypeContainer> extend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     DataContainerCodecContext<?, T> createInstance() {
         final var type = getType();
-        if (type instanceof ContainerLikeRuntimeType containerLike) {
-            if (containerLike instanceof ContainerRuntimeType container
-                && container.statement().findFirstEffectiveSubstatement(PresenceEffectiveStatement.class)
-                    .isEmpty()) {
-                return new StructuralContainerCodecContext(this);
-            }
-            return new ContainerLikeCodecContext(this);
-        } else if (type instanceof ListRuntimeType) {
+        if (type instanceof ListRuntimeType) {
             return KeyAware.class.isAssignableFrom(getBindingClass())
                     ? KeyedListNodeCodecContext.create((DataContainerCodecPrototype<ListRuntimeType>) this)
                             : new ListNodeCodecContext(this);
