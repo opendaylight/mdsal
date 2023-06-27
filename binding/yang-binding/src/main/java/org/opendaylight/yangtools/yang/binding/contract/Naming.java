@@ -8,7 +8,6 @@
 package org.opendaylight.yangtools.yang.binding.contract;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
@@ -289,13 +288,6 @@ public final class Naming {
             return "xmlClass";
         }
         return potential;
-    }
-
-    // FIXME: this is legacy union/leafref property handling. The resulting value is *not* normalized for use as a
-    //        property.
-    public static @NonNull String getUnionLeafrefMemberName(final String unionClassSimpleName,
-            final String referencedClassSimpleName) {
-        return requireNonNull(referencedClassSimpleName) + requireNonNull(unionClassSimpleName) + "Value";
     }
 
     private static @NonNull String toCamelCase(final String rawString) {
