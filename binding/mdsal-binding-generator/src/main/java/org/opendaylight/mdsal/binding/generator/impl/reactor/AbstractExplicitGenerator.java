@@ -316,7 +316,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     }
 
     MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        return constructGetter(builder, returnType, Naming.getGetterMethodName(localName().getLocalName()));
+        return constructGetter(builder, returnType, getGetterMethodName(localName().getLocalName()));
     }
 
     final MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder,
@@ -365,5 +365,9 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
             helper.addValue("augmenting");
         }
         return helper;
+    }
+
+    private static @NonNull String getGetterMethodName(final String localName) {
+        return Naming.GETTER_PREFIX + Naming.toFirstUpper(Naming.getPropertyName(localName));
     }
 }
