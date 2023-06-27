@@ -26,10 +26,10 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataContainerCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
-import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingClassInLoadingStrategyException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
@@ -55,9 +55,9 @@ import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolde
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract sealed class DataContainerCodecContext<D extends DataObject, T extends RuntimeTypeContainer>
-        extends CodecContext implements CommonDataObjectCodecTreeNode<D>
-        permits AbstractDataObjectCodecContext, ChoiceCodecContext, RootCodecContext {
+abstract sealed class DataContainerCodecContext<D extends BindingObject & DataContainer, T extends RuntimeTypeContainer>
+        extends CodecContext implements BindingDataContainerCodecTreeNode<D>
+        permits CommonDataObjectCodecContext, RootCodecContext {
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecContext.class);
     private static final VarHandle EVENT_STREAM_SERIALIZER;
 
@@ -70,13 +70,13 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
         }
     }
 
-    final @NonNull DataContainerCodecPrototype<T> prototype;
+    final @NonNull CommonDataObjectCodecPrototype<T> prototype;
 
     // Accessed via a VarHandle
     @SuppressWarnings("unused")
     private volatile DataContainerSerializer eventStreamSerializer;
 
-    DataContainerCodecContext(final DataContainerCodecPrototype<T> prototype) {
+    DataContainerCodecContext(final CommonDataObjectCodecPrototype<T> prototype) {
         this.prototype = requireNonNull(prototype);
     }
 
@@ -121,7 +121,7 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
      * @throws IllegalArgumentException If supplied argument does not represent valid child.
      */
     @Override
-    public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
+    public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
         final var child = getStreamChild(arg.getType());
         child.addYangPathArgument(arg, builder);
@@ -165,7 +165,7 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
     }
 
     @Override
-    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> getStreamChild(Class<C> childClass);
+    public abstract <C extends DataObject> CommonDataObjectCodecContext<C, ?> getStreamChild(Class<C> childClass);
 
     /**
      * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case, one
@@ -175,7 +175,7 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
      * @return Context of child or Optional.empty is supplied class is not applicable in context.
      */
     @Override
-    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(Class<C> childClass);
+    public abstract <C extends DataObject> CommonDataObjectCodecContext<C, ?> streamChild(Class<C> childClass);
 
     @Override
     public String toString() {

@@ -82,7 +82,7 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
         }
 
         @Override
-        RootCodecContext<?> createInstance() {
+        CommonDataObjectCodecContext<?, BindingRuntimeTypes> createInstance() {
             throw new UnsupportedOperationException("Should never be invoked");
         }
     }
@@ -236,14 +236,14 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
 
     @Override
     @SuppressWarnings("unchecked")
-    public <C extends DataObject> DataContainerCodecContext<C, ?> getStreamChild(final Class<C> childClass) {
+    public <C extends DataObject> CommonDataObjectCodecContext<C, ?> getStreamChild(final Class<C> childClass) {
         final var result = Notification.class.isAssignableFrom(childClass) ? getNotificationImpl(childClass)
             : getOrRethrow(childrenByClass, childClass);
-        return (DataContainerCodecContext<C, ?>) result;
+        return (CommonDataObjectCodecContext<C, ?>) result;
     }
 
     @Override
-    public <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(final Class<C> childClass) {
+    public <C extends DataObject> CommonDataObjectCodecContext<C, ?> streamChild(final Class<C> childClass) {
         // FIXME: implement this
         throw new UnsupportedOperationException("Not supported");
     }
@@ -384,7 +384,7 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
     }
 
     @Override
-    public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
+    public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
             final List<PathArgument> builder) {
         final var caseType = arg.getCaseType();
         if (caseType.isPresent()) {

@@ -112,8 +112,8 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         BYTECODE_DIRECTORY = Strings.isNullOrEmpty(dir) ? null : new File(dir);
     }
 
-    private final LoadingCache<Class<?>, DataContainerStreamer<?>> streamers = CacheBuilder.newBuilder().build(
-        new CacheLoader<>() {
+    private final LoadingCache<Class<?>, DataContainerStreamer<?>> streamers = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
             @Override
             public DataContainerStreamer<?> load(final Class<?> key) throws ReflectiveOperationException {
                 final var streamer = DataContainerStreamerGenerator.generateStreamer(loader, BindingCodecContext.this,
@@ -122,8 +122,8 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 return (DataContainerStreamer<?>) instance.get(null);
             }
         });
-    private final LoadingCache<Class<?>, DataContainerSerializer> serializers = CacheBuilder.newBuilder().build(
-        new CacheLoader<>() {
+    private final LoadingCache<Class<?>, DataContainerSerializer> serializers = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
             @Override
             public DataContainerSerializer load(final Class<?> key) throws ExecutionException {
                 return new DataContainerSerializer(BindingCodecContext.this, streamers.get(key));
