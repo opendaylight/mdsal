@@ -9,6 +9,8 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.GETTER_PREFIX;
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.REQUIRE_PREFIX;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.VerifyException;
@@ -336,7 +338,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     }
 
     final void constructRequireImpl(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        constructGetter(builder, returnType, Naming.getRequireMethodName(localName().getLocalName()))
+        constructGetter(builder, returnType, getRequireMethodName(localName().getLocalName()))
             .setDefault(true)
             .setMechanics(ValueMechanics.NONNULL);
     }
@@ -367,7 +369,15 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
         return helper;
     }
 
+    protected static @NonNull String getPrefixedMethodName(String localName, String prefix) {
+        return prefix + Naming.toFirstUpper(Naming.getPropertyName(localName));
+    }
+
     private static @NonNull String getGetterMethodName(final String localName) {
-        return Naming.GETTER_PREFIX + Naming.toFirstUpper(Naming.getPropertyName(localName));
+        return getPrefixedMethodName(localName, GETTER_PREFIX);
+    }
+
+    private static @NonNull String getRequireMethodName(final String localName) {
+        return getPrefixedMethodName(localName, REQUIRE_PREFIX);
     }
 }

@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.NONNULL_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -445,6 +446,10 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
     static final void addAugmentable(final GeneratedTypeBuilder builder) {
         builder.addImplementsType(BindingTypes.augmentable(builder));
+    }
+
+    static @NonNull String getNonnullMethodName(final String localName) {
+        return getPrefixedMethodName(localName, NONNULL_PREFIX);
     }
 
     final void addGetterMethods(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
