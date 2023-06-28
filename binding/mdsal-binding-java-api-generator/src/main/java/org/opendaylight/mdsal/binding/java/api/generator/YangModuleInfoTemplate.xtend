@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.java.api.generator
 
 import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.getClassName
-import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.getRootPackageName
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.MODEL_BINDING_PROVIDER_CLASS_NAME
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.MODULE_INFO_CLASS_NAME
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.MODULE_INFO_QNAMEOF_METHOD_NAME
@@ -18,11 +17,14 @@ import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableSet
 import java.util.Comparator
 import java.util.HashSet
+import java.util.Map
 import java.util.Optional
 import java.util.Set
 import java.util.TreeMap
 import java.util.function.Function
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator
+import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataSchemaNode
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo
 import org.opendaylight.yangtools.yang.common.Revision
@@ -67,6 +69,7 @@ final class YangModuleInfoTemplate {
     val EffectiveModelContext ctx
     val Function<ModuleLike, Optional<String>> moduleFilePathResolver
     val boolean hasYangData
+    val Map<Module, ModuleGenerator> moduleGeneratorMapping
 
     var importedTypes = CORE_IMPORT_STR
 
@@ -81,7 +84,8 @@ final class YangModuleInfoTemplate {
         this.module = module
         this.ctx = ctx
         this.moduleFilePathResolver = moduleFilePathResolver
-        packageName = module.QNameModule.rootPackageName;
+        this.moduleGeneratorMapping = new DefaultBindingGenerator().generateMappingForModuleGenerators(ctx);
+        packageName = moduleGeneratorMapping.get(module).getRootPackageName();
         modelBindingProviderName = '''«packageName».«MODEL_BINDING_PROVIDER_CLASS_NAME»'''
         hasYangData = module.unknownSchemaNodes.stream.anyMatch([s | s instanceof YangDataSchemaNode])
     }
@@ -207,9 +211,9 @@ final class YangModuleInfoTemplate {
                                 «sorted.put(module.revision, module)»
                             «ENDIF»
                         «ENDFOR»
-                        set.add(«sorted.lastEntry().value.QNameModule.rootPackageName».«MODULE_INFO_CLASS_NAME».getInstance());
+                        set.add(«moduleGeneratorMapping.get(sorted.lastEntry().value).getRootPackageName()».«MODULE_INFO_CLASS_NAME».getInstance());
                     «ELSE»
-                        set.add(«(ctx.findModule(name, rev).orElseThrow.QNameModule).rootPackageName».«MODULE_INFO_CLASS_NAME».getInstance());
+                        set.add(«moduleGeneratorMapping.get(ctx.findModule(name, rev).orElseThrow).getRootPackageName()».«MODULE_INFO_CLASS_NAME».getInstance());
                     «ENDIF»
                 «ENDFOR»
             «ENDIF»
