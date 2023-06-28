@@ -264,7 +264,7 @@ class ClassTemplate extends BaseTemplate {
         public boolean[] values() {
             return new boolean[] {
                     «FOR bit : typedef.bits SEPARATOR ','»
-                        «Naming.getPropertyName(bit.name).getterMethodName»()
+                        «getterMethodName(Naming.getPropertyName(bit.name))»()
                     «ENDFOR»
                 };
         }
