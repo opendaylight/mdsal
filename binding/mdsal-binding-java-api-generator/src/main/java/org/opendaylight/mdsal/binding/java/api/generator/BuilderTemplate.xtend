@@ -167,7 +167,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
             «val ifc = implementedIfc as GeneratedType»
             «FOR getter : ifc.nonDefaultMethods»
-                «IF Naming.isGetterMethodName(getter.name)»
+                «IF getter.name.isGetterMethodName»
                     «val propertyName = getter.propertyNameFromGetter»
                     «printPropertySetter(getter, '''arg.«getter.name»()''', propertyName)»;
                 «ENDIF»
@@ -182,7 +182,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
             «val ifc = implementedIfc as GeneratedType»
             «FOR getter : ifc.nonDefaultMethods»
-                «IF Naming.isGetterMethodName(getter.name) && getterByName(alreadySetProperties, getter.name).isEmpty»
+                «IF getter.name.isGetterMethodName && getterByName(alreadySetProperties, getter.name).isEmpty»
                     «val propertyName = getter.propertyNameFromGetter»
                     «printPropertySetter(getter, '''arg.«getter.name»()''', propertyName)»;
                 «ENDIF»
@@ -287,7 +287,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
         «val ifc = implementedIfc as GeneratedType»
         «FOR getter : ifc.nonDefaultMethods»
-            «IF Naming.isGetterMethodName(getter.name) && !hasOverrideAnnotation(getter)»
+            «IF getter.name.isGetterMethodName && !hasOverrideAnnotation(getter)»
                 «printPropertySetter(getter, '''castArg.«getter.name»()''', getter.propertyNameFromGetter)»;
             «ENDIF»
         «ENDFOR»
