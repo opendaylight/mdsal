@@ -236,14 +236,6 @@ public final class Naming {
         return getMethodName(name.getLocalName());
     }
 
-    public static @NonNull String getNonnullMethodName(final String localName) {
-        return NONNULL_PREFIX + toFirstUpper(getPropertyName(localName));
-    }
-
-    public static @NonNull String getRequireMethodName(final String localName) {
-        return REQUIRE_PREFIX + toFirstUpper(getPropertyName(localName));
-    }
-
     public static @NonNull String getPropertyName(final String yangIdentifier) {
         final String potential = toFirstLower(toCamelCase(yangIdentifier));
         if ("class".equals(potential)) {
