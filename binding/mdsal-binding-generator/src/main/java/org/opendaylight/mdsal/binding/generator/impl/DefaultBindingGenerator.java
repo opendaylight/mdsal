@@ -10,18 +10,22 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.generator.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 
 /**
  * Default implementation of {@link BindingGenerator}.
@@ -33,6 +37,19 @@ public final class DefaultBindingGenerator implements BindingGenerator {
     public List<GeneratedType> generateTypes(final EffectiveModelContext context,
             final Collection<? extends Module> modules) {
         return generateFor(context, modules);
+    }
+
+    public @NonNull Map<Module, ModuleGenerator> generateMappingForModuleGenerators(
+        final EffectiveModelContext context) {
+        final Map<ModuleEffectiveStatement, Module> statementModuleMap = context.getModules().stream()
+            .distinct()
+            .collect(Collectors.toUnmodifiableMap(Module::asEffectiveStatement, m -> m));
+        final Map<Module, ModuleGenerator> result = new HashMap<>(statementModuleMap.size());
+        final Collection<ModuleGenerator> moduleGens = new GeneratorReactor(context)
+            .execute(TypeBuilderFactory.codegen())
+            .values();
+        moduleGens.forEach(mg -> result.put(statementModuleMap.get(mg.statement()), mg));
+        return result;
     }
 
     @VisibleForTesting

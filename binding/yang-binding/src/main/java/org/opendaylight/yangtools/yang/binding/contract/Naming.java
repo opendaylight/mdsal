@@ -13,11 +13,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.eclipse.jdt.annotation.NonNull;
@@ -30,8 +26,6 @@ import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.YangDataName;
 
 @Beta
@@ -74,10 +68,6 @@ public final class Naming {
 
     private static final Splitter CAMEL_SPLITTER = Splitter.on(CharMatcher.anyOf(" _.-/").precomputed())
             .omitEmptyStrings().trimResults();
-    private static final Pattern COLON_SLASH_SLASH = Pattern.compile("://", Pattern.LITERAL);
-    private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
-    private static final Splitter DOT_SPLITTER = Splitter.on('.');
-
     public static final @NonNull String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     public static final @NonNull String MODULE_INFO_QNAMEOF_METHOD_NAME = "qnameOf";
     public static final @NonNull String MODULE_INFO_YANGDATANAMEOF_METHOD_NAME = "yangDataNameOf";
@@ -148,8 +138,6 @@ public final class Naming {
     public static final @NonNull String REQUIRE_PREFIX = "require";
     public static final @NonNull String RPC_INPUT_SUFFIX = "Input";
     public static final @NonNull String RPC_OUTPUT_SUFFIX = "Output";
-
-    private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
     @Regex
     private static final String ROOT_PACKAGE_PATTERN_STRING =
             "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*?\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
@@ -157,67 +145,6 @@ public final class Naming {
 
     private Naming() {
         // Hidden on purpose
-    }
-
-    public static @NonNull String getRootPackageName(final QName module) {
-        return getRootPackageName(module.getModule());
-    }
-
-    public static @NonNull String getRootPackageName(final QNameModule module) {
-        final StringBuilder packageNameBuilder = new StringBuilder().append(PACKAGE_PREFIX).append('.');
-
-        String namespace = module.getNamespace().toString();
-        namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
-
-        final char[] chars = namespace.toCharArray();
-        for (int i = 0; i < chars.length; ++i) {
-            switch (chars[i]) {
-                case '/', ':', '-', '@', '$', '#', '\'', '*', '+', ',', ';', '=' -> chars[i] = '.';
-                default -> {
-                    // no-op
-                }
-            }
-        }
-
-        packageNameBuilder.append(chars);
-        if (chars[chars.length - 1] != '.') {
-            packageNameBuilder.append('.');
-        }
-
-        final Optional<Revision> optRev = module.getRevision();
-        if (optRev.isPresent()) {
-            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
-            // right characters.
-            final String rev = optRev.orElseThrow().toString();
-            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
-            packageNameBuilder.append("rev").append(rev, 2, 4).append(rev, 5, 7).append(rev.substring(8));
-        } else {
-            // No-revision packages are special
-            packageNameBuilder.append("norev");
-        }
-
-        return normalizePackageName(packageNameBuilder.toString());
-    }
-
-    public static @NonNull String normalizePackageName(final String packageName) {
-        final StringBuilder builder = new StringBuilder();
-        boolean first = true;
-
-        for (String p : DOT_SPLITTER.split(packageName.toLowerCase(Locale.ENGLISH))) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append('.');
-            }
-
-            if (Character.isDigit(p.charAt(0)) || JAVA_RESERVED_WORDS.contains(p)) {
-                builder.append('_');
-            }
-            builder.append(p);
-        }
-
-        // Prevent duplication of input string
-        return PACKAGE_INTERNER.intern(builder.toString());
     }
 
     public static @NonNull String getClassName(final String localName) {
