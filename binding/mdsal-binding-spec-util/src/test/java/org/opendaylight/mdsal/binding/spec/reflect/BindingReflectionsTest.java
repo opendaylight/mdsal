@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.spec.reflect;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -26,5 +27,11 @@ public class BindingReflectionsTest {
         public Class<TestImplementation> implementedInterface() {
             return TestImplementation.class;
         }
+    }
+
+    @Test
+    public void testGetModelRootPackageName() {
+        assertEquals("org.opendaylight.yang.gen.v1.test.rev990939",
+            BindingReflections.getModelRootPackageName("org.opendaylight.yang.gen.v1.test.rev990939"));
     }
 }

@@ -301,24 +301,6 @@ public final class Naming {
     }
 
     /**
-     * Returns root package name for supplied package name.
-     *
-     * @param packageName Package for which find model root package.
-     * @return Package of model root.
-     * @throws NullPointerException if {@code packageName} is {@code null}
-     * @throws IllegalArgumentException if {@code packageName} does not start with {@link #PACKAGE_PREFIX} or it does
-     *                                  not match package name formatting rules
-     */
-    public static @NonNull String getModelRootPackageName(final String packageName) {
-        checkArgument(packageName.startsWith(PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
-            PACKAGE_PREFIX, packageName);
-        final var match = ROOT_PACKAGE_PATTERN.matcher(packageName);
-        checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", packageName,
-            ROOT_PACKAGE_PATTERN_STRING);
-        return match.group(0);
-    }
-
-    /**
      * Builds class name representing yang-data template name which is not yang identifier compliant.
      *
      * @param templateName template name
