@@ -20,9 +20,9 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -107,7 +107,7 @@ public final class BindingRuntimeHelpers {
 
     public static @NonNull YangModuleInfo getYangModuleInfo(final Class<?> clazz) {
         // Module info resides in the root package we will use that to ascertain identity
-        final var modelPackage = Naming.getModelRootPackageName(clazz.getPackage().getName());
+        final var modelPackage = BindingReflections.getModelRootPackageName(clazz.getPackage().getName());
 
         for (var bindingProvider : ServiceLoader.load(YangModelBindingProvider.class, clazz.getClassLoader())) {
             var moduleInfo = bindingProvider.getModuleInfo();

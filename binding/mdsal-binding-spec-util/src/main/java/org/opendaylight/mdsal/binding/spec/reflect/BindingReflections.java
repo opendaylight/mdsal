@@ -18,6 +18,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.checkerframework.checker.regex.qual.Regex;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -36,6 +39,10 @@ import org.slf4j.LoggerFactory;
 
 public final class BindingReflections {
     private static final Logger LOG = LoggerFactory.getLogger(BindingReflections.class);
+    @Regex
+    private static final String ROOT_PACKAGE_PATTERN_STRING =
+        "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*?\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
+    private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
     private static final LoadingCache<Class<?>, Optional<QName>> CLASS_TO_QNAME = CacheBuilder.newBuilder()
             .weakKeys()
             .expireAfterAccess(60, TimeUnit.SECONDS)
@@ -67,13 +74,29 @@ public final class BindingReflections {
     }
 
     /**
+     * Returns root package name for supplied package name.
+     *
+     * @param packageName Package for which find model root package.
+     * @return Package of model root.
+     */
+    public static @NonNull String getModelRootPackageName(final String packageName) {
+        checkArgument(packageName.startsWith(Naming.PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
+            Naming.PACKAGE_PREFIX, packageName);
+        final Matcher match = ROOT_PACKAGE_PATTERN.matcher(packageName);
+        checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", packageName,
+            ROOT_PACKAGE_PATTERN_STRING);
+        return match.group(0);
+    }
+
+
+    /**
      * Returns instance of {@link YangModuleInfo} of declaring model for specific class.
      *
      * @param cls data object class
      * @return Instance of {@link YangModuleInfo} associated with model, from which this class was derived.
      */
     private static @NonNull YangModuleInfo getModuleInfo(final Class<?> cls) {
-        final String potentialClassName = Naming.getModelRootPackageName(cls.getPackage().getName()) + "."
+        final String potentialClassName = getModelRootPackageName(cls.getPackage().getName()) + "."
             + Naming.MODULE_INFO_CLASS_NAME;
         final Class<?> moduleInfoClass;
         try {
