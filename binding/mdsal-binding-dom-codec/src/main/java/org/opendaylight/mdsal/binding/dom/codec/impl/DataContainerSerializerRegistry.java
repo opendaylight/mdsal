@@ -10,13 +10,13 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- * SPI-level contract for registry of {@link DataObjectSerializer}. The contract is kept between implementation of
- * {@link DataObjectSerializer}, Registry provides lookup for serializers to support recursive serialization of nested
+ * SPI-level contract for registry of {@link DataContainerSerializer}. The contract is kept between implementation of
+ * {@link DataContainerSerializer}, Registry provides lookup for serializers to support recursive serialization of nested
  * {@link DataObject}s.
  */
 // FIXME: this interface should not be necessary
-public interface DataObjectSerializerRegistry {
+public interface DataContainerSerializerRegistry {
 
-    DataObjectSerializer getSerializer(Class<? extends DataObject> binding);
+    DataContainerSerializer getSerializer(Class<? extends DataObject> binding);
 
 }
