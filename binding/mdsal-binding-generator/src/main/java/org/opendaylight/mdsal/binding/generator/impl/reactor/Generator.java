@@ -17,9 +17,13 @@ import static org.opendaylight.mdsal.binding.model.ri.Types.wildcardTypeFor;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -60,6 +64,10 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 public abstract class Generator implements Iterable<Generator> {
     static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
     static final JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
+
+
+    private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
+    private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
     private final AbstractCompositeGenerator<?, ?> parent;
 
@@ -204,7 +212,7 @@ public abstract class Generator implements Iterable<Generator> {
     @NonNull String createJavaPackage() {
         final String parentPackage = getPackageParent().javaPackage();
         final String myPackage = getMember().currentPackage();
-        return Naming.normalizePackageName(parentPackage + '.' + myPackage);
+        return normalizePackageName(parentPackage + '.' + myPackage);
     }
 
     final @NonNull JavaTypeName typeName() {
@@ -365,5 +373,26 @@ public abstract class Generator implements Iterable<Generator> {
                 .setReturnType(classType(classType));
         ret.addAnnotation(OVERRIDE_ANNOTATION);
         return ret;
+    }
+
+    protected static @NonNull String normalizePackageName(final String packageName) {
+        final StringBuilder builder = new StringBuilder();
+        boolean first = true;
+
+        for (String p : DOT_SPLITTER.split(packageName.toLowerCase(Locale.ENGLISH))) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('.');
+            }
+
+            if (Character.isDigit(p.charAt(0)) || Naming.JAVA_RESERVED_WORDS.contains(p)) {
+                builder.append('_');
+            }
+            builder.append(p);
+        }
+
+        // Prevent duplication of input string
+        return PACKAGE_INTERNER.intern(builder.toString());
     }
 }
