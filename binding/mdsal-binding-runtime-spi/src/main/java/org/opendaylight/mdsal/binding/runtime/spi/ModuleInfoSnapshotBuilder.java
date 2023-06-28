@@ -22,11 +22,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.stmt.FeatureSet;
@@ -110,7 +110,7 @@ public final class ModuleInfoSnapshotBuilder {
             mappedInfos.put(source.getIdentifier(), info);
 
             final Class<?> infoClass = info.getClass();
-            final String infoRoot = Naming.getModelRootPackageName(infoClass.getPackage().getName());
+            final String infoRoot = BindingReflections.getModelRootPackageName(infoClass.getPackage().getName());
             classLoaders.put(infoRoot, infoClass.getClassLoader());
             namespaces.put(infoRoot, info.getName().getModule());
 
@@ -125,7 +125,7 @@ public final class ModuleInfoSnapshotBuilder {
             final var featuresByModule = FeatureSet.builder();
             for (var entry : Multimaps.asMap(moduleFeatures).entrySet()) {
                 final var moduleData = entry.getKey();
-                final var moduleRoot = Naming.getModelRootPackageName(moduleData.getPackage().getName());
+                final var moduleRoot = BindingReflections.getModelRootPackageName(moduleData.getPackage().getName());
                 final var moduleNamespace = namespaces.get(moduleRoot);
                 if (moduleNamespace == null) {
                     throw new YangParserException("Failed to resolve namespace of " + moduleData);

@@ -19,12 +19,6 @@ import org.opendaylight.yangtools.yang.common.YangDataName;
 public class NamingTest {
 
     @Test
-    public void testGetModelRootPackageName() {
-        assertEquals("org.opendaylight.yang.gen.v1.test.rev990939",
-            Naming.getModelRootPackageName("org.opendaylight.yang.gen.v1.test.rev990939"));
-    }
-
-    @Test
     public void testGetMethodName() {
         assertEquals("testLocalName", Naming.getMethodName(QName.create("testNS", "testLocalName")));
         assertEquals("testYangIdentifier", Naming.getMethodName("TestYangIdentifier"));
