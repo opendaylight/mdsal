@@ -364,7 +364,9 @@ public final class Naming {
      * @param qname RPC QName
      * @return The RPC method name as determined by considering the localname against the JLS.
      * @throws NullPointerException if {@code qname} is null
+     * @deprecated This method is used only by either deprecated methods or deprecated classes.
      */
+    @Deprecated
     public static @NonNull String getRpcMethodName(final @NonNull QName qname) {
         final String methodName = getMethodName(qname);
         return JAVA_RESERVED_WORDS.contains(methodName) ? methodName + "$" : methodName;
