@@ -109,7 +109,7 @@ final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStat
         final var ret = super.constructGetter(builder, returnType).setMechanics(ValueMechanics.NULLIFY_EMPTY);
 
         final var nonnull = builder
-            .addMethod(Naming.getNonnullMethodName(localName().getLocalName()))
+            .addMethod(getNonnullMethodName(localName().getLocalName()))
             .setReturnType(returnType)
             .setDefault(true);
         annotateDeprecatedIfNecessary(nonnull);
