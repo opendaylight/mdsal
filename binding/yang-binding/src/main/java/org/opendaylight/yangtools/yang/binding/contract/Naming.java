@@ -236,34 +236,12 @@ public final class Naming {
         return getMethodName(name.getLocalName());
     }
 
-    public static boolean isGetterMethodName(final String methodName) {
-        return methodName.startsWith(GETTER_PREFIX);
-    }
-
-    public static @NonNull String getGetterMethodForNonnull(final String methodName) {
-        checkArgument(isNonnullMethodName(methodName));
-        return GETTER_PREFIX + methodName.substring(NONNULL_PREFIX.length());
-    }
-
     public static @NonNull String getNonnullMethodName(final String localName) {
         return NONNULL_PREFIX + toFirstUpper(getPropertyName(localName));
     }
 
-    public static boolean isNonnullMethodName(final String methodName) {
-        return methodName.startsWith(NONNULL_PREFIX);
-    }
-
-    public static @NonNull String getGetterMethodForRequire(final String methodName) {
-        checkArgument(isRequireMethodName(methodName));
-        return GETTER_PREFIX + methodName.substring(REQUIRE_PREFIX.length());
-    }
-
     public static @NonNull String getRequireMethodName(final String localName) {
         return REQUIRE_PREFIX + toFirstUpper(getPropertyName(localName));
-    }
-
-    public static boolean isRequireMethodName(final String methodName) {
-        return methodName.startsWith(REQUIRE_PREFIX);
     }
 
     public static @NonNull String getPropertyName(final String yangIdentifier) {
