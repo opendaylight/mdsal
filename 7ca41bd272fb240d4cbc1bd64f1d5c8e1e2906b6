@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3b34468e_a1ceef10",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/mdsal-505/leafref-relative-circular.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-06-29T10:58:30Z",
+      "side": 1,
+      "message": "substatements of `list neighbor` are indented with 5 spaces\nchange it to be 4",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "7ca41bd272fb240d4cbc1bd64f1d5c8e1e2906b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "14cd0d7c_7386a45b",
         "filename": "binding/mdsal-binding-generator/src/test/resources/mdsal-505/leafref-relative-circular.yang",
         "patchSetId": 2
