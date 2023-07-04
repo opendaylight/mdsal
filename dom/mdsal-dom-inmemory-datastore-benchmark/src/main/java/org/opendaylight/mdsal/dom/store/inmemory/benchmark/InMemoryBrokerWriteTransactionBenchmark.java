@@ -8,9 +8,9 @@
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -32,15 +32,14 @@ import org.openjdk.jmh.annotations.State;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(1)
 public class InMemoryBrokerWriteTransactionBenchmark extends AbstractInMemoryBrokerWriteTransactionBenchmark {
-    private ListeningExecutorService executor = null;
+    private ExecutorService executor = null;
 
     @Setup(Level.Trial)
     @Override
     public void setUp() throws Exception {
-        ListeningExecutorService dsExec = MoreExecutors.newDirectExecutorService();
-        executor = MoreExecutors.listeningDecorator(
-                MoreExecutors.getExitingExecutorService((ThreadPoolExecutor) Executors.newFixedThreadPool(1), 1L,
-                        TimeUnit.SECONDS));
+        var dsExec = MoreExecutors.newDirectExecutorService();
+        executor = MoreExecutors.getExitingExecutorService((ThreadPoolExecutor) Executors.newFixedThreadPool(1), 1L,
+                        TimeUnit.SECONDS);
 
         InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER", dsExec);
         InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG", dsExec);
