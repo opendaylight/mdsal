@@ -50,6 +50,42 @@
       "message": "This will need to also point to the new issue.",
       "revId": "cf9d41b3485708572b07068b4646d99ede0886a9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d88d902_1affd1ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-07-06T11:17:11Z",
+      "side": 1,
+      "message": "Done for all changes in relation chain of https://git.opendaylight.org/gerrit/c/mdsal/+/106742\nwhich means this change can be abandoned",
+      "parentUuid": "31856b43_237d70c5",
+      "revId": "cf9d41b3485708572b07068b4646d99ede0886a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2633fa7_3e7a5d63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-07-06T11:17:11Z",
+      "side": 1,
+      "message": "Done. The individual changes are accessible under \"Gerrit reviews\" here: https://jira.opendaylight.org/browse/MDSAL-831",
+      "parentUuid": "2a5a0156_c71b67b4",
+      "revId": "cf9d41b3485708572b07068b4646d99ede0886a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
