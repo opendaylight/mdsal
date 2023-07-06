@@ -77,6 +77,18 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- JPMS workaround for https://github.com/eclipse-m2e/m2e-core/issues/173 -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration combine.self="append">
+                    <argLine>--add-reads org.opendaylight.mdsal.binding.runtime.spi=org.opendaylight.mdsal.binding.test.model</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/controller.git</developerConnection>
