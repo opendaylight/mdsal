@@ -95,24 +95,9 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
 
     protected abstract @NonNull T type();
 
-    /**
-     * Returns nested node context using supplied YANG Instance Identifier.
-     *
-     * @param arg Yang Instance Identifier Argument
-     * @return Context of child
-     * @throws IllegalArgumentException If supplied argument does not represent valid child.
-     */
     @Override
     public abstract CodecContext yangPathArgumentChild(YangInstanceIdentifier.PathArgument arg);
 
-    /**
-     * Returns nested node context using supplied Binding Instance Identifier
-     * and adds YANG instance identifiers to supplied list.
-     *
-     * @param arg Binding Instance Identifier Argument
-     * @return Context of child or null if supplied {@code arg} does not represent valid child.
-     * @throws IllegalArgumentException If supplied argument does not represent valid child.
-     */
     @Override
     public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
@@ -143,13 +128,6 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
     @Override
     public abstract <C extends DataObject> CommonDataObjectCodecContext<C, ?> getStreamChild(Class<C> childClass);
 
-    /**
-     * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case, one
-     * must issue getChild(ChoiceClass).getChild(CaseClass).
-     *
-     * @param childClass child class
-     * @return Context of child or Optional.empty is supplied class is not applicable in context.
-     */
     @Override
     public abstract <C extends DataObject> CommonDataObjectCodecContext<C, ?> streamChild(Class<C> childClass);
 
@@ -334,8 +312,6 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
             Augmentation.class);
         return opt.orElse(null);
     }
-
-
 
     private static @NonNull ChildAddressabilitySummary computeChildAddressabilitySummary(final Object nodeSchema) {
         // FIXME: rework this to work on EffectiveStatements
