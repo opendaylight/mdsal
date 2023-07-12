@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "265c2c01_beb8f395",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/mdsal-505/leafref-relative-circular.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-07-12T10:08:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b34468e_a1ceef10",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "7ca41bd272fb240d4cbc1bd64f1d5c8e1e2906b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "14cd0d7c_7386a45b",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-06-29T10:41:36Z",
       "side": 1,
       "message": "Add an empty line at the end of the file\nhttps://rules.sonarsource.com/java/RSPEC-113",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 1
+      },
+      "revId": "7ca41bd272fb240d4cbc1bd64f1d5c8e1e2906b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c98800af_f74d16f3",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/mdsal-505/leafref-relative-circular.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-07-12T10:08:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14cd0d7c_7386a45b",
       "range": {
         "startLine": 30,
         "startChar": 0,
@@ -83,6 +131,54 @@
       "writtenOn": "2023-06-29T10:41:36Z",
       "side": 1,
       "message": "Add an empty line at the end of the file",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "7ca41bd272fb240d4cbc1bd64f1d5c8e1e2906b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb88d9d2_2b2c8c0a",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/mdsal-505/leafref-valid-chain.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-07-12T10:08:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b60c50e1_aa31a196",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "7ca41bd272fb240d4cbc1bd64f1d5c8e1e2906b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78b00bc0_bf4d7e8a",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/mdsal-505/leafref-valid-chain.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-07-12T10:08:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6455dfe4_e86beb78",
       "range": {
         "startLine": 41,
         "startChar": 0,
