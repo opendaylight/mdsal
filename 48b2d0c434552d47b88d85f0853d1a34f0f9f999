@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "312d1903_67b65241",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-07-13T10:52:59Z",
+      "side": 1,
+      "message": "Looks good, but please do what Robert suggested.",
+      "revId": "48b2d0c434552d47b88d85f0853d1a34f0f9f999",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
