@@ -47,6 +47,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce76734a_e01c5556",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/UnionsPatternEnforcementTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-13T11:18:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "362093bc_7fa69b19",
+      "range": {
+        "startLine": 13,
+        "startChar": 7,
+        "endLine": 13,
+        "endChar": 17
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0097a19e_bc6d663b",
@@ -70,6 +94,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "96f19519_e18cddac",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/UnionsPatternEnforcementTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-13T11:18:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0097a19e_bc6d663b",
+      "range": {
+        "startLine": 19,
+        "startChar": 13,
+        "endLine": 19,
+        "endChar": 41
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "42b3ecc9_4ded7fc9",
@@ -83,6 +131,30 @@
       "writtenOn": "2023-06-26T19:25:09Z",
       "side": 1,
       "message": "this is a standard model -- this change must work without modifying it",
+      "range": {
+        "startLine": 86,
+        "startChar": 32,
+        "endLine": 86,
+        "endChar": 37
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75953fc6_a2a371a3",
+        "filename": "model/ietf/rfc8525/src/main/yang/ietf-yang-library@2019-01-04.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-13T11:18:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42b3ecc9_4ded7fc9",
       "range": {
         "startLine": 86,
         "startChar": 32,
