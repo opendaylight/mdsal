@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc4daf6e_c0b2e89c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-17T13:35:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "08a3bd3b_90138e45",
+      "range": {
+        "startLine": 50,
+        "startChar": 8,
+        "endLine": 50,
+        "endChar": 16
+      },
+      "revId": "022dbd9da89cae1d3cd87e5cae934702f0cfe8a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "221b129b_9e58806c",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-06-19T17:25:52Z",
       "side": 1,
       "message": "4 spaces is enough",
+      "range": {
+        "startLine": 62,
+        "startChar": 8,
+        "endLine": 62,
+        "endChar": 16
+      },
+      "revId": "022dbd9da89cae1d3cd87e5cae934702f0cfe8a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0527dc2_42f03c9a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-17T13:35:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "221b129b_9e58806c",
       "range": {
         "startLine": 62,
         "startChar": 8,
