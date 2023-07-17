@@ -16,6 +16,86 @@
       "message": "recheck",
       "revId": "e872bc62eaa27433f39f6b151d7af5ce142a6d0d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e314e4d5_4f92ea4b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/UnionTemplate.xtend",
+        "patchSetId": 15
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-07-17T20:47:43Z",
+      "side": 1,
+      "message": "1 tab less for this block - compare with one above pls",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 98,
+        "endChar": 11
+      },
+      "revId": "e872bc62eaa27433f39f6b151d7af5ce142a6d0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ea86217_932f2fb8",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 15
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-07-17T20:47:43Z",
+      "side": 1,
+      "message": "Should be just one empty line",
+      "revId": "e872bc62eaa27433f39f6b151d7af5ce142a6d0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7eacbdff_98e2e44e",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 15
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-07-17T20:47:43Z",
+      "side": 1,
+      "message": "Pls add empty line",
+      "revId": "e872bc62eaa27433f39f6b151d7af5ce142a6d0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bce560a_58b5fc87",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-07-17T20:47:43Z",
+      "side": 1,
+      "message": "We are using 1 tab(4 spaces) for continuation indent",
+      "range": {
+        "startLine": 191,
+        "startChar": 20,
+        "endLine": 191,
+        "endChar": 24
+      },
+      "revId": "e872bc62eaa27433f39f6b151d7af5ce142a6d0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
