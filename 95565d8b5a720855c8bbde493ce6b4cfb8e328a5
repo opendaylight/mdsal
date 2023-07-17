@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a75f897a_d644fca6",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/opendaylight-default-value-test.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-17T16:21:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe8bdf03_ddec5448",
+      "range": {
+        "startLine": 250,
+        "startChar": 3,
+        "endLine": 250,
+        "endChar": 29
+      },
+      "revId": "95565d8b5a720855c8bbde493ce6b4cfb8e328a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "362093bc_7fa69b19",
