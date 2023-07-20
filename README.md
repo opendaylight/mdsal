@@ -48,5 +48,5 @@ for XML and JSON payload type.
 
 ## Contributing
 
-MD-SAL is part of http://opendaylight.org[OpenDaylight Project], where we
-use http://git.opendaylight.org[Gerrit] for incoming patch reviews.
+MD-SAL is part of [OpenDaylight Project](http://opendaylight.org), where we
+use [Gerrit](http://git.opendaylight.org) for incoming patch reviews.
