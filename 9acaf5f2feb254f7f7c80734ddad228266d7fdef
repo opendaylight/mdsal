@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5e7811f_8d484698",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/UnionTemplate.xtend",
+        "patchSetId": 16
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-07-20T12:56:23Z",
+      "side": 1,
+      "message": "I think we should comply with same check-style is for java files so move the import",
+      "revId": "9acaf5f2feb254f7f7c80734ddad228266d7fdef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
