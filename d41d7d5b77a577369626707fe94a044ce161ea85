@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b2d971c_e264a63b",
+        "filename": "README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-07-21T15:00:47Z",
+      "side": 1,
+      "message": "let\u0027s use https:// here",
+      "range": {
+        "startLine": 52,
+        "startChar": 13,
+        "endLine": 52,
+        "endChar": 17
+      },
+      "revId": "d41d7d5b77a577369626707fe94a044ce161ea85",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
