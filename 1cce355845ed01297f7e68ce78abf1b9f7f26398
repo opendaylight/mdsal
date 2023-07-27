@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e24a231_98bb0f36",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-07-27T11:38:31Z",
+      "side": 1,
+      "message": "please fix",
+      "revId": "1cce355845ed01297f7e68ce78abf1b9f7f26398",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "228c42cd_a563f3fb",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-07-27T11:38:31Z",
+      "side": 1,
+      "message": "this was pointed out by Alex previously, but the extra line is still here",
+      "revId": "1cce355845ed01297f7e68ce78abf1b9f7f26398",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab147914_0bf898c0",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-07-27T11:38:31Z",
+      "side": 1,
+      "message": "same here, extra line please",
+      "revId": "1cce355845ed01297f7e68ce78abf1b9f7f26398",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
