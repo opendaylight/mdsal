@@ -35,6 +35,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "11434b24_c14acff5",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-31T10:55:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "228c42cd_a563f3fb",
+      "revId": "1cce355845ed01297f7e68ce78abf1b9f7f26398",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ab147914_0bf898c0",
@@ -48,6 +66,24 @@
       "writtenOn": "2023-07-27T11:38:31Z",
       "side": 1,
       "message": "same here, extra line please",
+      "revId": "1cce355845ed01297f7e68ce78abf1b9f7f26398",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ac6fcda_f1f215e1",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-07-31T10:55:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ab147914_0bf898c0",
       "revId": "1cce355845ed01297f7e68ce78abf1b9f7f26398",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
