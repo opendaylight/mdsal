@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "062ef751_9f705173",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 18
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-02T10:38:41Z",
+      "side": 1,
+      "message": "minor style issues",
+      "revId": "f59ea8dce0b40b792326358d6c585a98d8890815",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83654759_1f2f89eb",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/UnionTemplate.xtend",
+        "patchSetId": 18
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-02T10:38:41Z",
+      "side": 1,
+      "message": "align this with the `def` keyword please",
+      "range": {
+        "startLine": 98,
+        "startChar": 8,
+        "endLine": 98,
+        "endChar": 11
+      },
+      "revId": "f59ea8dce0b40b792326358d6c585a98d8890815",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20fb5314_c7f1f2ae",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal405.yang",
+        "patchSetId": 18
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-02T10:38:41Z",
+      "side": 1,
+      "message": "Please add an empty line at the end of the file.\nhttps://rules.sonarsource.com/java/RSPEC-113",
+      "revId": "f59ea8dce0b40b792326358d6c585a98d8890815",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
