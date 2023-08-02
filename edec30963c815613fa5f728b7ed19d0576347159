@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46943565_b3521cb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "minor code style issues",
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60cb5e14_6477b051",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataContainerCodecContext.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "Remove it",
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e531863_1978bb3c",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "Set continuation indent to 4 in your settings and apply it here",
+      "range": {
+        "startLine": 89,
+        "startChar": 12,
+        "endLine": 89,
+        "endChar": 16
+      },
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4826f32e_1dfc1a9f",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "var",
+      "range": {
+        "startLine": 139,
+        "startChar": 22,
+        "endLine": 139,
+        "endChar": 41
+      },
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3eb550b_875eb2f6",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "4 spaces",
+      "range": {
+        "startLine": 177,
+        "startChar": 8,
+        "endLine": 177,
+        "endChar": 16
+      },
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4200f6f5_5ab8ae94",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "if and only if",
+      "range": {
+        "startLine": 210,
+        "startChar": 38,
+        "endLine": 210,
+        "endChar": 52
+      },
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55a82914_cdb1c48c",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T15:52:33Z",
+      "side": 1,
+      "message": "if and only if",
+      "range": {
+        "startLine": 254,
+        "startChar": 46,
+        "endLine": 254,
+        "endChar": 60
+      },
+      "revId": "edec30963c815613fa5f728b7ed19d0576347159",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
