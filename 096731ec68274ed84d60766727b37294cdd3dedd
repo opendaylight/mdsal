@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63afc590_bbbd0801",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T19:44:48Z",
+      "side": 1,
+      "message": "All seems ok, just one line with bunch of spaces should be fixed",
+      "revId": "096731ec68274ed84d60766727b37294cdd3dedd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e42f8197_123887e1",
+        "filename": "docs/model-registration.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-02T19:44:48Z",
+      "side": 1,
+      "message": "do we need these spaces in the end?",
+      "range": {
+        "startLine": 2,
+        "startChar": 28,
+        "endLine": 2,
+        "endChar": 129
+      },
+      "revId": "096731ec68274ed84d60766727b37294cdd3dedd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
