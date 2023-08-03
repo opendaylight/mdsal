@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3b88f5e_803c28bb",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 15
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-03T10:46:08Z",
+      "side": 0,
+      "message": "The `scope test` should probably stay",
+      "revId": "0091d677fa7b610c9236c626036c9f67e53ae560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
