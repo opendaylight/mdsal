@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7913ba69_1fe5aeef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-03T07:43:53Z",
+      "side": 1,
+      "message": "minor formatting things + final variables",
+      "revId": "fef232d2b59002f290ae091507cbde7387d39288",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c23c48a_115b4238",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 12
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-03T07:43:53Z",
+      "side": 1,
+      "message": "Seems, like this inconsistent indentation (it should be indented after the `IF` above with +4 spaces compared to that previous IF) causes the generated constructor to look like this\n```\n@ConstructorParameters(\"value\")\npublic MyDecimal(Decimal64 _value) {\n    CodeHelpers.requireValue(_value);\n        check_valueRange(_value);\n\n    this._value \u003d _value;\n}\n```\nSee the `check_valueRange(_value)` call has weird indentation (not a problem, just a formatting inconsistency)\n\nTry indenting the if statement in the ClassTemplate.xtend file to fix this",
+      "range": {
+        "startLine": 391,
+        "startChar": 12,
+        "endLine": 393,
+        "endChar": 19
+      },
+      "revId": "fef232d2b59002f290ae091507cbde7387d39288",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6c904b1_bf5c9025",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 12
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-03T07:43:53Z",
+      "side": 1,
+      "message": "This is also not indented correctly. Add +4 spaces to indentation",
+      "revId": "fef232d2b59002f290ae091507cbde7387d39288",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f42582ab_67fb14c9",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-03T07:43:53Z",
+      "side": 1,
+      "message": "final\nmake all these variables `final`",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 49,
+        "endChar": 37
+      },
+      "revId": "fef232d2b59002f290ae091507cbde7387d39288",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4972066_0abc3206",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-03T07:43:53Z",
+      "side": 1,
+      "message": "extra empty line - it can be removed",
+      "revId": "fef232d2b59002f290ae091507cbde7387d39288",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
