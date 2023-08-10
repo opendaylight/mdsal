@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04ef9add_51c93203",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-10T07:13:27Z",
+      "side": 1,
+      "message": "also this can be `final var`",
+      "range": {
+        "startLine": 140,
+        "startChar": 16,
+        "endLine": 140,
+        "endChar": 19
+      },
+      "revId": "b0296381a5d262c8de64b41a04223098ac91a9b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78d2f1bd_e694e595",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-10T07:13:27Z",
+      "side": 1,
+      "message": "same with this, `final var`",
+      "range": {
+        "startLine": 141,
+        "startChar": 16,
+        "endLine": 141,
+        "endChar": 19
+      },
+      "revId": "b0296381a5d262c8de64b41a04223098ac91a9b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8fed5575_6bde1b65",
+        "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-10T07:13:27Z",
+      "side": 1,
+      "message": "I am not sure about this statement. What ChoiceRuntimeType is it about?\nIt does not seem like it throws NPE. If we perform `ImmutableSetMultimap#get` on an empty map, we get an empty `Set`, if we do `ImmutableSetMultimap.get(null)` we also get an empty `Set`.\nFrom javadoc: `If no mappings in the multimap have the provided key, an empty immutable set is returned.`\nThis behavior should be documented in the javadoc body or in the javadoc `@return`",
+      "revId": "b0296381a5d262c8de64b41a04223098ac91a9b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
