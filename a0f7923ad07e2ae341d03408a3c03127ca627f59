@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0130e7cd_d45925f0",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-08-10T12:45:48Z",
+      "side": 1,
+      "message": "do we still need this import?",
+      "revId": "a0f7923ad07e2ae341d03408a3c03127ca627f59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
