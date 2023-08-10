@@ -137,8 +137,8 @@ final class BindingRuntimeTypesFactory implements Mutable {
     private void populateGroupingInstances(final Iterable<? extends Generator> generators) {
         for (final var gen : generators) {
             if (gen instanceof AbstractCompositeGenerator<?, ?> compositeGen && gen.generatedType().isPresent()) {
-                var runtimeType = compositeGen.runtimeType().orElseThrow();
-                var groupings = compositeGen.groupings();
+                final var runtimeType = compositeGen.runtimeType().orElseThrow();
+                final var groupings = compositeGen.groupings();
                 for (final AbstractCompositeGenerator<?, ?> group: groupings) {
                     groupingToInstantiation.put(group.runtimeType().orElseThrow().getIdentifier(), runtimeType);
                 }

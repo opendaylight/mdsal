@@ -131,7 +131,6 @@ public interface BindingRuntimeTypes extends EffectiveModelContextProvider, Runt
      *
      * @param groupingType A JavaTypeName of grouping
      * @return The set of {@link RuntimeType}s pointing to it's instantiations
-     * @throws NullPointerException if {@code ChoiceRuntimeType} is null
      */
     @NonNull Set<RuntimeType> allGroupingInstance(JavaTypeName groupingType);
 }

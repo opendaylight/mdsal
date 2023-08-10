@@ -36,5 +36,6 @@ public class Mdsal669Test {
                 runtimeTypes.allGroupingInstance(BAZ));
 
         assertTrue(runtimeTypes.allGroupingInstance(UNUSED).isEmpty());
+        assertTrue(runtimeTypes.allGroupingInstance(null).isEmpty());
     }
 }
