@@ -16,6 +16,24 @@
       "message": "I think it\u0027s better do import static for NONNULL_PREFIX here",
       "revId": "74e6b7685bd60c8d45f51a449845dd9322c408c8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e077178_31f6547e",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractCompositeGenerator.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 452,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-11T07:57:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a449fa53_9c4ae3e6",
+      "revId": "74e6b7685bd60c8d45f51a449845dd9322c408c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
