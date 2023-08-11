@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "85b998bd_86c8f554",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/enum-test-models/enum-names-mapping@2023-02-17.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-11T07:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "34b8468b_5a1521a0",
+      "revId": "58b0b456e165668f121c4ab24a01392e30df5d5c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "76a893ed_c6ee58f6",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-08-10T12:43:34Z",
       "side": 1,
       "message": "is this method necessary?",
+      "revId": "58b0b456e165668f121c4ab24a01392e30df5d5c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2adc2241_be105431",
+        "filename": "binding/mdsal-binding-model-ri/src/main/java/org/opendaylight/mdsal/binding/model/ri/generated/type/builder/AbstractEnumerationBuilder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-08-11T07:42:59Z",
+      "side": 1,
+      "message": "nope, you are right, removed.",
+      "parentUuid": "76a893ed_c6ee58f6",
       "revId": "58b0b456e165668f121c4ab24a01392e30df5d5c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
