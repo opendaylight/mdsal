@@ -16,6 +16,24 @@
       "message": "The `scope test` should probably stay",
       "revId": "0091d677fa7b610c9236c626036c9f67e53ae560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56f8409f_9f5bdfa8",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 15
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-08-15T07:36:53Z",
+      "side": 0,
+      "message": "since this module uses BindingRuntimeHelpers from mdsal-binding-runtime-spi, having it in scope test would not let it work",
+      "parentUuid": "e3b88f5e_803c28bb",
+      "revId": "0091d677fa7b610c9236c626036c9f67e53ae560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
