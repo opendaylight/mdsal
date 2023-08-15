@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "164952f2_56883029",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-08-15T11:16:51Z",
+      "side": 1,
+      "message": "Looks ok for me. I\u0027m not sure about all other usages of getQNameModule(), findQname() and getContractQName()",
+      "revId": "0b114149f17e2a24d85749373c8fa8c1496dbbe8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
