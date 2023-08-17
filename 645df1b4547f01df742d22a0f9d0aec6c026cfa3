@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "95cffe5c_43277725",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-08-17T07:36:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c96cab01_f60cfe41",
+      "range": {
+        "startLine": 142,
+        "startChar": 27,
+        "endLine": 142,
+        "endChar": 59
+      },
+      "revId": "645df1b4547f01df742d22a0f9d0aec6c026cfa3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8a126f3c_d5f517e3",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-08-15T16:31:50Z",
       "side": 1,
       "message": "2023?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "645df1b4547f01df742d22a0f9d0aec6c026cfa3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17d63b58_0310d342",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal669Test.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-08-17T07:36:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a126f3c_d5f517e3",
       "range": {
         "startLine": 2,
         "startChar": 17,
