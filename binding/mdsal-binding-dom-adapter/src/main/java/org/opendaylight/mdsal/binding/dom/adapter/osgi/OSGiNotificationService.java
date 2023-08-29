@@ -11,8 +11,6 @@ import com.google.common.annotations.Beta;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener;
-import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -41,12 +39,13 @@ public final class OSGiNotificationService extends AbstractAdaptedService<Notifi
 
     @Override
     public <N extends Notification<N> & DataObject> Registration registerListener(final Class<N> type,
-            final Listener<N> listener, final Executor executor) {
+            final NotificationService.Listener<N> listener, final Executor executor) {
         return delegate().registerListener(type, listener, executor);
     }
 
     @Override
-    public Registration registerCompositeListener(final CompositeListener listener, final Executor executor) {
+    public Registration registerCompositeListener(final NotificationService.CompositeListener listener,
+            final Executor executor) {
         return delegate().registerCompositeListener(listener, executor);
     }
 

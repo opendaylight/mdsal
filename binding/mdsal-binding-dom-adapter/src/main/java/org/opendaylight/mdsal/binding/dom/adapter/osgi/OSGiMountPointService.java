@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
-import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
@@ -36,8 +35,8 @@ public final class OSGiMountPointService extends AbstractAdaptedService<MountPoi
     }
 
     @Override
-    public <T extends MountPointListener> ListenerRegistration<T> registerListener(final InstanceIdentifier<?> path,
-            final T listener) {
+    public <T extends MountPointService.MountPointListener> ListenerRegistration<T> registerListener(
+            final InstanceIdentifier<?> path, final T listener) {
         return delegate().registerListener(path, listener);
     }
 
