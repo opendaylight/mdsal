@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class GlobalDOMRpcRoutingTableEntryTest {

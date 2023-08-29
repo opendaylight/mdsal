@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class UnknownDOMRpcRoutingTableEntryTest {
