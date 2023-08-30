@@ -93,15 +93,17 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
                 && yangID.equals(arg.getRootIdentifier()));
     }
 
-    private static class TestClusteredDataTreeChangeListener implements ClusteredDataTreeChangeListener<Top> {
+    private static final class TestClusteredDataTreeChangeListener implements ClusteredDataTreeChangeListener<Top> {
         @Override
         public void onDataTreeChanged(final Collection<DataTreeModification<Top>> changes) {
+            // No-op
         }
     }
 
-    private static class TestDataTreeChangeListener implements DataTreeChangeListener<Top> {
+    private static final class TestDataTreeChangeListener implements DataTreeChangeListener<Top> {
         @Override
         public void onDataTreeChanged(final Collection<DataTreeModification<Top>> changes) {
+            // No-op
         }
     }
 }
