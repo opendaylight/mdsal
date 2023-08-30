@@ -7,20 +7,19 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class DOMDataTreeIdentifierTest {
+class DOMDataTreeIdentifierTest {
     private static final String REF_LISTS = "ref-lists";
     private static final String TEST_LISTS = "test-lists";
     private static final String COMPARE_FIRST_LISTS = "A-test-lists";
@@ -37,62 +36,53 @@ public class DOMDataTreeIdentifierTest {
         TEST_DIFF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,TEST_YII_IID);
 
     @Test
-    public void constructTest() {
-        assertNotNull("Instantiation", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
+    void constructTest() {
+        assertNotNull(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID), "Instantiation");
     }
 
     @Test
-    public void hashCodeTest() {
-        assertEquals("hashCode", REF_TREE.hashCode(), new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                REF_YII_IID).hashCode());
-        assertNotEquals("hashCode", REF_TREE.hashCode(), TEST_DIFF_TREE.hashCode());
+    void hashCodeTest() {
+        assertEquals(REF_TREE.hashCode(),
+            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID).hashCode());
+        assertNotEquals(REF_TREE.hashCode(), TEST_DIFF_TREE.hashCode());
     }
 
     @Test
-    public void equalsTest() {
-        assertTrue("Equals same", REF_TREE.equals(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                REF_YII_IID)));
-        assertFalse("Different DataStoreType", REF_TREE.equals(
-                new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
-                REF_YII_IID)));
-        assertTrue("Equals same instance", REF_TREE.equals(REF_TREE));
-        assertFalse("Different object", REF_TREE.equals(new Object()));
-        assertFalse("Different instance", REF_TREE.equals(TEST_DIFF_TREE));
+    void equalsTest() {
+        assertEquals(REF_TREE, new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
+        assertNotEquals(REF_TREE, new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, REF_YII_IID));
+        assertEquals(REF_TREE, REF_TREE);
+        assertNotEquals(REF_TREE, new Object());
+        assertNotEquals(REF_TREE, TEST_DIFF_TREE);
     }
 
     @Test
-    public void compareToTest() {
+    void compareToTest() {
         final var compareFirstIid = YangInstanceIdentifier.of(QName.create(TEST_MODULE, COMPARE_FIRST_LISTS));
         final var compareSecondIid = YangInstanceIdentifier.of(QName.create(TEST_MODULE, COMPARE_SECOND_LISTS));
 
-        assertEquals("Compare same to same", REF_TREE.compareTo(
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                REF_YII_IID)), 0);
-        assertNotEquals("Compare same to same with different datastore", REF_TREE.compareTo(new DOMDataTreeIdentifier(
-            LogicalDatastoreType.CONFIGURATION, REF_YII_IID)), 0);
-        assertEquals("Compare same to same with different datastore",
-            new DOMDataTreeIdentifier(
-                LogicalDatastoreType.OPERATIONAL,
-                YangInstanceIdentifier.of(QName.create(TEST_MODULE, REF_LISTS), QName.create(TEST_MODULE, TEST_LISTS)))
-            .compareTo(REF_TREE), 1);
-        assertTrue("Compare first to second", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-            compareFirstIid).compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                compareSecondIid)) < 0);
-        assertTrue("Compare second to first", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-            compareSecondIid).compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                compareFirstIid)) > 0);
+        assertEquals(0, REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
+        assertNotEquals(0,
+            REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, REF_YII_IID)));
+        assertEquals(1, new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+            YangInstanceIdentifier.of(QName.create(TEST_MODULE, REF_LISTS), QName.create(TEST_MODULE, TEST_LISTS)))
+                .compareTo(REF_TREE));
+        assertTrue(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareFirstIid)
+            .compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareSecondIid)) < 0);
+        assertTrue(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareSecondIid)
+            .compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareFirstIid)) > 0);
     }
 
     @Test
-    public void containsTest() {
-        assertTrue("Contains", REF_TREE.contains(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                REF_YII_IID)));
-        assertEquals("Not contains", false, REF_TREE.contains(TEST_DIFF_TREE));
+    void containsTest() {
+        assertTrue(REF_TREE.contains(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
+        assertEquals(false, REF_TREE.contains(TEST_DIFF_TREE));
     }
 
     @Test
-    public void toStringTest() {
-        assertTrue("ToString", REF_TREE.toString().contains(REF_TREE.getRootIdentifier().toString()) && REF_TREE
-                .toString().contains(REF_TREE.getDatastoreType().toString()));
+    void toStringTest() {
+        assertEquals("DOMDataTreeIdentifier{datastore=OPERATIONAL, "
+            + "root=/(urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store)ref-lists}",
+            REF_TREE.toString());
     }
 }

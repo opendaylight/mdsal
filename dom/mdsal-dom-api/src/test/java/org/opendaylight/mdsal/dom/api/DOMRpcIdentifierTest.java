@@ -7,52 +7,50 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class DOMRpcIdentifierTest {
-    private static final String LOCAL_IDENT = "local";
+class DOMRpcIdentifierTest {
     private static final QNameModule TEST_MODULE = QNameModule.create(XMLNamespace.of(
             "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
-    private static final QName LOCAL_QNAME = QName.create(TEST_MODULE, LOCAL_IDENT);
-
+    private static final QName LOCAL_QNAME = QName.create(TEST_MODULE, "local");
     private static final DOMRpcIdentifier GLOBAL = DOMRpcIdentifier.create(LOCAL_QNAME, null);
     private static final DOMRpcIdentifier LOCAL = DOMRpcIdentifier.create(LOCAL_QNAME,
             YangInstanceIdentifier.of(LOCAL_QNAME));
 
     @Test
-    public void createTest() {
-        assertTrue("Global instance", GLOBAL.getClass().getCanonicalName().contains("Global"));
-        assertTrue("Local instance", LOCAL.getClass().getCanonicalName().contains("Local"));
+    void createTest() {
+        assertInstanceOf(DOMRpcIdentifier.Global.class, GLOBAL);
+        assertInstanceOf(DOMRpcIdentifier.Local.class, LOCAL);
     }
 
     @Test
-    public void hashCodeTest() {
-        assertEquals("hashCode", GLOBAL.hashCode(), DOMRpcIdentifier.create(LOCAL_QNAME).hashCode());
-        assertNotEquals("hashCode", GLOBAL.hashCode(), LOCAL.hashCode());
+    void hashCodeTest() {
+        assertEquals(GLOBAL.hashCode(), DOMRpcIdentifier.create(LOCAL_QNAME).hashCode());
+        assertNotEquals(GLOBAL.hashCode(), LOCAL.hashCode());
     }
 
     @Test
-    public void equalsTest() {
-        assertTrue("Equals same", GLOBAL.equals(DOMRpcIdentifier.create(LOCAL_QNAME)));
-        assertTrue("Equals same instance", GLOBAL.equals(GLOBAL));
-        assertFalse("Different object", GLOBAL.equals(new Object()));
-        assertFalse("Different instance", GLOBAL.equals(LOCAL));
+    void equalsTest() {
+        assertEquals(GLOBAL, DOMRpcIdentifier.create(LOCAL_QNAME));
+        assertEquals(GLOBAL, GLOBAL);
+        assertNotEquals(GLOBAL, new Object());
+        assertNotEquals(GLOBAL, LOCAL);
     }
 
     @Test
-    public void toStringTest() {
-        assertTrue("ToString", GLOBAL.toString().contains(GLOBAL.getContextReference().toString()) && GLOBAL.toString()
-                .contains(GLOBAL.getType().toString()));
-        assertTrue("ToString", LOCAL.toString().contains(LOCAL.getContextReference().toString()) && LOCAL.toString()
-                .contains(LOCAL.getType().toString()));
+    void toStringTest() {
+        assertEquals("Global{type=(urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store)local, "
+            + "contextReference=/}", GLOBAL.toString());
+        assertEquals("Local{type=(urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store)local, "
+            + "contextReference=/(urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store)local}",
+            LOCAL.toString());
     }
 }
