@@ -141,9 +141,9 @@ public class Mdsal500Test {
         return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(from);
     }
 
-    private static class Mdsal500ServiceImpl implements Mdsal500Service {
-        private ListenableFuture<RpcResult<SwitchOutput>> switchResult;
+    private static final class Mdsal500ServiceImpl implements Mdsal500Service {
         private final Multimap<String, SwitchInput> receivedSwitch = HashMultimap.create();
+        private ListenableFuture<RpcResult<SwitchOutput>> switchResult;
 
         Mdsal500ServiceImpl setSwitchResult(final ListenableFuture<RpcResult<SwitchOutput>> switchOutput) {
             this.switchResult = switchOutput;
@@ -167,5 +167,4 @@ public class Mdsal500Test {
             return switchResult;
         }
     }
-
 }
