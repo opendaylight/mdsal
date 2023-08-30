@@ -7,26 +7,23 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
-public class DataValidationFailedExceptionTest {
-
-    @Test(expected = DataValidationFailedException.class)
-    public void dataValidationFailedExceptionTest() throws Exception {
-        final TestClass testClass = new TestClass();
-        final DataValidationFailedException dataValidationFailedException =
-                new DataValidationFailedException(TestClass.class, testClass, "test");
-
-        assertEquals(testClass, dataValidationFailedException.getPath());
-        assertEquals(TestClass.class, dataValidationFailedException.getPathType());
-
-        throw dataValidationFailedException;
+class DataValidationFailedExceptionTest {
+    @Test
+    void dataValidationFailedExceptionTest() throws Exception {
+        final var testObj = new TestClass();
+        final var dataValidationFailedException = new DataValidationFailedException(TestClass.class, testObj, "test");
+        assertEquals(testObj, dataValidationFailedException.getPath());
+        assertSame(TestClass.class, dataValidationFailedException.getPathType());
     }
 
     private static final class TestClass implements HierarchicalIdentifier<TestClass> {
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         @Override

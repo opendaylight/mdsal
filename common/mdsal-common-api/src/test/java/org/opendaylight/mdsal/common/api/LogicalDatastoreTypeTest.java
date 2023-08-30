@@ -7,14 +7,48 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class LogicalDatastoreTypeTest {
+class LogicalDatastoreTypeTest {
+    @ParameterizedTest
+    @MethodSource
+    void serialization(final LogicalDatastoreType type, final byte[] expected) throws Exception {
+        final var bout = new ByteArrayOutputStream();
+        try (var out = new DataOutputStream(bout)) {
+            type.writeTo(out);
+        }
+        assertArrayEquals(expected, bout.toByteArray());
+
+        try (var in = new DataInputStream(new ByteArrayInputStream(expected))) {
+            assertSame(type, LogicalDatastoreType.readFrom(in));
+        }
+    }
+
+    static Stream<Object[]> serialization() {
+        return Stream.of(
+            new Object[] { LogicalDatastoreType.OPERATIONAL, new byte[] { 1 }},
+            new Object[] { LogicalDatastoreType.CONFIGURATION, new byte[] { 2 }});
+    }
 
     @Test
-    public void basicTest() {
-        assertFalse(LogicalDatastoreType.CONFIGURATION.equals(LogicalDatastoreType.OPERATIONAL));
+    void invalidSerialization() throws Exception {
+        try (var in = new DataInputStream(new ByteArrayInputStream(new byte[] { 0 }))) {
+            final var ex = assertThrows(IOException.class, () -> LogicalDatastoreType.readFrom(in));
+            assertEquals("Unknown type 0", ex.getMessage());
+        }
     }
+
 }
