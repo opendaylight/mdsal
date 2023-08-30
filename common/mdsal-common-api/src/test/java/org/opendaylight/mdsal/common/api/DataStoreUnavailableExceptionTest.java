@@ -7,12 +7,16 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class DataStoreUnavailableExceptionTest {
+import org.junit.jupiter.api.Test;
 
-    @Test(expected = DataStoreUnavailableException.class)
-    public void dataStoreUnavailableExceptionTest() throws Exception {
-        throw new DataStoreUnavailableException("test", null);
+class DataStoreUnavailableExceptionTest {
+    @Test
+    void dataStoreUnavailableExceptionTest() {
+        final var ex = new DataStoreUnavailableException("test", null);
+        assertEquals("test", ex.getMessage());
+        assertNull(ex.getCause());
     }
 }
