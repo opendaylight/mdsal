@@ -1,0 +1,8 @@
+Code-Review+2: Robert Varga <nite@hq.sk>
+Verified+1: jenkins-releng ODL
+Code-Review+1: Ruslan Kashapov <ruslan.kashapov@pantheon.tech>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Wed, 30 Aug 2023 11:44:53 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/c/mdsal/+/107566
+Project: mdsal
+Branch: refs/heads/master
