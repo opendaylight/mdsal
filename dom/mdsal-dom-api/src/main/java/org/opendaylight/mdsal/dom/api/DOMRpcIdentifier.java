@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.api;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -22,8 +23,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  * concurrently.
  */
 @NonNullByDefault
-public abstract class DOMRpcIdentifier {
-    private static final class Global extends DOMRpcIdentifier {
+public abstract sealed class DOMRpcIdentifier {
+    @VisibleForTesting
+    static final class Global extends DOMRpcIdentifier {
         private Global(final QName type) {
             super(type);
         }
@@ -34,7 +36,8 @@ public abstract class DOMRpcIdentifier {
         }
     }
 
-    private static final class Local extends DOMRpcIdentifier {
+    @VisibleForTesting
+    static final class Local extends DOMRpcIdentifier {
         private final YangInstanceIdentifier contextReference;
 
         private Local(final QName type, final YangInstanceIdentifier contextReference) {
