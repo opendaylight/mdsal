@@ -7,17 +7,22 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class NotificationRejectedExceptionTest {
+import org.junit.jupiter.api.Test;
 
-    @Test(expected = NotificationRejectedException.class)
-    public void constructWithCauseTest() throws Exception {
-        throw new NotificationRejectedException("test", new Throwable());
+class NotificationRejectedExceptionTest {
+    @Test
+    void constructWithCauseTest() throws Exception {
+        assertThrows(NotificationRejectedException.class, () -> {
+            throw new NotificationRejectedException("test", new Throwable());
+        });
     }
 
-    @Test(expected = NotificationRejectedException.class)
-    public void constructTest() throws Exception {
-        throw new NotificationRejectedException("test");
+    @Test
+    void constructTest() throws Exception {
+        assertThrows(NotificationRejectedException.class, () -> {
+            throw new NotificationRejectedException("test");
+        });
     }
 }
