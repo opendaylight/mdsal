@@ -68,7 +68,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
             final InstanceIdentifier<U> path, final U data) {
         final var serializer = adapterContext().currentSerializer();
         final var normalized = toNormalized(serializer, "put", path, data);
-        ensureParentsByMerge(serializer, store, normalized.path());
+        ensureParentsByMerge(serializer, store, normalized);
         put(store, normalized);
     }
 
@@ -100,7 +100,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
             final InstanceIdentifier<U> path, final U data) {
         final var serializer = adapterContext().currentSerializer();
         final var normalized = toNormalized(serializer, "merge", path, data);
-        ensureParentsByMerge(serializer, store, normalized.path());
+        ensureParentsByMerge(serializer, store, normalized);
         merge(store, normalized);
     }
 
@@ -137,12 +137,15 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
      * Subclasses of this class are required to implement creation of parent nodes based on behaviour of their
      * underlying transaction.
      *
+     * @param serializer Current serializer
      * @param store an instance of LogicalDatastoreType
-     * @param domPath an instance of YangInstanceIdentifier
+     * @param normalized NormalizedResult of the operation
      */
     private void ensureParentsByMerge(final CurrentAdapterSerializer serializer, final LogicalDatastoreType store,
-            final YangInstanceIdentifier domPath) {
-        final var parentPath = domPath.getParent();
+            final NormalizedResult normalized) {
+        final var path = normalized.path();
+        // AugmentationResult already points to parent path
+        final var parentPath = normalized instanceof AugmentationResult ? path : path.getParent();
         if (parentPath != null && !parentPath.isEmpty()) {
             final var parentNode = ImmutableNodes.fromInstanceId(
                 serializer.getRuntimeContext().getEffectiveModelContext(), parentPath);
