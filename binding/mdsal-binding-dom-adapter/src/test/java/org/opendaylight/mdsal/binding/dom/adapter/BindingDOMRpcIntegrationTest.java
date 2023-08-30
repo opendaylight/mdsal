@@ -161,9 +161,9 @@ public class BindingDOMRpcIntegrationTest {
         return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(from);
     }
 
-    private static class OpendaylightKnockKnockRpcServiceImpl implements OpendaylightKnockKnockRpcService {
-        private ListenableFuture<RpcResult<KnockKnockOutput>> knockKnockResult;
+    private static final class OpendaylightKnockKnockRpcServiceImpl implements OpendaylightKnockKnockRpcService {
         private final Multimap<InstanceIdentifier<?>, KnockKnockInput> receivedKnocks = HashMultimap.create();
+        private ListenableFuture<RpcResult<KnockKnockOutput>> knockKnockResult;
         private ObjectRegistration<OpendaylightKnockKnockRpcServiceImpl> registration;
 
         OpendaylightKnockKnockRpcServiceImpl setKnockKnockResult(
