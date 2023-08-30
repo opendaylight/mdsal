@@ -7,21 +7,59 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.opendaylight.yangtools.yang.common.ErrorSeverity;
+import org.opendaylight.yangtools.yang.common.ErrorTag;
+import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcError;
 
-public class ReadFailedExceptionTest {
+@ExtendWith(MockitoExtension.class)
+class ReadFailedExceptionTest {
+    @Mock
+    private RpcError rpcError;
 
-    @Test(expected = ReadFailedException.class)
-    public void readFailedExceptionTest() throws Exception {
-        throw new ReadFailedException("test", mock(RpcError.class));
+    @Test
+    void readFailedExceptionTest() throws Exception {
+        final var ex = new ReadFailedException("test", rpcError);
+        assertEquals("test", ex.getMessage());
+        assertEquals(List.of(rpcError), ex.getErrorList());
     }
 
-    @Test(expected = ReadFailedException.class)
-    public void readFailedExceptionWithThrowableTest() throws Exception {
-        throw new ReadFailedException("test", ReadFailedException.MAPPER.apply(
-                new NullPointerException()).getCause(), mock(RpcError.class));
+    @Test
+    void readFailedExceptionWithThrowableTest() throws Exception {
+        final var npe = new NullPointerException();
+        final var ex = new ReadFailedException("test", ReadFailedException.MAPPER.apply(npe));
+        assertEquals("test", ex.getMessage());
+        final var errors = ex.getErrorList();
+        assertEquals(1, errors.size());
+        final var error = errors.get(0);
+        assertEquals(ErrorSeverity.ERROR, error.getSeverity());
+        assertEquals(ErrorType.APPLICATION, error.getErrorType());
+        assertEquals(ErrorTag.OPERATION_FAILED, error.getTag());
+        assertNull(error.getApplicationTag());
+        assertNull(error.getInfo());
+
+        final var cause = assertInstanceOf(ReadFailedException.class, ex.getCause());
+        assertEquals("read encountered an unexpected failure", cause.getMessage());
+        final var causeErrors = cause.getErrorList();
+        assertEquals(1, causeErrors.size());
+        final var causeError = causeErrors.get(0);
+        assertEquals("read encountered an unexpected failure", causeError.getMessage());
+        assertEquals(ErrorSeverity.ERROR, causeError.getSeverity());
+        assertEquals(ErrorType.APPLICATION, causeError.getErrorType());
+        assertEquals(ErrorTag.OPERATION_FAILED, causeError.getTag());
+        assertNull(causeError.getApplicationTag());
+        assertNull(causeError.getInfo());
+
+        assertSame(npe, causeError.getCause());
     }
 }

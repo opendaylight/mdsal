@@ -7,26 +7,23 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.opendaylight.mdsal.common.api.PostPreCommitStep.NOOP_COMMIT_FUTURE;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PostCommitStepTest {
-
+class PostCommitStepTest {
     @Test
-    public void preCommitTest() throws Exception {
-        final PostCanCommitStep postCanCommitStep = PostCanCommitStep.NOOP;
-
-        assertEquals(ThreePhaseCommitStep.NOOP_ABORT_FUTURE ,postCanCommitStep.abort());
-        assertEquals(PostPreCommitStep.NOOP_FUTURE, postCanCommitStep.preCommit());
+    void preCommitTest() throws Exception {
+        final var noop = PostCanCommitStep.NOOP;
+        assertEquals(ThreePhaseCommitStep.NOOP_ABORT_FUTURE ,noop.abort());
+        assertEquals(PostPreCommitStep.NOOP_FUTURE, noop.preCommit());
     }
 
     @Test
-    public void canCommitTest() throws Exception {
-        final PostPreCommitStep postPreCommitStep = PostPreCommitStep.NOOP;
-
-        assertEquals(ThreePhaseCommitStep.NOOP_ABORT_FUTURE ,postPreCommitStep.abort());
-        assertEquals(NOOP_COMMIT_FUTURE, postPreCommitStep.commit());
+    void canCommitTest() throws Exception {
+        final var noop = PostPreCommitStep.NOOP;
+        assertEquals(ThreePhaseCommitStep.NOOP_ABORT_FUTURE ,noop.abort());
+        assertEquals(NOOP_COMMIT_FUTURE, noop.commit());
     }
 }

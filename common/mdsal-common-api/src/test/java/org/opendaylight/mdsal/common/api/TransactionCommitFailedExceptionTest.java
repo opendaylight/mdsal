@@ -7,15 +7,26 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.yangtools.yang.common.RpcError;
 
-public class TransactionCommitFailedExceptionTest {
+@ExtendWith(MockitoExtension.class)
+class TransactionCommitFailedExceptionTest {
+    @Mock
+    private RpcError error;
 
-    @Test(expected = TransactionCommitFailedException.class)
-    public void transactionCommitFailedExceptionTest() throws Exception {
-        throw new TransactionCommitFailedException("test", mock(RpcError.class));
+    @Test
+    void transactionCommitFailedExceptionTest() {
+        final var ex = new TransactionCommitFailedException("test", error);
+        assertEquals("test", ex.getMessage());
+        assertNull(ex.getCause());
+        assertEquals(List.of(error), ex.getErrorList());
     }
 }

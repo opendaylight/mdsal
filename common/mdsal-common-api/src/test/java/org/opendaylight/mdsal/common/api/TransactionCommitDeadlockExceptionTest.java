@@ -7,16 +7,28 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.yangtools.yang.common.RpcError;
 
-public class TransactionCommitDeadlockExceptionTest {
+@ExtendWith(MockitoExtension.class)
+class TransactionCommitDeadlockExceptionTest {
+    @Mock
+    private RpcError rpcError;
 
-    @Test(expected = TransactionCommitDeadlockException.class)
-    public void transactionCommitDeadlockExceptionTest() throws Exception {
-        throw new TransactionCommitDeadlockException(TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER
-                .get().getMessage(), mock(RpcError.class));
+    @Test
+    void transactionCommitDeadlockExceptionTest() throws Exception {
+        final var message = TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER.get().getMessage();
+        final var ex = new TransactionCommitDeadlockException(message, rpcError);
+        assertSame(message, ex.getMessage());
+        assertNull(ex.getCause());
+        assertEquals(List.of(rpcError), ex.getErrorList());
     }
 }

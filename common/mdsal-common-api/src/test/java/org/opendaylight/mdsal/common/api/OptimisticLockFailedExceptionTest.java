@@ -7,12 +7,25 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class OptimisticLockFailedExceptionTest {
+import org.junit.jupiter.api.Test;
+import org.opendaylight.yangtools.yang.common.ErrorTag;
+import org.opendaylight.yangtools.yang.common.ErrorType;
 
-    @Test(expected = OptimisticLockFailedException.class)
-    public void optimisticLockFailedExceptionTest() throws Exception {
-        throw new OptimisticLockFailedException("test");
+class OptimisticLockFailedExceptionTest {
+    @Test
+    void optimisticLockFailedExceptionTest() {
+        final var ex = new OptimisticLockFailedException("test");
+        assertEquals("test", ex.getMessage());
+        final var errors = ex.getErrorList();
+        assertEquals(1, errors.size());
+        final var error = errors.get(0);
+        assertEquals(ErrorType.APPLICATION, error.getErrorType());
+        assertEquals(ErrorTag.RESOURCE_DENIED, error.getTag());
+        assertNull(error.getApplicationTag());
+        assertNull(error.getInfo());
+        assertNull(error.getCause());
     }
 }

@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import java.io.Serial;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -19,7 +18,7 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 * updated transaction.
 */
 public class OptimisticLockFailedException extends TransactionCommitFailedException {
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     public OptimisticLockFailedException(final String message, final Throwable cause) {
