@@ -583,11 +583,11 @@
                         <link>https://junit.org/junit4/javadoc/4.13/</link>
                         <link>https://hamcrest.org/JavaHamcrest/javadoc/2.2/</link>
                         <link>https://www.slf4j.org/apidocs/</link>
-                        <link>https://guava.dev/releases/32.0.1-jre/api/docs/</link>
+                        <link>https://guava.dev/releases/32.1.2-jre/api/docs/</link>
                         <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
 
-                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/13.0.3/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/11.0.0/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/13.0.4/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/11.0.1/</link>
                     </links>
                     <groups>
                         <group>
