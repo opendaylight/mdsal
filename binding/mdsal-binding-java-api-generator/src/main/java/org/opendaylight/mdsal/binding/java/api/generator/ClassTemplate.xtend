@@ -187,6 +187,10 @@ class ClassTemplate extends BaseTemplate {
             «propertyMethods»
 
             «IF isBitsTypeObject»
+                «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
+                    «generateStringValueBTO»
+                    «generateValueOfBTO»
+                «ENDIF»
                 «validNamesAndValues»
             «ENDIF»
 
@@ -430,14 +434,12 @@ class ClassTemplate extends BaseTemplate {
     '''
 
     def protected defaultInstance() '''
-        «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
+        «IF genTO.typedef && !allProperties.empty && !genTO.unionType && !isBitsTypeObject»
             «val prop = allProperties.get(0)»
             «val propType = prop.returnType»
             «IF !(INSTANCE_IDENTIFIER.identifier.equals(propType.identifier))»
             public static «genTO.name» getDefaultInstance(final String defaultValue) {
-                «IF propType.equals(Types.primitiveBooleanType())»
-                    «bitsArgs»
-                «ELSEIF VALUEOF_TYPES.contains(propType)»
+                «IF VALUEOF_TYPES.contains(propType)»
                     return new «genTO.name»(«propType.importedName».valueOf(defaultValue));
                 «ELSEIF STRING_TYPE.equals(propType)»
                     return new «genTO.name»(defaultValue);
@@ -454,19 +456,44 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-    @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
-    def protected bitsArgs() '''
-        «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«allProperties.propsAsArgs»);
-        if (!properties.contains(defaultValue)) {
-            throw new «IAE.importedName»("invalid default parameter");
+    def protected generateStringValueBTO() '''
+        public «JU_LIST.importedName»<«STRING.importedName»> stringValue() {
+            final var bits = new «ArrayList.importedName»<«STRING.importedName»>();
+            final «JU_LIST.importedName»<«STRING.importedName»> possibleBits = List.of(«properties.propsAsArgs»);
+            final var vals = values();
+            for (int i = 0; i < possibleBits.size(); ++i) {
+                if (vals[i]) {
+                    bits.add(possibleBits.get(i));
+                }
+            }
+            return bits;
         }
-        int i = 0;
-        return new «genTO.name»(
-        «FOR prop : allProperties SEPARATOR ","»
-            properties.get(i++).equals(defaultValue) ? true : false
-        «ENDFOR»
-        );
     '''
+
+     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
+     def protected generateValueOfBTO() '''
+          «val props = genTO.superType !== null ? this.parentProperties : finalProperties»
+          public static «genTO.name» valueOf(final «JU_LIST.importedName»<«STRING.importedName»> defaultValues) {
+             final var possibleBits = List.of(«properties.propsAsArgs»);
+             boolean[] bitValues = new boolean[possibleBits.size()];
+             for (int i = 0; i < possibleBits.size(); ++i) {
+                 for (var value : defaultValues) {
+                     if (!possibleBits.contains(value)) {
+                         throw new «IAE.importedName»("Invalid default parameter '" + value + "'");
+                     }
+                     if (possibleBits.get(i).equals(value)) {
+                         bitValues[i] = true;
+                     }
+                 }
+             }
+             int i = 0;
+             return new «genTO.name»(
+                 «FOR prop : allProperties SEPARATOR ","»
+                     bitValues[i++]
+                 «ENDFOR»
+             );
+          }
+     '''
 
     def protected propsAsArgs(Iterable<GeneratedProperty> properties) '''
         «FOR prop : properties SEPARATOR ","»
