@@ -7,17 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class TransactionChainClosedExceptionTest {
+import org.junit.jupiter.api.Test;
 
-    @Test(expected = TransactionChainClosedException.class)
-    public void transactionChainClosedExceptionTest() throws Exception {
-        throw new TransactionChainClosedException("test");
+class TransactionChainClosedExceptionTest {
+    @Test
+    void transactionChainClosedExceptionTest() throws Exception {
+        final var ex = new TransactionChainClosedException("test");
+        assertEquals("test", ex.getMessage());
+        assertNull(ex.getCause());
     }
 
-    @Test(expected = TransactionChainClosedException.class)
-    public void transactionChainClosedExceptionWithNullCauseTest() throws Exception {
-        throw new TransactionChainClosedException("test", null);
+    @Test
+    void transactionChainClosedExceptionWithNullCauseTest() throws Exception {
+        final var cause = new Throwable();
+        final var ex = new TransactionChainClosedException("test", cause);
+        assertEquals("test", ex.getMessage());
+        assertSame(cause, ex.getCause());
     }
 }

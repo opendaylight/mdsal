@@ -7,17 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class NotificationRejectedExceptionTest {
+import org.junit.jupiter.api.Test;
 
-    @Test(expected = NotificationRejectedException.class)
-    public void constructWithCauseTest() throws Exception {
-        throw new NotificationRejectedException("test", new Throwable());
+class NotificationRejectedExceptionTest {
+    @Test
+    void constructWithCauseTest() {
+        final var cause = new Throwable();
+        final var ex = new NotificationRejectedException("test", cause);
+        assertEquals("test", ex.getMessage());
+        assertSame(cause, ex.getCause());
     }
 
-    @Test(expected = NotificationRejectedException.class)
-    public void constructTest() throws Exception {
-        throw new NotificationRejectedException("test");
+    @Test
+    void constructTest() throws Exception {
+        final var ex = new NotificationRejectedException("test");
+        assertEquals("test", ex.getMessage());
+        assertNull(ex.getCause());
     }
 }
