@@ -7,21 +7,21 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyUsesAugment;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TopBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 
 public class WriteTransactionTest extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
@@ -30,49 +30,85 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     private static final TopLevelList NODE = new TopLevelListBuilder().withKey(TOP_LIST_KEY).build();
 
     @Test
-    public void test() throws InterruptedException, ExecutionException {
-        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+    public void test() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
         writeTx.commit().get();
     }
 
     @Test
-    public void testPutCreateParentsSuccess() throws InterruptedException, ExecutionException {
-        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+    public void testPutCreateParentsSuccess() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
         writeTx.commit().get();
 
-        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
-        final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
-        assertTrue("Top node must exists after commit",topNode.isPresent());
-        final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
-        assertTrue("List node must exists after commit",listNode.isPresent());
+        try (var readTx = getDataBroker().newReadOnlyTransaction()) {
+            assertEquals(Optional.of(new TopBuilder().setTopLevelList(BindingMap.of(NODE)).build()),
+                readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get());
+        }
     }
 
     @Test
-    public void testPutCreateParentsSuperfluous() throws InterruptedException, ExecutionException {
-        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+    public void testPutCreateAugmentationParentsSuccess() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL,
+            NODE_PATH.augmentation(TreeLeafOnlyUsesAugment.class), new TreeLeafOnlyUsesAugmentBuilder()
+            .setLeafFromGrouping("foo")
+            .build());
+        writeTx.commit().get();
+
+        try (var readTx = getDataBroker().newReadOnlyTransaction()) {
+            assertEquals(Optional.of(new TopBuilder()
+                .setTopLevelList(BindingMap.of(new TopLevelListBuilder()
+                    .withKey(TOP_LIST_KEY)
+                    .addAugmentation(new TreeLeafOnlyUsesAugmentBuilder().setLeafFromGrouping("foo").build())
+                    .build()))
+                .build()), readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get());
+        }
+    }
+
+    @Test
+    public void testPutCreateParentsSuperfluous() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
         writeTx.commit().get();
     }
 
     @Test
-    public void testMergeCreateParentsSuccess() throws InterruptedException, ExecutionException {
-        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+    public void testMergeCreateParentsSuccess() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
         writeTx.commit().get();
 
-        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
-        final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
-        assertTrue("Top node must exists after commit",topNode.isPresent());
-        final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
-        assertTrue("List node must exists after commit",listNode.isPresent());
+        try (var readTx = getDataBroker().newReadOnlyTransaction()) {
+            assertEquals(Optional.of(new TopBuilder().setTopLevelList(BindingMap.of(NODE)).build()),
+                readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get());
+        }
     }
 
     @Test
-    public void testMergeCreateParentsSuperfluous() throws InterruptedException, ExecutionException {
-        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+    public void testMergeCreateAugmentationParentsSuccess() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL,
+            NODE_PATH.augmentation(TreeLeafOnlyUsesAugment.class), new TreeLeafOnlyUsesAugmentBuilder()
+            .setLeafFromGrouping("foo")
+            .build());
+        writeTx.commit().get();
+
+        try (var readTx = getDataBroker().newReadOnlyTransaction()) {
+            assertEquals(Optional.of(new TopBuilder()
+                .setTopLevelList(BindingMap.of(new TopLevelListBuilder()
+                    .withKey(TOP_LIST_KEY)
+                    .addAugmentation(new TreeLeafOnlyUsesAugmentBuilder().setLeafFromGrouping("foo").build())
+                    .build()))
+                .build()), readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get());
+        }
+    }
+
+    @Test
+    public void testMergeCreateParentsSuperfluous() throws Exception {
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
         writeTx.commit().get();
     }
