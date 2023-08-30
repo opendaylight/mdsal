@@ -29,6 +29,10 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8343</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc8344</artifactId>
         </dependency>
         <dependency>

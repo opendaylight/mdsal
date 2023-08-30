@@ -29,7 +29,19 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8345-ietf-network-state</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8345-ietf-network-topology</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc8345-ietf-network-topology-state</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8776-ietf-te-types</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
