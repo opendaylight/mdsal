@@ -24,7 +24,6 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
 
 public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTreeChangePublisher {
-
     private static boolean removeInvoked = false;
     private static boolean notifyInvoked = false;
 
@@ -36,22 +35,22 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
                 .node(QName.create("", "node1")).node(QName.create("", "node2")).build();
 
         doReturn(dataTreeCandidateNode).when(dataTreeCandidate).getRootNode();
-        doReturn(ModificationType.WRITE).when(dataTreeCandidateNode).getModificationType();
+        doReturn(ModificationType.WRITE).when(dataTreeCandidateNode).modificationType();
         doReturn(yangInstanceIdentifier).when(dataTreeCandidate).getRootPath();
-        doReturn(ImmutableList.of(dataTreeCandidateNode)).when(dataTreeCandidateNode).getChildNodes();
-        doReturn(yangInstanceIdentifier.getLastPathArgument()).when(dataTreeCandidateNode).getIdentifier();
+        doReturn(ImmutableList.of(dataTreeCandidateNode)).when(dataTreeCandidateNode).childNodes();
+        doReturn(yangInstanceIdentifier.getLastPathArgument()).when(dataTreeCandidateNode).name();
 
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
 
-        final AbstractDOMDataTreeChangeListenerRegistration<?> abstractDOMDataTreeChangeListenerRegistration =
-                this.registerTreeChangeListener(yangInstanceIdentifier, domDataTreeChangeListener);
+        final var abstractDOMDataTreeChangeListenerRegistration =
+                registerTreeChangeListener(yangInstanceIdentifier, domDataTreeChangeListener);
 
         assertFalse(removeInvoked);
         assertFalse(notifyInvoked);
 
-        this.processCandidateTree(dataTreeCandidate);
-        doReturn(ModificationType.UNMODIFIED).when(dataTreeCandidateNode).getModificationType();
-        this.processCandidateTree(dataTreeCandidate);
+        processCandidateTree(dataTreeCandidate);
+        doReturn(ModificationType.UNMODIFIED).when(dataTreeCandidateNode).modificationType();
+        processCandidateTree(dataTreeCandidate);
 
         abstractDOMDataTreeChangeListenerRegistration.close();
 
