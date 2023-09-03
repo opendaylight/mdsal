@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
@@ -328,6 +329,15 @@ public class PingPongTransactionChainTest {
 
         rwTx1Future.set(CommitInfo.empty());
         assertDone(tx1Future);
+    }
+
+    @Test
+    public void testIdempotentClose() {
+        doNothing().when(chain).close();
+        pingPong.close();
+        verify(chain).close();
+        pingPong.close();
+        verifyNoMoreInteractions(chain);
     }
 
     private static <T> T assertDone(final FluentFuture<T> future) {
