@@ -68,7 +68,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      */
     protected final boolean processCandidateTree(final @NonNull DataTreeCandidate candidate) {
         final DataTreeCandidateNode node = candidate.getRootNode();
-        if (node.getModificationType() == ModificationType.UNMODIFIED) {
+        if (node.modificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", candidate);
             return false;
         }
@@ -137,27 +137,25 @@ public abstract class AbstractDOMStoreTreeChangePublisher
             final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> regNode,
             final DataTreeCandidateNode candNode,
             final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
-        if (candNode.getModificationType() == ModificationType.UNMODIFIED) {
+        if (candNode.modificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", path);
             return;
         }
 
-        final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> regs = regNode.getRegistrations();
+        final var regs = regNode.getRegistrations();
         if (!regs.isEmpty()) {
             addToListenerChanges(regs, path, candNode, listenerChanges);
         }
 
-        for (DataTreeCandidateNode candChild : candNode.getChildNodes()) {
-            if (candChild.getModificationType() != ModificationType.UNMODIFIED) {
-                final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> regChild =
-                        regNode.getExactChild(candChild.getIdentifier());
+        for (var candChild : candNode.childNodes()) {
+            if (candChild.modificationType() != ModificationType.UNMODIFIED) {
+                final var regChild = regNode.getExactChild(candChild.name());
                 if (regChild != null) {
-                    notifyNode(path.node(candChild.getIdentifier()), regChild, candChild, listenerChanges);
+                    notifyNode(path.node(candChild.name()), regChild, candChild, listenerChanges);
                 }
 
-                for (RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> rc :
-                    regNode.getInexactChildren(candChild.getIdentifier())) {
-                    notifyNode(path.node(candChild.getIdentifier()), rc, candChild, listenerChanges);
+                for (var rc : regNode.getInexactChildren(candChild.name())) {
+                    notifyNode(path.node(candChild.name()), rc, candChild, listenerChanges);
                 }
             }
         }
