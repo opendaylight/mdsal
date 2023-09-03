@@ -46,6 +46,8 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
     private final DOMTransactionChain delegate;
 
     @GuardedBy("this")
+    private boolean closed;
+    @GuardedBy("this")
     private boolean failed;
     @GuardedBy("this")
     private PingPongTransaction shutdownTx;
@@ -381,12 +383,17 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
 
     @Override
     public final synchronized void close() {
-        final PingPongTransaction notLocked = lockedTx;
-        checkState(notLocked == null, "Attempted to close chain with outstanding transaction %s", notLocked);
+        if (closed) {
+            LOG.debug("Attempted to close an already-closed chain");
+            return;
+        }
 
-        // This is not reliable, but if we observe it to be null and the process has already completed,
-        // the backend transaction chain will throw the appropriate error.
-        checkState(shutdownTx == null, "Attempted to close an already-closed chain");
+        // Note: we do not derive from AbstractRegistration due to ordering of this check
+        final var notLocked = lockedTx;
+        if (notLocked != null) {
+            throw new IllegalStateException("Attempted to close chain with outstanding transaction " + notLocked);
+        }
+        closed = true;
 
         // This may be a reaction to our failure callback, in that case the backend is already shutdown
         if (deadTx != null) {
@@ -395,8 +402,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         }
 
         // Force allocations on slow path, picking up a potentially-outstanding transaction
-        final PingPongTransaction tx = acquireReadyTx();
-
+        final var tx = acquireReadyTx();
         if (tx != null) {
             // We have one more transaction, which needs to be processed somewhere. If we do not
             // a transaction in-flight, we need to push it down ourselves.
