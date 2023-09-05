@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl;
+import org.opendaylight.yang.svc.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
@@ -22,7 +22,7 @@ final class Rpcs {
     static final EffectiveModelContext CONTEXT = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT,
         null,
         new DelegatedYangTextSource(new SourceIdentifier("yang-ext.yang"),
-            $YangModuleInfoImpl.getInstance().getYangTextCharSource()),
+            YangModuleInfoImpl.getInstance().getYangTextCharSource()),
         new URLYangTextSource(Rpcs.class.getResource("/rpcs.yang")));
 
     static final QName FOO = QName.create("rpcs", "foo");
