@@ -78,6 +78,7 @@ public final class Naming {
     // concrete extensible contracts, for example 'feature', 'identity' and similar
     public static final @NonNull String VALUE_STATIC_FIELD_NAME = "VALUE";
     public static final @NonNull String PACKAGE_PREFIX = "org.opendaylight.yang.gen.v1";
+    public static final @NonNull String SVC_PACKAGE_PREFIX = "org.opendaylight.yang.svc.v1";
     public static final @NonNull String AUGMENTATION_FIELD = "augmentation";
 
     private static final Splitter CAMEL_SPLITTER = Splitter.on(CharMatcher.anyOf(" _.-/").precomputed())
@@ -86,10 +87,10 @@ public final class Naming {
     private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
-    public static final @NonNull String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
+    public static final @NonNull String MODULE_INFO_CLASS_NAME = "YangModuleInfoImplImpl";
     public static final @NonNull String MODULE_INFO_QNAMEOF_METHOD_NAME = "qnameOf";
     public static final @NonNull String MODULE_INFO_YANGDATANAMEOF_METHOD_NAME = "yangDataNameOf";
-    public static final @NonNull String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
+    public static final @NonNull String MODEL_BINDING_PROVIDER_CLASS_NAME = "YangModelBindingProviderImpl";
 
     /**
      * Name of {@link Augmentable#augmentation(Class)}.
@@ -160,11 +161,47 @@ public final class Naming {
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
     @Regex
     private static final String ROOT_PACKAGE_PATTERN_STRING =
-            "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*?\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
+            "(org.opendaylight.yang.(gen|svc).v1.[a-z0-9_\\.]*?\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
     private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
 
     private Naming() {
         // Hidden on purpose
+    }
+
+    public static @NonNull String getSvcRootPackageName(QNameModule module) {
+        final StringBuilder packageNameBuilder = new StringBuilder().append(SVC_PACKAGE_PREFIX).append('.');
+
+        String namespace = module.getNamespace().toString();
+        namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
+
+        final char[] chars = namespace.toCharArray();
+        for (int i = 0; i < chars.length; ++i) {
+            switch (chars[i]) {
+                case '/', ':', '-', '@', '$', '#', '\'', '*', '+', ',', ';', '=' -> chars[i] = '.';
+                default -> {
+                    // no-op
+                }
+            }
+        }
+
+        packageNameBuilder.append(chars);
+        if (chars[chars.length - 1] != '.') {
+            packageNameBuilder.append('.');
+        }
+
+        final Optional<Revision> optRev = module.getRevision();
+        if (optRev.isPresent()) {
+            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
+            // right characters.
+            final String rev = optRev.orElseThrow().toString();
+            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
+            packageNameBuilder.append("rev").append(rev, 2, 4).append(rev, 5, 7).append(rev.substring(8));
+        } else {
+            // No-revision packages are special
+            packageNameBuilder.append("norev");
+        }
+
+        return normalizePackageName(packageNameBuilder.toString());
     }
 
     public static @NonNull String getRootPackageName(final QName module) {
@@ -205,6 +242,14 @@ public final class Naming {
         }
 
         return normalizePackageName(packageNameBuilder.toString());
+    }
+
+    public static @NonNull String rootPackageNameToSvcRootPackageName(final String packageName) {
+        final var match = ROOT_PACKAGE_PATTERN.matcher(packageName);
+        checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", packageName,
+            ROOT_PACKAGE_PATTERN_STRING);
+        return getModelRootPackageName(packageName.replace(Naming.PACKAGE_PREFIX, Naming.SVC_PACKAGE_PREFIX)) +
+            "." + Naming.MODULE_INFO_CLASS_NAME;
     }
 
     public static @NonNull String normalizePackageName(final String packageName) {
@@ -380,8 +425,13 @@ public final class Naming {
      *                                  not match package name formatting rules
      */
     public static @NonNull String getModelRootPackageName(final String packageName) {
-        checkArgument(packageName.startsWith(PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
-            PACKAGE_PREFIX, packageName);
+        try {
+            checkArgument(packageName.startsWith(PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
+                PACKAGE_PREFIX, packageName);
+        } catch (IllegalArgumentException exception) {
+            checkArgument(packageName.startsWith(SVC_PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
+                SVC_PACKAGE_PREFIX, packageName);
+        }
         final var match = ROOT_PACKAGE_PATTERN.matcher(packageName);
         checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", packageName,
             ROOT_PACKAGE_PATTERN_STRING);

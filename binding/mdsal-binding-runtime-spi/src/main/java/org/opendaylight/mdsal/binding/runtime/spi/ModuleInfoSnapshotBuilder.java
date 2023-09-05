@@ -110,7 +110,7 @@ public final class ModuleInfoSnapshotBuilder {
             mappedInfos.put(source.getIdentifier(), info);
 
             final Class<?> infoClass = info.getClass();
-            final String infoRoot = Naming.getModelRootPackageName(infoClass.getPackage().getName());
+            final String infoRoot = Naming.rootPackageNameToSvcRootPackageName(infoClass.getPackage().getName());
             classLoaders.put(infoRoot, infoClass.getClassLoader());
             namespaces.put(infoRoot, info.getName().getModule());
 

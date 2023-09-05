@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
-import org.opendaylight.yang.gen.v1.mdsal767.norev.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.mdsal767.norev.Mdsal767Data;
 import org.opendaylight.yang.gen.v1.mdsal767.norev.One$F;
+import org.opendaylight.yang.svc.v1.mdsal767.norev.YangModuleInfoImplImpl;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
@@ -32,7 +32,7 @@ public class ModuleInfoSnapshotBuilderTest {
     @Test
     public void testModuleRegistration() throws YangParserException {
         final ModuleInfoSnapshotBuilder snapshotBuilder = new ModuleInfoSnapshotBuilder(PARSER_FACTORY);
-        snapshotBuilder.add($YangModuleInfoImpl.getInstance());
+        snapshotBuilder.add(YangModuleInfoImplImpl.getInstance());
         snapshotBuilder.addModuleFeatures(Mdsal767Data.class, Set.of(One$F.VALUE));
 
         final ModuleInfoSnapshot snapshot = snapshotBuilder.build();
