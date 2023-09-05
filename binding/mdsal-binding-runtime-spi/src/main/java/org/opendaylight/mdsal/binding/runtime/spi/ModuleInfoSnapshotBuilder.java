@@ -111,8 +111,10 @@ public final class ModuleInfoSnapshotBuilder {
 
             final Class<?> infoClass = info.getClass();
             final String infoRoot = Naming.getModelRootPackageName(infoClass.getPackage().getName());
-            classLoaders.put(infoRoot, infoClass.getClassLoader());
-            namespaces.put(infoRoot, info.getName().getModule());
+            classLoaders.put(infoRoot.replace(Naming.SVC_PACKAGE_PREFIX, Naming.PACKAGE_PREFIX),
+                infoClass.getClassLoader());
+            namespaces.put(infoRoot.replace(Naming.SVC_PACKAGE_PREFIX, Naming.PACKAGE_PREFIX),
+                info.getName().getModule());
 
             try {
                 parser.addSource(source);

@@ -30,7 +30,9 @@ public class AugmentToUsesInAugmentCompilationTest extends BaseCompilationTest {
         assertTrue(new File(fooParent, "IgpLinkAttributes.java").exists());
         assertTrue(new File(fooParent, "Link1.java").exists());
         assertTrue(new File(fooParent, "Link1Builder.java").exists());
-        CompilationTestUtils.assertFilesCount(fooParent, 6);
+        CompilationTestUtils.assertFilesCount(fooParent, 5);
+        File fooSvcParent = new File(sourcesOutputDir, CompilationTestUtils.NS_SVC_FOO);
+        CompilationTestUtils.assertFilesCount(fooSvcParent, 1);
 
         // Test if all sources are generated from 'module bar'
         File barParent = new File(sourcesOutputDir, CompilationTestUtils.NS_BAR);
@@ -39,7 +41,9 @@ public class AugmentToUsesInAugmentCompilationTest extends BaseCompilationTest {
         assertTrue(new File(barParent, "NetworkTopologyBuilder.java").exists());
         assertTrue(new File(barParent, "Link.java").exists());
         assertTrue(new File(barParent, "LinkAttributes.java").exists());
-        CompilationTestUtils.assertFilesCount(barParent, 8);
+        CompilationTestUtils.assertFilesCount(barParent, 7);
+        File barSvcParent = new File(sourcesOutputDir, CompilationTestUtils.NS_SVC_BAR);
+        CompilationTestUtils.assertFilesCount(barSvcParent, 1);
 
         File networkParent = new File(barParent, "network");
         CompilationTestUtils.assertFilesCount(networkParent, 1);
@@ -61,7 +65,9 @@ public class AugmentToUsesInAugmentCompilationTest extends BaseCompilationTest {
         assertTrue(new File(bazParent, "IgpLinkAttributes1.java").exists());
         assertTrue(new File(bazParent, "IgpLinkAttributes1Builder.java").exists());
         assertTrue(new File(bazParent, "LinkAttributes.java").exists());
-        CompilationTestUtils.assertFilesCount(bazParent, 6);
+        CompilationTestUtils.assertFilesCount(bazParent, 5);
+        File bazSvcParent = new File(sourcesOutputDir, CompilationTestUtils.NS_SVC_BAZ);
+        CompilationTestUtils.assertFilesCount(bazSvcParent, 1);
 
         // Test if sources are compilable
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
