@@ -33,12 +33,12 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
-import org.opendaylight.yang.gen.v1.rpc.norev.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.rpc.norev.Switch;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchInput;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchInputBuilder;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutput;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutputBuilder;
+import org.opendaylight.yang.svc.v1.rpc.norev.YangModuleInfoImplImpl;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -63,7 +63,7 @@ public class Mdsal500Test {
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         testContext = testFactory.getTestContext();
 
-        testContext.setSchemaModuleInfos(Set.of($YangModuleInfoImpl.getInstance()));
+        testContext.setSchemaModuleInfos(Set.of(YangModuleInfoImplImpl.getInstance()));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
         baRpcConsumerService = testContext.getBindingRpcService();
