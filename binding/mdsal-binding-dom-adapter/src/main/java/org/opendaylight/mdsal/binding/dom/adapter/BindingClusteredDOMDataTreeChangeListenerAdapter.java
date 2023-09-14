@@ -17,8 +17,11 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * it as {@link ClusteredDOMDataTreeChangeListener} and translated DOM events
  * to their Binding equivalent.
  *
+ * @deprecated as a deprecated interface ancestor. {@link BindingDOMDataTreeChangeListenerAdapter} to be used instead.
+ *
  * @author Thomas Pantelis
  */
+@Deprecated(since = "12.0.0", forRemoval = true)
 final class BindingClusteredDOMDataTreeChangeListenerAdapter<T extends DataObject>
         extends BindingDOMDataTreeChangeListenerAdapter<T> implements ClusteredDOMDataTreeChangeListener {
     BindingClusteredDOMDataTreeChangeListenerAdapter(final AdapterContext codec,

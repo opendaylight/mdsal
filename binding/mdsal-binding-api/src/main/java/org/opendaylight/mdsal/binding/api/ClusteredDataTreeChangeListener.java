@@ -21,6 +21,11 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author Thomas Pantelis
  *
  * @param <T> the DataObject type
+ *
+ * @deprecated due to design change. The expected listener notification mode to be defined directly using
+ *     {@link DataTreeChangeListener#clusterMode()} method.
+ *
  */
+@Deprecated(since = "12.0.0", forRemoval = true)
 public interface ClusteredDataTreeChangeListener<T extends DataObject> extends DataTreeChangeListener<T> {
 }

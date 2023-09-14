@@ -46,4 +46,38 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * {@link #onDataTreeChanged(List)} would always be invoked for data changes.
      */
     void onInitialData();
+
+    /**
+     * Defines the listener notification mode within a clustered environment.
+     *
+     * <p>
+     * <ul>
+     * <li>{@link ClusterMode#LEADER_ONLY} - default value, means the listener will accept notification only if running
+     * on a Leader (Master) node. Expected to be used if the listener itself produces data and/or events based on
+     * incoming notifications. Single active instance within a cluster will prevent same (duplicate) data/events
+     * generation on multiple nodes.</li>
+     * <li>{@link ClusterMode#EVERY_NODE} - means the listener will accept notification on every node of a cluster.
+     * Expected to be used when the listener serves local service(s) states (cache) synchronization within a cluster
+     * based on incoming events.</li>
+     * </ul>
+     *
+     * @return cluster mode value
+     */
+    default @NonNull ClusterMode clusterMode() {
+        return ClusterMode.LEADER_ONLY;
+    }
+
+    /**
+     * Listener notification modes enumeration for clustered environment case.
+     */
+    enum ClusterMode {
+        /**
+         * Notification is active on Leader (Master) node only.
+         */
+        LEADER_ONLY,
+        /**
+         * Notification is active on every node of a cluster.
+         */
+        EVERY_NODE
+    }
 }
