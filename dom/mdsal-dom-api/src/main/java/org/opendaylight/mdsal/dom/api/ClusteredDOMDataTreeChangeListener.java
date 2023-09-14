@@ -16,7 +16,12 @@ package org.opendaylight.mdsal.dom.api;
  * if they want to listen for data tree change notifications on any node of a clustered data store.
  * {@link DOMDataTreeChangeListener} enables notifications only at the leader of the data store.
  *
+ * @deprecated due to design change. The expected listener notification mode to be defined directly using
+ * {@link DOMDataTreeChangeListener#clusterMode()} method.
+ *
  * @author Thomas Pantelis
  */
+
+@Deprecated(since = "12.0.0", forRemoval = true)
 public interface ClusteredDOMDataTreeChangeListener extends DOMDataTreeChangeListener {
 }

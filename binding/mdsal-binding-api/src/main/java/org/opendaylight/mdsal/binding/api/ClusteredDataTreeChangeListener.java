@@ -21,6 +21,9 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author Thomas Pantelis
  *
  * @param <T> the DataObject type
+ *
+ *
  */
+@Deprecated(since = "12.0.0", forRemoval = true)
 public interface ClusteredDataTreeChangeListener<T extends DataObject> extends DataTreeChangeListener<T> {
 }
