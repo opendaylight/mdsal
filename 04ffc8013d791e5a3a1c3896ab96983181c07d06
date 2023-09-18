@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1cf83f39_df052300",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/ClusteredDataTreeChangeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-09-18T09:09:16Z",
+      "side": 1,
+      "message": "Wait, I am little unsure we have 12.0.2 now.",
+      "revId": "04ffc8013d791e5a3a1c3896ab96983181c07d06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
