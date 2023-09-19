@@ -21,6 +21,11 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author Thomas Pantelis
  *
  * @param <T> the DataObject type
+ *
+ * @deprecated due to design update. The notification accessibility policy should be defined via registration API.
+ *      Use {@link DataTreeChangeService#registerDataTreeChangeListener(DataTreeIdentifier, DataTreeChangeListener,
+ *      boolean)}.
  */
+@Deprecated(forRemoval = true)
 public interface ClusteredDataTreeChangeListener<T extends DataObject> extends DataTreeChangeListener<T> {
 }

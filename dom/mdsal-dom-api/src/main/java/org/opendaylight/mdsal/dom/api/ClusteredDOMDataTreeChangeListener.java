@@ -17,6 +17,11 @@ package org.opendaylight.mdsal.dom.api;
  * {@link DOMDataTreeChangeListener} enables notifications only at the leader of the data store.
  *
  * @author Thomas Pantelis
+ *
+ * @deprecated due to design update. The notification accessibility policy should be defined via registration API.
+ *      Use {@link DOMDataTreeChangeService#registerDataTreeChangeListener(DOMDataTreeIdentifier,
+ *      DOMDataTreeChangeListener, boolean)}.
  */
+@Deprecated(forRemoval = true)
 public interface ClusteredDOMDataTreeChangeListener extends DOMDataTreeChangeListener {
 }
