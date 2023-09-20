@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76387071_ec0c691c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/AugmentToUsesInAugmentCompilationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-09-20T10:11:37Z",
+      "side": 1,
+      "message": "can be final and other files too",
+      "revId": "a69bf1f94b9b972b18c94ff0793f5a3d9c039f4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96935248_1ad4b673",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CascadeUsesCompilationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-09-20T10:11:37Z",
+      "side": 1,
+      "message": "can be final and other files too",
+      "revId": "a69bf1f94b9b972b18c94ff0793f5a3d9c039f4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c42689f_38e0a87e",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-09-20T10:11:37Z",
+      "side": 1,
+      "message": "can be final and other files too",
+      "revId": "a69bf1f94b9b972b18c94ff0793f5a3d9c039f4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d5b17c7_55a37169",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/NestedGroupingCompilationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-09-20T10:11:37Z",
+      "side": 1,
+      "message": "final",
+      "revId": "a69bf1f94b9b972b18c94ff0793f5a3d9c039f4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e500837_95ee9f50",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/reflect/BindingReflections.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-09-20T10:11:37Z",
+      "side": 1,
+      "message": "wouldn\u0027t it be better to have proper method to get good ModelRootPackageName instead of .replace since it\u0027s done multiple times?",
+      "revId": "a69bf1f94b9b972b18c94ff0793f5a3d9c039f4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
