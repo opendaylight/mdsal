@@ -16,6 +16,24 @@
       "message": "Signed-off-by should be after Change-Id",
       "revId": "f71b8a538514f11df523f7311175e09534cade22",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4044cae9_a4ad44f0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-09-28T09:24:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7099071a_d8844f3e",
+      "revId": "f71b8a538514f11df523f7311175e09534cade22",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
