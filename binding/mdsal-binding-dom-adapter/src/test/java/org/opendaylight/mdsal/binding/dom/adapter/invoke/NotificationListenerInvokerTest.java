@@ -7,16 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.WrongMethodTypeException;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.notification.rev150205.OpendaylightTestNotificationListener;
@@ -42,16 +42,17 @@ public class NotificationListenerInvokerTest {
     }
 
     @Test
-    public void invokeNotification() {
-        final NotificationListener notificationListener = mock(NotificationListener.class);
-        final MethodHandle methodHandle = mock(MethodHandle.class);
-        final NotificationListenerInvoker notificationListenerInvoker =
-                new NotificationListenerInvoker(ImmutableMap.of(QName.create("test", "test"), methodHandle));
+    public void invokeNotification() throws Exception {
+        final var notificationListener = mock(NotificationListener.class);
+        final var methodHandle = MethodHandles.publicLookup().unreflect(String.class.getDeclaredMethod("toString"));
+
+        final var notificationListenerInvoker = new NotificationListenerInvoker(
+            ImmutableMap.of(QName.create("test", "test"), methodHandle));
 
         final var ex = assertThrows(WrongMethodTypeException.class,
             () -> notificationListenerInvoker.invokeNotification(notificationListener, QName.create("test", "test"),
                 null));
-        assertEquals("expected null but found (NotificationListener,DataContainer)void", ex.getMessage());
+        assertThat(ex.getMessage(), endsWith(" (String)String but found (NotificationListener,DataContainer)void"));
     }
 
     private interface TestPrivateInterface extends NotificationListener, Augmentation {
