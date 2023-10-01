@@ -586,8 +586,8 @@
                         <link>https://guava.dev/releases/32.1.2-jre/api/docs/</link>
                         <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
 
-                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/13.0.4/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/11.0.2/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/13.0.5/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/11.0.3/</link>
                     </links>
                     <groups>
                         <group>
