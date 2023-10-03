@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d67ba42_84dcb0c7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 25
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-10-03T15:18:06Z",
+      "side": 1,
+      "message": "Add message for this patch",
+      "revId": "3893715c2921a65760298a9716d290d224b19a88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
