@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44d54684_5fd7e346",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-10-04T13:00:17Z",
+      "side": 1,
+      "message": "This should be before Signed-off-by",
+      "revId": "c772575bf418b922ac89db320e7cd8b2c20329d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
