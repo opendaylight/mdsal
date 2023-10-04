@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f38011f9_a3ced575",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-04T11:39:24Z",
+      "side": 1,
+      "message": "please rebase on top of current version of https://git.opendaylight.org/gerrit/c/mdsal/+/104748/12",
+      "revId": "6f698d2787a818019fa2481687dc379dc5046d89",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
