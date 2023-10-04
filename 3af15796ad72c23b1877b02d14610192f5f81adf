@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86f25ce0_f288b58c",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/CamelCaseNamingStrategy.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-04T15:04:24Z",
+      "side": 1,
+      "message": "this change seems like mistake",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14b14cd6_f80368c2",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal502.yang",
+        "patchSetId": 26
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-04T15:04:24Z",
+      "side": 1,
+      "message": "do we need this yang also here?",
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b3dacb5_84964f38",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-04T15:04:24Z",
+      "side": 1,
+      "message": "should be -",
+      "range": {
+        "startLine": 173,
+        "startChar": 52,
+        "endLine": 173,
+        "endChar": 53
+      },
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6935d5b_187ee755",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-04T15:04:24Z",
+      "side": 1,
+      "message": "can\u0027t we use localName.replaceAll() here instead of createUniqueJavaIdentifer?",
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
