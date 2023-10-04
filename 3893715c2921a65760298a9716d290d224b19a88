@@ -16,6 +16,24 @@
       "message": "Add message for this patch",
       "revId": "3893715c2921a65760298a9716d290d224b19a88",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7accad37_55ea1ffe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 25
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-04T09:58:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d67ba42_84dcb0c7",
+      "revId": "3893715c2921a65760298a9716d290d224b19a88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
