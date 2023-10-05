@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbb5e54e_7e2ce788",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/CamelCaseNamingStrategy.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-05T09:34:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86f25ce0_f288b58c",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "14b14cd6_f80368c2",
@@ -37,6 +61,24 @@
       "writtenOn": "2023-10-04T15:04:24Z",
       "side": 1,
       "message": "do we need this yang also here?",
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c22b2ce7_1ab2cf65",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal502.yang",
+        "patchSetId": 26
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-05T09:34:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14b14cd6_f80368c2",
       "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -64,6 +106,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e691e48_205d2f3a",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-05T09:34:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b3dacb5_84964f38",
+      "range": {
+        "startLine": 173,
+        "startChar": 52,
+        "endLine": 173,
+        "endChar": 53
+      },
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b6935d5b_187ee755",
@@ -77,6 +143,24 @@
       "writtenOn": "2023-10-04T15:04:24Z",
       "side": 1,
       "message": "can\u0027t we use localName.replaceAll() here instead of createUniqueJavaIdentifer?",
+      "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71efeacf_4f187b7f",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-05T09:34:26Z",
+      "side": 1,
+      "message": "This approach should be more efficient since calling twice for replaceAll() would create two separate StringBuilder instances, while we use only one.\nThis is my understanding to it and Robert may had other thoughts in mind while creating this method.",
+      "parentUuid": "b6935d5b_187ee755",
       "revId": "3af15796ad72c23b1877b02d14610192f5f81adf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
