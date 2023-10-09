@@ -314,7 +314,7 @@ public final class BindingReflections {
                 && (targetType.getName().endsWith("Input") || targetType.getName().endsWith("Output"));
     }
 
-    private static class ClassToQNameLoader extends CacheLoader<Class<?>, Optional<QName>> {
+    private static final class ClassToQNameLoader extends CacheLoader<Class<?>, Optional<QName>> {
 
         @Override
         public Optional<QName> load(@SuppressWarnings("NullableProblems") final Class<?> key) throws Exception {
