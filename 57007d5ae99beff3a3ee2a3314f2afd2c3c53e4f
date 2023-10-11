@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1190134d_f1ced3bf",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/Bug5151Test.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-11T09:22:32Z",
+      "side": 1,
+      "message": "test that the svc file was generated too like the other tests?",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9882227d_fe5e9b79",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-11T09:22:32Z",
+      "side": 1,
+      "message": "can\u0027t we use rootPackageNameToSvcRootPackageName here too?\nor at least move the replace on this line instead of calling it 2 times?",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad206060_bd548302",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-11T09:22:32Z",
+      "side": 1,
+      "message": "can\u0027t we reuse getRootPackageName()?\nor extract same code? they seem mostly the same",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "238654e5_94f60f67",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-10-11T09:22:32Z",
+      "side": 1,
+      "message": "i don\u0027t think catching exception is the solution here\n\nmaybe?\npackageName.startsWith(PACKAGE_PREFIX) || packageName.startsWith(SVC_PACKAGE_PREFIX)",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
