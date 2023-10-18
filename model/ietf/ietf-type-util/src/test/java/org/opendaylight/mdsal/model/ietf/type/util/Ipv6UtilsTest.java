@@ -9,15 +9,15 @@
 package org.opendaylight.mdsal.model.ietf.type.util;
 
 import static com.google.common.net.InetAddresses.forString;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.opendaylight.mdsal.model.ietf.type.util.Ipv6Utils.fillIpv6Bytes;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class Ipv6UtilsTest {
+class Ipv6UtilsTest {
 
     @Test
-    public void testDiscards() {
+    void testDiscards() {
         assertEqualResult("2001:0000:3238:DFE1:63:0000:0000:FEFB");
         assertEqualResult("2001:0000:3238:DFE1:63::FEFB");
         assertEqualResult("2001:0:3238:DFE1:63::FEFB");
@@ -26,12 +26,12 @@ public class Ipv6UtilsTest {
     }
 
     @Test
-    public void testFullQuads() {
+    void testFullQuads() {
         assertEqualResult("0000:0000:0000:0000:0000:0000:0000:0001");
     }
 
     @Test
-    public void testRfc4291() {
+    void testRfc4291() {
         assertEqualResult("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
         assertEqualResult("2001:DB8:0:0:8:800:200C:417A");
         assertEqualResult("2001:DB8::8:800:200C:417A");
@@ -54,7 +54,7 @@ public class Ipv6UtilsTest {
     }
 
     @Test
-    public void testRfc5952leadingZeroes() {
+    void testRfc5952leadingZeroes() {
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:eeee:0001");
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:eeee:001");
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:eeee:01");
@@ -62,7 +62,7 @@ public class Ipv6UtilsTest {
     }
 
     @Test
-    public void testRfc5952zeroCompression() {
+    void testRfc5952zeroCompression() {
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd::1");
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:0:1");
         assertEqualResult("2001:db8:0:0:0::1");
@@ -74,14 +74,14 @@ public class Ipv6UtilsTest {
     }
 
     @Test
-    public void testRfc5952upperLowerCase() {
+    void testRfc5952upperLowerCase() {
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:eeee:aaaa");
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:eeee:AAAA");
         assertEqualResult("2001:db8:aaaa:bbbb:cccc:dddd:eeee:AaAa");
     }
 
     @Test
-    public void testRfc5952specials() {
+    void testRfc5952specials() {
         // Can't use Guava for these, as it will return an IPv4 address
         assertArrayEquals(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff, (byte) 0xff, (byte)192, 0, 2, 1 },
             bytesForString("::ffff:192.0.2.1"));
@@ -90,7 +90,7 @@ public class Ipv6UtilsTest {
     }
 
     @Test
-    public void testRfc6052() {
+    void testRfc6052() {
         assertEqualResult("2001:db8:c000:221::");
         assertEqualResult("2001:db8:1c0:2:21::");
         assertEqualResult("2001:db8:122:c000:2:2100::");
