@@ -7,14 +7,14 @@
  */
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class IpAddressBuilderTest {
+class IpAddressBuilderTest {
     @Test
-    public void testGetDefaultInstance() throws Exception {
+    void testGetDefaultInstance() throws Exception {
         testIpv4("1.1.1.1");
         testIpv4("192.168.155.100");
         testIpv4("1.192.1.221");
@@ -33,22 +33,22 @@ public class IpAddressBuilderTest {
     }
 
     @Test
-    public void testIllegalArgumentException1() {
+    void testIllegalArgumentException1() {
         assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipAddressFor("badIp"));
     }
 
     @Test
-    public void testIllegalArgumentException2() {
+    void testIllegalArgumentException2() {
         assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipAddressFor("2001:0DB8::CD3/60"));
     }
 
     private static void testIpv4(final String ip) {
-        final IpAddress defaultInstance = IetfInetUtil.ipAddressFor(ip);
+        final var defaultInstance = IetfInetUtil.ipAddressFor(ip);
         assertEquals(new IpAddress(new Ipv4Address(ip)), defaultInstance);
     }
 
     private static void testIpv6(final String ip) {
-        final IpAddress defaultInstance = IetfInetUtil.ipAddressFor(ip);
+        final var defaultInstance = IetfInetUtil.ipAddressFor(ip);
         assertEquals(new IpAddress(new Ipv6Address(ip)), defaultInstance);
     }
 }

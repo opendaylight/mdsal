@@ -7,20 +7,20 @@
  */
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class IpPrefixBuilderTest {
+class IpPrefixBuilderTest {
     @Test
-    public void testGetDefaultInstance() throws Exception {
+    void testGetDefaultInstance() throws Exception {
         testIpv6("ff00::/8");
         testIpv4("192.0.2.1/24");
     }
 
     @Test
-    public void testIllegalArgumentException1() {
+    void testIllegalArgumentException1() {
         assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipPrefixFor("badIp"));
     }
 

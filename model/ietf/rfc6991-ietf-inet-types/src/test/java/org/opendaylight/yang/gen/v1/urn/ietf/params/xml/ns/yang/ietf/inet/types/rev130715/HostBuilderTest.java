@@ -7,14 +7,14 @@
  */
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HostBuilderTest {
+class HostBuilderTest {
     @Test
-    public void testGetDefaultInstance() throws Exception {
+    void testGetDefaultInstance() throws Exception {
         testIpv4("1.1.1.1");
         testIpv4("192.168.155.100");
         testIpv4("1.192.1.221");
@@ -36,27 +36,27 @@ public class HostBuilderTest {
     }
 
     @Test
-    public void testIllegalArgumentException1() {
+    void testIllegalArgumentException1() {
         assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.hostFor("2001:0DB8::CD3/60"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException2() {
-        testDomain("test.invalid.domain.name?");
+    @Test
+    void testIllegalArgumentException2() {
+        assertThrows(IllegalArgumentException.class, () -> testDomain("test.invalid.domain.name?"));
     }
 
     private static void testIpv4(final String ip) {
-        final Host defaultInstance = IetfInetUtil.hostFor(ip);
+        final var defaultInstance = IetfInetUtil.hostFor(ip);
         assertEquals(new Host(new IpAddress(new Ipv4Address(ip))), defaultInstance);
     }
 
     private static void testIpv6(final String ip) {
-        final Host defaultInstance = IetfInetUtil.hostFor(ip);
+        final var defaultInstance = IetfInetUtil.hostFor(ip);
         assertEquals(new Host(new IpAddress(new Ipv6Address(ip))), defaultInstance);
     }
 
     private static void testDomain(final String ip) {
-        final Host defaultInstance = IetfInetUtil.hostFor(ip);
+        final var defaultInstance = IetfInetUtil.hostFor(ip);
         assertEquals(new Host(new DomainName(ip)), defaultInstance);
     }
 }

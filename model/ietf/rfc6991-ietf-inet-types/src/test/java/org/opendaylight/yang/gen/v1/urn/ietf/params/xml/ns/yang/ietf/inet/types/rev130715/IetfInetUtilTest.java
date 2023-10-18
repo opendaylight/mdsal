@@ -7,13 +7,12 @@
  */
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -24,63 +23,63 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class IetfInetUtilTest {
+class IetfInetUtilTest {
     @Test
-    public void testIpv4Address() {
-        final Ipv4AddressNoZone ipv4Address = new Ipv4AddressNoZone("192.168.1.1");
-        final Ipv4Prefix ipv4Prefix = new Ipv4Prefix("192.0.2.1/24");
-        final IpAddress ipAddress = new IpAddress(ipv4Address);
-        final IpPrefix ipPrefix = new IpPrefix(ipv4Prefix);
+    void testIpv4Address() {
+        final var ipv4Address = new Ipv4AddressNoZone("192.168.1.1");
+        final var ipv4Prefix = new Ipv4Prefix("192.0.2.1/24");
+        final var ipAddress = new IpAddress(ipv4Address);
+        final var ipPrefix = new IpPrefix(ipv4Prefix);
 
         assertEquals(ipv4Prefix, ipPrefix.getIpv4Prefix());
         assertEquals(ipAddress, new IpAddress(ipv4Address));
     }
 
     @Test
-    public void testIpv6Address() {
-        final Ipv6AddressNoZone ipv6Address = new Ipv6AddressNoZone("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
-        final Ipv6Prefix ipv6Prefix = new Ipv6Prefix("ff00::/8");
-        final IpAddress ipAddress = new IpAddress(ipv6Address);
-        final IpPrefix ipPrefix = new IpPrefix(ipv6Prefix);
+    void testIpv6Address() {
+        final var ipv6Address = new Ipv6AddressNoZone("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
+        final var ipv6Prefix = new Ipv6Prefix("ff00::/8");
+        final var ipAddress = new IpAddress(ipv6Address);
+        final var ipPrefix = new IpPrefix(ipv6Prefix);
 
         assertEquals(ipv6Prefix, ipPrefix.getIpv6Prefix());
         assertEquals(ipAddress, new IpAddress(ipv6Address));
     }
 
     @Test
-    public void testAddressToString() {
+    void testAddressToString() {
         assertEquals(new Ipv4Prefix("1.2.3.4/8"), IetfInetUtil.ipv4PrefixFor(new Ipv4Address("1.2.3.4%1"), 8));
         assertEquals(new Ipv6Prefix("ff00::/8"), IetfInetUtil.ipv6PrefixFor(new Ipv6Address("ff00::%bar"), 8));
     }
 
     @Test
-    public void testIpv4ZoneStripping() {
-        final Ipv4AddressNoZone noZone = new Ipv4AddressNoZone("1.2.3.4");
+    void testIpv4ZoneStripping() {
+        final var noZone = new Ipv4AddressNoZone("1.2.3.4");
         assertSame(noZone, IetfInetUtil.ipv4AddressNoZoneFor(noZone));
 
-        final Ipv4Address withoutZone = new Ipv4Address(noZone);
-        final Ipv4AddressNoZone stripped = IetfInetUtil.ipv4AddressNoZoneFor(withoutZone);
+        final var withoutZone = new Ipv4Address(noZone);
+        final var stripped = IetfInetUtil.ipv4AddressNoZoneFor(withoutZone);
         assertSame(withoutZone.getValue(), stripped.getValue());
 
         assertEquals(noZone, IetfInetUtil.ipv4AddressNoZoneFor(new Ipv4Address("1.2.3.4%1")));
     }
 
     @Test
-    public void testIpv6ZoneStripping() {
-        final Ipv6AddressNoZone noZone = new Ipv6AddressNoZone("ff00::");
+    void testIpv6ZoneStripping() {
+        final var noZone = new Ipv6AddressNoZone("ff00::");
         assertSame(noZone, IetfInetUtil.ipv6AddressNoZoneFor(noZone));
 
-        final Ipv6Address withoutZone = new Ipv6Address(noZone);
-        final Ipv6AddressNoZone stripped = IetfInetUtil.ipv6AddressNoZoneFor(withoutZone);
+        final var withoutZone = new Ipv6Address(noZone);
+        final var stripped = IetfInetUtil.ipv6AddressNoZoneFor(withoutZone);
         assertSame(withoutZone.getValue(), stripped.getValue());
 
         assertEquals(noZone, IetfInetUtil.ipv6AddressNoZoneFor(new Ipv6Address("ff00::%1")));
     }
 
     @Test
-    public void testIpToBytesAndBack() {
+    void testIpToBytesAndBack() {
         assertV4Equals("1.2.3.4");
         assertV4Equals("12.23.34.45");
         assertV4Equals("255.254.253.252");
@@ -115,40 +114,38 @@ public class IetfInetUtilTest {
     }
 
     @Test
-    public void illegalArrayLengthForAddressTest() {
+    void illegalArrayLengthForAddressTest() {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
             () -> IetfInetUtil.ipAddressFor(new byte[] { 0, 0, 0 }));
         assertEquals("Invalid array length 3", ex.getMessage());
     }
 
     @Test
-    public void unhandledAddressTest() {
-        final InetAddress adr = mock(InetAddress.class);
+    void unhandledAddressTest() {
+        final var adr = mock(InetAddress.class);
         doReturn("testAddress").when(adr).toString();
-        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-            () -> IetfInetUtil.ipAddressFor(adr));
+        final var ex = assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipAddressFor(adr));
         assertEquals("Unhandled address testAddress", ex.getMessage());
     }
 
     @Test
-    public void illegalArrayLengthforPrefixTest() {
-        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+    void illegalArrayLengthforPrefixTest() {
+        final var ex = assertThrows(IllegalArgumentException.class,
             () -> IetfInetUtil.ipPrefixFor(new byte[] { 0, 0, 0 }, 0));
         assertEquals("Invalid array length 3", ex.getMessage());
     }
 
     @Test
-    public void illegalAddressforPrefixTest() {
-        final InetAddress adr = mock(InetAddress.class);
+    void illegalAddressforPrefixTest() {
+        final var adr = mock(InetAddress.class);
         doReturn("testAddress").when(adr).toString();
 
-        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-            () -> IetfInetUtil.ipPrefixFor(adr, 0));
+        final var ex = assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipPrefixFor(adr, 0));
         assertEquals("Unhandled address testAddress", ex.getMessage());
     }
 
     @Test
-    public void ipv4Tests() {
+    void ipv4Tests() {
         assertEquals("1.2.3.4", IetfInetUtil.ipv4AddressFrom(new Ipv4Prefix("1.2.3.4/16")).getValue());
         final var ipv4address = new Ipv4Address("1.2.3.4");
         final var ipAddress = new IpAddress(ipv4address);
@@ -175,7 +172,7 @@ public class IetfInetUtilTest {
     }
 
     @Test
-    public void ipv6Tests() {
+    void ipv6Tests() {
         assertEquals("::0", IetfInetUtil.ipv6AddressFrom(new Ipv6Prefix("::0/128")).getValue());
         final var ipv6address = new Ipv6Address("::0");
         final var ipAddress = new IpAddress(ipv6address);
@@ -205,7 +202,7 @@ public class IetfInetUtilTest {
     }
 
     @Test
-    public void prefixTest() {
+    void prefixTest() {
         assertEquals(new IpPrefix(new Ipv4Prefix("0.0.0.0/16")),
             IetfInetUtil.ipPrefixFor(IetfInetUtil.inetAddressFor(new IpAddress(new Ipv4Address("0.0.0.0"))), 16));
         assertEquals(new IpPrefix(new Ipv6Prefix("::/64")),
@@ -218,53 +215,50 @@ public class IetfInetUtilTest {
     }
 
     @Test
-    public void inetAddressTest() {
-        assertThat(IetfInetUtil.inetAddressFor(new IpAddress(new Ipv4Address("1.2.3.4"))),
-            instanceOf(Inet4Address.class));
-        assertThat(IetfInetUtil.inetAddressFor(new IpAddress(new Ipv6Address("FE80::2002:B3FF:FE1E:8329"))),
-            instanceOf(Inet6Address.class));
+    void inetAddressTest() {
+        assertInstanceOf(Inet4Address.class, IetfInetUtil.inetAddressFor(new IpAddress(new Ipv4Address("1.2.3.4"))));
+        assertInstanceOf(Inet6Address.class,
+            IetfInetUtil.inetAddressFor(new IpAddress(new Ipv6Address("FE80::2002:B3FF:FE1E:8329"))));
     }
 
     @Test
-    public void inet4AddressForWithExceptionTest() {
-        final Ipv4Address ipClass = mock(Ipv4Address.class);
+    void inet4AddressForWithExceptionTest() {
+        final var ipClass = mock(Ipv4Address.class);
         doReturn("testClass").when(ipClass).toString();
         doAnswer(inv -> {
             throw new UnknownHostException();
         }).when(ipClass).getValue();
 
-        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-            () -> IetfInetUtil.inet4AddressFor(ipClass));
+        final var ex = assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.inet4AddressFor(ipClass));
         assertEquals("Invalid address testClass", ex.getMessage());
     }
 
     @Test
-    public void inet6AddressForWithExceptionTest() {
-        final Ipv6Address ipClass = mock(Ipv6Address.class);
+    void inet6AddressForWithExceptionTest() {
+        final var ipClass = mock(Ipv6Address.class);
         doReturn("testClass").when(ipClass).toString();
         doAnswer(inv -> {
             throw new UnknownHostException();
         }).when(ipClass).getValue();
 
-        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-            () -> IetfInetUtil.inet6AddressFor(ipClass));
+        final var ex = assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.inet6AddressFor(ipClass));
         assertEquals("Invalid address testClass", ex.getMessage());
     }
 
     @Test
-    public void testIpv4AddressForBits() {
+    void testIpv4AddressForBits() {
         assertEquals("1.2.3.4", IetfInetUtil.ipv4AddressFor(0x01020304).getValue());
         assertEquals("255.255.255.255", IetfInetUtil.ipv4AddressFor(0xFFFFFFFF).getValue());
     }
 
     @Test
-    public void testIpv4AddressBits() {
+    void testIpv4AddressBits() {
         assertEquals(0x01020304, IetfInetUtil.ipv4AddressBits(new Ipv4Address("1.2.3.4")));
         assertEquals(0xFFFFFFFF, IetfInetUtil.ipv4AddressBits(new Ipv4Address("255.255.255.255")));
     }
 
     @Test
-    public void testIpv4AddressNoZoneBits() {
+    void testIpv4AddressNoZoneBits() {
         assertEquals(0x01020304, IetfInetUtil.ipv4AddressNoZoneBits(new Ipv4AddressNoZone("1.2.3.4")));
         assertEquals(0xFFFFFFFF, IetfInetUtil.ipv4AddressNoZoneBits(new Ipv4AddressNoZone("255.255.255.255")));
     }
