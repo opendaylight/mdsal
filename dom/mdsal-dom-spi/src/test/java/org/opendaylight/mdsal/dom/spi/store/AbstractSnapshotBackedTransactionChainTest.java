@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.mockito.Mockito.doReturn;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -28,7 +28,7 @@ public class AbstractSnapshotBackedTransactionChainTest {
     public SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
 
         final var chain = new AbstractSnapshotBackedTransactionChain<>() {

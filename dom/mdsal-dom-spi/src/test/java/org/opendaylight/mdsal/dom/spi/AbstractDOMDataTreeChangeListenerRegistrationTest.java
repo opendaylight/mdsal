@@ -7,28 +7,26 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 
-public class AbstractDOMDataTreeChangeListenerRegistrationTest
+class AbstractDOMDataTreeChangeListenerRegistrationTest
         extends AbstractDOMDataTreeChangeListenerRegistration<DOMDataTreeChangeListener> {
-
     private static final DOMDataTreeChangeListener DOM_DATA_TREE_CHANGE_LISTENER =
             mock(DOMDataTreeChangeListener.class);
 
-    public AbstractDOMDataTreeChangeListenerRegistrationTest() {
+    AbstractDOMDataTreeChangeListenerRegistrationTest() {
         super(DOM_DATA_TREE_CHANGE_LISTENER);
     }
 
     @Test
-    public void basicTest() throws Exception {
-        AbstractDOMDataTreeChangeListenerRegistration<?> abstractDOMDataTreeChangeListenerRegistration =
-                new AbstractDOMDataTreeChangeListenerRegistrationTest();
-        assertEquals(DOM_DATA_TREE_CHANGE_LISTENER, abstractDOMDataTreeChangeListenerRegistration.getInstance());
-        abstractDOMDataTreeChangeListenerRegistration.close();
+    void basicTest() {
+        try (var reg = new AbstractDOMDataTreeChangeListenerRegistrationTest()) {
+            assertEquals(DOM_DATA_TREE_CHANGE_LISTENER, reg.getInstance());
+        }
     }
 
     @Override

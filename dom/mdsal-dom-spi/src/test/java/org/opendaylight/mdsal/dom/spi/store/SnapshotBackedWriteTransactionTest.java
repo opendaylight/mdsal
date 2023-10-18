@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -22,16 +24,15 @@ import static org.mockito.Mockito.verify;
 import com.google.common.base.MoreObjects;
 import java.io.Serial;
 import java.util.Optional;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
-public class SnapshotBackedWriteTransactionTest {
+class SnapshotBackedWriteTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
@@ -43,8 +44,8 @@ public class SnapshotBackedWriteTransactionTest {
     private static final Optional<NormalizedNode> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
     private static SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
         doNothing().when(DATA_TREE_MODIFICATION).ready();
         doNothing().when(DATA_TREE_MODIFICATION).write(any(), any());
@@ -62,7 +63,7 @@ public class SnapshotBackedWriteTransactionTest {
     }
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
         verify(DATA_TREE_MODIFICATION).write(any(), any());
 
@@ -82,44 +83,50 @@ public class SnapshotBackedWriteTransactionTest {
     }
 
     @Test
-    public void readyTest() throws Exception {
+    void readyTest() throws Exception {
         SnapshotBackedWriteTransaction<Object> tx = new SnapshotBackedWriteTransaction<>(new Object(), false,
                 DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
-        Assert.assertNotNull(tx.ready());
+        assertNotNull(tx.ready());
         verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), eq(null));
         tx.close();
     }
 
     @Test
-    public void readyWithException() {
+    void readyWithException() {
         Exception thrown = new RuntimeException();
         doThrow(thrown).when(DATA_TREE_MODIFICATION).ready();
-        Assert.assertNotNull(snapshotBackedWriteTransaction.ready());
+        assertNotNull(snapshotBackedWriteTransaction.ready());
         verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), same(thrown));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void writeWithException() throws Exception {
-        doAnswer(inv -> {
-            throw new TestException();
-        }).when(DATA_TREE_MODIFICATION).write(any(), any());
-        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
+    @Test
+    void writeWithException() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> {
+            doAnswer(inv -> {
+                throw new TestException();
+            }).when(DATA_TREE_MODIFICATION).write(any(), any());
+            snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mergeWithException() throws Exception {
-        doAnswer(inv -> {
-            throw new TestException();
-        }).when(DATA_TREE_MODIFICATION).merge(any(), any());
-        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE);
+    @Test
+    void mergeWithException() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> {
+            doAnswer(inv -> {
+                throw new TestException();
+            }).when(DATA_TREE_MODIFICATION).merge(any(), any());
+            snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void deleteWithException() throws Exception {
-        doAnswer(inv -> {
-            throw new TestException();
-        }).when(DATA_TREE_MODIFICATION).delete(any());
-        snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of());
+    @Test
+    void deleteWithException() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> {
+            doAnswer(inv -> {
+                throw new TestException();
+            }).when(DATA_TREE_MODIFICATION).delete(any());
+            snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of());
+        });
     }
 
     private static final class TestException extends Exception {

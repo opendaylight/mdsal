@@ -7,29 +7,28 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.Map;
 import java.util.Set;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderService {
+@ExtendWith(MockitoExtension.class)
+class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderService {
     @Mock(name = "domRpcImplementationRegistration")
-    public DOMRpcImplementationRegistration<?> domRpcImplementationRegistration;
+    private DOMRpcImplementationRegistration<?> domRpcImplementationRegistration;
 
     @Test
-    public void registerRpcImplementation() throws Exception {
-        assertEquals(domRpcImplementationRegistration, this.registerRpcImplementation(
-            mock(DOMRpcImplementation.class)));
+    void registerRpcImplementation() {
+        assertEquals(domRpcImplementationRegistration, registerRpcImplementation(mock(DOMRpcImplementation.class)));
     }
 
     @Override

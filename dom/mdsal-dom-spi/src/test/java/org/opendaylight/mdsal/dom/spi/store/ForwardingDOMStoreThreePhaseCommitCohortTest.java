@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.spi.store;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -21,7 +21,7 @@ public class ForwardingDOMStoreThreePhaseCommitCohortTest extends ForwardingDOMS
     public DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         doReturn(null).when(domStoreThreePhaseCommitCohort).canCommit();
         this.canCommit();
         verify(domStoreThreePhaseCommitCohort).canCommit();

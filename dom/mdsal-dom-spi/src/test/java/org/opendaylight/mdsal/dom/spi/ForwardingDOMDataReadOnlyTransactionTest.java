@@ -11,33 +11,33 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class ForwardingDOMDataReadOnlyTransactionTest extends ForwardingDOMDataReadOnlyTransaction {
     @Mock(name = "domDataTreeReadTransaction")
-    public DOMDataTreeReadTransaction domDataTreeReadTransaction;
+    private DOMDataTreeReadTransaction domDataTreeReadTransaction;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() {
         doReturn(null).when(domDataTreeReadTransaction).read(null, null);
-        this.read(null, null);
+        read(null, null);
         verify(domDataTreeReadTransaction).read(null, null);
 
         doReturn(null).when(domDataTreeReadTransaction).exists(null, null);
-        this.exists(null, null);
+        exists(null, null);
         verify(domDataTreeReadTransaction).exists(null, null);
 
         doReturn(null).when(domDataTreeReadTransaction).getIdentifier();
-        this.getIdentifier();
+        getIdentifier();
         verify(domDataTreeReadTransaction).getIdentifier();
 
         doNothing().when(domDataTreeReadTransaction).close();
-        this.close();
+        close();
         verify(domDataTreeReadTransaction).close();
     }
 

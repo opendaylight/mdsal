@@ -8,36 +8,35 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.TimeUnit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMNotificationPublishServiceTest extends ForwardingDOMNotificationPublishService {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMNotificationPublishServiceTest extends ForwardingDOMNotificationPublishService {
     @Mock(name = "domNotificationPublishService")
-    public DOMNotificationPublishService domNotificationPublishService;
+    private DOMNotificationPublishService domNotificationPublishService;
+    @Mock
+    private DOMNotification domNotification;
 
     @Test
-    public void basicTest() throws Exception {
-        final DOMNotification domNotification = mock(DOMNotification.class);
-
+    void basicTest() throws Exception {
         doReturn(null).when(domNotificationPublishService).putNotification(domNotification);
-        this.putNotification(domNotification);
+        putNotification(domNotification);
         verify(domNotificationPublishService).putNotification(domNotification);
 
         doReturn(null).when(domNotificationPublishService).offerNotification(domNotification);
-        this.offerNotification(domNotification);
+        offerNotification(domNotification);
         verify(domNotificationPublishService).offerNotification(domNotification);
 
         doReturn(null).when(domNotificationPublishService).offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
-        this.offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
+        offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
         verify(domNotificationPublishService).offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
     }
 

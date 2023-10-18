@@ -11,41 +11,41 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class ForwardingDOMDataWriteTransactionTest extends ForwardingDOMDataWriteTransaction {
     @Mock(name = "domDataTreeWriteTransaction")
-    public DOMDataTreeWriteTransaction domDataTreeWriteTransaction;
+    private DOMDataTreeWriteTransaction domDataTreeWriteTransaction;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() {
         doReturn(null).when(domDataTreeWriteTransaction).getIdentifier();
-        this.getIdentifier();
+        getIdentifier();
         verify(domDataTreeWriteTransaction).getIdentifier();
 
         doNothing().when(domDataTreeWriteTransaction).put(null, null, null);
-        this.put(null, null, null);
+        put(null, null, null);
         verify(domDataTreeWriteTransaction).put(null, null, null);
 
         doNothing().when(domDataTreeWriteTransaction).merge(null, null, null);
-        this.merge(null, null, null);
+        merge(null, null, null);
         verify(domDataTreeWriteTransaction).merge(null, null, null);
 
         doNothing().when(domDataTreeWriteTransaction).delete(null, null);
-        this.delete(null, null);
+        delete(null, null);
         verify(domDataTreeWriteTransaction).delete(null, null);
 
         doReturn(null).when(domDataTreeWriteTransaction).commit();
-        this.commit();
+        commit();
         verify(domDataTreeWriteTransaction).commit();
 
         doReturn(false).when(domDataTreeWriteTransaction).cancel();
-        this.cancel();
+        cancel();
         verify(domDataTreeWriteTransaction).cancel();
     }
 

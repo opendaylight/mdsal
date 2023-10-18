@@ -8,33 +8,33 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcServiceTest extends ForwardingDOMRpcService {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcServiceTest extends ForwardingDOMRpcService {
     @Mock(name = "domRpcService")
-    public DOMRpcService domRpcService;
+    private DOMRpcService domRpcService;
+    @Mock
+    private DOMRpcAvailabilityListener domRpcAvailabilityListener;
 
     @Test
-    public void basicTest() throws Exception {
-        final DOMRpcAvailabilityListener domRpcAvailabilityListener = mock(DOMRpcAvailabilityListener.class);
-        final QName id = QName.create("urn:foo", "foo");
+    void basicTest() {
+        final var id = QName.create("urn:foo", "foo");
 
         doReturn(null).when(domRpcService).invokeRpc(id, null);
-        this.invokeRpc(id, null);
+        invokeRpc(id, null);
         verify(domRpcService).invokeRpc(id, null);
 
         doReturn(null).when(domRpcService).registerRpcListener(domRpcAvailabilityListener);
-        this.registerRpcListener(domRpcAvailabilityListener);
+        registerRpcListener(domRpcAvailabilityListener);
         verify(domRpcService).registerRpcListener(domRpcAvailabilityListener);
     }
 

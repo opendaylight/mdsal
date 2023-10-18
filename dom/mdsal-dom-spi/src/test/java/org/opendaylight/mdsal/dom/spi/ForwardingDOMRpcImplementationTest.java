@@ -8,27 +8,26 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcImplementationTest extends ForwardingDOMRpcImplementation {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcImplementationTest extends ForwardingDOMRpcImplementation {
     @Mock(name = "domRpcImplementation")
-    public DOMRpcImplementation domRpcImplementation;
+    private DOMRpcImplementation domRpcImplementation;
+    @Mock
+    private DOMRpcIdentifier domRpcIdentifier;
 
     @Test
-    public void basicTest() throws Exception {
-        final DOMRpcIdentifier domRpcIdentifier = mock(DOMRpcIdentifier.class);
-
+    void basicTest() {
         doReturn(null).when(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
-        this.invokeRpc(domRpcIdentifier, null);
+        invokeRpc(domRpcIdentifier, null);
         verify(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
     }
 

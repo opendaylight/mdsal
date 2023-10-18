@@ -8,35 +8,32 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcProviderServiceTest extends ForwardingDOMRpcProviderService {
-
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcProviderServiceTest extends ForwardingDOMRpcProviderService {
     @Mock(name = "domRpcProviderService")
-    public DOMRpcProviderService domRpcProviderService;
+    private DOMRpcProviderService domRpcProviderService;
+    @Mock
+    private  DOMRpcImplementation domRpcImplementation;
 
     @Test
-    public void basicTest() throws Exception {
-        final DOMRpcImplementation domRpcImplementation = mock(DOMRpcImplementation.class);
-
+    void basicTest() {
         doReturn(null).when(domRpcProviderService).registerRpcImplementation(domRpcImplementation);
-        this.registerRpcImplementation(domRpcImplementation);
+        registerRpcImplementation(domRpcImplementation);
         verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation);
 
-        doReturn(null).when(domRpcProviderService).registerRpcImplementation(domRpcImplementation,
-                Collections.emptySet());
-        this.registerRpcImplementation(domRpcImplementation, Collections.emptySet());
-        verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Collections.emptySet());
+        doReturn(null).when(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Set.of());
+        registerRpcImplementation(domRpcImplementation, Set.of());
+        verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Set.of());
     }
 
     @Override

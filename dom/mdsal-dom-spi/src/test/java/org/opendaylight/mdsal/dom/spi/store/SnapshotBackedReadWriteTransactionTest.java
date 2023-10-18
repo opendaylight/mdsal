@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -21,8 +21,8 @@ import static org.mockito.Mockito.mock;
 import com.google.common.util.concurrent.Futures;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
-public class SnapshotBackedReadWriteTransactionTest {
+class SnapshotBackedReadWriteTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
@@ -38,15 +38,15 @@ public class SnapshotBackedReadWriteTransactionTest {
             mock(TransactionReadyPrototype.class);
     private SnapshotBackedReadWriteTransaction<Object> snapshotBackedReadWriteTransaction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
         snapshotBackedReadWriteTransaction = new SnapshotBackedReadWriteTransaction<>(new Object(), false,
                 DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
     }
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         final NormalizedNode testNode = mock(NormalizedNode.class);
         final Optional<NormalizedNode> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
@@ -56,7 +56,7 @@ public class SnapshotBackedReadWriteTransactionTest {
     }
 
     @Test
-    public void readTestWithNullException() {
+    void readTestWithNullException() {
         doReturn(null).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.of());
 
         final var future = snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.of());
@@ -66,7 +66,7 @@ public class SnapshotBackedReadWriteTransactionTest {
     }
 
     @Test
-    public void readNodeTestWithException() {
+    void readNodeTestWithException() {
         final var thrown = new NullPointerException("no Node");
         doThrow(thrown).when(DATA_TREE_MODIFICATION).readNode(any());
 
@@ -78,7 +78,7 @@ public class SnapshotBackedReadWriteTransactionTest {
     }
 
     @Test
-    public void existsTestWithException() {
+    void existsTestWithException() {
         final var thrown = new NullPointerException("no Node");
         doThrow(thrown).when(DATA_TREE_MODIFICATION).readNode(any());
 

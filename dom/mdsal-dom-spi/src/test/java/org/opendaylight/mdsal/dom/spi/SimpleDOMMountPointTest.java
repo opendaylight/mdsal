@@ -7,28 +7,32 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import org.junit.Test;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class SimpleDOMMountPointTest {
+@ExtendWith(MockitoExtension.class)
+class SimpleDOMMountPointTest {
+    @Mock
+    private DOMService domService;
+
     @Test
-    public void basicTest() throws Exception {
-        final var domService = mock(DOMService.class);
+    void basicTest() {
         final var classToInstanceMap = ImmutableClassToInstanceMap.of(DOMService.class, domService);
 
-        final SimpleDOMMountPoint simpleDOMMountPoint =
-                SimpleDOMMountPoint.create(YangInstanceIdentifier.of(), classToInstanceMap);
+        final var simpleDOMMountPoint = SimpleDOMMountPoint.create(YangInstanceIdentifier.of(), classToInstanceMap);
         assertNotNull(simpleDOMMountPoint);
 
         assertSame(YangInstanceIdentifier.of(), simpleDOMMountPoint.getIdentifier());
-        assertTrue(simpleDOMMountPoint.getService(DOMService.class).isPresent());
-        assertSame(domService, simpleDOMMountPoint.getService(DOMService.class).orElseThrow());
+        assertEquals(Optional.of(domService), simpleDOMMountPoint.getService(DOMService.class));
     }
 }

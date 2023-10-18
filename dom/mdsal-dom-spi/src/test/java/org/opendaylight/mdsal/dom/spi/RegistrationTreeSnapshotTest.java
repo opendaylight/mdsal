@@ -7,31 +7,33 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.locks.Lock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
-public class RegistrationTreeSnapshotTest {
+@ExtendWith(MockitoExtension.class)
+class RegistrationTreeSnapshotTest {
+    @Mock
+    private Lock lock;
+
     @Test
-    public void basicTest() throws Exception {
-        final Lock lock = mock(Lock.class);
-        final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
-        final RegistrationTreeNode<?> registrationTreeNode = new RegistrationTreeNode<>(null, pathArgument);
-        final RegistrationTreeSnapshot<?> registrationTreeSnapshot =
-                new RegistrationTreeSnapshot<>(lock, registrationTreeNode);
-
-        assertNotNull(registrationTreeSnapshot.getRootNode());
-        assertEquals(registrationTreeNode, registrationTreeSnapshot.getRootNode());
-
-        doNothing().when(lock).unlock();
-        registrationTreeSnapshot.close();
+    void basicTest() throws Exception {
+        final var pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
+        final var registrationTreeNode = new RegistrationTreeNode<>(null, pathArgument);
+        try (var registrationTreeSnapshot = new RegistrationTreeSnapshot<>(lock, registrationTreeNode)) {
+            assertNotNull(registrationTreeSnapshot.getRootNode());
+            assertEquals(registrationTreeNode, registrationTreeSnapshot.getRootNode());
+            doNothing().when(lock).unlock();
+        }
         verify(lock).unlock();
     }
 }

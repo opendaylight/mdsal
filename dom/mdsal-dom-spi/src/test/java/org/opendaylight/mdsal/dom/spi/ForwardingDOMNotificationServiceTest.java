@@ -8,34 +8,32 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMNotificationServiceTest extends ForwardingDOMNotificationService {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMNotificationServiceTest extends ForwardingDOMNotificationService {
     @Mock(name = "domNotificationService")
-    public DOMNotificationService domNotificationService;
+    private DOMNotificationService domNotificationService;
+    @Mock
+    private DOMNotificationListener domNotificationListener;
 
     @Test
-    public void basicTest() throws Exception {
-        final DOMNotificationListener domNotificationListener = mock(DOMNotificationListener.class);
-
+    void basicTest() {
         doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener);
-        this.registerNotificationListener(domNotificationListener);
+        registerNotificationListener(domNotificationListener);
         verify(domNotificationService).registerNotificationListener(domNotificationListener);
 
-        doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener,
-                Collections.emptySet());
-        this.registerNotificationListener(domNotificationListener, Collections.emptySet());
-        verify(domNotificationService).registerNotificationListener(domNotificationListener, Collections.emptySet());
+        doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener, Set.of());
+        registerNotificationListener(domNotificationListener, Set.of());
+        verify(domNotificationService).registerNotificationListener(domNotificationListener, Set.of());
     }
 
     @Override

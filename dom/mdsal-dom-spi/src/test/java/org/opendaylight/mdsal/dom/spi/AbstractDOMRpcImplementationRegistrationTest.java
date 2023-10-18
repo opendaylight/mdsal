@@ -7,27 +7,25 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 
-public class AbstractDOMRpcImplementationRegistrationTest
+class AbstractDOMRpcImplementationRegistrationTest
         extends AbstractDOMRpcImplementationRegistration<DOMRpcImplementation> {
-
     private static final DOMRpcImplementation DOM_RPC_IMPLEMENTATION = mock(DOMRpcImplementation.class);
 
-    public AbstractDOMRpcImplementationRegistrationTest() {
+    AbstractDOMRpcImplementationRegistrationTest() {
         super(DOM_RPC_IMPLEMENTATION);
     }
 
     @Test
-    public void basicTest() throws Exception {
-        AbstractDOMRpcImplementationRegistration<?> abstractDOMRpcImplementationRegistration =
-                new AbstractDOMRpcImplementationRegistrationTest();
-        assertEquals(DOM_RPC_IMPLEMENTATION, abstractDOMRpcImplementationRegistration.getInstance());
-        abstractDOMRpcImplementationRegistration.close();
+    void basicTest() {
+        try (var reg = new AbstractDOMRpcImplementationRegistrationTest()) {
+            assertEquals(DOM_RPC_IMPLEMENTATION, reg.getInstance());
+        }
     }
 
     @Override

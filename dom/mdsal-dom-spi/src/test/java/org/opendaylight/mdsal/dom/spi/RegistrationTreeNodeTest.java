@@ -7,28 +7,27 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
 
-public class RegistrationTreeNodeTest {
+class RegistrationTreeNodeTest {
     @Test
-    public void basicTest() throws Exception {
-        final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
-        final RegistrationTreeNode<Object> registrationTreeNodeParent = new RegistrationTreeNode<>(null, pathArgument);
-        final RegistrationTreeNode<Object> registrationTreeNode =
-                new RegistrationTreeNode<>(registrationTreeNodeParent, pathArgument);
+    void basicTest() {
+        final var pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
+        final var registrationTreeNodeParent = new RegistrationTreeNode<>(null, pathArgument);
+        final var registrationTreeNode = new RegistrationTreeNode<>(registrationTreeNodeParent, pathArgument);
 
         assertEquals(pathArgument, registrationTreeNode.getIdentifier());
 
-        final Object registration = new Object();
+        final var registration = new Object();
         assertFalse(registrationTreeNode.getRegistrations().contains(registration));
         registrationTreeNode.addRegistration(registration);
         assertTrue(registrationTreeNode.getRegistrations().contains(registration));
@@ -39,11 +38,11 @@ public class RegistrationTreeNodeTest {
         assertNotNull(registrationTreeNode.ensureChild(pathArgument));
         assertNotNull(registrationTreeNode.getExactChild(pathArgument));
 
-        final NodeWithValue<?> nodeWithValue = new NodeWithValue<>(QName.create("", "testNode"), new Object());
+        final var nodeWithValue = new NodeWithValue<>(QName.create("", "testNode"), new Object());
         assertEquals(List.of(), registrationTreeNode.getInexactChildren(nodeWithValue));
         assertEquals(List.of(), registrationTreeNode.getInexactChildren(pathArgument));
 
-        final NodeIdentifier nodeWithoutValue = new NodeIdentifier(QName.create("", "testNode"));
+        final var nodeWithoutValue = new NodeIdentifier(QName.create("", "testNode"));
         assertNotNull(registrationTreeNode.ensureChild(nodeWithoutValue));
         assertFalse(registrationTreeNode.getInexactChildren(nodeWithValue).isEmpty());
 

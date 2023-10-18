@@ -7,14 +7,14 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -23,12 +23,12 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
 
-public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTreeChangePublisher {
+class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTreeChangePublisher {
     private static boolean removeInvoked = false;
     private static boolean notifyInvoked = false;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         final DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
         final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class, "dataTreeCandidateNode");
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.builder()

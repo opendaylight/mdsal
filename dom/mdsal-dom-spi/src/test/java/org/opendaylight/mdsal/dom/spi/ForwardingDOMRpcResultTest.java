@@ -10,19 +10,19 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcResultTest extends ForwardingDOMRpcResult {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcResultTest extends ForwardingDOMRpcResult {
     @Mock(name = "domRpcResult")
-    public DOMRpcResult delegate;
+    private DOMRpcResult delegate;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() {
         doReturn(null).when(delegate).errors();
         errors();
         verify(delegate).errors();

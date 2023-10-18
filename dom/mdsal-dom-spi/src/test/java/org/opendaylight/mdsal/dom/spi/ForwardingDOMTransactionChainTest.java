@@ -11,29 +11,29 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionChain {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionChain {
     @Mock(name = "domTransactionChain")
-    public DOMTransactionChain domTransactionChain;
+    private DOMTransactionChain domTransactionChain;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         doReturn(null).when(domTransactionChain).newWriteOnlyTransaction();
-        this.newWriteOnlyTransaction();
+        newWriteOnlyTransaction();
         verify(domTransactionChain).newWriteOnlyTransaction();
 
         doReturn(null).when(domTransactionChain).newReadOnlyTransaction();
-        this.newReadOnlyTransaction();
+        newReadOnlyTransaction();
         verify(domTransactionChain).newReadOnlyTransaction();
 
         doNothing().when(domTransactionChain).close();
-        this.close();
+        close();
         verify(domTransactionChain).close();
     }
 

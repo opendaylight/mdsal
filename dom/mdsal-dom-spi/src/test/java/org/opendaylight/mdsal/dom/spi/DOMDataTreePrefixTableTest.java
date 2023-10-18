@@ -7,23 +7,22 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class DOMDataTreePrefixTableTest {
-
+class DOMDataTreePrefixTableTest {
     @Test
-    public void basicTest() throws Exception {
-        final DOMDataTreePrefixTable<Object> domDataTreePrefixTable = DOMDataTreePrefixTable.create();
-        final Object testObject = new Object();
-        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
-        final DOMDataTreeIdentifier domDataTreeIdentifier =
+    void basicTest() {
+        final var domDataTreePrefixTable = DOMDataTreePrefixTable.create();
+        final var testObject = new Object();
+        final var yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
+        final var domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, yangInstanceIdentifier);
 
         domDataTreePrefixTable.store(domDataTreeIdentifier, testObject);
@@ -32,7 +31,7 @@ public class DOMDataTreePrefixTableTest {
         domDataTreePrefixTable.remove(domDataTreeIdentifier);
         assertNull(domDataTreePrefixTable.lookup(domDataTreeIdentifier));
 
-        final DOMDataTreeIdentifier invalidDOMDataTreeIdentifier =
+        final var invalidDOMDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, yangInstanceIdentifier);
         domDataTreePrefixTable.remove(invalidDOMDataTreeIdentifier);
         assertNull(domDataTreePrefixTable.lookup(invalidDOMDataTreeIdentifier));

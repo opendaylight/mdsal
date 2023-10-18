@@ -12,11 +12,11 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -32,11 +32,11 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -50,26 +50,26 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class PingPongTransactionChainTest {
+@ExtendWith(MockitoExtension.class)
+class PingPongTransactionChainTest {
     @Mock
-    public Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory;
+    private Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory;
     @Mock
-    public DOMTransactionChainListener listener;
+    private DOMTransactionChainListener listener;
     @Mock
-    public DOMTransactionChain chain;
+    private DOMTransactionChain chain;
     @Mock
-    public DOMDataTreeReadWriteTransaction rwTx;
+    private DOMDataTreeReadWriteTransaction rwTx;
     @Mock
-    public DOMDataTreeReadWriteTransaction rwTx1;
+    private DOMDataTreeReadWriteTransaction rwTx1;
     @Mock
-    public DOMDataTreeReadWriteTransaction rwTx2;
+    private DOMDataTreeReadWriteTransaction rwTx2;
 
-    public DOMTransactionChainListener pingPongListener;
-    public PingPongTransactionChain pingPong;
+    private DOMTransactionChainListener pingPongListener;
+    private PingPongTransactionChain pingPong;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         // Slightly complicated bootstrap
         doAnswer(invocation -> {
             pingPongListener = invocation.getArgument(0);
@@ -82,7 +82,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testIdleClose() {
+    void testIdleClose() {
         doNothing().when(chain).close();
         pingPong.close();
         verify(chain).close();
@@ -93,7 +93,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testIdleFailure() {
+    void testIdleFailure() {
         final var cause = new Throwable();
         doNothing().when(listener).onTransactionChainFailed(pingPong, null, cause);
         doReturn("mock").when(chain).toString();
@@ -102,7 +102,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testReadOnly() {
+    void testReadOnly() {
         final var tx = pingPong.newReadOnlyTransaction();
         assertGetIdentifier(tx);
         assertReadOperations(tx);
@@ -110,7 +110,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testReadWrite() {
+    void testReadWrite() {
         final var tx = pingPong.newReadWriteTransaction();
         assertGetIdentifier(tx);
         assertReadOperations(tx);
@@ -119,7 +119,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testWriteOnly() {
+    void testWriteOnly() {
         final var tx = pingPong.newWriteOnlyTransaction();
         assertGetIdentifier(tx);
         assertWriteOperations(tx);
@@ -168,12 +168,12 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testCommitFailure() {
+    void testCommitFailure() {
         assertCommitFailure(() -> { });
     }
 
     @Test
-    public void testCommitFailureAfterClose() {
+    void testCommitFailureAfterClose() {
         assertCommitFailure(() -> {
             doNothing().when(chain).close();
             pingPong.close();
@@ -199,12 +199,12 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testSimpleCancelFalse() {
+    void testSimpleCancelFalse() {
         assertSimpleCancel(false);
     }
 
     @Test
-    public void testSimpleCancelTrue() {
+    void testSimpleCancelTrue() {
         assertSimpleCancel(true);
     }
 
@@ -217,14 +217,14 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testNewAfterSuccessfulCancel() {
+    void testNewAfterSuccessfulCancel() {
         doReturn(true).when(rwTx).cancel();
         pingPong.newWriteOnlyTransaction().cancel();
         assertNotNull(pingPong.newWriteOnlyTransaction());
     }
 
     @Test
-    public void testNewAfterNew() {
+    void testNewAfterNew() {
         assertNotNull(pingPong.newWriteOnlyTransaction());
         doReturn(true).when(rwTx).cancel();
         doReturn("mock").when(rwTx).toString();
@@ -235,7 +235,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testReadWriteReuse() {
+    void testReadWriteReuse() {
         final var tx = pingPong.newReadWriteTransaction();
         final var rwTxFuture = SettableFuture.<CommitInfo>create();
         doReturn(FluentFuture.from(rwTxFuture)).when(rwTx).commit();
@@ -277,7 +277,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void commitWhileInflight() {
+    void commitWhileInflight() {
         final var tx = pingPong.newReadWriteTransaction();
 
         final var rwTxFuture = SettableFuture.<CommitInfo>create();
@@ -302,7 +302,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testNewAfterAsyncShutdown() {
+    void testNewAfterAsyncShutdown() {
         // Setup inflight transaction
         final var tx = pingPong.newReadWriteTransaction();
         final var rwTxFuture = SettableFuture.<CommitInfo>create();
@@ -332,7 +332,7 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
-    public void testIdempotentClose() {
+    void testIdempotentClose() {
         doNothing().when(chain).close();
         pingPong.close();
         verify(chain).close();

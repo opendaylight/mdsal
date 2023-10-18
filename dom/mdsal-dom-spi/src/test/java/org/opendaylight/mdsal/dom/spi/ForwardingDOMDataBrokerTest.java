@@ -12,33 +12,33 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
     @Mock(name = "domDataBroker")
-    public DOMDataBroker domDataBroker;
+    private DOMDataBroker domDataBroker;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() {
         doReturn(null).when(domDataBroker).createTransactionChain(any());
-        this.createTransactionChain(null);
+        createTransactionChain(null);
         verify(domDataBroker).createTransactionChain(any());
 
         doReturn(ImmutableClassToInstanceMap.of()).when(domDataBroker).getExtensions();
-        this.getExtensions();
+        getExtensions();
         verify(domDataBroker).getExtensions();
 
         doReturn(null).when(domDataBroker).newReadOnlyTransaction();
-        this.newReadOnlyTransaction();
+        newReadOnlyTransaction();
         verify(domDataBroker).newReadOnlyTransaction();
 
         doReturn(null).when(domDataBroker).newWriteOnlyTransaction();
-        this.newWriteOnlyTransaction();
+        newWriteOnlyTransaction();
         verify(domDataBroker).newWriteOnlyTransaction();
     }
 
