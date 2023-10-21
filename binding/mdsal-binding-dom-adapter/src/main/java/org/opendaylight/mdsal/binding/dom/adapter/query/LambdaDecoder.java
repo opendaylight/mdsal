@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter.query;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -21,8 +20,8 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
-import org.opendaylight.yangtools.concepts.Immutable;
 
 /**
  * Utility class for forcing decoding lambda instances to the method being invoked. The theory here is that
@@ -49,19 +48,11 @@ import org.opendaylight.yangtools.concepts.Immutable;
  * messier, less type-safe and a perf-killer.
  */
 final class LambdaDecoder {
-    // FIXME: when we have JDK16: this should be a record
-    static final class LambdaTarget implements Immutable {
-        final String targetClass;
-        final String targetMethod;
-
-        LambdaTarget(final String targetClass, final String targetMethod) {
-            this.targetClass = requireNonNull(targetClass);
-            this.targetMethod = requireNonNull(targetMethod);
-        }
-
-        @Override
-        public String toString() {
-            return MoreObjects.toStringHelper(this).add("class", targetClass).add("method", targetMethod).toString();
+    @NonNullByDefault
+    record LambdaTarget(String targetClass, String targetMethod) {
+        LambdaTarget {
+            requireNonNull(targetClass);
+            requireNonNull(targetMethod);
         }
     }
 
