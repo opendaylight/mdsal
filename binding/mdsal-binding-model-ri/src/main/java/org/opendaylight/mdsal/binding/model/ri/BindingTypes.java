@@ -25,17 +25,17 @@ import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
+import org.opendaylight.yangtools.yang.binding.BindingKeyAwareIdentifier;
 import org.opendaylight.yangtools.yang.binding.BitsTypeObject;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceNotification;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
-import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedListAction;
 import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 import org.opendaylight.yangtools.yang.binding.Notification;
@@ -71,8 +71,6 @@ public final class BindingTypes {
     public static final ConcreteType SCALAR_TYPE_OBJECT = typeForClass(ScalarTypeObject.class);
     public static final ConcreteType BITS_TYPE_OBJECT = typeForClass(BitsTypeObject.class);
     public static final ConcreteType UNION_TYPE_OBJECT = typeForClass(UnionTypeObject.class);
-    public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
-    public static final ConcreteType KEYED_INSTANCE_IDENTIFIER = typeForClass(KeyedInstanceIdentifier.class);
     public static final ConcreteType YANG_DATA_NAME = typeForClass(YangDataName.class);
 
     // This is an annotation, we are current just referencing the type
@@ -90,7 +88,9 @@ public final class BindingTypes {
     private static final ConcreteType ACTION = typeForClass(Action.class);
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
     private static final ConcreteType CHOICE_IN = typeForClass(ChoiceIn.class);
+    private static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(BindingDataObjectIdentifier.class);
     private static final ConcreteType INSTANCE_NOTIFICATION = typeForClass(InstanceNotification.class);
+    private static final ConcreteType KEYED_INSTANCE_IDENTIFIER = typeForClass(BindingKeyAwareIdentifier.class);
     private static final ConcreteType KEYED_LIST_ACTION = typeForClass(KeyedListAction.class);
     private static final ConcreteType KEYED_LIST_NOTIFICATION = typeForClass(KeyedListNotification.class);
     private static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
@@ -236,10 +236,11 @@ public final class BindingTypes {
     }
 
     /**
-     * Type specializing {@link InstanceIdentifier} for a particular type.
+     * Type specializing {@link BindingDataObjectIdentifier} for a particular type for the purposes on defining an
+     * {@code action} interface and similar.
      *
      * @param type Type for which to specialize
-     * @return A parameterized type corresponding to {@code InstanceIdentifier<Type>}
+     * @return A parameterized type corresponding to {@code BindingDataObjectIdentifier<Type>}
      * @throws NullPointerException if {@code type} is {@code null}
      */
     public static ParameterizedType instanceIdentifier(final Type type) {
@@ -247,7 +248,8 @@ public final class BindingTypes {
     }
 
     /**
-     * Type specializing {@link KeyedInstanceIdentifier} for a particular type.
+     * Type specializing {@link BindingKeyAwareIdentifier} for a particular type for the purposes on defining an
+     * {@code action} interface and similar.
      *
      * @param type Type for which to specialize
      * @param keyType Type of key

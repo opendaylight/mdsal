@@ -17,8 +17,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
  * @author Robert Varga
  */
 public interface KeyedListAction<K extends Key<T>, T extends DataObject & KeyAware<K>,
-        I extends RpcInput, O extends RpcOutput> extends Action<KeyedInstanceIdentifier<T, K>, I, O> {
+        I extends RpcInput, O extends RpcOutput> extends Action<BindingKeyAwareIdentifier<T, K>, I, O> {
     @Override
     @CheckReturnValue
-    ListenableFuture<RpcResult<O>> invoke(KeyedInstanceIdentifier<T, K> path, I input);
+    ListenableFuture<RpcResult<O>> invoke(BindingKeyAwareIdentifier<T, K> path, I input);
 }

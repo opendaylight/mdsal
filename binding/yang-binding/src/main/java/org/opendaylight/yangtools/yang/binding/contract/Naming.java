@@ -28,7 +28,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.BindingContract;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
@@ -125,7 +125,7 @@ public final class Naming {
     public static final @NonNull String BINDING_TO_STRING_NAME = "bindingToString";
 
     /**
-     * Name of {@link Action#invoke(InstanceIdentifier, RpcInput)}.
+     * Name of {@link Action#invoke(BindingDataObjectIdentifier, RpcInput)}.
      */
     public static final @NonNull String ACTION_INVOKE_NAME = "invoke";
 

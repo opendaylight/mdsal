@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
@@ -33,7 +34,7 @@ public final class OSGiActionProviderService extends AbstractAdaptedService<Acti
     }
 
     @Override
-    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
+    public <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>, S extends A>
         ObjectRegistration<S> registerImplementation(final ActionSpec<A, P> spec, final S implementation,
             final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
         return delegate().registerImplementation(spec, implementation, datastore, validNodes);

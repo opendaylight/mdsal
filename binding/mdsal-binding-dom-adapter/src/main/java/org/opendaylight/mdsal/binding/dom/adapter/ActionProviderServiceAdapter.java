@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
@@ -75,13 +76,13 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     }
 
     @Override
-    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
+    public <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>, S extends A>
             ObjectRegistration<S> registerImplementation(final ActionSpec<A, P> spec, final S implementation,
                 final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
-        final CurrentAdapterSerializer serializer = currentSerializer();
-        final Absolute actionPath = serializer.getActionPath(spec);
-        final Impl impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);
-        final DOMActionInstance instance = validNodes.isEmpty()
+        final var serializer = currentSerializer();
+        final var actionPath = serializer.getActionPath(spec);
+        final var impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);
+        final var instance = validNodes.isEmpty()
             // Register on the entire datastore
             ? DOMActionInstance.of(actionPath, new DOMDataTreeIdentifier(datastore, YangInstanceIdentifier.of()))
                 // Register on specific instances
@@ -90,7 +91,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
                     .collect(Collectors.toUnmodifiableSet()));
 
 
-        final ObjectRegistration<?> reg = getDelegate().registerActionImplementation(impl, instance);
+        final var reg = getDelegate().registerActionImplementation(impl, instance);
 
         return new AbstractObjectRegistration<>(implementation) {
             @Override
