@@ -11,6 +11,7 @@ module org.opendaylight.yangtools.yang.binding {
     exports org.opendaylight.yangtools.yang.binding.contract;
     exports org.opendaylight.yangtools.yang.binding.util;
 
+    requires transitive org.opendaylight.yangtools.concepts;
     requires transitive org.opendaylight.yangtools.yang.common;
     requires org.opendaylight.yangtools.util;
 
