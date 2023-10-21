@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.ri;
 
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -83,8 +84,10 @@ public final class BaseYangTypes {
      */
     public static final Type BINARY_TYPE = Types.BYTE_ARRAY;
 
-    // FIXME: why is this a ParameterizedType (vs. what BindingTypes defines?)
-    public static final Type INSTANCE_IDENTIFIER = Types.parameterizedTypeFor(BindingTypes.INSTANCE_IDENTIFIER);
+    /**
+     * {@code Type} representation of {@code instance-identifier} YANG type.
+     */
+    public static final Type INSTANCE_IDENTIFIER = Types.typeForClass(BindingInstanceIdentifier.class);
 
     private BaseYangTypes() {
         // Hidden on purpose

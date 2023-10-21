@@ -18,9 +18,9 @@ import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.Notification;
@@ -30,17 +30,15 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 public class BindingTypesTest {
     @Test
     public void staticBindingTypesTest() {
-        assertEquals("AUGMENTABLE", typeForClass(Augmentable.class), BindingTypes.AUGMENTABLE);
-        assertEquals("AUGMENTATION", typeForClass(Augmentation.class), BindingTypes.AUGMENTATION);
-        assertEquals("BASE_IDENTITY", typeForClass(BaseIdentity.class), BindingTypes.BASE_IDENTITY);
-        assertEquals("DATA_OBJECT", typeForClass(DataObject.class), BindingTypes.DATA_OBJECT);
-        assertEquals("DATA_ROOT", typeForClass(DataRoot.class), BindingTypes.DATA_ROOT);
-        assertEquals("KEY_AWARE", typeForClass(KeyAware.class), BindingTypes.KEY_AWARE);
-        assertEquals("KEY", typeForClass(Key.class), BindingTypes.KEY);
-        assertEquals("INSTANCE_IDENTIFIER", typeForClass(InstanceIdentifier.class), BindingTypes.INSTANCE_IDENTIFIER);
-        assertEquals("NOTIFICATION_LISTENER", typeForClass(NotificationListener.class),
-            BindingTypes.NOTIFICATION_LISTENER);
-        assertEquals("RPC_SERVICE", typeForClass(RpcService.class), BindingTypes.RPC_SERVICE);
+        assertEquals(typeForClass(Augmentable.class), BindingTypes.AUGMENTABLE);
+        assertEquals(typeForClass(Augmentation.class), BindingTypes.AUGMENTATION);
+        assertEquals(typeForClass(BaseIdentity.class), BindingTypes.BASE_IDENTITY);
+        assertEquals(typeForClass(DataObject.class), BindingTypes.DATA_OBJECT);
+        assertEquals(typeForClass(DataRoot.class), BindingTypes.DATA_ROOT);
+        assertEquals(typeForClass(KeyAware.class), BindingTypes.KEY_AWARE);
+        assertEquals(typeForClass(Key.class), BindingTypes.KEY);
+        assertEquals(typeForClass(NotificationListener.class), BindingTypes.NOTIFICATION_LISTENER);
+        assertEquals(typeForClass(RpcService.class), BindingTypes.RPC_SERVICE);
     }
 
     @Test
@@ -71,7 +69,7 @@ public class BindingTypesTest {
 
     @Test
     public void testAugmentation() {
-        final ParameterizedType augmentationType = BindingTypes.augmentation(Types.objectType());
+        final var augmentationType = BindingTypes.augmentation(Types.objectType());
         assertEquals("Augmentation", augmentationType.getName());
     }
 
@@ -82,8 +80,15 @@ public class BindingTypesTest {
 
     @Test
     public void testNotification() {
-        final ParameterizedType notificationType = BindingTypes.notification(Types.objectType());
+        final var notificationType = BindingTypes.notification(Types.objectType());
         assertEquals(Types.typeForClass(Notification.class), notificationType.getRawType());
         assertArrayEquals(new Object[] { Types.objectType() }, notificationType.getActualTypeArguments());
+    }
+
+    @Test
+    public void testInstanceIdentifier() {
+        final var iidType = BindingTypes.instanceIdentifier(Types.objectType());
+        assertEquals(Types.typeForClass(BindingDataObjectIdentifier.class), iidType.getRawType());
+        assertArrayEquals(new Object[] { Types.objectType() }, iidType.getActualTypeArguments());
     }
 }

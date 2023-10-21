@@ -13,11 +13,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -26,7 +24,6 @@ import org.opendaylight.mdsal.binding.model.ri.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants;
 import org.opendaylight.mdsal.binding.model.ri.Types;
-import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 
 /**
@@ -94,15 +91,15 @@ final class ByTypeMemberComparator<T extends TypeMember> implements Comparator<T
             return input;
         }
 
-        final List<T> ret = new ArrayList<>(input);
+        final var ret = new ArrayList<>(input);
         ret.sort(getInstance());
         return ret;
     }
 
     @Override
     public int compare(final T member1, final T member2) {
-        final Type type1 = getConcreteType(member1.getReturnType());
-        final Type type2 = getConcreteType(member2.getReturnType());
+        final var type1 = getConcreteType(member1.getReturnType());
+        final var type2 = getConcreteType(member2.getReturnType());
         if (!type1.getIdentifier().equals(type2.getIdentifier())) {
             final int cmp = rankOf(type1) - rankOf(type2);
             if (cmp != 0) {
@@ -124,13 +121,13 @@ final class ByTypeMemberComparator<T extends TypeMember> implements Comparator<T
         } else if (type instanceof ParameterizedType generated) {
             return generated.getRawType();
         } else if (type instanceof GeneratedTransferObject gto) {
-            GeneratedTransferObject rootGto = gto;
+            var rootGto = gto;
             while (rootGto.getSuperType() != null) {
                 rootGto = rootGto.getSuperType();
             }
-            for (GeneratedProperty s : rootGto.getProperties()) {
-                if (TypeConstants.VALUE_PROP.equals(s.getName())) {
-                    return s.getReturnType();
+            for (var prop : rootGto.getProperties()) {
+                if (TypeConstants.VALUE_PROP.equals(prop.getName())) {
+                    return prop.getReturnType();
                 }
             }
         }
@@ -144,21 +141,19 @@ final class ByTypeMemberComparator<T extends TypeMember> implements Comparator<T
         if (type.equals(BaseYangTypes.STRING_TYPE) || type.equals(Types.BYTE_ARRAY)) {
             return RANK_VARIABLE_ARRAY;
         }
-        if (type.equals(BindingTypes.INSTANCE_IDENTIFIER) || type.equals(BindingTypes.KEYED_INSTANCE_IDENTIFIER)) {
+        if (type.equals(BaseYangTypes.INSTANCE_IDENTIFIER)) {
             return RANK_INSTANCE_IDENTIFIER;
         }
-        if (type instanceof GeneratedTransferObject gto) {
-            final TypeDefinition<?> typedef = topParentTransportObject(gto).getBaseType();
-            if (typedef instanceof BitsTypeDefinition) {
-                return RANK_VARIABLE_ARRAY;
-            }
+        if (type instanceof GeneratedTransferObject gto
+            && topParentTransportObject(gto).getBaseType() instanceof BitsTypeDefinition) {
+            return RANK_VARIABLE_ARRAY;
         }
         return RANK_COMPOSITE;
     }
 
     private static GeneratedTransferObject topParentTransportObject(final GeneratedTransferObject type) {
-        GeneratedTransferObject ret = type;
-        GeneratedTransferObject parent = ret.getSuperType();
+        var ret = type;
+        var parent = ret.getSuperType();
         while (parent != null) {
             ret = parent;
             parent = ret.getSuperType();

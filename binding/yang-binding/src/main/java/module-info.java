@@ -9,6 +9,7 @@ module org.opendaylight.yangtools.yang.binding {
     exports org.opendaylight.yangtools.yang.binding;
     exports org.opendaylight.yangtools.yang.binding.annotations;
     exports org.opendaylight.yangtools.yang.binding.contract;
+    exports org.opendaylight.yangtools.yang.binding.spi;
     exports org.opendaylight.yangtools.yang.binding.util;
 
     requires transitive org.opendaylight.yangtools.yang.common;
