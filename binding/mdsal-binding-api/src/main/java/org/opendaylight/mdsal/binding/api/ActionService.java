@@ -13,6 +13,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
@@ -33,7 +34,7 @@ public interface ActionService extends BindingService {
      *
      * <p>
      * The following describes the behavior of the proxy when invoking
-     * {@link Action#invoke(InstanceIdentifier, RpcInput)}:
+     * {@link Action#invoke(BindingDataObjectIdentifier, RpcInput)}:
      * <ul>
      * <li>If an actual implementation is registered with the MD-SAL, all invocations are forwarded to the registered
      * implementation.</li>
@@ -53,25 +54,25 @@ public interface ActionService extends BindingService {
      * @throws NullPointerException if {@code actionInterface} is null
      * @throws IllegalArgumentException when {@code actionInterface} does not conform to the Binding Specification
      */
-    <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>> A getActionHandle(
         ActionSpec<A, P> spec, Set<DataTreeIdentifier<P>> validNodes);
 
-    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    default <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec) {
         return getActionHandle(spec, ImmutableSet.of());
     }
 
-    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    default <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final LogicalDatastoreType dataStore, final InstanceIdentifier<P> path) {
         return getActionHandle(spec, ImmutableSet.of(DataTreeIdentifier.create(dataStore, path)));
     }
 
-    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    default <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final InstanceIdentifier<P> path) {
         return getActionHandle(spec, LogicalDatastoreType.OPERATIONAL, path);
     }
 
-    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    default <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, @SuppressWarnings("unchecked") final DataTreeIdentifier<P>... nodes) {
         return getActionHandle(spec, ImmutableSet.copyOf(nodes));
     }

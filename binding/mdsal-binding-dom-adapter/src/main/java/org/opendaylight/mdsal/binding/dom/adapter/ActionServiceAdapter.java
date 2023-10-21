@@ -22,8 +22,8 @@ import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.BindingDataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 @NonNullByDefault
 final class ActionServiceAdapter
@@ -52,7 +52,7 @@ final class ActionServiceAdapter
     }
 
     @Override
-    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    public <P extends DataObject, A extends Action<? extends BindingDataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final Set<DataTreeIdentifier<P>> nodes) {
         final var type = spec.type();
         final var adapter = getAdapter(spec);

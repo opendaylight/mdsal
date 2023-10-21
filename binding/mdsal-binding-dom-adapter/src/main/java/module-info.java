@@ -47,4 +47,5 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires static org.eclipse.jdt.annotation;
     requires static org.gaul.modernizer_maven_annotations;
     requires static org.osgi.service.component.annotations;
+    requires org.opendaylight.yangtools.yang.binding;
 }
