@@ -201,8 +201,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @param <P> Parent type
      * @param <C> Child type
      */
-    @FunctionalInterface
-    interface LeafReference<P, C> extends Serializable {
+    sealed interface LeafReference<P, C> extends Serializable {
         /**
          * Dummy method to express the method signature of a typical getter. Due to this match we can match any Java
          * method reference which takes in {@code parent} and results in {@code child} -- expose the feature of using
@@ -218,72 +217,72 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     }
 
     @FunctionalInterface
-    interface BooleanLeafReference<P> extends LeafReference<P, Boolean> {
-
+    non-sealed interface BooleanLeafReference<P> extends LeafReference<P, Boolean> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Decimal64LeafReference<P> extends LeafReference<P, Decimal64> {
-
+    non-sealed interface Decimal64LeafReference<P> extends LeafReference<P, Decimal64> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface EmptyLeafReference<P> extends LeafReference<P, Empty> {
-
+    non-sealed interface EmptyLeafReference<P> extends LeafReference<P, Empty> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface StringLeafReference<P> extends LeafReference<P, String> {
-
+    non-sealed interface StringLeafReference<P> extends LeafReference<P, String> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Int8LeafReference<P> extends LeafReference<P, Byte> {
-
+    non-sealed interface Int8LeafReference<P> extends LeafReference<P, Byte> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Int16LeafReference<P> extends LeafReference<P, Short> {
-
+    non-sealed interface Int16LeafReference<P> extends LeafReference<P, Short> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Int32LeafReference<P> extends LeafReference<P, Integer> {
-
+    non-sealed interface Int32LeafReference<P> extends LeafReference<P, Integer> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Int64LeafReference<P> extends LeafReference<P, Long> {
-
+    non-sealed interface Int64LeafReference<P> extends LeafReference<P, Long> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Uint8LeafReference<P> extends LeafReference<P, Uint8> {
-
+    non-sealed interface Uint8LeafReference<P> extends LeafReference<P, Uint8> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Uint16LeafReference<P> extends LeafReference<P, Uint16> {
-
+    non-sealed interface Uint16LeafReference<P> extends LeafReference<P, Uint16> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Uint32LeafReference<P> extends LeafReference<P, Uint32> {
-
+    non-sealed interface Uint32LeafReference<P> extends LeafReference<P, Uint32> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface Uint64LeafReference<P> extends LeafReference<P, Uint64> {
-
+    non-sealed interface Uint64LeafReference<P> extends LeafReference<P, Uint64> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface IdentityLeafReference<P, T extends BaseIdentity> extends LeafReference<P, T> {
-
+    non-sealed interface IdentityLeafReference<P, T extends BaseIdentity> extends LeafReference<P, T> {
+        // Nothing here
     }
 
     @FunctionalInterface
-    interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
-
+    non-sealed interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
+        // Nothing here
     }
 }
