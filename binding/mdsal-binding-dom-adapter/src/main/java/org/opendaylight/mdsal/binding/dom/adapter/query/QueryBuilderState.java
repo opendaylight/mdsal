@@ -74,9 +74,9 @@ final class QueryBuilderState {
         verify(targetSchema instanceof DataNodeContainer, "Unexpected target schema %s", targetSchema);
 
         final LambdaTarget targetLeaf = LambdaDecoder.resolveLambda(ref);
-        verify(targetLeaf.targetClass.equals(bindingPath.getTargetType().getName()), "Mismatched target %s and path %s",
-            targetLeaf, bindingPath);
-        final NodeIdentifier childId = factory.findChild((DataNodeContainer) targetSchema, targetLeaf.targetMethod);
+        verify(targetLeaf.targetClass().equals(bindingPath.getTargetType().getName()),
+            "Mismatched target %s and path %s", targetLeaf, bindingPath);
+        final NodeIdentifier childId = factory.findChild((DataNodeContainer) targetSchema, targetLeaf.targetMethod());
         final YangInstanceIdentifier absTarget = fromBinding(bindingPath);
         final YangInstanceIdentifier relTarget = absTarget.relativeTo(absoluteSelect)
                 .orElseThrow(() -> new IllegalStateException(absoluteSelect + " is not an ancestor of " + absTarget));
