@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "140eff00_d28052b1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9255
+      },
+      "writtenOn": "2023-10-23T09:49:33Z",
+      "side": 1,
+      "message": "Long line",
+      "revId": "ea86c9fe05df5b46d0fea58f47b0a2dd806d0612",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
