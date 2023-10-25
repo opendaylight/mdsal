@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5de9ed28_854c142b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/Bug5151Test.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-25T09:44:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1190134d_f1ced3bf",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9882227d_fe5e9b79",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-10-11T09:22:32Z",
       "side": 1,
       "message": "can\u0027t we use rootPackageNameToSvcRootPackageName here too?\nor at least move the replace on this line instead of calling it 2 times?",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "879824d8_ba29221a",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-25T09:44:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9882227d_fe5e9b79",
       "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -52,6 +88,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "215c8f11_c8c343cc",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-25T09:44:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad206060_bd548302",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "238654e5_94f60f67",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-10-11T09:22:32Z",
       "side": 1,
       "message": "i don\u0027t think catching exception is the solution here\n\nmaybe?\npackageName.startsWith(PACKAGE_PREFIX) || packageName.startsWith(SVC_PACKAGE_PREFIX)",
+      "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ecf5477_f164cf10",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-10-25T09:44:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "238654e5_94f60f67",
       "revId": "57007d5ae99beff3a3ee2a3314f2afd2c3c53e4f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
