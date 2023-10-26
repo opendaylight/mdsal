@@ -38,6 +38,6 @@ final class StaticConfiguration {
     }
 
     private StaticConfiguration() {
-
+        // Hidden on purpose
     }
 }
