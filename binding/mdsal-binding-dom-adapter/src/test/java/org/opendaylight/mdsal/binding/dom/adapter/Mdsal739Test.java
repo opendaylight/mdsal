@@ -7,14 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -25,11 +22,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouse;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInputBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -38,40 +36,39 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 @ExtendWith(MockitoExtension.class)
-public class Mdsal739Test {
-    private ListeningExecutorService executorService;
+class Mdsal739Test {
+    private final ListeningExecutorService executorService = MoreExecutors.newDirectExecutorService();
+
+    @Mock
+    private DOMRpcService rpcService;
+    @Captor
+    private ArgumentCaptor<ContainerNode> captor;
+
     private AdapterContext adapterContext;
 
     @BeforeEach
-    public void before() {
-        executorService = MoreExecutors.newDirectExecutorService();
-
-        final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
+    void before() {
+        final var bindingBrokerTestFactory = new BindingBrokerTestFactory();
         bindingBrokerTestFactory.setExecutor(executorService);
-        final BindingTestContext bindingTestContext = bindingBrokerTestFactory.getTestContext();
+        final var bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
         adapterContext = bindingTestContext.getCodec();
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         executorService.shutdownNow();
     }
 
     @Test
-    public void testRpcInputName() {
-        final var rpcService = mock(DOMRpcService.class);
-
-        final var captor = ArgumentCaptor.forClass(ContainerNode.class);
+    void testRpcInputName() {
         doReturn(Futures.immediateFailedFuture(new Throwable())).when(rpcService).invokeRpc(any(), captor.capture());
-        final var adapter = (OpendaylightTestRpcServiceService) new RpcServiceAdapter(
-            OpendaylightTestRpcServiceService.class, adapterContext, rpcService).facade();
+        final var adapter = (RockTheHouse) new RpcAdapter(adapterContext, rpcService, RockTheHouse.class).facade();
 
-        final var result = adapter.rockTheHouse(new RockTheHouseInputBuilder().setZipCode("12345").build());
+        final var result = adapter.invoke(new RockTheHouseInputBuilder().setZipCode("12345").build());
         assertThrows(ExecutionException.class, () -> Futures.getDone(result));
         final var input = captor.getValue();
-        assertThat(input, instanceOf(ContainerNode.class));
         assertSame(NodeIdentifier.create(RockTheHouseInput.QNAME), input.name());
         final var body = input.body();
         assertEquals(1, body.size());

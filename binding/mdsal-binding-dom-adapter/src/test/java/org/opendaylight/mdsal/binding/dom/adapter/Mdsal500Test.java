@@ -20,7 +20,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Before;
@@ -29,18 +28,17 @@ import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
-import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
-import org.opendaylight.yang.gen.v1.rpc.norev.Mdsal500Service;
+import org.opendaylight.yang.gen.v1.rpc.norev.$YangModuleInfoImpl;
+import org.opendaylight.yang.gen.v1.rpc.norev.Switch;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchInput;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchInputBuilder;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutput;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutputBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -57,7 +55,7 @@ public class Mdsal500Test {
     private DOMRpcProviderService biRpcProviderService;
     private BindingTestContext testContext;
     private DOMRpcService biRpcService;
-    private final Mdsal500ServiceImpl switchRpcImpl = new Mdsal500ServiceImpl();
+    private final SwitchImpl switchRpcImpl = new SwitchImpl();
 
     @Before
     public void setup() throws Exception {
@@ -65,8 +63,7 @@ public class Mdsal500Test {
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         testContext = testFactory.getTestContext();
 
-        testContext.setSchemaModuleInfos(Set.of(
-            BindingRuntimeHelpers.getYangModuleInfo(Mdsal500Service.class)));
+        testContext.setSchemaModuleInfos(Set.of($YangModuleInfoImpl.getInstance()));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
         baRpcConsumerService = testContext.getBindingRpcConsumerRegistry();
@@ -78,7 +75,7 @@ public class Mdsal500Test {
     public void testBindingRegistrationWithDOMInvocation() throws Exception {
         switchRpcImpl.registerTo(baRpcProviderService).setSwitchResult(switchResult(true));
 
-        final Mdsal500Service baSwitchService = baRpcConsumerService.getRpcService(Mdsal500Service.class);
+        final var baSwitchService = baRpcConsumerService.getRpc(Switch.class);
         assertNotSame(switchRpcImpl, baSwitchService);
 
         SwitchInput baSwitchInput = switchBuilder(FOO).build();
@@ -102,25 +99,23 @@ public class Mdsal500Test {
                     .toNormalizedNodeRpcData(baSwitchOutput))),
             DOMRpcIdentifier.create(SWITCH_QNAME));
 
-        final Mdsal500Service baSwitchService =
-                baRpcConsumerService.getRpcService(Mdsal500Service.class);
-        Future<RpcResult<SwitchOutput>> baResult = baSwitchService.switch$(switchBuilder(FOO)
-            .build());
+        final var baSwitchService = baRpcConsumerService.getRpc(Switch.class);
+        final var baResult = baSwitchService.invoke(switchBuilder(FOO).build());
         assertNotNull(baResult);
         assertEquals(baSwitchOutput, baResult.get(5, TimeUnit.SECONDS).getResult());
     }
 
     @Test
     public void testBindingRpcShortcut() throws InterruptedException, ExecutionException, TimeoutException {
-        final ListenableFuture<RpcResult<SwitchOutput>> baSwitchResult = switchResult(true);
+        final var baSwitchResult = switchResult(true);
         switchRpcImpl.registerTo(baRpcProviderService).setSwitchResult(baSwitchResult);
 
-        final Mdsal500Service baSwitchService = baRpcConsumerService.getRpcService(Mdsal500Service.class);
+        final var baSwitchService = baRpcConsumerService.getRpc(Switch.class);
 
-        SwitchInput baSwitchInput = switchBuilder(FOO).build();
-        ListenableFuture<RpcResult<SwitchOutput>> future = baSwitchService.switch$(baSwitchInput);
+        final var baSwitchInput = switchBuilder(FOO).build();
+        final var future = baSwitchService.invoke(baSwitchInput);
 
-        final RpcResult<SwitchOutput> rpcResult = future.get(5, TimeUnit.SECONDS);
+        final var rpcResult = future.get(5, TimeUnit.SECONDS);
 
         assertEquals(baSwitchResult.get().getResult().getClass(), rpcResult.getResult().getClass());
         assertSame(baSwitchResult.get().getResult(), rpcResult.getResult());
@@ -141,11 +136,11 @@ public class Mdsal500Test {
         return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(from);
     }
 
-    private static final class Mdsal500ServiceImpl implements Mdsal500Service {
+    private static final class SwitchImpl implements Switch {
         private final Multimap<String, SwitchInput> receivedSwitch = HashMultimap.create();
         private ListenableFuture<RpcResult<SwitchOutput>> switchResult;
 
-        Mdsal500ServiceImpl setSwitchResult(final ListenableFuture<RpcResult<SwitchOutput>> switchOutput) {
+        SwitchImpl setSwitchResult(final ListenableFuture<RpcResult<SwitchOutput>> switchOutput) {
             switchResult = switchOutput;
             return this;
         }
@@ -154,15 +149,14 @@ public class Mdsal500Test {
             return receivedSwitch;
         }
 
-        Mdsal500ServiceImpl registerTo(final RpcProviderService registry) {
-            final ObjectRegistration<Mdsal500ServiceImpl> registration =
-                    registry.registerRpcImplementation(Mdsal500Service.class, this);
+        SwitchImpl registerTo(final RpcProviderService registry) {
+            final var registration = registry.registerRpcImplementation(this);
             assertNotNull(registration);
             return this;
         }
 
         @Override
-        public ListenableFuture<RpcResult<SwitchOutput>> switch$(final SwitchInput switchInput) {
+        public ListenableFuture<RpcResult<SwitchOutput>> invoke(final SwitchInput switchInput) {
             receivedSwitch.put(switchInput.getFoo(), switchInput);
             return switchResult;
         }
