@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -24,11 +22,9 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
-import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
@@ -40,21 +36,6 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     public BindingDOMRpcProviderServiceAdapter(final AdapterContext adapterContext,
             final DOMRpcProviderService domRpcRegistry) {
         super(adapterContext, domRpcRegistry);
-    }
-
-    @Override
-    @Deprecated
-    public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
-            final I implementation) {
-        return register(currentSerializer(), type, implementation, GLOBAL);
-    }
-
-    @Override
-    @Deprecated
-    public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
-            final I implementation, final Set<InstanceIdentifier<?>> paths) {
-        final var serializer = currentSerializer();
-        return register(serializer, type, implementation, toYangInstanceIdentifiers(serializer, paths));
     }
 
     @Override
@@ -102,16 +83,6 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             final var rpcName = def.statement().argument();
             return new Impl(rpcName, new BindingDOMRpcImplementationAdapter(adapterContext(), rpcName, impl));
         });
-    }
-
-    @Deprecated
-    private <S extends RpcService, T extends S> ObjectRegistration<T> register(
-            final CurrentAdapterSerializer serializer, final Class<S> type, final T implementation,
-            // Note: unique items are implied
-            final Collection<YangInstanceIdentifier> paths) {
-        return new BindingRpcAdapterRegistration<>(implementation, register(
-            serializer.getRpcMethods(requireNonNull(type)), paths, (rpcName, mh) -> new Impl(requireNonNull(rpcName),
-                new LegacyDOMRpcImplementationAdapter(adapterContext(), rpcName, mh.bindTo(implementation)))));
     }
 
     private <K, V> @NonNull Registration register(final Map<K, V> map, final Collection<YangInstanceIdentifier> paths,
