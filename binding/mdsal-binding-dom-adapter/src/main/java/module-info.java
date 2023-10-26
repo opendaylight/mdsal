@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
@@ -12,7 +13,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.query.DefaultQueryFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
-import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 
 module org.opendaylight.mdsal.binding.dom.adapter {
     exports org.opendaylight.mdsal.binding.dom.adapter;
