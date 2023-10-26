@@ -10,50 +10,15 @@ package org.opendaylight.mdsal.binding.api;
 import com.google.common.collect.ClassToInstanceMap;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
-import org.opendaylight.yangtools.yang.binding.RpcService;
 
 /**
  * Provides ability to registered Remote Procedure Call (RPC) service implementations. The RPCs are defined in YANG
  * models.
  */
 public interface RpcProviderService extends BindingService {
-    /**
-     * Register RPCs combined in a {@link RpcService} interface.
-     *
-     * @param <R> {@link RpcService} type
-     * @param <I> {@link RpcService} implementation type
-     * @param type {@link RpcService} class
-     * @param implementation implementation object
-     * @return An {@link ObjectRegistration} controlling unregistration
-     * @throws NullPointerException if any argument is {@code null}
-     * @deprecated Use {@link #registerRpcImplementation(Rpc)} or
-     *             {@link #registerRpcImplementations(ClassToInstanceMap)} instead.
-     */
-    @Deprecated(since = "11.0.0", forRemoval = true)
-    <R extends RpcService, I extends R> @NonNull ObjectRegistration<I> registerRpcImplementation(Class<R> type,
-        I implementation);
-
-    /**
-     * Register RPCs combined in a {@link RpcService} interface on a set of datastore context paths.
-     *
-     * @param <R> {@link RpcService} type
-     * @param <I> {@link RpcService} implementation type
-     * @param type {@link RpcService} class
-     * @param implementation implementation object
-     * @param paths Datastore paths to service
-     * @return An {@link ObjectRegistration} controlling unregistration
-     * @throws NullPointerException if any argument is {@code null}
-     * @deprecated Use {@link #registerRpcImplementation(Rpc, Set)} or
-     *             {@link #registerRpcImplementations(ClassToInstanceMap, Set)} instead.
-     */
-    @Deprecated(since = "11.0.0", forRemoval = true)
-    <R extends RpcService, I extends R> @NonNull ObjectRegistration<I> registerRpcImplementation(Class<R> type,
-        I implementation, Set<InstanceIdentifier<?>> paths);
-
     /**
      * Register an {@link Rpc} implementation.
      *

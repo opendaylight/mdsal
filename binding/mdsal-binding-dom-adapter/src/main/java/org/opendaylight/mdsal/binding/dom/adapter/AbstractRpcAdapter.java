@@ -18,7 +18,8 @@ import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
 
-abstract sealed class AbstractRpcAdapter implements InvocationHandler permits RpcAdapter, RpcServiceAdapter {
+// FIXME: integrate with RpcAdapter
+abstract sealed class AbstractRpcAdapter implements InvocationHandler permits RpcAdapter {
     private final @NonNull DOMRpcService delegate;
     private final @NonNull AdapterContext adapterContext;
     private final @NonNull Object facade;
