@@ -20,11 +20,10 @@ import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.Rpc;
-import org.opendaylight.yangtools.yang.binding.RpcService;
 
 @VisibleForTesting
 public final class BindingDOMRpcServiceAdapter
-        extends AbstractBindingLoadingAdapter<DOMRpcService, Class<?>, AbstractRpcAdapter>
+        extends AbstractBindingLoadingAdapter<DOMRpcService, Class<?>, RpcAdapter<?>>
         implements RpcConsumerRegistry {
     static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
@@ -38,18 +37,10 @@ public final class BindingDOMRpcServiceAdapter
     }
 
     @Override
-    @Deprecated
-    public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
-        return rpcService.cast(getAdapter(requireNonNull(rpcService)).facade());
-    }
-
-    @Override
-    AbstractRpcAdapter loadAdapter(final Class<?> key) {
+    RpcAdapter<?> loadAdapter(final Class<?> key) {
         checkArgument(BindingReflections.isBindingClass(key));
         checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
-        if (RpcService.class.isAssignableFrom(key)) {
-            return new RpcServiceAdapter(key.asSubclass(RpcService.class), adapterContext(), getDelegate());
-        } else if (Rpc.class.isAssignableFrom(key)) {
+        if (Rpc.class.isAssignableFrom(key)) {
             return new RpcAdapter<>(adapterContext(), getDelegate(), key.asSubclass(Rpc.class));
         } else {
             throw new IllegalStateException("Unhandled key " + key);
