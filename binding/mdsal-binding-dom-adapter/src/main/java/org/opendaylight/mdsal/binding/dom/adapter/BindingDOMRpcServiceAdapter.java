@@ -14,7 +14,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -23,8 +23,8 @@ import org.opendaylight.yangtools.yang.binding.Rpc;
 
 @VisibleForTesting
 public final class BindingDOMRpcServiceAdapter
-        extends AbstractBindingLoadingAdapter<DOMRpcService, Class<?>, RpcAdapter> implements RpcConsumerRegistry {
-    static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
+        extends AbstractBindingLoadingAdapter<DOMRpcService, Class<?>, RpcAdapter> implements RpcService {
+    static final Factory<RpcService> BUILDER_FACTORY = Builder::new;
 
     public BindingDOMRpcServiceAdapter(final AdapterContext adapterContext, final DOMRpcService domService) {
         super(adapterContext, domService);
@@ -46,7 +46,7 @@ public final class BindingDOMRpcServiceAdapter
         }
     }
 
-    private static final class Builder extends BindingDOMAdapterBuilder<RpcConsumerRegistry> {
+    private static final class Builder extends BindingDOMAdapterBuilder<RpcService> {
         Builder(final AdapterContext adapterContext) {
             super(adapterContext);
         }
@@ -57,7 +57,7 @@ public final class BindingDOMRpcServiceAdapter
         }
 
         @Override
-        protected RpcConsumerRegistry createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected RpcService createInstance(final ClassToInstanceMap<DOMService> delegates) {
             return new BindingDOMRpcServiceAdapter(adapterContext(), delegates.getInstance(DOMRpcService.class));
         }
     }
