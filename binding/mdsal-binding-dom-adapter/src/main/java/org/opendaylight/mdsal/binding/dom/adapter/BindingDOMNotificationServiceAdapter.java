@@ -20,12 +20,9 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
-import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @VisibleForTesting
@@ -43,18 +40,10 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     }
 
     @Override
-    @Deprecated(since = "10.0.0", forRemoval = true)
-    public <T extends NotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener) {
-        final var domListener = new BindingDOMNotificationListenerAdapter(adapterContext, listener);
-        return new ListenerRegistrationImpl<>(listener,
-            domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications()));
-    }
-
-    @Override
     public <N extends Notification<N> & DataObject> Registration registerListener(final Class<N> type,
             final Listener<N> listener, final Executor executor) {
-        final var domListener = new SingleBindingDOMNotificationAdapter<>(adapterContext, type, listener, executor);
-        return domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
+        final var domListener = new BindingDOMNotificationListenerAdapter<>(adapterContext, type, listener, executor);
+        return domNotifService.registerNotificationListener(domListener, Set.of(domListener.schemaPath()));
     }
 
     @Override
@@ -62,27 +51,11 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         final var exec = requireNonNull(executor);
         final var listeners = new HashMap<Absolute, DOMNotificationListener>();
         for (var constituent : listener.constituents()) {
-            final var domListener = new SingleBindingDOMNotificationAdapter<>(adapterContext, constituent, exec);
-            listeners.put(domListener.getSupportedNotifications().iterator().next(), domListener);
+            final var domListener = new BindingDOMNotificationListenerAdapter<>(adapterContext, constituent, exec);
+            listeners.put(domListener.schemaPath(), domListener);
         }
 
         return domNotifService.registerNotificationListeners(listeners);
-    }
-
-    @Deprecated(since = "10.0.0", forRemoval = true)
-    private static final class ListenerRegistrationImpl<T extends NotificationListener>
-            extends AbstractListenerRegistration<T> {
-        private final ListenerRegistration<?> listenerRegistration;
-
-        ListenerRegistrationImpl(final T listener, final ListenerRegistration<?> listenerRegistration) {
-            super(listener);
-            this.listenerRegistration = listenerRegistration;
-        }
-
-        @Override
-        protected void removeRegistration() {
-            listenerRegistration.close();
-        }
     }
 
     private static class Builder extends BindingDOMAdapterBuilder<NotificationService> {
@@ -92,8 +65,8 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
 
         @Override
         protected NotificationService createInstance(final ClassToInstanceMap<DOMService> delegates) {
-            final DOMNotificationService domNotification = delegates.getInstance(DOMNotificationService.class);
-            return new BindingDOMNotificationServiceAdapter(adapterContext(), domNotification);
+            return new BindingDOMNotificationServiceAdapter(adapterContext(),
+                delegates.getInstance(DOMNotificationService.class));
         }
 
         @Override

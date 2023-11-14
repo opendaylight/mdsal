@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,70 +7,65 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.reflect.TypeToken;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.adapter.invoke.NotificationListenerInvoker;
+import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener.Component;
+import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.dom.api.DOMEvent;
+import org.opendaylight.mdsal.dom.api.DOMNotification;
+import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
-import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-final class BindingDOMNotificationListenerAdapter extends AbstractDOMNotificationListenerAdapter {
-    private final ImmutableMap<Absolute, NotificationListenerInvoker> invokers;
-    private final @NonNull NotificationListener delegate;
+final class BindingDOMNotificationListenerAdapter<N extends Notification<N> & DataObject>
+        implements DOMNotificationListener {
+    private final AdapterContext adapterContext;
+    private final Listener<N> delegate;
+    private final Executor executor;
+    private final Class<N> type;
 
-    BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final NotificationListener delegate) {
-        super(adapterContext);
+    BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final Class<N> type,
+            final Listener<N> delegate, final Executor executor) {
+        this.adapterContext = requireNonNull(adapterContext);
+        this.type = requireNonNull(type);
         this.delegate = requireNonNull(delegate);
-        invokers = createInvokerMapFor(delegate.getClass());
+        this.executor = requireNonNull(executor);
+    }
+
+    BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final Component<N> component,
+            final Executor executor) {
+        this(adapterContext, component.type(), component.listener(), executor);
+    }
+
+    @NonNull Absolute schemaPath() {
+        return Absolute.of(BindingReflections.findQName(type));
     }
 
     @Override
-    void onNotification(final Absolute domType, final Notification<?> notification) {
-        invokers.get(domType).invokeNotification(delegate, domType.lastNodeIdentifier(), notification);
+    public void onNotification(final DOMNotification notification) {
+        final var binding = type.cast(verifyNotNull(deserialize(notification)));
+        executor.execute(() -> delegate.onNotification(binding));
     }
 
-    @Override
-    Set<Absolute> getSupportedNotifications() {
-        return invokers.keySet();
-    }
-
-    private static ImmutableMap<Absolute, NotificationListenerInvoker> createInvokerMapFor(
-            final Class<? extends NotificationListener> implClz) {
-        final Map<Absolute, NotificationListenerInvoker> builder = new HashMap<>();
-        for (final TypeToken<?> ifaceToken : TypeToken.of(implClz).getTypes().interfaces()) {
-            Class<?> iface = ifaceToken.getRawType();
-            if (NotificationListener.class.isAssignableFrom(iface) && BindingReflections.isBindingClass(iface)) {
-                @SuppressWarnings("unchecked")
-                final Class<? extends NotificationListener> listenerType
-                        = (Class<? extends NotificationListener>) iface;
-                final NotificationListenerInvoker invoker = NotificationListenerInvoker.from(listenerType);
-                for (final Absolute path : getNotificationTypes(listenerType)) {
-                    builder.put(path, invoker);
-                }
-            }
+    private Notification<?> deserialize(final DOMNotification notification) {
+        if (notification instanceof LazySerializedNotification) {
+            // TODO: This is a routed-back notification, for which we may end up losing event time here, but that is
+            //       okay, for now at least.
+            return ((LazySerializedNotification) notification).getBindingData();
         }
-        return ImmutableMap.copyOf(builder);
-    }
 
-    private static Set<Absolute> getNotificationTypes(final Class<? extends NotificationListener> type) {
-        // TODO: Investigate possibility and performance impact if we cache this or expose
-        // it from NotificationListenerInvoker
-        final Set<Absolute> ret = new HashSet<>();
-        for (final Method method : type.getMethods()) {
-            if (NotificationListenerInvoker.isNotificationCallback(method)) {
-                final Class<?> notification = method.getParameterTypes()[0];
-                ret.add(Absolute.of(BindingReflections.findQName(notification)));
-            }
-        }
-        return ret;
+        final var serializer = adapterContext.currentSerializer();
+        final var result = notification instanceof DOMEvent
+            ? serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody(),
+                ((DOMEvent) notification).getEventInstant())
+                : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
+        verify(result instanceof Notification, "Unexpected codec result %s", result);
+        return (Notification<?>) result;
     }
 }

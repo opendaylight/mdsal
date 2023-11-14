@@ -11,11 +11,9 @@ import com.google.common.annotations.Beta;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
-import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -29,12 +27,6 @@ public final class OSGiNotificationService extends AbstractAdaptedService<Notifi
 
     public OSGiNotificationService() {
         super(NotificationService.class);
-    }
-
-    @Override
-    @Deprecated(since = "10.0.0", forRemoval = true)
-    public <T extends NotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener) {
-        return delegate().registerNotificationListener(listener);
     }
 
     @Override
