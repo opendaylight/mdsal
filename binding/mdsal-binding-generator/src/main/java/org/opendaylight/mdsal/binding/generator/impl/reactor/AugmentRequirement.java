@@ -126,7 +126,7 @@ final class AugmentRequirement implements Mutable {
         return tryProgress();
     }
 
-    private @NonNull LinkageProgress progressTo(final @NonNull AbstractExplicitGenerator<?, ?> newTarget) {
+    private @NonNull LinkageProgress progressTo(final @NonNull Generator<?, ?> newTarget) {
         verify(newTarget instanceof AbstractCompositeGenerator, "Unexpected generator %s", newTarget);
         target = (AbstractCompositeGenerator<?, ?>) newTarget;
         qname = remaining.hasNext() ? remaining.next() : null;

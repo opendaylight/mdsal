@@ -46,15 +46,14 @@ abstract class GeneratorContext extends AbstractEffectiveModelContextProvider {
      * @throws NullPointerException if any argument is null
      * @throws IllegalStateException if the generator cannot be found
      */
-    abstract <E extends EffectiveStatement<QName, ?>, G extends AbstractExplicitGenerator<E, ?>>
-        @NonNull G resolveTreeScoped(@NonNull Class<G> type, @NonNull QName argument);
+    abstract <E extends EffectiveStatement<QName, ?>, G extends Generator<E, ?>> @NonNull G resolveTreeScoped(
+        @NonNull Class<G> type, @NonNull QName argument);
 
     abstract @NonNull ModuleGenerator resolveModule(@NonNull QNameModule namespace);
 
     final @NonNull IdentityGenerator resolveIdentity(final @NonNull QName name) {
-        for (Generator gen : resolveModule(name.getModule())) {
-            if (gen instanceof IdentityGenerator) {
-                final IdentityGenerator idgen = (IdentityGenerator) gen;
+        for (var gen : resolveModule(name.getModule())) {
+            if (gen instanceof IdentityGenerator idgen) {
                 if (name.equals(idgen.statement().argument())) {
                     return idgen;
                 }

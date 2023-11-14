@@ -15,7 +15,6 @@ import com.google.common.collect.SetMultimap;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.generator.impl.reactor.AbstractExplicitGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.IdentityGenerator;
@@ -104,10 +103,10 @@ final class BindingRuntimeTypesFactory implements Mutable {
         indexRuntimeTypes(moduleGens.values());
     }
 
-    private void indexRuntimeTypes(final Iterable<? extends Generator> generators) {
-        for (Generator gen : generators) {
-            if (gen instanceof AbstractExplicitGenerator<?, ?> explicitGen && gen.generatedType().isPresent()) {
-                final var type = explicitGen.runtimeType().orElseThrow();
+    private void indexRuntimeTypes(final Iterable<? extends Generator<?, ?>> generators) {
+        for (var gen : generators) {
+            if (gen.generatedType().isPresent()) {
+                final var type = gen.runtimeType().orElseThrow();
                 if (type.javaType() instanceof GeneratedType genType) {
                     final var name = genType.getIdentifier();
                     final var prev = allTypes.put(name, type);

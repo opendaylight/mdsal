@@ -14,7 +14,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -115,12 +114,12 @@ import org.slf4j.LoggerFactory;
  * in {@link AugmentRequirement}.
  */
 public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?, ?>, R extends CompositeRuntimeType>
-        extends AbstractExplicitGenerator<S, R> {
+        extends Generator<S, R> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCompositeGenerator.class);
 
     // FIXME: we want to allocate this lazily to lower memory footprint
     private final @NonNull CollisionDomain domain = new CollisionDomain(this);
-    private final @NonNull List<Generator> childGenerators;
+    private final @NonNull List<Generator<?, ?>> childGenerators;
 
     /**
      * List of {@code augment} statements targeting this generator. This list is maintained only for the primary
@@ -145,7 +144,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
      * List of children which have not had their original linked. This list starts of as null. When we first attempt
      * linkage, it becomes non-null.
      */
-    private List<Generator> unlinkedChildren;
+    private List<Generator<?, ?>> unlinkedChildren;
 
     AbstractCompositeGenerator(final S statement) {
         super(statement);
@@ -158,7 +157,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     @Override
-    public final Iterator<Generator> iterator() {
+    public final Iterator<Generator<?, ?>> iterator() {
         return childGenerators.iterator();
     }
 
@@ -189,11 +188,11 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return childGenerators.isEmpty();
     }
 
-    final @Nullable AbstractExplicitGenerator<?, ?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
+    final @Nullable Generator<?, ?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
         return findGenerator(MatchStrategy.identity(), stmtPath, 0);
     }
 
-    final @Nullable AbstractExplicitGenerator<?, ?> findGenerator(final MatchStrategy childStrategy,
+    final @Nullable Generator<?, ?> findGenerator(final MatchStrategy childStrategy,
             // TODO: Wouldn't this method be nicer with Deque<EffectiveStatement<?, ?>> ?
             final List<EffectiveStatement<?, ?>> stmtPath, final int offset) {
         final var stmt = stmtPath.get(offset);
@@ -259,7 +258,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
                 // Trigger resolution of uses/augment statements. This looks like guesswork, but there may be multiple
                 // 'augment' statements in a 'uses' statement and keeping a ListMultimap here seems wasteful.
-                for (Generator gen : this) {
+                for (var gen : this) {
                     if (gen instanceof UsesAugmentGenerator usesGen) {
                         usesGen.resolveGrouping(uses, grouping);
                     }
@@ -300,10 +299,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         }
 
         if (unlinkedChildren == null) {
-            unlinkedChildren = childGenerators.stream()
-                .filter(AbstractExplicitGenerator.class::isInstance)
-                .map(child -> (AbstractExplicitGenerator<?, ?>) child)
-                .collect(Collectors.toList());
+            unlinkedChildren = new ArrayList<>(childGenerators);
         }
 
         var progress = LinkageProgress.NONE;
@@ -311,12 +307,13 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
             // Attempt to make progress on child linkage
             final var it = unlinkedChildren.iterator();
             while (it.hasNext()) {
-                if (it.next() instanceof AbstractExplicitGenerator<?, ?> explicit && explicit.linkOriginalGenerator()) {
+                final var child = it.next();
+                if (child.linkOriginalGenerator()) {
                     progress = LinkageProgress.SOME;
                     it.remove();
 
                     // If this is a composite generator we need to process is further
-                    if (explicit instanceof AbstractCompositeGenerator<?, ?> composite) {
+                    if (child instanceof AbstractCompositeGenerator<?, ?> composite) {
                         if (unlinkedComposites.isEmpty()) {
                             unlinkedComposites = new ArrayList<>();
                         }
@@ -385,7 +382,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     @Override
-    final AbstractExplicitGenerator<?, ?> findSchemaTreeGenerator(final QName qname) {
+    final Generator<?, ?> findSchemaTreeGenerator(final QName qname) {
         final var found = super.findSchemaTreeGenerator(qname);
         return found != null ? found : findInferredGenerator(qname);
     }
@@ -410,7 +407,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return null;
     }
 
-    private @Nullable AbstractExplicitGenerator<?, ?> findInferredGenerator(final QName qname) {
+    private @Nullable Generator<?, ?> findInferredGenerator(final QName qname) {
         // First search our local groupings ...
         for (var grouping : groupings) {
             final var gen = grouping.findSchemaTreeGenerator(qname.bindTo(grouping.statement().argument().getModule()));
@@ -449,10 +446,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
     final void addGetterMethods(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
         for (var child : this) {
-            // Only process explicit generators here
-            if (child instanceof AbstractExplicitGenerator<?, ?> explicit) {
-                explicit.addAsGetterMethod(builder, builderFactory);
-            }
+            child.addAsGetterMethod(builder, builderFactory);
 
             final var enclosedType = child.enclosedType(builderFactory);
             if (enclosedType instanceof GeneratedTransferObject gto) {
@@ -465,8 +459,8 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         }
     }
 
-    private @NonNull List<Generator> createChildren(final EffectiveStatement<?, ?> statement) {
-        final var tmp = new ArrayList<Generator>();
+    private @NonNull List<Generator<?, ?>> createChildren(final EffectiveStatement<?, ?> statement) {
+        final var tmp = new ArrayList<Generator<?, ?>>();
         final var tmpAug = new ArrayList<AbstractAugmentGenerator>();
 
         for (var stmt : statement.effectiveSubstatements()) {

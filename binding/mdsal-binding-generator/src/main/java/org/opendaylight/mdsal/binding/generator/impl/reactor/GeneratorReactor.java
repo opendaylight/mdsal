@@ -18,7 +18,6 @@ import com.google.common.collect.Maps;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -63,7 +62,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorReactor.class);
 
-    private final Deque<Iterable<? extends Generator>> stack = new ArrayDeque<>();
+    private final Deque<Iterable<? extends Generator<?, ?>>> stack = new ArrayDeque<>();
     private final @NonNull Map<QNameModule, ModuleGenerator> generators;
     private final @NonNull List<ModuleGenerator> children;
     private final @NonNull SchemaInferenceStack inferenceStack;
@@ -134,14 +133,14 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         //          step of each 'augment' statement to its corresponding instantiated site.
         //          Then start all UsesAugmentGenerators' target resolution.
         final var augments = new ArrayList<AugmentRequirement>();
-        for (ModuleGenerator module : children) {
-            for (Generator gen : module) {
+        for (var module : children) {
+            for (var gen : module) {
                 if (gen instanceof ModuleAugmentGenerator moduleGen) {
                     augments.add(moduleGen.startLinkage(this));
                 }
             }
         }
-        for (ModuleGenerator module : children) {
+        for (var module : children) {
             module.startUsesAugmentLinkage(augments);
         }
         LOG.trace("Processing linkage of {} augment generators", augments.size());
@@ -149,7 +148,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // Step 1c: Establish linkage along the reverse uses/augment axis. This is needed to route generated type
         //          manifestations (isAddedByUses/isAugmenting) to their type generation sites. Since generator tree
         //          iteration order does not match dependencies, we may need to perform multiple passes.
-        for (ModuleGenerator module : children) {
+        for (var module : children) {
             verify(module.linkOriginalGenerator(), "Module %s failed to link", module);
         }
 
@@ -214,7 +213,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
          * algorithm in CollisionDomain. Note that we may need to walk the domains multiple times, as the process of
          * solving a domain may cause another domain's solution to be invalidated.
          */
-        final List<CollisionDomain> domains = new ArrayList<>();
+        final var domains = new ArrayList<CollisionDomain>();
         collectCollisionDomains(domains, children);
         boolean haveUnresolved;
         do {
@@ -231,7 +230,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // We have now properly cross-linked all generators and have assigned their naming roots, so from this point
         // it looks as though we are performing a simple recursive execution. In reality, though, the actual path taken
         // through generators is dictated by us as well as generator linkage.
-        for (ModuleGenerator module : children) {
+        for (var module : children) {
             module.ensureType(builderFactory);
         }
 
@@ -241,8 +240,8 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     }
 
     private void collectCollisionDomains(final List<CollisionDomain> result,
-            final Iterable<? extends Generator> parent) {
-        for (Generator gen : parent) {
+            final Iterable<? extends Generator<?, ?>> parent) {
+        for (var gen : parent) {
             gen.ensureMember();
             collectCollisionDomains(result, gen);
             if (gen instanceof AbstractCompositeGenerator<?, ?> compositeGen) {
@@ -252,19 +251,19 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     }
 
     @Override
-    <E extends EffectiveStatement<QName, ?>, G extends AbstractExplicitGenerator<E, ?>> G resolveTreeScoped(
-            final Class<G> type, final QName argument) {
+    <E extends EffectiveStatement<QName, ?>, G extends Generator<E, ?>> G resolveTreeScoped(final Class<G> type,
+            final QName argument) {
         LOG.trace("Searching for tree-scoped argument {} at {}", argument, stack);
 
         // Check if the requested QName matches current module, if it does search the stack
-        final Iterable<? extends Generator> last = stack.getLast();
+        final var last = stack.getLast();
         verify(last instanceof ModuleGenerator, "Unexpected last stack item %s", last);
 
         if (argument.getModule().equals(((ModuleGenerator) last).statement().localQNameModule())) {
-            for (Iterable<? extends Generator> ancestor : stack) {
-                for (Generator child : ancestor) {
+            for (var ancestor : stack) {
+                for (var child : ancestor) {
                     if (type.isInstance(child)) {
-                        final G cast = type.cast(child);
+                        final var cast = type.cast(child);
                         if (argument.equals(cast.statement().argument())) {
                             LOG.trace("Found matching {}", child);
                             return cast;
@@ -275,9 +274,9 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         } else {
             final ModuleGenerator module = generators.get(argument.getModule());
             if (module != null) {
-                for (Generator child : module) {
+                for (var child : module) {
                     if (type.isInstance(child)) {
-                        final G cast = type.cast(child);
+                        final var cast = type.cast(child);
                         if (argument.equals(cast.statement().argument())) {
                             LOG.trace("Found matching {}", child);
                             return cast;
@@ -303,15 +302,15 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         verify(inferenceStack.isEmpty(), "Unexpected data tree state %s", inferenceStack);
         try {
             // Populate inferenceStack with a grouping + data tree equivalent of current stack's state.
-            final Iterator<Iterable<? extends Generator>> it = stack.descendingIterator();
+            final var it = stack.descendingIterator();
             // Skip first item, as it points to our children
             verify(it.hasNext(), "Unexpected empty stack");
             it.next();
 
             while (it.hasNext()) {
-                final Iterable<? extends Generator> item = it.next();
+                final var item = it.next();
                 verify(item instanceof Generator, "Unexpected stack item %s", item);
-                ((Generator) item).pushToInference(inferenceStack);
+                ((Generator<?, ?>) item).pushToInference(inferenceStack);
             }
 
             return inferenceStack.inGrouping() ? lenientResolveLeafref(path) : strictResolvePath(path);
@@ -347,8 +346,8 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
             "Cannot find generator for %s", module);
 
         // Now kick of the search
-        final List<EffectiveStatement<?, ?>> stmtPath = inferenceStack.toInference().statementPath();
-        final AbstractExplicitGenerator<?, ?> found = gen.findGenerator(stmtPath);
+        final var stmtPath = inferenceStack.toInference().statementPath();
+        final var found = gen.findGenerator(stmtPath);
         if (found instanceof AbstractTypeAwareGenerator<?, ?, ?> typeAware) {
             return typeAware;
         }
@@ -356,8 +355,8 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     }
 
     // Note: unlike other methods, this method pushes matching child to the stack
-    private void linkUsesDependencies(final Iterable<? extends Generator> parent) {
-        for (Generator child : parent) {
+    private void linkUsesDependencies(final Iterable<? extends Generator<?, ?>> parent) {
+        for (var child : parent) {
             if (child instanceof AbstractCompositeGenerator<?, ?> composite) {
                 LOG.trace("Visiting composite {}", composite);
                 stack.push(composite);
@@ -392,8 +391,8 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         return progress;
     }
 
-    private void linkDependencies(final Iterable<? extends Generator> parent) {
-        for (Generator child : parent) {
+    private void linkDependencies(final Iterable<? extends Generator<?, ?>> parent) {
+        for (var child : parent) {
             if (child instanceof AbstractDependentGenerator<?, ?> dependent) {
                 dependent.linkDependencies(this);
             } else if (child instanceof AbstractCompositeGenerator) {
@@ -404,8 +403,8 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         }
     }
 
-    private void bindTypeDefinition(final Iterable<? extends Generator> parent) {
-        for (Generator child : parent) {
+    private void bindTypeDefinition(final Iterable<? extends Generator<?, ?>> parent) {
+        for (var child : parent) {
             stack.push(child);
             if (child instanceof AbstractTypeObjectGenerator<?, ?> typeObject) {
                 typeObject.bindTypeDefinition(this);

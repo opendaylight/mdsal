@@ -19,23 +19,22 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 /**
  * Link to the original definition of an {@link AbstractExplicitGenerator}.
  */
-// FIXME: sealed when we have JDK17+
-abstract class OriginalLink<T extends EffectiveStatement<?, ?>, R extends RuntimeType> {
+abstract sealed class OriginalLink<T extends EffectiveStatement<?, ?>, R extends RuntimeType> {
     private static final class Complete<T extends EffectiveStatement<?, ?>, R extends RuntimeType>
             extends OriginalLink<T, R> {
-        private final @NonNull AbstractExplicitGenerator<T, R> original;
+        private final @NonNull Generator<T, R> original;
 
-        Complete(final AbstractExplicitGenerator<T, R> original) {
+        Complete(final Generator<T, R> original) {
             this.original = requireNonNull(original);
         }
 
         @Override
-        AbstractExplicitGenerator<T, R> previous() {
+        Generator<T, R> previous() {
             return original;
         }
 
         @Override
-        @NonNull AbstractExplicitGenerator<T, R> original() {
+        @NonNull Generator<T, R> original() {
             return original;
         }
 
@@ -47,20 +46,20 @@ abstract class OriginalLink<T extends EffectiveStatement<?, ?>, R extends Runtim
 
     private static final class Partial<T extends EffectiveStatement<?, ?>, R extends RuntimeType>
             extends OriginalLink<T, R> {
-        private final @NonNull AbstractExplicitGenerator<T, R> previous;
-        private AbstractExplicitGenerator<T, R> original;
+        private final @NonNull Generator<T, R> previous;
+        private Generator<T, R> original;
 
-        Partial(final AbstractExplicitGenerator<T, R> previous) {
+        Partial(final Generator<T, R> previous) {
             this.previous = requireNonNull(previous);
         }
 
         @Override
-        AbstractExplicitGenerator<T, R> previous() {
+        Generator<T, R> previous() {
             return previous;
         }
 
         @Override
-        AbstractExplicitGenerator<T, R> original() {
+        Generator<T, R> original() {
             if (original == null) {
                 final var link = previous.originalLink();
                 if (link instanceof Complete || link.previous() != previous) {
@@ -81,18 +80,18 @@ abstract class OriginalLink<T extends EffectiveStatement<?, ?>, R extends Runtim
     }
 
     static <T extends EffectiveStatement<?, ?>, R extends RuntimeType> @NonNull OriginalLink<T, R> complete(
-            final AbstractExplicitGenerator<T, R> original) {
+            final Generator<T, R> original) {
         return new Complete<>(original);
     }
 
     static <T extends EffectiveStatement<?, ?>, R extends RuntimeType> @NonNull OriginalLink<T, R> partial(
-            final AbstractExplicitGenerator<T, R> previous) {
+            final Generator<T, R> previous) {
         return new Partial<>(previous);
     }
 
-    abstract @NonNull AbstractExplicitGenerator<T, R> previous();
+    abstract @NonNull Generator<T, R> previous();
 
-    abstract @Nullable AbstractExplicitGenerator<T, R> original();
+    abstract @Nullable Generator<T, R> original();
 
     abstract ToStringHelper addToStringAttributes(ToStringHelper helper);
 

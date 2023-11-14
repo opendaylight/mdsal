@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * Common generator for {@code anydata} and {@code anyxml}.
  */
 abstract class OpaqueObjectGenerator<S extends DataTreeEffectiveStatement<?>, R extends OpaqueRuntimeType>
-        extends AbstractExplicitGenerator<S, R> {
+        extends Generator<S, R> {
     static final class Anydata extends OpaqueObjectGenerator<AnydataEffectiveStatement, AnydataRuntimeType> {
         Anydata(final AnydataEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
             super(statement, parent);

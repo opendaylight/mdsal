@@ -122,24 +122,19 @@ abstract class CompositeRuntimeTypeBuilder<S extends EffectiveStatement<?, ?>, R
     // When we reach here we have dealt with all known augments in this scope, hence the only option is that the
     // statement is either local or added via 'uses' -- in either case it has namespace equal to whatever the local
     // namespace is and there can be no conflicts on QName.getLocalName(). That simplifies things a ton.
-    private static <S extends SchemaTreeEffectiveStatement<?>> AbstractExplicitGenerator<S, ?> findChildGenerator(
+    private static <S extends SchemaTreeEffectiveStatement<?>> Generator<S, ?> findChildGenerator(
             final AbstractCompositeGenerator<?, ?> parent, final String localName) {
         // Search direct children first ...
         for (var child : parent) {
-            if (child instanceof AbstractExplicitGenerator) {
-                @SuppressWarnings("unchecked")
-                final AbstractExplicitGenerator<S, ?> gen = (AbstractExplicitGenerator<S, ?>) child;
-                final EffectiveStatement<?, ?> genStmt = gen.statement();
-                if (genStmt instanceof SchemaTreeEffectiveStatement<?> schemaStmt
-                    && localName.equals(schemaStmt.argument().getLocalName())) {
-                    return gen;
-                }
+            if (child.statement() instanceof SchemaTreeEffectiveStatement<?> schemaStmt
+                && localName.equals(schemaStmt.argument().getLocalName())) {
+                return (Generator<S, ?>) child;
             }
         }
 
         // ... groupings recursively next ...
         for (var grouping : parent.groupings()) {
-            final AbstractExplicitGenerator<S, ?> found = findChildGenerator(grouping, localName);
+            final Generator<S, ?> found = findChildGenerator(grouping, localName);
             if (found != null) {
                 return found;
             }

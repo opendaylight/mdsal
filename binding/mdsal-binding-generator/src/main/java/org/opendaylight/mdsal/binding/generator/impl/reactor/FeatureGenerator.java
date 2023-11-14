@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.model.api.stmt.FeatureEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
-final class FeatureGenerator extends AbstractExplicitGenerator<FeatureEffectiveStatement, FeatureRuntimeType> {
+final class FeatureGenerator extends Generator<FeatureEffectiveStatement, FeatureRuntimeType> {
     FeatureGenerator(final FeatureEffectiveStatement statement, final ModuleGenerator parent) {
         super(statement, parent);
     }

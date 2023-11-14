@@ -122,15 +122,15 @@ abstract class AbstractAugmentGenerator
 
     @Override
     final Member createMember(final CollisionDomain domain) {
-        final AbstractQName explicitIdentifier = statement()
+        final var explicitIdentifier = statement()
             .findFirstEffectiveSubstatementArgument(AugmentIdentifierEffectiveStatement.class).orElse(null);
         if (explicitIdentifier != null) {
             return domain.addPrimary(this, new CamelCaseNamingStrategy(StatementNamespace.AUGMENT, explicitIdentifier));
         }
 
-        final Member target = targetGenerator().getMember();
+        final var target = targetGenerator().getMember();
         int offset = 1;
-        for (Generator gen : getParent()) {
+        for (var gen : getParent()) {
             if (gen == this) {
                 break;
             }

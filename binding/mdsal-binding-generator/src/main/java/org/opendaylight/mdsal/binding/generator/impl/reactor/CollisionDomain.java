@@ -27,13 +27,13 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 
 final class CollisionDomain {
     abstract sealed class Member {
-        private final Generator gen;
+        private final Generator<?, ?> gen;
 
         private List<Secondary> secondaries = List.of();
         private String currentPackage;
         private String currentClass;
 
-        Member(final Generator gen) {
+        Member(final Generator<?, ?> gen) {
             this.gen = requireNonNull(gen);
         }
 
@@ -89,7 +89,7 @@ final class CollisionDomain {
     private sealed class Primary extends Member {
         private ClassNamingStrategy strategy;
 
-        Primary(final Generator gen, final ClassNamingStrategy strategy) {
+        Primary(final Generator<?, ?> gen, final ClassNamingStrategy strategy) {
             super(gen);
             this.strategy = requireNonNull(strategy);
         }
@@ -106,7 +106,7 @@ final class CollisionDomain {
 
         @Override
         final boolean signalConflict() {
-            final ClassNamingStrategy newStrategy = strategy.fallback();
+            final var newStrategy = strategy.fallback();
             if (newStrategy == null) {
                 return false;
             }
@@ -127,7 +127,7 @@ final class CollisionDomain {
     }
 
     private final class Prefix extends Primary {
-        Prefix(final Generator gen, final ClassNamingStrategy strategy) {
+        Prefix(final Generator<?, ?> gen, final ClassNamingStrategy strategy) {
             super(gen, strategy);
         }
     }
@@ -136,7 +136,7 @@ final class CollisionDomain {
         private final String classSuffix;
         final @NonNull Member classPrimary;
 
-        Secondary(final Generator gen, final Member primary, final String classSuffix) {
+        Secondary(final Generator<?, ?> gen, final Member primary, final String classSuffix) {
             super(gen);
             classPrimary = requireNonNull(primary);
             this.classSuffix = requireNonNull(classSuffix);
@@ -165,7 +165,7 @@ final class CollisionDomain {
     }
 
     private final class LeafSecondary extends Secondary {
-        LeafSecondary(final Generator gen, final Member classPrimary, final String classSuffix) {
+        LeafSecondary(final Generator<?, ?> gen, final Member classPrimary, final String classSuffix) {
             super(gen, classPrimary, classSuffix);
         }
 
@@ -179,7 +179,7 @@ final class CollisionDomain {
     private final class SuffixSecondary extends Secondary {
         private final AbstractQName packageSuffix;
 
-        SuffixSecondary(final Generator gen, final Member primaryClass, final String classSuffix,
+        SuffixSecondary(final Generator<?, ?> gen, final Member primaryClass, final String classSuffix,
                 final AbstractQName packageSuffix) {
             super(gen, primaryClass, classSuffix);
             this.packageSuffix = requireNonNull(packageSuffix);
@@ -222,16 +222,16 @@ final class CollisionDomain {
         this.gen = requireNonNull(gen);
     }
 
-    @NonNull Member addPrefix(final Generator memberGen, final ClassNamingStrategy strategy) {
+    @NonNull Member addPrefix(final Generator<?, ?> memberGen, final ClassNamingStrategy strategy) {
         // Note that contrary to the method name, we are not adding the result to members
         return new Prefix(memberGen, strategy);
     }
 
-    @NonNull Member addPrimary(final Generator memberGen, final ClassNamingStrategy strategy) {
+    @NonNull Member addPrimary(final Generator<?, ?> memberGen, final ClassNamingStrategy strategy) {
         return addMember(new Primary(memberGen, strategy));
     }
 
-    @NonNull Member addSecondary(final Generator memberGen, final Member primary, final String classSuffix) {
+    @NonNull Member addSecondary(final Generator<?, ?> memberGen, final Member primary, final String classSuffix) {
         return addMember(new LeafSecondary(memberGen, primary, classSuffix));
     }
 

@@ -325,7 +325,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             return;
         }
 
-        final AbstractExplicitGenerator<S, R> prev = previous();
+        final Generator<S, R> prev = previous();
         if (prev != null) {
             verify(prev instanceof AbstractTypeObjectGenerator, "Unexpected previous %s", prev);
             ((AbstractTypeObjectGenerator<S, R>) prev).linkInferred(this);
@@ -499,7 +499,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             return refType.methodReturnType(builderFactory);
         }
 
-        final AbstractExplicitGenerator<?, ?> prev = previous();
+        final Generator<?, ?> prev = previous();
         if (prev != null) {
             // We have been added through augment/uses, defer to the original definition
             return prev.methodReturnType(builderFactory);
