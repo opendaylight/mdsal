@@ -9,21 +9,20 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import com.google.common.annotations.Beta;
 import java.util.Map;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
 @Beta
-@Component(factory = OSGiRpcConsumerRegistry.FACTORY_NAME)
-public final class OSGiRpcConsumerRegistry extends AbstractAdaptedService<RpcConsumerRegistry>
-        implements RpcConsumerRegistry {
+@Component(factory = OSGiRpcService.FACTORY_NAME)
+public final class OSGiRpcService extends AbstractAdaptedService<RpcService> implements RpcService {
     // OSGi DS Component Factory name
     static final String FACTORY_NAME = "org.opendaylight.mdsal.binding.dom.adapter.osgi.OSGiRpcConsumerRegistry";
 
-    public OSGiRpcConsumerRegistry() {
-        super(RpcConsumerRegistry.class);
+    public OSGiRpcService() {
+        super(RpcService.class);
     }
 
     @Override

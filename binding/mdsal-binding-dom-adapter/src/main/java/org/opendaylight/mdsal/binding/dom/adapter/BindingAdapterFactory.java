@@ -21,8 +21,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -83,7 +83,7 @@ public final class BindingAdapterFactory implements AdapterFactory, Immutable {
     }
 
     @Override
-    public RpcConsumerRegistry createRpcConsumerRegistry(final DOMRpcService domService) {
+    public RpcService createRpcConsumerRegistry(final DOMRpcService domService) {
         return new BindingDOMRpcServiceAdapter(codec, domService);
     }
 

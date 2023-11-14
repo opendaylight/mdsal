@@ -16,8 +16,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -73,13 +73,13 @@ public interface AdapterFactory {
     NotificationPublishService createNotificationPublishService(DOMNotificationPublishService domService);
 
     /**
-     * Create a {@link RpcConsumerRegistry} backed by a {@link DOMRpcService}.
+     * Create a {@link RpcService} backed by a {@link DOMRpcService}.
      *
      * @param domService Backing DOMRpcService
-     * @return An RpcConsumerRegistry
+     * @return An RpcService
      * @throws NullPointerException if {@code domService} is null
      */
-    RpcConsumerRegistry createRpcConsumerRegistry(DOMRpcService domService);
+    RpcService createRpcConsumerRegistry(DOMRpcService domService);
 
     /**
      * Create a {@link RpcProviderService} backed by a {@link DOMRpcProviderService}.

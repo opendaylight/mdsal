@@ -18,8 +18,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
@@ -60,7 +60,7 @@ public class BindingTestContext implements AutoCloseable {
 
     private DataBroker dataBroker;
 
-    private RpcConsumerRegistry baConsumerRpc;
+    private RpcService baConsumerRpc;
 
     private BindingDOMRpcProviderServiceAdapter baProviderRpc;
     private DOMRpcRouter domRouter;
@@ -197,7 +197,7 @@ public class BindingTestContext implements AutoCloseable {
         return baProviderRpc;
     }
 
-    public RpcConsumerRegistry getBindingRpcConsumerRegistry() {
+    public RpcService getBindingRpcService() {
         return baConsumerRpc;
     }
 
