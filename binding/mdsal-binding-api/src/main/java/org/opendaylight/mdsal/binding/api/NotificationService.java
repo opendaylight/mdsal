@@ -16,95 +16,15 @@ import java.util.EventListener;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
-import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
 /**
- * Notification broker which allows clients to subscribe for and publish YANG-modeled notifications.
+ * Notification broker which allows clients to subscribe for and publish YANG 1.0 notifications, which is to say
+ * {@code notification} statements occurring directly within a {@code module} or a {@code submodule} statement.
  */
 public interface NotificationService extends BindingService {
-    /**
-     * Registers a listener which implements a YANG-generated notification interface derived from
-     * {@link NotificationListener}. The listener is registered for all notifications present in the implemented
-     * interface.
-     *
-     * <p>
-     * Each YANG module which defines notifications results in a generated interface <code>{ModuleName}Listener</code>
-     * which handles all the notifications defined in the YANG model. Each notification type translates to a specific
-     * method of the form <code>on{NotificationType}</code> on the generated interface. The generated interface also
-     * extends the {@link org.opendaylight.yangtools.yang.binding.NotificationListener} interface and implementations
-     * are registered using this method.
-     *
-     * <b>Dispatch Listener Example</b>
-     *
-     * <p>
-     * Lets assume we have following YANG model:
-     *
-     * <pre>
-     * module example {
-     *      ...
-     *
-     *      notification start {
-     *          ...
-     *      }
-     *
-     *      notification stop {
-     *           ...
-     *      }
-     * }
-     * </pre>
-     *
-     * <p>
-     * The generated interface will be:
-     *
-     * <pre>
-     * public interface ExampleListener extends NotificationListener {
-     *     void onStart(Start notification);
-     *
-     *     void onStop(Stop notification);
-     * }
-     * </pre>
-     *
-     * <p>
-     * The following defines an implementation of the generated interface:
-     *
-     * <pre>
-     * public class MyExampleListener implements ExampleListener {
-     *     public void onStart(Start notification) {
-     *         // do something
-     *     }
-     *
-     *     public void onStop(Stop notification) {
-     *         // do something
-     *     }
-     * }
-     * </pre>
-     *
-     * <p>
-     * The implementation is registered as follows:
-     *
-     * <pre>
-     * MyExampleListener listener = new MyExampleListener();
-     * ListenerRegistration&lt;NotificationListener&gt; reg = service.registerNotificationListener(listener);
-     * </pre>
-     *
-     * <p>
-     * The {@code onStart} method will be invoked when someone publishes a {@code Start} notification and the
-     * {@code onStop} method will be invoked when someone publishes a {@code Stop} notification.
-     *
-     * @param <T> NotificationListener type
-     * @param listener the listener implementation that will receive notifications.
-     * @return a {@link ListenerRegistration} instance that should be used to unregister the listener
-     *         by invoking the {@link ListenerRegistration#close()} method when no longer needed.
-     * @deprecated Prefer {@link #registerListener(Class, Listener)} or
-     *             {@link #registerListener(Class, Listener, Executor)} instead.
-     */
-    @Deprecated(since = "10.0.0", forRemoval = true)
-    <T extends NotificationListener> @NonNull ListenerRegistration<T> registerNotificationListener(@NonNull T listener);
-
     /**
      * Registers a {@link Listener} to receive callbacks for {@link Notification}s of a particular type.
      *
