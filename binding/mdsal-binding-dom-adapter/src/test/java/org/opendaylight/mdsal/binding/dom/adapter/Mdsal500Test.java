@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -51,7 +51,7 @@ public class Mdsal500Test {
     private static final QName SWITCH_QNAME = QName.create(SwitchOutput.QNAME, "switch");
 
     private RpcProviderService baRpcProviderService;
-    private RpcConsumerRegistry baRpcConsumerService;
+    private RpcService baRpcConsumerService;
     private DOMRpcProviderService biRpcProviderService;
     private BindingTestContext testContext;
     private DOMRpcService biRpcService;
@@ -66,7 +66,7 @@ public class Mdsal500Test {
         testContext.setSchemaModuleInfos(Set.of($YangModuleInfoImpl.getInstance()));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
-        baRpcConsumerService = testContext.getBindingRpcConsumerRegistry();
+        baRpcConsumerService = testContext.getBindingRpcService();
         biRpcProviderService = testContext.getDomRpcRegistry();
         biRpcService = testContext.getDomRpcInvoker();
     }

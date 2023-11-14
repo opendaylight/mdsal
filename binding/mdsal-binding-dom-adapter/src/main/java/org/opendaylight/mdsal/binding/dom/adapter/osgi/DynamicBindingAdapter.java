@@ -16,8 +16,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -64,8 +64,8 @@ public final class DynamicBindingAdapter {
     ComponentFactory<OSGiNotificationService> notificationServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiNotificationPublishService.FACTORY_NAME + ")")
     ComponentFactory<OSGiNotificationPublishService> notificationPublishServiceFactory = null;
-    @Reference(target = "(component.factory=" + OSGiRpcConsumerRegistry.FACTORY_NAME + ")")
-    ComponentFactory<OSGiRpcConsumerRegistry> rpcConsumerRegistryFactory = null;
+    @Reference(target = "(component.factory=" + OSGiRpcService.FACTORY_NAME + ")")
+    ComponentFactory<OSGiRpcService> rpcServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcProviderService.FACTORY_NAME + ")")
     ComponentFactory<OSGiRpcProviderService> rpcProviderServiceFactory = null;
 
@@ -80,8 +80,8 @@ public final class DynamicBindingAdapter {
                     factory::createNotificationService, notificationServiceFactory),
             new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
                     factory::createNotificationPublishService, notificationPublishServiceFactory),
-            new AdaptingTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
-                    factory::createRpcConsumerRegistry, rpcConsumerRegistryFactory),
+            new AdaptingTracker<>(ctx, DOMRpcService.class, RpcService.class,
+                    factory::createRpcConsumerRegistry, rpcServiceFactory),
             new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
                     factory::createRpcProviderService, rpcProviderServiceFactory),
             new AdaptingTracker<>(ctx, DOMActionService.class, ActionService.class, factory::createActionService,

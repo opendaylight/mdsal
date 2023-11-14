@@ -21,8 +21,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
@@ -53,7 +53,7 @@ public class BindingDOMRpcIntegrationTest {
     private static final QName KNOCK_KNOCK_QNAME = QName.create(KnockKnockOutput.QNAME, "knock-knock");
 
     private RpcProviderService baRpcProviderService;
-    private RpcConsumerRegistry baRpcConsumerService;
+    private RpcService baRpcService;
     private DOMRpcProviderService biRpcProviderService;
     private BindingTestContext testContext;
     private DOMRpcService biRpcService;
@@ -70,7 +70,7 @@ public class BindingDOMRpcIntegrationTest {
             BindingRuntimeHelpers.getYangModuleInfo(Top.class)));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
-        baRpcConsumerService = testContext.getBindingRpcConsumerRegistry();
+        baRpcService = testContext.getBindingRpcService();
         biRpcProviderService = testContext.getDomRpcRegistry();
         biRpcService = testContext.getDomRpcInvoker();
     }
@@ -79,7 +79,7 @@ public class BindingDOMRpcIntegrationTest {
     public void testBindingRegistrationWithDOMInvocation() throws Exception {
         knockRpcImpl.registerTo(baRpcProviderService, BA_NODE_ID).setKnockKnockResult(knockResult(true, "open"));
 
-        final var baKnockService = baRpcConsumerService.getRpc(KnockKnock.class);
+        final var baKnockService = baRpcService.getRpc(KnockKnock.class);
         assertNotSame(knockRpcImpl, baKnockService);
 
         final var baKnockKnockInput = knockKnock(BA_NODE_ID).setQuestion("who's there?").build();
@@ -103,7 +103,7 @@ public class BindingDOMRpcIntegrationTest {
             DOMRpcIdentifier.create(KNOCK_KNOCK_QNAME, testContext.getCodec().currentSerializer()
                 .toYangInstanceIdentifier(BA_NODE_ID)));
 
-        final var baKnockService = baRpcConsumerService.getRpc(KnockKnock.class);
+        final var baKnockService = baRpcService.getRpc(KnockKnock.class);
         final var baResult = baKnockService.invoke(knockKnock(BA_NODE_ID).setQuestion("Who's there?").build());
         assertNotNull(baResult);
         assertEquals(baKnockKnockOutput, Futures.getDone(baResult).getResult());
@@ -114,7 +114,7 @@ public class BindingDOMRpcIntegrationTest {
         final var baKnockResult = knockResult(true, "open");
         knockRpcImpl.registerTo(baRpcProviderService, BA_NODE_ID).setKnockKnockResult(baKnockResult);
 
-        final var baKnockService = baRpcConsumerService.getRpc(KnockKnock.class);
+        final var baKnockService = baRpcService.getRpc(KnockKnock.class);
 
         final var baKnockKnockInput = knockKnock(BA_NODE_ID).setQuestion("who's there?").build();
 
@@ -129,7 +129,7 @@ public class BindingDOMRpcIntegrationTest {
     public void testSimpleRpc() throws Exception {
         baRpcProviderService.registerRpcImplementation((KnockKnock) input -> knockResult(true, "open"));
 
-        final var baKnockService = baRpcConsumerService.getRpc(KnockKnock.class);
+        final var baKnockService = baRpcService.getRpc(KnockKnock.class);
         final var rpcResult = Futures.getDone(
             baKnockService.invoke(knockKnock(BA_NODE_ID).setQuestion("who's there?").build()));
 
