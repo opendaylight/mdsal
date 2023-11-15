@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.spi;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.mdsal.dom.spi.PingPongTransactionChain.LOG;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -36,12 +35,16 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The actual implementation of {@link PingPongTransactionChain}. Split out to allow deeper testing while keeping the
  * externally-visible implementation final.
  */
 abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPingPongTransactionChain.class);
+
     private final DOMTransactionChainListener listener;
     private final DOMTransactionChain delegate;
 

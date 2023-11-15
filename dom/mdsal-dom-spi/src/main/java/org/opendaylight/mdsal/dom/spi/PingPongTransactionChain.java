@@ -7,12 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.Function;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of {@link DOMTransactionChain}, which has a very specific behavior, which some users may find
@@ -30,9 +27,6 @@ import org.slf4j.LoggerFactory;
  * transaction and the user may not allocate multiple read-only transactions at the same time.
  */
 public final class PingPongTransactionChain extends AbstractPingPongTransactionChain {
-    @SuppressFBWarnings(value = "SLF4J_LOGGER_SHOULD_BE_PRIVATE", justification = "API stability")
-    static final Logger LOG = LoggerFactory.getLogger(PingPongTransactionChain.class);
-
     public PingPongTransactionChain(final Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory,
             final DOMTransactionChainListener listener) {
         super(delegateFactory, listener);
