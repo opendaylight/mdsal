@@ -12,8 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -25,19 +24,17 @@ import org.eclipse.jdt.annotation.Nullable;
  * @param <T> identifier type
  */
 @Beta
-@NonNullByDefault
 public abstract class AbstractDOMStoreTransaction<T> implements DOMStoreTransaction {
     private final @Nullable Throwable debugContext;
-    private final T identifier;
+    private final @NonNull T identifier;
 
-    protected AbstractDOMStoreTransaction(final T identifier) {
+    protected AbstractDOMStoreTransaction(final @NonNull T identifier) {
         this(identifier, false);
     }
 
-    @SuppressFBWarnings("NP_STORE_INTO_NONNULL_FIELD")
-    protected AbstractDOMStoreTransaction(final T identifier, final boolean debug) {
+    protected AbstractDOMStoreTransaction(final @NonNull T identifier, final boolean debug) {
         this.identifier = requireNonNull(identifier, "Identifier must not be null.");
-        this.debugContext = debug ? new Throwable().fillInStackTrace() : null;
+        debugContext = debug ? new Throwable().fillInStackTrace() : null;
     }
 
     @Override
@@ -67,7 +64,7 @@ public abstract class AbstractDOMStoreTransaction<T> implements DOMStoreTransact
      *            ToStringHelper instance
      * @return ToStringHelper instance which was passed in
      */
-    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+    protected @NonNull ToStringHelper addToStringAttributes(final @NonNull ToStringHelper toStringHelper) {
         return toStringHelper.add("id", identifier);
     }
 }

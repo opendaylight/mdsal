@@ -11,12 +11,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Optional;
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -27,32 +25,30 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @Beta
-@NonNullByDefault
 public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
-    private final Collection<RpcError> errors;
+    private final @NonNull Collection<RpcError> errors;
     private final @Nullable ContainerNode output;
 
-    private SimpleDOMActionResult(final Collection<RpcError> errors, final @Nullable ContainerNode output) {
+    private SimpleDOMActionResult(final @NonNull Collection<RpcError> errors, final @Nullable ContainerNode output) {
         this.errors = ImmutableList.copyOf(errors);
         this.output = output;
     }
 
-    public SimpleDOMActionResult(final ContainerNode output) {
+    public SimpleDOMActionResult(final @NonNull ContainerNode output) {
         errors = ImmutableList.of();
         this.output = requireNonNull(output);
     }
 
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
-    public SimpleDOMActionResult(final Collection<RpcError> errors) {
+    public SimpleDOMActionResult(final @NonNull Collection<RpcError> errors) {
         this(errors, null);
     }
 
-    public SimpleDOMActionResult(final ContainerNode output, final Collection<RpcError> errors) {
+    public SimpleDOMActionResult(final @NonNull ContainerNode output, final @NonNull Collection<RpcError> errors) {
         this(errors, requireNonNull(output));
     }
 
     // As per RFC7950 page 80 (top)
-    public static SimpleDOMActionResult ofMalformedMessage(final Exception cause) {
+    public static @NonNull SimpleDOMActionResult ofMalformedMessage(final @NonNull Exception cause) {
         return new SimpleDOMActionResult(ImmutableList.of(RpcResultBuilder.newError(ErrorType.RPC,
             ErrorTag.MALFORMED_MESSAGE, cause.getMessage(), null, null, requireNonNull(cause))), null);
     }
@@ -64,12 +60,12 @@ public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
 
     @Override
     public Optional<ContainerNode> getOutput() {
-        return (Optional) Optional.<@Nullable ContainerNode>ofNullable(output);
+        return Optional.ofNullable(output);
     }
 
     @Override
     public String toString() {
-        final ToStringHelper helper = MoreObjects.toStringHelper(this).omitNullValues().add("output", output);
+        final var helper = MoreObjects.toStringHelper(this).omitNullValues().add("output", output);
         if (!errors.isEmpty()) {
             helper.add("errors", errors);
         }
