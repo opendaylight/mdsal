@@ -25,7 +25,6 @@
     <description>${project.artifactId}</description>
 
     <modules>
-        <module>yang-ext</module>
         <module>iana</module>
         <module>ietf</module>
         <module>l2-types</module>
