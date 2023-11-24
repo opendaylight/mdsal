@@ -24,7 +24,15 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
  * </ul>
  */
 @Beta
-public interface DOMInstanceNotificationPublishService extends DOMService {
+public interface DOMInstanceNotificationPublishService extends
+        DOMService<DOMInstanceNotificationPublishService, DOMInstanceNotificationPublishService.Extension> {
+    /**
+     * Marker interface for an extension to {@link DOMInstanceNotificationPublishService}.
+     */
+    interface Extension extends DOMService.Extension<DOMInstanceNotificationPublishService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Well-known value indicating that the implementation is currently not
      * able to accept a notification.

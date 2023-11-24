@@ -19,7 +19,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
  * to track the process of RPCs becoming available.
  */
 // FIXME: once we have a DOMOperationService implementation, deprecate this interface
-public interface DOMRpcService extends DOMService {
+public interface DOMRpcService extends DOMService<DOMRpcService, DOMRpcService.Extension> {
+    /**
+     * Marker interface for an extension to {@link DOMRpcService}.
+     */
+    interface Extension extends DOMService.Extension<DOMRpcService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Initiate invocation of an RPC. This method is guaranteed to not block on any external
      * resources.

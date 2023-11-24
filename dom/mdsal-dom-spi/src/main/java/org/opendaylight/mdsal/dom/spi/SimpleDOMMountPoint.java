@@ -12,23 +12,24 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.dom.api.DOMService.Extension;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public final class SimpleDOMMountPoint implements DOMMountPoint {
-
-    private final YangInstanceIdentifier identifier;
-    private final ClassToInstanceMap<DOMService> services;
+    private final ImmutableClassToInstanceMap<DOMService<?, ?>> services;
+    private final @NonNull YangInstanceIdentifier identifier;
 
     private SimpleDOMMountPoint(final YangInstanceIdentifier identifier,
-            final ClassToInstanceMap<DOMService> services) {
+            final ClassToInstanceMap<DOMService<?, ?>> services) {
         this.identifier =  requireNonNull(identifier);
         this.services = ImmutableClassToInstanceMap.copyOf(services);
     }
 
     public static SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
-            final ClassToInstanceMap<DOMService> services) {
+            final ClassToInstanceMap<DOMService<?, ?>> services) {
         return new SimpleDOMMountPoint(identifier, services);
     }
 
@@ -38,7 +39,7 @@ public final class SimpleDOMMountPoint implements DOMMountPoint {
     }
 
     @Override
-    public <T extends DOMService> Optional<T> getService(final Class<T> cls) {
+    public <T extends DOMService<T, E>, E extends Extension<T, E>> Optional<T> getService(final Class<T> cls) {
         return Optional.ofNullable(services.getInstance(cls));
     }
 }

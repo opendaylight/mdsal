@@ -62,13 +62,12 @@ import org.slf4j.LoggerFactory;
  *</p>
  */
 @Component(immediate = true, configurationPid = "org.opendaylight.mdsal.dom.notification", service = {
-    DOMNotificationService.class, DOMNotificationPublishService.class,
-    DOMNotificationSubscriptionListenerRegistry.class
+    DOMNotificationPublishService.class, DOMNotificationSubscriptionListenerRegistry.class, DOMNotificationRouter.class
 })
 @Designate(ocd = DOMNotificationRouter.Config.class)
 // Non-final for testing
 public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPublishService,
-        DOMNotificationService, DOMNotificationSubscriptionListenerRegistry {
+         DOMNotificationSubscriptionListenerRegistry {
     @ObjectClassDefinition()
     public @interface Config {
         @AttributeDefinition(name = "notification-queue-depth")
@@ -136,8 +135,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         this(config.queueDepth());
     }
 
-    @Override
-    public synchronized <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
+    synchronized <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
             final T listener, final Collection<Absolute> types) {
         final var reg = new SingleReg<>(listener);
 
@@ -155,8 +153,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         return reg;
     }
 
-    @Override
-    public synchronized Registration registerNotificationListeners(
+    synchronized Registration registerNotificationListeners(
             final Map<Absolute, DOMNotificationListener> typeToListener) {
         final var b = ImmutableMultimap.<Absolute, Reg<?>>builder();
         b.putAll(listeners);

@@ -8,9 +8,8 @@
 package org.opendaylight.mdsal.dom.api;
 
 /**
- * Type capture of a {@link DOMServiceExtension} applicable to {@link DOMDataBroker}
- * implementations.
+ * Type capture of a {@link DOMService.Extension} applicable to {@link DOMDataBroker} implementations.
  */
-public interface DOMDataBrokerExtension extends DOMServiceExtension<DOMDataBroker, DOMDataBrokerExtension> {
-
+public interface DOMDataBrokerExtension extends DOMService.Extension<DOMDataBroker, DOMDataBrokerExtension> {
+    // Marker interface
 }

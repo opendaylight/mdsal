@@ -16,11 +16,9 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 /**
- * Utility {@link DOMDataBroker} implementation which forwards all interface
- * method invocation to a delegate instance.
+ * Utility {@link DOMDataBroker} implementation which forwards all interface method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataBroker
-        extends ForwardingDOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension>
+public abstract class ForwardingDOMDataBroker extends ForwardingDOMService<DOMDataBroker, DOMDataBrokerExtension>
         implements DOMDataBroker {
     @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {

@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.annotations.Beta;
 import java.util.Set;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
@@ -17,12 +17,13 @@ import org.opendaylight.mdsal.dom.api.DOMActionProviderServiceExtension;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
 @Beta
+@NonNullByDefault
 public abstract class ForwardingDOMActionProviderService
-        extends ForwardingDOMExtensibleService<DOMActionProviderService, DOMActionProviderServiceExtension>
+        extends ForwardingDOMService<DOMActionProviderService, DOMActionProviderServiceExtension>
         implements DOMActionProviderService {
     @Override
-    public <T extends @NonNull DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final Set<@NonNull DOMActionInstance> instances) {
+    public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+            final T implementation, final Set<DOMActionInstance> instances) {
         return delegate().registerActionImplementation(implementation, instances);
     }
 }

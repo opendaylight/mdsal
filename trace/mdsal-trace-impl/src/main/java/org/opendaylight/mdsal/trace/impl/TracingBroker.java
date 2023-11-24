@@ -9,8 +9,6 @@ package org.opendaylight.mdsal.trace.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.MutableClassToInstanceMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -40,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("checkstyle:JavadocStyle")
 //...because otherwise it whines about the elements in the @code block even though it's completely valid Javadoc
-
 /**
  * TracingBroker logs "write" operations and listener registrations to the md-sal. It logs the instance identifier path,
  * the objects themselves, as well as the stack trace of the call invoking the registration or write operation.
@@ -94,7 +91,6 @@ import org.slf4j.LoggerFactory;
  *        watchRegistrations and allow all registrations to be logged.
  *     </li>
  * </ul>
- *
  */
 public class TracingBroker implements TracingDOMDataBroker {
     @SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")
@@ -312,29 +308,24 @@ public class TracingBroker implements TracingDOMDataBroker {
     }
 
     @Override
-    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
-        final ClassToInstanceMap<DOMDataBrokerExtension> delegateExt = delegate.getExtensions();
-        final DOMDataTreeChangeService treeChangeSvc = delegateExt.getInstance(DOMDataTreeChangeService.class);
-        if (treeChangeSvc == null) {
-            return delegateExt;
-        }
-
-        final ClassToInstanceMap<DOMDataBrokerExtension> res = MutableClassToInstanceMap.create(delegateExt);
-        res.put(DOMDataTreeChangeService.class, new DOMDataTreeChangeService() {
-            @Override
-            public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
-                    final DOMDataTreeIdentifier domDataTreeIdentifier, final L listener) {
-                if (isRegistrationWatched(domDataTreeIdentifier.getRootIdentifier(),
-                        domDataTreeIdentifier.getDatastoreType())) {
-                    LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
+    public <T extends DOMDataBrokerExtension> T extension(final Class<T> type) {
+        final var ext = delegate.extension(type);
+        if (DOMDataTreeChangeService.class.equals(type) && ext instanceof DOMDataTreeChangeService treeChange) {
+            return type.cast(new DOMDataTreeChangeService() {
+                @Override
+                public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
+                        final DOMDataTreeIdentifier domDataTreeIdentifier, final L listener) {
+                    final var rootId = domDataTreeIdentifier.getRootIdentifier();
+                    if (isRegistrationWatched(rootId, domDataTreeIdentifier.getDatastoreType())) {
+                        LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
                             listener instanceof ClusteredDOMDataTreeChangeListener ? "Clustered" : "Non-clustered",
-                            toPathString(domDataTreeIdentifier.getRootIdentifier()), getStackSummary());
+                            toPathString(rootId), getStackSummary());
+                    }
+                    return treeChange.registerDataTreeChangeListener(domDataTreeIdentifier, listener);
                 }
-                return treeChangeSvc.registerDataTreeChangeListener(domDataTreeIdentifier, listener);
-            }
-        });
-
-        return res;
+            });
+        }
+        return ext;
     }
 
     @Override

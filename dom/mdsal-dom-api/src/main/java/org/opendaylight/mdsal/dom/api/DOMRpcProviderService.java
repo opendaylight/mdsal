@@ -16,7 +16,14 @@ import org.opendaylight.yangtools.concepts.Registration;
  * A {@link DOMService} which allows registration of RPC implementations with a conceptual router. The client
  * counterpart of this service is {@link DOMRpcService}.
  */
-public interface DOMRpcProviderService extends DOMService {
+public interface DOMRpcProviderService extends DOMService<DOMRpcProviderService, DOMRpcProviderService.Extension> {
+    /**
+     * Marker interface for an extension to {@link DOMRpcProviderService}.
+     */
+    interface Extension extends DOMService.Extension<DOMRpcProviderService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Register an {@link DOMRpcImplementation} object with this service.
      *
@@ -27,6 +34,8 @@ public interface DOMRpcProviderService extends DOMService {
      * @throws NullPointerException if implementation or types is null
      * @throws IllegalArgumentException if types is empty or contains a null element.
      */
+    // FIXME: just Registration and forward to set
+    // FIXME: single-instance specialization
     @NonNull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
         registerRpcImplementation(@NonNull T implementation, @NonNull DOMRpcIdentifier... rpcs);
 
@@ -39,6 +48,7 @@ public interface DOMRpcProviderService extends DOMService {
      * @throws NullPointerException if implementation or types is null
      * @throws IllegalArgumentException if types is empty or contains a null element.
      */
+    // FIXME: just Registration and forward to set
     @NonNull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
         registerRpcImplementation(@NonNull T implementation, @NonNull Set<DOMRpcIdentifier> rpcs);
 
