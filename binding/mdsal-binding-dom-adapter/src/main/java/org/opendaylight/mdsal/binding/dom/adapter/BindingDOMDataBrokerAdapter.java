@@ -44,8 +44,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
 
     public BindingDOMDataBrokerAdapter(final AdapterContext adapterContext, final DOMDataBroker domDataBroker) {
         super(adapterContext, domDataBroker);
-        final DOMDataTreeChangeService domTreeChange = domDataBroker.getExtensions()
-                .getInstance(DOMDataTreeChangeService.class);
+        final var domTreeChange = domDataBroker.extension(DOMDataTreeChangeService.class);
         treeChangeService = domTreeChange == null ? null
                 : new BindingDOMDataTreeChangeServiceAdapter(adapterContext, domTreeChange);
     }
@@ -82,12 +81,12 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
         }
 
         @Override
-        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<? extends Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMDataBroker.class);
         }
 
         @Override
-        protected DataBroker createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected DataBroker createInstance(final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new BindingDOMDataBrokerAdapter(adapterContext(), delegates.getInstance(DOMDataBroker.class));
         }
     }

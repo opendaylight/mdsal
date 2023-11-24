@@ -12,10 +12,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,10 +41,9 @@ public class BindingDOMAdapterLoaderTest {
 
     @Before
     public void setUp() {
-        doReturn(ImmutableClassToInstanceMap.of()).when(domService).getExtensions();
         bindingDOMAdapterLoader = new BindingDOMAdapterLoader(mockContext) {
             @Override
-            protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
+            protected DOMService<?, ?> getDelegate(final Class<? extends DOMService<?, ?>> reqDeleg) {
                 return domService;
             }
         };

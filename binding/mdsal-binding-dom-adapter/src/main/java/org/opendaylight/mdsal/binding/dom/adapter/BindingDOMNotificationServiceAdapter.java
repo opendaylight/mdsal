@@ -64,13 +64,13 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         }
 
         @Override
-        protected NotificationService createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected NotificationService createInstance(final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new BindingDOMNotificationServiceAdapter(adapterContext(),
                 delegates.getInstance(DOMNotificationService.class));
         }
 
         @Override
-        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<? extends Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMNotificationService.class);
         }
     }

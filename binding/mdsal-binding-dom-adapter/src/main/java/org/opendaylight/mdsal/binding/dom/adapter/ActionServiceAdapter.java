@@ -35,12 +35,12 @@ final class ActionServiceAdapter
         }
 
         @Override
-        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<? extends Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMActionService.class);
         }
 
         @Override
-        protected ActionService createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected ActionService createInstance(final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new ActionServiceAdapter(adapterContext(), delegates.getInstance(DOMActionService.class));
         }
     }

@@ -81,7 +81,7 @@ public final class NettyReplicationSource {
                                     final int listenPort, final Duration keepaliveInterval,
                                     final int maxMissedKeepalives) {
         LOG.debug("Source {}", enabled ? "enabled" : "disabled");
-        final DOMDataTreeChangeService dtcs = broker.getExtensions().getInstance(DOMDataTreeChangeService.class);
+        final var dtcs = broker.extension(DOMDataTreeChangeService.class);
         verify(dtcs != null, "Missing DOMDataTreeChangeService in broker %s", broker);
         checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
         return enabled ? singleton.registerClusterSingletonService(new SourceSingletonService(bootstrap,

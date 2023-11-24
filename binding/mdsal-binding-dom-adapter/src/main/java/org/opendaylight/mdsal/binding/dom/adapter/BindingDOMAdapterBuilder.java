@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 
-abstract class BindingDOMAdapterBuilder<T extends BindingService> extends AdapterBuilder<T, DOMService> {
+abstract class BindingDOMAdapterBuilder<T extends BindingService> extends AdapterBuilder<T, DOMService<?, ?>> {
 
     @FunctionalInterface
     interface Factory<T extends BindingService> {

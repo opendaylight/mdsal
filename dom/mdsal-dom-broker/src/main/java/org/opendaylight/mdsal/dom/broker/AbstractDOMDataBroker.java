@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -93,8 +94,8 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     }
 
     @Override
-    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
-        return extensions;
+    public final Collection<DOMDataBrokerExtension> supportedExtensions() {
+        return extensions.values();
     }
 
     @Override

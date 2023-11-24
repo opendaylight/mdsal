@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 @Beta
 @NonNullByDefault
 public interface DOMActionProviderService
-        extends DOMExtensibleService<DOMActionProviderService, DOMActionProviderServiceExtension> {
+        extends DOMService<DOMActionProviderService, DOMActionProviderServiceExtension> {
     /**
      * Register an {@link DOMActionImplementation} object with this service, servicing specified action instances.
      *

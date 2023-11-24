@@ -42,7 +42,7 @@ import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
 
 @RunWith(Parameterized.class)
 public class BindingDOMTransactionChainAdapterTest {
-    enum TransactionChainType implements BiFunction<DataBroker, TransactionChainListener, TransactionChain> {
+    public enum TransactionChainType implements BiFunction<DataBroker, TransactionChainListener, TransactionChain> {
         NORMAL {
             @Override
             public TransactionChain apply(final DataBroker broker, final TransactionChainListener listener) {
@@ -109,7 +109,6 @@ public class BindingDOMTransactionChainAdapterTest {
 
     @Before
     public void setUp() {
-        doCallRealMethod().when(domService).getExtensions();
         doReturn(transactionChain).when(domService).createTransactionChain(any());
         if (type == TransactionChainType.MERGING) {
             doCallRealMethod().when(domService).createMergingTransactionChain(any());
@@ -119,7 +118,7 @@ public class BindingDOMTransactionChainAdapterTest {
         BindingDOMAdapterLoader bindingDOMAdapterLoader = new BindingDOMAdapterLoader(
                 new ConstantAdapterContext(mockCodecRegistry)) {
             @Override
-            protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
+            protected DOMService<?, ?> getDelegate(final Class<? extends DOMService<?, ?>> reqDeleg) {
                 return domService;
             }
         };
