@@ -22,7 +22,15 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
  *       should never wait, or put an upper bound on how long it is going to wait</li>
  * </ul>
  */
-public interface DOMNotificationPublishService extends DOMService {
+public interface DOMNotificationPublishService
+        extends DOMService<DOMNotificationPublishService, DOMNotificationPublishService.Extension> {
+    /**
+     * Marker interface for an extension to {@link DOMNotificationPublishService}.
+     */
+    interface Extension extends DOMService.Extension<DOMNotificationPublishService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Well-known value indicating that the implementation is currently not able to accept a notification.
      */

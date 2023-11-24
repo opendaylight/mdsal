@@ -13,5 +13,5 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public interface DOMMountPoint extends Identifiable<YangInstanceIdentifier> {
 
-    <T extends DOMService> Optional<T> getService(Class<T> cls);
+    <T extends DOMService<T, E>, E extends DOMService.Extension<T, E>> Optional<T> getService(Class<T> cls);
 }

@@ -44,8 +44,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
 
     public BindingDOMDataBrokerAdapter(final AdapterContext adapterContext, final DOMDataBroker domDataBroker) {
         super(adapterContext, domDataBroker);
-        final DOMDataTreeChangeService domTreeChange = domDataBroker.getExtensions()
-                .getInstance(DOMDataTreeChangeService.class);
+        final var domTreeChange = domDataBroker.extension(DOMDataTreeChangeService.class);
         treeChangeService = domTreeChange == null ? null
                 : new BindingDOMDataTreeChangeServiceAdapter(adapterContext, domTreeChange);
     }

@@ -12,12 +12,10 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Marker interface for extensions of {@link DOMActionProviderService}.
- *
- * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
 public interface DOMActionProviderServiceExtension
-    extends DOMServiceExtension<DOMActionProviderService, DOMActionProviderServiceExtension> {
+    extends DOMService.Extension<DOMActionProviderService, DOMActionProviderServiceExtension> {
 
 }
