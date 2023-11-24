@@ -12,7 +12,7 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
-public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService, DOMSchemaServiceExtension> {
+public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchemaServiceExtension> {
     /**
      * Returns global schema context.
      *

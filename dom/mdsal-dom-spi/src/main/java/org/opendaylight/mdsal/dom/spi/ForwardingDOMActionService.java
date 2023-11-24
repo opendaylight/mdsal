@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
@@ -17,9 +18,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @Beta
+@NonNullByDefault
 public abstract class ForwardingDOMActionService
-        extends ForwardingDOMExtensibleService<DOMActionService, DOMActionServiceExtension>
-        implements DOMActionService {
+        extends ForwardingDOMService<DOMActionService, DOMActionServiceExtension> implements DOMActionService {
     @Override
     public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {

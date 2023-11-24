@@ -155,8 +155,9 @@ public class DOMRpcRouterTest {
             assertEquals(List.of(), rpcRouter.actionListeners());
 
             final var listener = mock(AvailabilityListener.class);
-            final var reg = rpcRouter.actionService().getExtensions()
-                .getInstance(DOMActionAvailabilityExtension.class).registerAvailabilityListener(listener);
+            final var availability = rpcRouter.actionService().extension(DOMActionAvailabilityExtension.class);
+            assertNotNull(availability);
+            final var reg = availability.registerAvailabilityListener(listener);
             assertNotNull(reg);
             assertEquals(List.of(reg), rpcRouter.actionListeners());
 

@@ -31,12 +31,13 @@ final class InstanceNotificationPublishServiceAdapter
         }
 
         @Override
-        public Set<Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMInstanceNotificationPublishService.class);
         }
 
         @Override
-        protected InstanceNotificationPublishService createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected InstanceNotificationPublishService createInstance(
+                final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new InstanceNotificationPublishServiceAdapter(adapterContext(),
                 delegates.getInstance(DOMInstanceNotificationPublishService.class));
         }

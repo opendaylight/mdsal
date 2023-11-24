@@ -7,43 +7,59 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
 
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
-    @Mock(name = "domDataBroker")
-    public DOMDataBroker domDataBroker;
-
-    @Test
-    public void basicTest() throws Exception {
-        doReturn(null).when(domDataBroker).createTransactionChain(any());
-        this.createTransactionChain(null);
-        verify(domDataBroker).createTransactionChain(any());
-
-        doReturn(ImmutableClassToInstanceMap.of()).when(domDataBroker).getExtensions();
-        this.getExtensions();
-        verify(domDataBroker).getExtensions();
-
-        doReturn(null).when(domDataBroker).newReadOnlyTransaction();
-        this.newReadOnlyTransaction();
-        verify(domDataBroker).newReadOnlyTransaction();
-
-        doReturn(null).when(domDataBroker).newWriteOnlyTransaction();
-        this.newWriteOnlyTransaction();
-        verify(domDataBroker).newWriteOnlyTransaction();
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMDataBrokerTest {
+    private interface Extension extends DOMDataBrokerExtension {
+        // Nothing else
     }
 
-    @Override
-    protected DOMDataBroker delegate() {
-        return domDataBroker;
+    @Mock
+    private DOMTransactionChain chain;
+    @Mock
+    private DOMTransactionChainListener chainListener;
+    @Mock
+    private Extension extension;
+    @Mock
+    private DOMDataBroker domDataBroker;
+    @Mock
+    private DOMDataTreeReadTransaction readTx;
+    @Mock
+    private DOMDataTreeWriteTransaction writeTx;
+
+    @Test
+    void basicTest() throws Exception {
+        final var impl = new ForwardingDOMDataBroker() {
+            @Override
+            protected DOMDataBroker delegate() {
+                return domDataBroker;
+            }
+        };
+
+        doReturn(chain).when(domDataBroker).createTransactionChain(chainListener);
+        assertSame(chain, impl.createTransactionChain(chainListener));
+
+        doReturn(List.of(extension)).when(domDataBroker).supportedExtensions();
+        assertSame(extension, impl.extension(Extension.class));
+
+        doReturn(readTx).when(domDataBroker).newReadOnlyTransaction();
+        assertSame(readTx, impl.newReadOnlyTransaction());
+
+        doReturn(writeTx).when(domDataBroker).newWriteOnlyTransaction();
+        assertSame(writeTx, impl.newWriteOnlyTransaction());
     }
 }

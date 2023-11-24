@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @param <B> BindingService type
  * @author Robert Varga
  */
-final class AdaptingTracker<D extends DOMService, B extends BindingService>
+final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService>
         extends ServiceTracker<D, AdaptingTracker.ComponentHolder<B>> {
     static final class ComponentHolder<B extends BindingService> {
         final B binding;
