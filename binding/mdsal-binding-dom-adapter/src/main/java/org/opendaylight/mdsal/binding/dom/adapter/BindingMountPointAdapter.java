@@ -24,8 +24,9 @@ final class BindingMountPointAdapter implements MountPoint {
         identifier = codec.currentSerializer().fromYangInstanceIdentifier(domMountPoint.getIdentifier());
         services = CacheBuilder.newBuilder().build(new BindingDOMAdapterLoader(codec) {
             @Override
-            protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
-                return domMountPoint.getService(reqDeleg).orElse(null);
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            protected DOMService<?, ?> getDelegate(final Class<? extends DOMService<?, ?>> reqDeleg) {
+                return reqDeleg.cast(domMountPoint.getService((Class) reqDeleg).orElse(null));
             }
         });
     }

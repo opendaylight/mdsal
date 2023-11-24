@@ -17,12 +17,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 /**
  * A {@link DOMService} which allows clients to invoke Actions. The conceptual model of this service is that
  * of a dynamic router, where the set of available Action services can change dynamically.
- *
- * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
-public interface DOMActionService extends DOMExtensibleService<DOMActionService, DOMActionServiceExtension> {
+public interface DOMActionService extends DOMService<DOMActionService, DOMActionServiceExtension> {
     /**
      * Initiate invocation of an Action. This method is guaranteed to not block on any external resources.
      *

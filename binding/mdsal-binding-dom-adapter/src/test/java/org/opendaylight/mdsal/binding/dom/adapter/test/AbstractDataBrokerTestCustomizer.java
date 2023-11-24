@@ -58,11 +58,12 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public NotificationService createNotificationService() {
-        return new BindingDOMNotificationServiceAdapter(schemaService, domNotificationRouter);
+        return new BindingDOMNotificationServiceAdapter(schemaService, domNotificationRouter.notificationService());
     }
 
     public NotificationPublishService createNotificationPublishService() {
-        return new BindingDOMNotificationPublishServiceAdapter(schemaService, domNotificationRouter);
+        return new BindingDOMNotificationPublishServiceAdapter(schemaService,
+            domNotificationRouter.notificationPublishService());
     }
 
     public abstract ListeningExecutorService getCommitCoordinatorExecutor();

@@ -38,13 +38,13 @@ final class InstanceNotificationServiceAdapter implements InstanceNotificationSe
         }
 
         @Override
-        protected InstanceNotificationService createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected InstanceNotificationService createInstance(final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new InstanceNotificationServiceAdapter(adapterContext(),
                 delegates.getInstance(DOMInstanceNotificationService.class));
         }
 
         @Override
-        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<? extends Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMInstanceNotificationService.class);
         }
     }

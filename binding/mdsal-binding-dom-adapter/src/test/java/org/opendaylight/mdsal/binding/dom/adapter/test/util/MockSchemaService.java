@@ -12,8 +12,6 @@ import static com.google.common.base.Verify.verifyNotNull;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.ServiceLoader;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
@@ -21,7 +19,6 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -60,11 +57,6 @@ public final class MockSchemaService implements DOMSchemaService, EffectiveModel
     @Override
     public synchronized EffectiveModelContext getEffectiveModelContext() {
         return schemaContext;
-    }
-
-    @Override
-    public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
-        return ImmutableClassToInstanceMap.of();
     }
 
     public synchronized void changeSchema(final BindingRuntimeContext newContext) {

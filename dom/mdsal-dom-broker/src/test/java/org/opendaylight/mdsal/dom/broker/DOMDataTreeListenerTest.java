@@ -384,7 +384,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     }
 
     private DOMDataTreeChangeService getDOMDataTreeChangeService() {
-        return domBroker.getExtensions().getInstance(DOMDataTreeChangeService.class);
+        return domBroker.extension(DOMDataTreeChangeService.class);
     }
 
     static class CommitExecutorService extends ForwardingExecutorService {

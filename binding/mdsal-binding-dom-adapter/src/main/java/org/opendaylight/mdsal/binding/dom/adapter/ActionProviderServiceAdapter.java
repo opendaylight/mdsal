@@ -55,13 +55,13 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         }
 
         @Override
-        protected ActionProviderService createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected ActionProviderService createInstance(final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new ActionProviderServiceAdapter(adapterContext(),
                 delegates.getInstance(DOMActionProviderService.class));
         }
 
         @Override
-        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<? extends Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMActionProviderService.class);
         }
     }

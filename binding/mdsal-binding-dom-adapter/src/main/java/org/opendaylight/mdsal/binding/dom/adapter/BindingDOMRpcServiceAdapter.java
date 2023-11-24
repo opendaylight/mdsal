@@ -52,12 +52,12 @@ public final class BindingDOMRpcServiceAdapter
         }
 
         @Override
-        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+        public Set<? extends Class<? extends DOMService<?, ?>>> getRequiredDelegates() {
             return ImmutableSet.of(DOMRpcService.class);
         }
 
         @Override
-        protected RpcService createInstance(final ClassToInstanceMap<DOMService> delegates) {
+        protected RpcService createInstance(final ClassToInstanceMap<DOMService<?, ?>> delegates) {
             return new BindingDOMRpcServiceAdapter(adapterContext(), delegates.getInstance(DOMRpcService.class));
         }
     }
