@@ -13,8 +13,9 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Throwables;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -32,20 +33,21 @@ import org.slf4j.LoggerFactory;
 @Beta
 public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransaction<T>
         implements DOMStoreWriteTransaction, SnapshotBackedTransaction {
-
     private static final Logger LOG = LoggerFactory.getLogger(SnapshotBackedWriteTransaction.class);
+    private static final VarHandle MUTABLE_TREE;
+    private static final VarHandle READY_IMPL;
 
-    @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<SnapshotBackedWriteTransaction,
-        TransactionReadyPrototype> READY_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(SnapshotBackedWriteTransaction.class,
-                    TransactionReadyPrototype.class, "readyImpl");
-
-    @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<SnapshotBackedWriteTransaction,
-        DataTreeModification> TREE_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(SnapshotBackedWriteTransaction.class,
-                    DataTreeModification.class, "mutableTree");
+    static {
+        final var lookup = MethodHandles.lookup();
+        try {
+            READY_IMPL = lookup.findVarHandle(SnapshotBackedWriteTransaction.class, "readyImpl",
+                TransactionReadyPrototype.class);
+            MUTABLE_TREE = lookup.findVarHandle(SnapshotBackedWriteTransaction.class, "mutableTree",
+                DataTreeModification.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     // non-null when not ready
     private volatile TransactionReadyPrototype<T> readyImpl;
@@ -65,7 +67,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
     public void write(final YangInstanceIdentifier path, final NormalizedNode data) {
         checkNotReady();
 
-        final DataTreeModification tree = mutableTree;
+        final var tree = mutableTree;
         LOG.debug("Tx: {} Write: {}:{}", getIdentifier(), path, data);
 
         try {
@@ -85,7 +87,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
     public void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
         checkNotReady();
 
-        final DataTreeModification tree = mutableTree;
+        final var tree = mutableTree;
         LOG.debug("Tx: {} Merge: {}:{}", getIdentifier(), path, data);
 
         try {
@@ -105,7 +107,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
     public void delete(final YangInstanceIdentifier path) {
         checkNotReady();
 
-        final DataTreeModification tree = mutableTree;
+        final var tree = mutableTree;
         LOG.debug("Tx: {} Delete: {}", getIdentifier(), path);
 
         try {
@@ -139,34 +141,41 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public DOMStoreThreePhaseCommitCohort ready() {
-        @SuppressWarnings("unchecked")
-        final TransactionReadyPrototype<T> wasReady = READY_UPDATER.getAndSet(this, null);
-        checkState(wasReady != null, "Transaction %s is no longer open", getIdentifier());
-
+        final var ready = acquireReadyImpl();
+        if (ready == null) {
+            throw new IllegalStateException("Transaction " + getIdentifier() + " is no longer open");
+        }
         LOG.debug("Store transaction: {} : Ready", getIdentifier());
 
-        final DataTreeModification tree = mutableTree;
-        TREE_UPDATER.lazySet(this, null);
+        final var tree = mutableTree;
+        releaseMutableTree();
         try {
             tree.ready();
-            return wasReady.transactionReady(this, tree, null);
+            return ready.transactionReady(this, tree, null);
         } catch (RuntimeException e) {
             LOG.debug("Store transaction: {}: unexpected failure when readying", getIdentifier(), e);
-            return wasReady.transactionReady(this, tree, e);
+            return ready.transactionReady(this, tree, e);
         }
     }
 
     @Override
     public void close() {
-        @SuppressWarnings("unchecked")
-        final TransactionReadyPrototype<T> wasReady = READY_UPDATER.getAndSet(this, null);
-        if (wasReady != null) {
+        final var ready = acquireReadyImpl();
+        if (ready != null) {
             LOG.debug("Store transaction: {} : Closed", getIdentifier());
-            TREE_UPDATER.lazySet(this, null);
-            wasReady.transactionAborted(this);
+            releaseMutableTree();
+            ready.transactionAborted(this);
         } else {
             LOG.debug("Store transaction: {} : Closed after submit", getIdentifier());
         }
+    }
+
+    private @Nullable TransactionReadyPrototype<T> acquireReadyImpl() {
+        return (TransactionReadyPrototype<T>) READY_IMPL.getAndSet(this, null);
+    }
+
+    private void releaseMutableTree() {
+        MUTABLE_TREE.setRelease(this, null);
     }
 
     @Override
