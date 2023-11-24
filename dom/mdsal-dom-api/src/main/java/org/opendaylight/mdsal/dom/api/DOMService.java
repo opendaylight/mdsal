@@ -7,10 +7,26 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-/**
- * Marker interface for services which can be obtained from a {@link DOMMountPoint}
- * instance. No further semantics are implied.
- */
-public interface DOMService {
+import org.opendaylight.yangtools.concepts.ExtensibleObject;
+import org.opendaylight.yangtools.concepts.ObjectExtension;
 
+/**
+ * Marker interface for services which can be obtained from a {@link DOMMountPoint} instance. The only further semantics
+ * implied are that each service can also host related {@link Extension}s supported via the {@link ExtensibleObject}
+ * contract.
+ *
+ * @param <T> Concrete service type
+ * @param <E> Extension type
+ */
+public interface DOMService<T extends DOMService<T, E>, E extends DOMService.Extension<T, E>>
+        extends ExtensibleObject<T, E> {
+    /**
+     * Extension to a concrete {@link DOMService}.
+     *
+     * @param <T> Concrete service type
+     * @param <E> Extension type
+     */
+    interface Extension<T extends DOMService<T, E>, E extends Extension<T, E>> extends ObjectExtension<T, E> {
+        // Only a marker interface
+    }
 }

@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -18,7 +18,14 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 /**
  * A {@link DOMService} which allows its users to subscribe to receive top-level (YANG 1.0) {@link DOMNotification}s.
  */
-public interface DOMNotificationService extends DOMService {
+public interface DOMNotificationService extends DOMService<DOMNotificationService, DOMNotificationService.Extension> {
+    /**
+     * Marker interface for an extension to {@link DOMNotificationService}.
+     */
+    interface Extension extends DOMService.Extension<DOMNotificationService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Register a {@link DOMNotificationListener} to receive a set of notifications. As with other
      * {@link ListenerRegistration}-based interfaces, registering an instance multiple times results in
@@ -33,6 +40,7 @@ public interface DOMNotificationService extends DOMService {
      *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if either of the arguments is null
      */
+    // FIXME: just Registration and default implementation formarding to Map-based thing
     <T extends DOMNotificationListener> @NonNull ListenerRegistration<T>
             registerNotificationListener(@NonNull T listener, @NonNull Collection<Absolute> types);
 
@@ -50,9 +58,10 @@ public interface DOMNotificationService extends DOMService {
      *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if listener is null
      */
+    // FIXME: just Registration
     default <T extends DOMNotificationListener> @NonNull ListenerRegistration<T>
             registerNotificationListener(@NonNull final T listener, final Absolute... types) {
-        return registerNotificationListener(listener, Arrays.asList(types));
+        return registerNotificationListener(listener, List.of(types));
     }
 
     /**

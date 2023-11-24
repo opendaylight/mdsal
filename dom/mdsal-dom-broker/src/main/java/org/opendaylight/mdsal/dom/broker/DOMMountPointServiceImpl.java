@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.MutableClassToInstanceMap;
@@ -111,11 +110,13 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     }
 
     private static void checkNotExists(final YangInstanceIdentifier id, final DOMMountPoint mountPoint) {
-        checkState(mountPoint == null, "Mount point %s already exists as %s", id, mountPoint);
+        if (mountPoint != null) {
+            throw new IllegalStateException("Mount point " + id + " already exists as " + mountPoint);
+        }
     }
 
     private final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
-        private final MutableClassToInstanceMap<DOMService> services = MutableClassToInstanceMap.create();
+        private final MutableClassToInstanceMap<DOMService<?, ?>> services = MutableClassToInstanceMap.create();
         private final YangInstanceIdentifier path;
 
         private SimpleDOMMountPoint mountPoint;
@@ -125,14 +126,17 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
         }
 
         @Override
-        public <T extends DOMService> DOMMountPointBuilder addService(final Class<T> type, final T impl) {
-            services.putInstance(requireNonNull(type), requireNonNull(impl));
+        public <T extends DOMService<T, E>, E extends DOMService.Extension<T, E>> DOMMountPointBuilder addService(
+                final Class<T> type, final T impl) {
+            services.putInstance(type, requireNonNull(impl));
             return this;
         }
 
         @Override
         public ObjectRegistration<DOMMountPoint> register() {
-            checkState(mountPoint == null, "Mount point is already built.");
+            if (mountPoint != null) {
+                throw new IllegalStateException("Mount point is already built");
+            }
             mountPoint = SimpleDOMMountPoint.create(path, services);
             return registerMountPoint(mountPoint);
         }

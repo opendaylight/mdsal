@@ -19,7 +19,15 @@ import org.opendaylight.yangtools.yang.common.QName;
  */
 @Beta
 @NonNullByDefault
-public interface DOMInstanceNotificationService extends DOMService {
+public interface DOMInstanceNotificationService
+        extends DOMService<DOMInstanceNotificationService, DOMInstanceNotificationService.Extension> {
+    /**
+     * Marker interface for an extension to {@link DOMInstanceNotificationService}.
+     */
+    interface Extension extends DOMService.Extension<DOMInstanceNotificationService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Register a {@link DOMInstanceNotificationListener} for a particular {@code path} and notification {@code type}.
      *
