@@ -7,13 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction.TransactionClosePrototype;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
@@ -56,8 +56,16 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
      * We have a transaction out there.
      */
     private static final class Allocated extends State {
-        private static final AtomicReferenceFieldUpdater<Allocated, DataTreeSnapshot> SNAPSHOT_UPDATER =
-                AtomicReferenceFieldUpdater.newUpdater(Allocated.class, DataTreeSnapshot.class, "snapshot");
+        private static final VarHandle SNAPSHOT;
+
+        static {
+            try {
+                SNAPSHOT = MethodHandles.lookup().findVarHandle(Allocated.class, "snapshot", DataTreeSnapshot.class);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
         private final DOMStoreWriteTransaction transaction;
         private volatile DataTreeSnapshot snapshot;
 
@@ -71,14 +79,19 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
         @Override
         DataTreeSnapshot getSnapshot() {
-            final DataTreeSnapshot ret = snapshot;
-            checkState(ret != null, "Previous transaction %s is not ready yet", transaction.getIdentifier());
+            final var ret = snapshot;
+            if (ret == null) {
+                throw new IllegalStateException(
+                    "Previous transaction " + transaction.getIdentifier() + " is not ready yet");
+            }
             return ret;
         }
 
         void setSnapshot(final DataTreeSnapshot snapshot) {
-            final boolean success = SNAPSHOT_UPDATER.compareAndSet(this, null, snapshot);
-            checkState(success, "Transaction %s has already been marked as ready", transaction.getIdentifier());
+            if (!SNAPSHOT.compareAndSet(this, null, requireNonNull(snapshot))) {
+                throw new IllegalStateException(
+                    "Transaction " + transaction.getIdentifier() + " has already been marked as ready");
+            }
         }
     }
 
@@ -98,14 +111,20 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<AbstractSnapshotBackedTransactionChain, State>
-        STATE_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(AbstractSnapshotBackedTransactionChain.class,
-                    State.class, "state");
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSnapshotBackedTransactionChain.class);
     private static final Shutdown CLOSED = new Shutdown("Transaction chain is closed");
     private static final Shutdown FAILED = new Shutdown("Transaction chain has failed");
+    private static final VarHandle STATE;
+
+    static {
+        try {
+            STATE = MethodHandles.lookup().findVarHandle(AbstractSnapshotBackedTransactionChain.class, "state",
+                State.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
 
     private final Idle idleState;
     private volatile State state;
@@ -120,8 +139,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     }
 
     private boolean recordTransaction(final State expected, final DOMStoreWriteTransaction transaction) {
-        final State real = new Allocated(transaction);
-        return STATE_UPDATER.compareAndSet(this, expected, real);
+        return STATE.compareAndSet(this, expected, new Allocated(transaction));
     }
 
     @Override
@@ -177,11 +195,11 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
     @Override
     protected final void transactionAborted(final SnapshotBackedWriteTransaction<T> tx) {
-        final State localState = state;
+        final var localState = state;
         if (localState instanceof Allocated allocated && allocated.getTransaction().equals(tx)
-            && !STATE_UPDATER.compareAndSet(this, localState, idleState)) {
+            && !STATE.compareAndSet(this, allocated, idleState)) {
             LOG.warn("Transaction {} aborted, but chain {} state already transitioned from {} to {}, very strange",
-                tx, this, localState, state);
+                tx, this, allocated, state);
         }
     }
 
@@ -189,13 +207,16 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     protected final DOMStoreThreePhaseCommitCohort transactionReady(final SnapshotBackedWriteTransaction<T> tx,
             final DataTreeModification tree,
             final Exception readyError) {
-        final State localState = state;
+        final var localState = state;
 
         if (localState instanceof Allocated allocated) {
-            final DOMStoreWriteTransaction transaction = allocated.getTransaction();
-            checkState(tx.equals(transaction), "Mis-ordered ready transaction %s last allocated was %s", tx,
-                transaction);
-            allocated.setSnapshot(tree);
+            final var transaction = allocated.getTransaction();
+            if (tx.equals(transaction)) {
+                allocated.setSnapshot(tree);
+            } else {
+                throw new IllegalStateException(
+                    "Mis-ordered ready transaction " + tx + " last allocated was " + transaction);
+            }
         } else {
             LOG.debug("Ignoring transaction {} readiness due to state {}", tx, localState);
         }
@@ -205,16 +226,22 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
     @Override
     public final void close() {
-        final State localState = state;
+        var localState = state;
 
-        do {
-            checkState(!CLOSED.equals(localState), "Transaction chain %s has been closed", this);
-
+        while (true) {
+            if (CLOSED.equals(localState)) {
+                throw new IllegalStateException("Transaction chain " + this+ " has been closed");
+            }
             if (FAILED.equals(localState)) {
                 LOG.debug("Ignoring user close in failed state");
                 return;
             }
-        } while (!STATE_UPDATER.compareAndSet(this, localState, CLOSED));
+            final var witness = (State) STATE.compareAndExchange(this, localState, CLOSED);
+            if (witness == localState) {
+                break;
+            }
+            localState = witness;
+        }
     }
 
     /**
@@ -225,7 +252,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         // If the committed transaction was the one we allocated last,
         // we clear it and the ready snapshot, so the next transaction
         // allocated refers to the data tree directly.
-        final State localState = state;
+        final var localState = state;
 
         if (!(localState instanceof Allocated allocated)) {
             // This can legally happen if the chain is shut down before the transaction was committed
@@ -234,15 +261,15 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
             return;
         }
 
-        final DOMStoreWriteTransaction tx = allocated.getTransaction();
+        final var tx = allocated.getTransaction();
         if (!tx.equals(transaction)) {
             LOG.debug("Ignoring non-latest successful transaction {} in state {}", transaction, allocated);
             return;
         }
 
-        if (!STATE_UPDATER.compareAndSet(this, localState, idleState)) {
+        if (!STATE.compareAndSet(this, allocated, idleState)) {
             LOG.debug("Transaction chain {} has already transitioned from {} to {}, not making it idle", this,
-                localState, state);
+                allocated, state);
         }
     }
 
