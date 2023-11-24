@@ -12,9 +12,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
@@ -404,7 +402,24 @@ public final class DOMRpcRouter extends AbstractRegistration
     }
 
     @NonNullByDefault
-    private final class ActionAvailabilityFacade implements DOMActionAvailabilityExtension {
+    private final class ActionServiceFacade implements DOMActionService, DOMActionAvailabilityExtension {
+        @Override
+        public Collection<DOMActionServiceExtension> supportedExtensions() {
+            return List.of(this);
+        }
+
+        @Override
+        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
+                final DOMDataTreeIdentifier path, final ContainerNode input) {
+            final YangInstanceIdentifier pathRoot = path.getRootIdentifier();
+            checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");
+
+            final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
+            return entry != null ? OperationInvocation.invoke(entry, type, path, requireNonNull(input))
+                : Futures.immediateFailedFuture(
+                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
+        }
+
         @Override
         public <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(final T listener) {
             synchronized (DOMRpcRouter.this) {
@@ -418,29 +433,6 @@ public final class DOMRpcRouter extends AbstractRegistration
                 listenerNotifier.execute(ret::initialTable);
                 return ret;
             }
-        }
-    }
-
-    @NonNullByDefault
-    private final class ActionServiceFacade implements DOMActionService {
-        private final ClassToInstanceMap<DOMActionServiceExtension> extensions = ImmutableClassToInstanceMap.of(
-            DOMActionAvailabilityExtension.class, new ActionAvailabilityFacade());
-
-        @Override
-        public ClassToInstanceMap<DOMActionServiceExtension> getExtensions() {
-            return extensions;
-        }
-
-        @Override
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
-                final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final YangInstanceIdentifier pathRoot = path.getRootIdentifier();
-            checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");
-
-            final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
-            return entry != null ? OperationInvocation.invoke(entry, type, path, requireNonNull(input))
-                : Futures.immediateFailedFuture(
-                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
         }
     }
 
