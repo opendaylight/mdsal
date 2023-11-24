@@ -7,33 +7,37 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.google.common.util.concurrent.ListenableFuture;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcImplementationTest extends ForwardingDOMRpcImplementation {
-    @Mock(name = "domRpcImplementation")
-    public DOMRpcImplementation domRpcImplementation;
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcImplementationTest {
+    @Mock
+    private DOMRpcImplementation domRpcImplementation;
+    @Mock
+    private DOMRpcIdentifier domRpcIdentifier;
+    @Mock
+    private ListenableFuture<DOMRpcResult> rpcFuture;
 
     @Test
-    public void basicTest() throws Exception {
-        final DOMRpcIdentifier domRpcIdentifier = mock(DOMRpcIdentifier.class);
+    void basicTest() {
+        var impl = new ForwardingDOMRpcImplementation() {
+            @Override
+            protected DOMRpcImplementation delegate() {
+                return domRpcImplementation;
+            }
+        };
 
-        doReturn(null).when(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
-        this.invokeRpc(domRpcIdentifier, null);
-        verify(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
-    }
-
-    @Override
-    protected DOMRpcImplementation delegate() {
-        return domRpcImplementation;
+        doReturn(rpcFuture).when(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
+        assertSame(rpcFuture, impl.invokeRpc(domRpcIdentifier, null));
     }
 }

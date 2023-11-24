@@ -427,8 +427,8 @@ public final class DOMRpcRouter extends AbstractRegistration
             DOMActionAvailabilityExtension.class, new ActionAvailabilityFacade());
 
         @Override
-        public ClassToInstanceMap<DOMActionServiceExtension> getExtensions() {
-            return extensions;
+        public Collection<DOMActionServiceExtension> supportedExtensions() {
+            return extensions.values();
         }
 
         @Override

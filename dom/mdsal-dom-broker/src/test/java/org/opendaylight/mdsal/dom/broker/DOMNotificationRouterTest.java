@@ -13,27 +13,25 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CHILD;
 
-import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
-import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -74,15 +72,14 @@ public class DOMNotificationRouterTest {
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
     public void complexTest() throws Exception {
-        final DOMNotificationSubscriptionListener domNotificationSubscriptionListener =
-                mock(DOMNotificationSubscriptionListener.class);
+        final var domNotificationSubscriptionListener = mock(DOMNotificationSubscriptionListener.class);
         doNothing().when(domNotificationSubscriptionListener).onSubscriptionChanged(any());
 
-        final CountDownLatch latch = new CountDownLatch(1);
-        final DOMNotificationListener domNotificationListener = new TestListener(latch);
-        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1024);
+        final var latch = new CountDownLatch(1);
+        final var domNotificationListener = new TestListener(latch);
+        final var domNotificationRouter = DOMNotificationRouter.create(1024);
 
-        Multimap<Absolute, ?> listeners = domNotificationRouter.listeners();
+        var listeners = domNotificationRouter.listeners();
 
         assertTrue(listeners.isEmpty());
         assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener,
@@ -94,8 +91,7 @@ public class DOMNotificationRouterTest {
 
         assertFalse(listeners.isEmpty());
 
-        ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
-                domNotificationRouter.subscriptionListeners();
+        var subscriptionListeners = domNotificationRouter.subscriptionListeners();
 
         assertEquals(0, subscriptionListeners.streamListeners().count());
         assertNotNull(domNotificationRouter.registerSubscriptionListener(domNotificationSubscriptionListener));
@@ -104,28 +100,26 @@ public class DOMNotificationRouterTest {
         assertSame(domNotificationSubscriptionListener,
             subscriptionListeners.streamListeners().findAny().orElseThrow());
 
-        final DOMNotification domNotification = mock(DOMNotification.class);
+        final var domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
         doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
 
         assertNotNull(domNotificationRouter.offerNotification(domNotification));
 
-        try {
+        // FIXME: what is the point here?!
+        assertThrows(UnsupportedOperationException.class, () -> {
             assertNotNull(domNotificationRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
             assertNotNull(domNotificationRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
-        } catch (Exception e) {
-            // FIXME: what is the point here?!
-            assertTrue(e instanceof UnsupportedOperationException);
-        }
+        });
 
         assertNotNull(domNotificationRouter.putNotification(domNotification));
     }
 
     @Test
     public void offerNotification() throws Exception {
-        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1024);
-        final DOMNotification domNotification = mock(DOMNotification.class);
+        final var domNotificationRouter = DOMNotificationRouter.create(1024);
+        final var domNotification = mock(DOMNotification.class);
         doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
         assertNotNull(domNotificationRouter.putNotification(domNotification));
@@ -135,33 +129,33 @@ public class DOMNotificationRouterTest {
 
     @Test
     public void testOfferNotificationWithBlocking() throws Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final TestListener testListener = new TestListener(latch);
-        final DOMNotification domNotification = mock(DOMNotification.class);
+        final var latch = new CountDownLatch(1);
+        final var testListener = new TestListener(latch);
+        final var domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
         doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
 
-        try (TestRouter testRouter = new TestRouter(1)) {
+        try (var testRouter = new TestRouter(1)) {
             assertNotNull(testRouter.registerNotificationListener(testListener, Absolute.of(TestModel.TEST_QNAME)));
             assertNotNull(testRouter.registerNotificationListener(testListener, Absolute.of(TestModel.TEST2_QNAME)));
 
             assertNotEquals(DOMNotificationPublishService.REJECTED,
                 testRouter.offerNotification(domNotification, 3, TimeUnit.SECONDS));
             assertTrue("Listener was not notified", latch.await(5, TimeUnit.SECONDS));
-            assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
+            assertEquals("Received notifications", 1, testListener.receivedNotifications.size());
 
             assertEquals(DOMNotificationPublishService.REJECTED,
                     testRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
-            assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
+            assertEquals("Received notifications", 1, testListener.receivedNotifications.size());
         }
     }
 
     @Test
     public void close() throws Exception {
-        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1024);
-        final ExecutorService executor = domNotificationRouter.executor();
-        final ExecutorService observer = domNotificationRouter.observer();
+        final var domNotificationRouter = DOMNotificationRouter.create(1024);
+        final var executor = domNotificationRouter.executor();
+        final var observer = domNotificationRouter.observer();
 
         assertFalse(executor.isShutdown());
         assertFalse(observer.isShutdown());
@@ -183,14 +177,9 @@ public class DOMNotificationRouterTest {
             receivedNotifications.add(notification);
             latch.countDown();
         }
-
-        public List<DOMNotification> getReceivedNotifications() {
-            return receivedNotifications;
-        }
     }
 
     private static class TestRouter extends DOMNotificationRouter {
-
         private boolean triggerRejected = false;
 
         TestRouter(final int queueDepth) {

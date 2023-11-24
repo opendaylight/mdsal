@@ -41,8 +41,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
  */
-public interface DOMDataBroker extends DOMTransactionFactory,
-        DOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension> {
+public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBrokerExtension>, DOMTransactionFactory {
     /**
      * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
      * no outstanding transaction. Listener will be registered to handle chain-level events.

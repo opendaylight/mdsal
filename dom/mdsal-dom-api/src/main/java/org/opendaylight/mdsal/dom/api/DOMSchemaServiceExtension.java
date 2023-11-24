@@ -8,9 +8,8 @@
 package org.opendaylight.mdsal.dom.api;
 
 /**
- * Type capture of a {@link DOMServiceExtension} applicable to {@link DOMSchemaService}
- * implementations.
+ * Type capture of a {@link DOMService.Extension} applicable to {@link DOMSchemaService} implementations.
  */
-public interface DOMSchemaServiceExtension extends DOMServiceExtension<DOMSchemaService, DOMSchemaServiceExtension> {
-
+public interface DOMSchemaServiceExtension extends DOMService.Extension<DOMSchemaService, DOMSchemaServiceExtension> {
+    // Marker interface
 }
