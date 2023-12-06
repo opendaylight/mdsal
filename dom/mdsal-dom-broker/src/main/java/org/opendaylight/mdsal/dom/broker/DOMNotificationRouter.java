@@ -41,8 +41,8 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -105,7 +105,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
-    private static final @NonNull ListenableFuture<Void> NO_LISTENERS = FluentFutures.immediateNullFluentFuture();
+    private static final @NonNull ListenableFuture<?> NO_LISTENERS = Futures.immediateFuture(Empty.value());
 
     private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
             ListenerRegistry.create();
