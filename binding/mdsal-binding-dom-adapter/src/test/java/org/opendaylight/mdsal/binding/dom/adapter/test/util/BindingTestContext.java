@@ -173,7 +173,7 @@ public class BindingTestContext implements AutoCloseable {
 
     public void startBindingNotificationBroker() {
         checkState(executor != null);
-        final DOMNotificationRouter router = DOMNotificationRouter.create(16);
+        final DOMNotificationRouter router = new DOMNotificationRouter(16);
         domPublishService = router;
         domListenService = router;
         publishService = new BindingDOMNotificationPublishServiceAdapter(mockSchemaService, domPublishService);

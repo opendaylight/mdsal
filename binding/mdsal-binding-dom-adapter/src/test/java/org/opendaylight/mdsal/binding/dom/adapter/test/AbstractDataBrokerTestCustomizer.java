@@ -28,7 +28,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 
 public abstract class AbstractDataBrokerTestCustomizer {
-    private final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(16);
+    private final DOMNotificationRouter domNotificationRouter = new DOMNotificationRouter(16);
     private final MockSchemaService schemaService = new MockSchemaService();
 
     private DOMDataBroker domDataBroker;
