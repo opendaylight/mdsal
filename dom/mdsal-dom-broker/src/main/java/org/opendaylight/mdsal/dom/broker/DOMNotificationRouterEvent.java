@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +24,14 @@ import org.slf4j.LoggerFactory;
 final class DOMNotificationRouterEvent {
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouterEvent.class);
 
-    private final SettableFuture<Void> future = SettableFuture.create();
+    private final SettableFuture<Empty> future = SettableFuture.create();
     private final @NonNull DOMNotification notification;
 
     DOMNotificationRouterEvent(final DOMNotification notification) {
         this.notification = requireNonNull(notification);
     }
 
-    ListenableFuture<Void> future() {
+    ListenableFuture<Empty> future() {
         return future;
     }
 
@@ -46,6 +47,6 @@ final class DOMNotificationRouterEvent {
     }
 
     void clear() {
-        future.set(null);
+        future.set(Empty.value());
     }
 }

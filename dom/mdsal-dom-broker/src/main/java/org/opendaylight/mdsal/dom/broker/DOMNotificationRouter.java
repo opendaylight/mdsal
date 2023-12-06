@@ -218,15 +218,14 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     @VisibleForTesting
-    @NonNull ListenableFuture<? extends Object> publish(final DOMNotification notification,
-            final Collection<Reg<?>> subscribers) {
-        final var futures = new ArrayList<ListenableFuture<Void>>(subscribers.size());
+    @NonNull ListenableFuture<?> publish(final DOMNotification notification, final Collection<Reg<?>> subscribers) {
+        final var futures = new ArrayList<ListenableFuture<?>>(subscribers.size());
         subscribers.forEach(subscriber -> {
             final var event = new DOMNotificationRouterEvent(notification);
             futures.add(event.future());
             queueNotificationManager.submitNotification(subscriber, event);
         });
-        return Futures.transform(Futures.successfulAsList(futures), ignored -> (Void)null,
+        return Futures.transform(Futures.successfulAsList(futures), ignored -> Empty.value(),
             MoreExecutors.directExecutor());
     }
 
