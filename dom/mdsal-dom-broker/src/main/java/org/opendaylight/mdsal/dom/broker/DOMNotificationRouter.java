@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
@@ -106,7 +105,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
-    private static final ListenableFuture<Void> NO_LISTENERS = FluentFutures.immediateNullFluentFuture();
+    private static final @NonNull ListenableFuture<Void> NO_LISTENERS = FluentFutures.immediateNullFluentFuture();
 
     private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
             ListenerRegistry.create();
@@ -129,17 +128,12 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             .build());
         queueNotificationManager = new EqualityQueuedNotificationManager<>("DOMNotificationRouter", executor,
                 maxQueueCapacity, DOMNotificationRouter::deliverEvents);
+        LOG.info("DOM Notification Router started");
     }
 
     @Activate
     public DOMNotificationRouter(final Config config) {
         this(config.queueDepth());
-        LOG.info("DOM Notification Router started");
-    }
-
-    @Deprecated(forRemoval = true)
-    public static DOMNotificationRouter create(final int maxQueueCapacity) {
-        return new DOMNotificationRouter(maxQueueCapacity);
     }
 
     @Override
@@ -203,10 +197,9 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     private void notifyListenerTypesChanged(final Set<Absolute> typesAfter) {
-        final List<? extends DOMNotificationSubscriptionListener> listenersAfter =
-                subscriptionListeners.streamListeners().collect(ImmutableList.toImmutableList());
+        final var listenersAfter = subscriptionListeners.streamListeners().collect(ImmutableList.toImmutableList());
         executor.execute(() -> {
-            for (final DOMNotificationSubscriptionListener subListener : listenersAfter) {
+            for (var subListener : listenersAfter) {
                 try {
                     subListener.onSubscriptionChanged(typesAfter);
                 } catch (final Exception e) {
@@ -219,17 +212,17 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(
             final L listener) {
-        final Set<Absolute> initialTypes = listeners.keySet();
+        final var initialTypes = listeners.keySet();
         executor.execute(() -> listener.onSubscriptionChanged(initialTypes));
         return subscriptionListeners.register(listener);
     }
 
     @VisibleForTesting
-    ListenableFuture<? extends Object> publish(final DOMNotification notification,
+    @NonNull ListenableFuture<? extends Object> publish(final DOMNotification notification,
             final Collection<Reg<?>> subscribers) {
-        final List<ListenableFuture<Void>> futures = new ArrayList<>(subscribers.size());
+        final var futures = new ArrayList<ListenableFuture<Void>>(subscribers.size());
         subscribers.forEach(subscriber -> {
-            final DOMNotificationRouterEvent event = new DOMNotificationRouterEvent(notification);
+            final var event = new DOMNotificationRouterEvent(notification);
             futures.add(event.future());
             queueNotificationManager.submitNotification(subscriber, event);
         });
@@ -241,21 +234,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     public ListenableFuture<? extends Object> putNotification(final DOMNotification notification)
             throws InterruptedException {
         final var subscribers = listeners.get(notification.getType());
-        if (subscribers.isEmpty()) {
-            return NO_LISTENERS;
-        }
-
-        return publish(notification, subscribers);
+        return subscribers.isEmpty() ? NO_LISTENERS : publish(notification, subscribers);
     }
 
     @Override
     public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification) {
         final var subscribers = listeners.get(notification.getType());
-        if (subscribers.isEmpty()) {
-            return NO_LISTENERS;
-        }
-
-        return publish(notification, subscribers);
+        return subscribers.isEmpty() ? NO_LISTENERS : publish(notification, subscribers);
     }
 
     @Override
@@ -266,15 +251,15 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             return NO_LISTENERS;
         }
         // Attempt to perform a non-blocking publish first
-        final ListenableFuture<?> noBlock = publish(notification, subscribers);
+        final var noBlock = publish(notification, subscribers);
         if (!DOMNotificationPublishService.REJECTED.equals(noBlock)) {
             return noBlock;
         }
 
         try {
-            final Thread publishThread = Thread.currentThread();
-            ScheduledFuture<?> timerTask = observer.schedule(publishThread::interrupt, timeout, unit);
-            final ListenableFuture<?> withBlock = putNotification(notification);
+            final var publishThread = Thread.currentThread();
+            final var timerTask = observer.schedule(publishThread::interrupt, timeout, unit);
+            final var withBlock = putNotification(notification);
             timerTask.cancel(true);
             if (observer.getQueue().size() > 50) {
                 observer.purge();
@@ -317,8 +302,8 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private static void deliverEvents(final AbstractListenerRegistration<? extends DOMNotificationListener> reg,
             final ImmutableList<DOMNotificationRouterEvent> events) {
         if (reg.notClosed()) {
-            final DOMNotificationListener listener = reg.getInstance();
-            for (DOMNotificationRouterEvent event : events) {
+            final var listener = reg.getInstance();
+            for (var event : events) {
                 event.deliverTo(listener);
             }
         } else {

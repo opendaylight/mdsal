@@ -35,7 +35,7 @@ final class DOMNotificationRouterEvent {
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    void deliverTo(DOMNotificationListener listener) {
+    void deliverTo(final DOMNotificationListener listener) {
         try {
             listener.onNotification(notification);
         } catch (Exception e) {
