@@ -23,32 +23,8 @@ public interface DOMRpcResult {
      *
      * @return a Collection of {@link RpcError}, guaranteed to be non-null. In case no errors are reported, an empty
      *         collection is returned.
-     * @deprecated Use {@link #errors()} instead.
-     */
-    @Deprecated(since = "11.0.0", forRemoval = true)
-    default Collection<? extends RpcError> getErrors() {
-        return errors();
-    }
-
-    /**
-     * Returns a set of errors and warnings which occurred during processing the call.
-     *
-     * @return a Collection of {@link RpcError}, guaranteed to be non-null. In case no errors are reported, an empty
-     *         collection is returned.
      */
     Collection<? extends RpcError> errors();
-
-    /**
-     * Returns the value result of the call or null if no result is available.
-     *
-     * @return Invocation result, {@code null} if the operation has not produced a result. This might be the case if the
-     *         operation does not produce a result, or if it failed.
-     * @deprecated Use {@link #value()} instead.
-     */
-    @Deprecated(since = "11.0.0", forRemoval = true)
-    default @Nullable ContainerNode getResult() {
-        return value();
-    }
 
     /**
      * Returns the value result of the call or {code null} if no result is available.
