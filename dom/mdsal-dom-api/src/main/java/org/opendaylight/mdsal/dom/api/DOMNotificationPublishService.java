@@ -24,10 +24,9 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
  */
 public interface DOMNotificationPublishService extends DOMService {
     /**
-     * Well-known value indicating that the implementation is currently not
-     * able to accept a notification.
+     * Well-known value indicating that the implementation is currently not able to accept a notification.
      */
-    ListenableFuture<Object> REJECTED = FluentFutures.immediateFailedFluentFuture(
+    @NonNull ListenableFuture<?> REJECTED = FluentFutures.immediateFailedFluentFuture(
         new DOMNotificationRejectedException("Unacceptable blocking conditions encountered"));
 
     /**
