@@ -22,20 +22,13 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
 @VisibleForTesting
-// FIXME: 10.0.0: make this class final
-public class BindingDOMNotificationPublishServiceAdapter extends AbstractBindingAdapter<DOMNotificationPublishService>
-        implements NotificationPublishService {
-
+public final class BindingDOMNotificationPublishServiceAdapter
+        extends AbstractBindingAdapter<DOMNotificationPublishService> implements NotificationPublishService {
     static final Factory<NotificationPublishService> BUILDER_FACTORY = Builder::new;
 
     public BindingDOMNotificationPublishServiceAdapter(final AdapterContext adapterContext,
             final DOMNotificationPublishService domPublishService) {
         super(adapterContext, domPublishService);
-    }
-
-    @Deprecated(forRemoval = true, since = "9.0.2")
-    public DOMNotificationPublishService getDomPublishService() {
-        return getDelegate();
     }
 
     @Override
@@ -64,8 +57,7 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
             : domResult;
     }
 
-    // FIXME: 10.0.0: hide this class and make it final
-    protected static class Builder extends BindingDOMAdapterBuilder<NotificationPublishService> {
+    private static final class Builder extends BindingDOMAdapterBuilder<NotificationPublishService> {
         Builder(final AdapterContext adapterContext) {
             super(adapterContext);
         }
