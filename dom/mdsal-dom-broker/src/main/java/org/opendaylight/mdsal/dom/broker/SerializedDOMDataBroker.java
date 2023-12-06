@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
@@ -51,23 +50,9 @@ public final class SerializedDOMDataBroker extends AbstractDOMDataBroker {
      * @param datastores the Map of backing DOMStore instances
      * @param executor the Executor to use
      */
-    public SerializedDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores,
-            final Executor executor) {
+    public SerializedDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores, final Executor executor) {
         super(datastores);
         this.executor = requireNonNull(executor, "executor must not be null.");
-    }
-
-    /**
-     * Construct DOMDataCommitCoordinator which uses supplied executor to process commit coordinations.
-     *
-     * @param datastores the Map of backing DOMStore instances
-     * @param executor the {@link ListeningExecutorService} to use
-     * @deprecated Use {@link #SerializedDOMDataBroker(Map, Executor)} instead.
-     */
-    @Deprecated(since = "12.0.1", forRemoval = true)
-    public SerializedDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores,
-            final ListeningExecutorService executor) {
-        this(datastores, (Executor) executor);
     }
 
     public DurationStatisticsTracker getCommitStatsTracker() {
