@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -20,20 +21,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension.DemandListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
-import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
-import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -60,12 +61,11 @@ import org.slf4j.LoggerFactory;
  * Internal implementation one by using a {@link QueuedNotificationManager}.
  *</p>
  */
-@Component(configurationPid = "org.opendaylight.mdsal.dom.notification", service = {
-    DOMNotificationRouter.class, DOMNotificationSubscriptionListenerRegistry.class
-})
+@Singleton
+@Component(configurationPid = "org.opendaylight.mdsal.dom.notification", service = DOMNotificationRouter.class)
 @Designate(ocd = DOMNotificationRouter.Config.class)
 // Non-final for testing
-public class DOMNotificationRouter implements DOMNotificationSubscriptionListenerRegistry, AutoCloseable {
+public class DOMNotificationRouter implements AutoCloseable {
     @ObjectClassDefinition()
     public @interface Config {
         @AttributeDefinition(name = "notification-queue-depth")
@@ -101,7 +101,12 @@ public class DOMNotificationRouter implements DOMNotificationSubscriptionListene
         }
     }
 
-    private final class PublishFacade implements DOMNotificationPublishService {
+    private final class PublishFacade implements DOMNotificationPublishService, DOMNotificationPublishDemandExtension {
+        @Override
+        public List<Extension> supportedExtensions() {
+            return List.of(this);
+        }
+
         @Override
         public ListenableFuture<? extends Object> putNotification(final DOMNotification notification)
                 throws InterruptedException {
@@ -139,6 +144,13 @@ public class DOMNotificationRouter implements DOMNotificationSubscriptionListene
             } catch (InterruptedException e) {
                 return DOMNotificationPublishService.REJECTED;
             }
+        }
+
+        @Override
+        public Registration registerDemandListener(final DemandListener listener) {
+            final var initialTypes = listeners.keySet();
+            executor.execute(() -> listener.onDemandUpdated(initialTypes));
+            return demandListeners.register(listener);
         }
     }
 
@@ -192,8 +204,7 @@ public class DOMNotificationRouter implements DOMNotificationSubscriptionListene
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
     private static final @NonNull ListenableFuture<?> NO_LISTENERS = Futures.immediateFuture(Empty.value());
 
-    private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
-            ListenerRegistry.create();
+    private final ListenerRegistry<DemandListener> demandListeners = ListenerRegistry.create();
     private final EqualityQueuedNotificationManager<AbstractListenerRegistration<? extends DOMNotificationListener>,
                 DOMNotificationRouterEvent> queueNotificationManager;
     private final @NonNull DOMNotificationPublishService notificationPublishService = new PublishFacade();
@@ -250,25 +261,17 @@ public class DOMNotificationRouter implements DOMNotificationSubscriptionListene
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    private void notifyListenerTypesChanged(final Set<Absolute> typesAfter) {
-        final var listenersAfter = subscriptionListeners.streamListeners().collect(ImmutableList.toImmutableList());
+    private void notifyListenerTypesChanged(final @NonNull ImmutableSet<Absolute> typesAfter) {
+        final var listenersAfter = demandListeners.streamListeners().collect(ImmutableList.toImmutableList());
         executor.execute(() -> {
-            for (var subListener : listenersAfter) {
+            for (var listener : listenersAfter) {
                 try {
-                    subListener.onSubscriptionChanged(typesAfter);
+                    listener.onDemandUpdated(typesAfter);
                 } catch (final Exception e) {
-                    LOG.warn("Uncaught exception during invoking listener {}", subListener, e);
+                    LOG.warn("Uncaught exception during invoking listener {}", listener, e);
                 }
             }
         });
-    }
-
-    @Override
-    public <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(
-            final L listener) {
-        final var initialTypes = listeners.keySet();
-        executor.execute(() -> listener.onSubscriptionChanged(initialTypes));
-        return subscriptionListeners.register(listener);
     }
 
     @VisibleForTesting
@@ -315,8 +318,8 @@ public class DOMNotificationRouter implements DOMNotificationSubscriptionListene
     }
 
     @VisibleForTesting
-    ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners() {
-        return subscriptionListeners;
+    ListenerRegistry<DemandListener> demandListeners() {
+        return demandListeners;
     }
 
     private static void deliverEvents(final AbstractListenerRegistration<? extends DOMNotificationListener> reg,

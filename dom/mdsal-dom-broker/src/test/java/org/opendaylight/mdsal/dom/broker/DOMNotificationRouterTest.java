@@ -30,8 +30,9 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension.DemandListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
-import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -68,14 +69,16 @@ public class DOMNotificationRouterTest {
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
     public void complexTest() throws Exception {
-        final var domNotificationSubscriptionListener = mock(DOMNotificationSubscriptionListener.class);
-        doNothing().when(domNotificationSubscriptionListener).onSubscriptionChanged(any());
+        final var demandListener = mock(DemandListener.class);
+        doNothing().when(demandListener).onDemandUpdated(any());
 
         final var latch = new CountDownLatch(1);
         final var domNotificationListener = new TestListener(latch);
         final var domNotificationRouter = new DOMNotificationRouter(1024);
         final var notifService = domNotificationRouter.notificationService();
         final var notifPubService = domNotificationRouter.notificationPublishService();
+        final var demandExt = notifPubService.extension(DOMNotificationPublishDemandExtension.class);
+        assertNotNull(demandExt);
 
         var listeners = domNotificationRouter.listeners();
 
@@ -89,14 +92,11 @@ public class DOMNotificationRouterTest {
 
         assertFalse(listeners.isEmpty());
 
-        var subscriptionListeners = domNotificationRouter.subscriptionListeners();
+        assertEquals(0, domNotificationRouter.demandListeners().streamListeners().count());
 
-        assertEquals(0, subscriptionListeners.streamListeners().count());
-        assertNotNull(domNotificationRouter.registerSubscriptionListener(domNotificationSubscriptionListener));
+        assertNotNull(demandExt.registerDemandListener(demandListener));
 
-        subscriptionListeners = domNotificationRouter.subscriptionListeners();
-        assertSame(domNotificationSubscriptionListener,
-            subscriptionListeners.streamListeners().findAny().orElseThrow());
+        assertSame(demandListener, domNotificationRouter.demandListeners().streamListeners().findAny().orElseThrow());
 
         final var domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
