@@ -12,7 +12,14 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
-public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchemaServiceExtension> {
+public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchemaService.Extension> {
+    /**
+     * Type capture of a {@link DOMService.Extension} applicable to {@link DOMSchemaService} implementations.
+     */
+    interface Extension extends DOMService.Extension<DOMSchemaService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Returns global schema context.
      *
