@@ -329,6 +329,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         }
     }
 
+    // FIXME: just Registration or ObjectRegistration and without generics
     private static final class ActionRegistration<T extends AvailabilityListener>
         extends AbstractListenerRegistration<T> {
 
@@ -349,8 +350,8 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         }
 
         void initialTable() {
-            final List<DOMActionInstance> added = new ArrayList<>();
-            for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : prevActions.entrySet()) {
+            final var added = new ArrayList<DOMActionInstance>();
+            for (var e : prevActions.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
             }
             if (!added.isEmpty()) {
@@ -415,9 +416,9 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         }
 
         @Override
-        public <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(final T listener) {
+        public Registration registerAvailabilityListener(final AvailabilityListener listener) {
             synchronized (DOMRpcRouter.this) {
-                final ActionRegistration<T> ret = new ActionRegistration<>(DOMRpcRouter.this, listener,
+                final var ret = new ActionRegistration<>(DOMRpcRouter.this, listener,
                     actionRoutingTable.getOperations(listener));
                 actionListeners = ImmutableList.<ActionRegistration<?>>builder()
                     .addAll(actionListeners)
@@ -457,7 +458,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
         public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
-            final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
+            final var entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
                 return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
@@ -467,9 +468,9 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         }
 
         @Override
-        public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
+        public Registration registerRpcListener(final DOMRpcAvailabilityListener listener) {
             synchronized (DOMRpcRouter.this) {
-                final RegImpl<T> ret = new RegImpl<>(DOMRpcRouter.this, listener, routingTable.getOperations(listener));
+                final var ret = new RegImpl<>(DOMRpcRouter.this, listener, routingTable.getOperations(listener));
                 listeners = ImmutableList.<RegImpl<?>>builder().addAll(listeners).add(ret).build();
 
                 listenerNotifier.execute(ret::initialTable);
@@ -506,8 +507,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         }
 
         @Override
-        public org.opendaylight.yangtools.concepts.Registration registerRpcImplementations(
-                final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+        public Registration registerRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
             checkArgument(!map.isEmpty());
 
             final var builder = ImmutableTable.<QName, YangInstanceIdentifier, DOMRpcImplementation>builder();

@@ -22,9 +22,9 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMMountPoint;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.util.ListenerRegistry;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.util.ObjectRegistry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -38,8 +38,8 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     private static final Logger LOG = LoggerFactory.getLogger(DOMMountPointServiceImpl.class);
 
     private final Map<YangInstanceIdentifier, DOMMountPoint> mountPoints = new HashMap<>();
-
-    private final ListenerRegistry<DOMMountPointListener> listeners = ListenerRegistry.create();
+    private final ObjectRegistry<DOMMountPointListener> listeners =
+        ObjectRegistry.createConcurrent("mount point listeners");
 
     @Inject
     @Activate
@@ -59,7 +59,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     }
 
     @Override
-    public ListenerRegistration<DOMMountPointListener> registerProvisionListener(final DOMMountPointListener listener) {
+    public Registration registerProvisionListener(final DOMMountPointListener listener) {
         return listeners.register(listener);
     }
 
@@ -69,7 +69,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
         synchronized (mountPoints) {
             checkNotExists(mountPointId, mountPoints.putIfAbsent(mountPointId, mountPoint));
         }
-        listeners.streamListeners().forEach(listener -> {
+        listeners.streamObjects().forEach(listener -> {
             try {
                 listener.onMountPointCreated(mountPointId);
             } catch (final Exception ex) {
@@ -94,7 +94,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
             }
         }
 
-        listeners.streamListeners().forEach(listener -> {
+        listeners.streamObjects().forEach(listener -> {
             try {
                 listener.onMountPointRemoved(mountPointId);
             } catch (final Exception ex) {
