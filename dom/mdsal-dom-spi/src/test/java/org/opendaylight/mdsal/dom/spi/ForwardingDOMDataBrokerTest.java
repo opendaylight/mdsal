@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -24,7 +23,7 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 @ExtendWith(MockitoExtension.class)
 class ForwardingDOMDataBrokerTest {
-    private interface Extension extends DOMDataBrokerExtension {
+    private interface Extension extends DOMDataBroker.Extension {
         // Nothing else
     }
 

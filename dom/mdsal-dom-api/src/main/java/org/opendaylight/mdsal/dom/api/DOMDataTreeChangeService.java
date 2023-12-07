@@ -11,9 +11,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
- * A {@link DOMDataBrokerExtension} which allows users to register for changes to a subtree.
+ * A {@link DOMDataBroker.Extension} which allows users to register for changes to a subtree.
  */
-public interface DOMDataTreeChangeService extends DOMDataBrokerExtension {
+public interface DOMDataTreeChangeService extends DOMDataBroker.Extension {
     /**
      * Registers a {@link DOMDataTreeChangeListener} to receive notifications when data changes under a given path in
      * the conceptual data tree.

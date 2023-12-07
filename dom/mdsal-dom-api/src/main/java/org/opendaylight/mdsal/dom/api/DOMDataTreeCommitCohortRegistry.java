@@ -5,18 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.api;
 
 /**
- * Commit Cohort registry for {@link DOMDataTreeWriteTransaction}.
- * See {@link DOMDataTreeCommitCohort} for more details.
- *
- * @author Tony Tkacik &lt;ttkacik@cisco.com&gt;
- *
+ * Commit Cohort registry for {@link DOMDataTreeWriteTransaction}. See {@link DOMDataTreeCommitCohort} for more details.
  */
-public interface DOMDataTreeCommitCohortRegistry extends DOMDataBrokerExtension {
-
+public interface DOMDataTreeCommitCohortRegistry extends DOMDataBroker.Extension {
     /**
      * Register commit cohort which will participate in three-phase commit protocols of
      * {@link DOMDataTreeWriteTransaction}in data broker associated with this instance of extension.

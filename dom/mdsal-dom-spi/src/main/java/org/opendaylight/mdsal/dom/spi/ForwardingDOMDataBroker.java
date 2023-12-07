@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -18,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 /**
  * Utility {@link DOMDataBroker} implementation which forwards all interface method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataBroker extends ForwardingDOMService<DOMDataBroker, DOMDataBrokerExtension>
+public abstract class ForwardingDOMDataBroker extends ForwardingDOMService<DOMDataBroker, DOMDataBroker.Extension>
         implements DOMDataBroker {
     @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {
