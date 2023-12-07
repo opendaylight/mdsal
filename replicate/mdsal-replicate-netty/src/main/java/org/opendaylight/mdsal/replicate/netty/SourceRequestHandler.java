@@ -21,7 +21,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataInput;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private final DOMDataTreeChangeService dtcs;
 
-    private ListenerRegistration<?> reg;
+    private Registration reg;
 
     SourceRequestHandler(final DOMDataTreeChangeService dtcs) {
         this.dtcs = requireNonNull(dtcs);
@@ -77,8 +77,8 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         verify(reg == null, "Unexpected subscription when already subscribed");
 
         final DOMDataTreeIdentifier dataTree;
-        try (ByteBufInputStream input = new ByteBufInputStream(msg)) {
-            final NormalizedNodeDataInput normalizedInput = NormalizedNodeDataInput.newDataInput(input);
+        try (var input = new ByteBufInputStream(msg)) {
+            final var normalizedInput = NormalizedNodeDataInput.newDataInput(input);
 
             dataTree = new DOMDataTreeIdentifier(LogicalDatastoreType.readFrom(normalizedInput),
                 normalizedInput.readYangInstanceIdentifier());

@@ -35,9 +35,8 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension.DemandListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
-import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
@@ -73,14 +72,14 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     @VisibleForTesting
-    abstract static sealed class Reg<T extends DOMNotificationListener> extends AbstractListenerRegistration<T> {
-        Reg(final @NonNull T listener) {
+    abstract static sealed class Reg extends AbstractObjectRegistration<DOMNotificationListener> {
+        Reg(final @NonNull DOMNotificationListener listener) {
             super(listener);
         }
     }
 
-    private final class SingleReg<T extends DOMNotificationListener> extends Reg<T> {
-        SingleReg(final @NonNull T listener) {
+    private final class SingleReg extends Reg {
+        SingleReg(final @NonNull DOMNotificationListener listener) {
             super(listener);
         }
 
@@ -90,7 +89,7 @@ public class DOMNotificationRouter implements AutoCloseable {
         }
     }
 
-    private static final class ComponentReg extends Reg<DOMNotificationListener> {
+    private static final class ComponentReg extends Reg {
         ComponentReg(final @NonNull DOMNotificationListener listener) {
             super(listener);
         }
@@ -156,13 +155,13 @@ public class DOMNotificationRouter implements AutoCloseable {
 
     private final class SubscribeFacade implements DOMNotificationService {
         @Override
-        public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
-                final T listener, final Collection<Absolute> types) {
+        public Registration registerNotificationListener(final DOMNotificationListener listener,
+                final Collection<Absolute> types) {
             synchronized (DOMNotificationRouter.this) {
-                final var reg = new SingleReg<>(listener);
+                final var reg = new SingleReg(listener);
 
                 if (!types.isEmpty()) {
-                    final var b = ImmutableMultimap.<Absolute, Reg<?>>builder();
+                    final var b = ImmutableMultimap.<Absolute, Reg>builder();
                     b.putAll(listeners);
 
                     for (var t : types) {
@@ -180,7 +179,7 @@ public class DOMNotificationRouter implements AutoCloseable {
         public synchronized Registration registerNotificationListeners(
                 final Map<Absolute, DOMNotificationListener> typeToListener) {
             synchronized (DOMNotificationRouter.this) {
-                final var b = ImmutableMultimap.<Absolute, Reg<?>>builder();
+                final var b = ImmutableMultimap.<Absolute, Reg>builder();
                 b.putAll(listeners);
 
                 final var tmp = new HashMap<DOMNotificationListener, ComponentReg>();
@@ -205,14 +204,13 @@ public class DOMNotificationRouter implements AutoCloseable {
     private static final @NonNull ListenableFuture<?> NO_LISTENERS = Futures.immediateFuture(Empty.value());
 
     private final ListenerRegistry<DemandListener> demandListeners = ListenerRegistry.create();
-    private final EqualityQueuedNotificationManager<AbstractListenerRegistration<? extends DOMNotificationListener>,
-                DOMNotificationRouterEvent> queueNotificationManager;
+    private final EqualityQueuedNotificationManager<Reg, DOMNotificationRouterEvent> queueNotificationManager;
     private final @NonNull DOMNotificationPublishService notificationPublishService = new PublishFacade();
     private final @NonNull DOMNotificationService notificationService = new SubscribeFacade();
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
-    private volatile ImmutableMultimap<Absolute, Reg<?>> listeners = ImmutableMultimap.of();
+    private volatile ImmutableMultimap<Absolute, Reg> listeners = ImmutableMultimap.of();
 
     @Inject
     public DOMNotificationRouter(final int maxQueueCapacity) {
@@ -242,7 +240,7 @@ public class DOMNotificationRouter implements AutoCloseable {
         return notificationPublishService;
     }
 
-    private synchronized void removeRegistration(final SingleReg<?> reg) {
+    private synchronized void removeRegistration(final SingleReg reg) {
         replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners, input -> input != reg)));
     }
 
@@ -255,7 +253,7 @@ public class DOMNotificationRouter implements AutoCloseable {
      *
      * @param newListeners is used to notify listenerTypes changed
      */
-    private void replaceListeners(final ImmutableMultimap<Absolute, Reg<?>> newListeners) {
+    private void replaceListeners(final ImmutableMultimap<Absolute, Reg> newListeners) {
         listeners = newListeners;
         notifyListenerTypesChanged(newListeners.keySet());
     }
@@ -282,7 +280,7 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     @VisibleForTesting
-    @NonNull ListenableFuture<?> publish(final DOMNotification notification, final Collection<Reg<?>> subscribers) {
+    @NonNull ListenableFuture<?> publish(final DOMNotification notification, final Collection<Reg> subscribers) {
         final var futures = new ArrayList<ListenableFuture<?>>(subscribers.size());
         subscribers.forEach(subscriber -> {
             final var event = new DOMNotificationRouterEvent(notification);
@@ -322,8 +320,7 @@ public class DOMNotificationRouter implements AutoCloseable {
         return demandListeners;
     }
 
-    private static void deliverEvents(final AbstractListenerRegistration<? extends DOMNotificationListener> reg,
-            final ImmutableList<DOMNotificationRouterEvent> events) {
+    private static void deliverEvents(final Reg reg, final ImmutableList<DOMNotificationRouterEvent> events) {
         if (reg.notClosed()) {
             final var listener = reg.getInstance();
             for (var event : events) {

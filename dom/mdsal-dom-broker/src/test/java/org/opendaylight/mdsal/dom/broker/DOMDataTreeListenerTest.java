@@ -31,15 +31,12 @@ import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
@@ -116,48 +113,46 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
     @Test
     public void writeContainerEmptyTreeTest() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
+        final var latch = new CountDownLatch(1);
 
-        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        final TestDataTreeListener listener = new TestDataTreeListener(latch);
-        final ListenerRegistration<TestDataTreeListener> listenerReg =
-                dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
+        final var listener = new TestDataTreeListener(latch);
+        final var listenerReg = dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
 
-        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.commit();
 
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(1, listener.getReceivedChanges().size());
-        final List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        final var changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        final DataTreeCandidate candidate = changes.get(0);
+        final var candidate = changes.get(0);
         assertNotNull(candidate);
-        final DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        final var candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
         listenerReg.close();
     }
 
     @Test
     public void replaceContainerContainerInTreeTest() throws ExecutionException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(2);
+        final var latch = new CountDownLatch(2);
 
-        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.commit().get();
 
-        final TestDataTreeListener listener = new TestDataTreeListener(latch);
-        final ListenerRegistration<TestDataTreeListener> listenerReg =
-                dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
+        final var listener = new TestDataTreeListener(latch);
+        final var listenerReg = dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER_2);
         writeTx.commit();
@@ -165,12 +160,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        var changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.get(0);
+        var candidate = changes.get(0);
         assertNotNull(candidate);
-        DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        var candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
 
         changes = listener.getReceivedChanges().get(1);
@@ -185,19 +180,17 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
     @Test
     public void deleteContainerContainerInTreeTest() throws ExecutionException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(2);
+        final var latch = new CountDownLatch(2);
 
-        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
-        assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
-                dataTreeChangeService);
+        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!", dataTreeChangeService);
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.commit().get();
 
-        final TestDataTreeListener listener = new TestDataTreeListener(latch);
-        final ListenerRegistration<TestDataTreeListener> listenerReg =
-                dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
+        final var listener = new TestDataTreeListener(latch);
+        final var listenerReg = dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.delete(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
@@ -206,12 +199,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        var changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.get(0);
+        var candidate = changes.get(0);
         assertNotNull(candidate);
-        DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        var candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
 
         changes = listener.getReceivedChanges().get(1);
@@ -226,19 +219,17 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
     @Test
     public void replaceChildListContainerInTreeTest() throws ExecutionException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(2);
+        final var latch = new CountDownLatch(2);
 
-        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
-        assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
-                dataTreeChangeService);
+        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!", dataTreeChangeService);
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.commit().get();
 
-        final TestDataTreeListener listener = new TestDataTreeListener(latch);
-        final ListenerRegistration<TestDataTreeListener> listenerReg =
-                dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
+        final var listener = new TestDataTreeListener(latch);
+        final var listenerReg = dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH, OUTER_LIST_2);
@@ -247,12 +238,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        var changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.get(0);
+        var candidate = changes.get(0);
         assertNotNull(candidate);
-        DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        var candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
 
         changes = listener.getReceivedChanges().get(1);
@@ -262,27 +253,25 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(TEST_CONTAINER, TEST_CONTAINER_2, ModificationType.SUBTREE_MODIFIED, candidateRoot);
-        final DataTreeCandidateNode modifiedChild = candidateRoot.getModifiedChild(
-                new NodeIdentifier(TestModel.OUTER_LIST_QNAME));
+        final var modifiedChild = candidateRoot.getModifiedChild(new NodeIdentifier(TestModel.OUTER_LIST_QNAME));
         checkChange(OUTER_LIST, OUTER_LIST_2, ModificationType.WRITE, modifiedChild);
         listenerReg.close();
     }
 
     @Test
     public void rootModificationChildListenerTest() throws ExecutionException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(2);
+        final var latch = new CountDownLatch(2);
 
-        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.commit().get();
 
-        final TestDataTreeListener listener = new TestDataTreeListener(latch);
-        final ListenerRegistration<TestDataTreeListener> listenerReg =
-                dataTreeChangeService.registerDataTreeChangeListener(OUTER_LIST_DATA_TREE_ID, listener);
+        final var listener = new TestDataTreeListener(latch);
+        final var listenerReg = dataTreeChangeService.registerDataTreeChangeListener(OUTER_LIST_DATA_TREE_ID, listener);
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER_2);
@@ -291,12 +280,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(1, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        var changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.get(0);
+        var candidate = changes.get(0);
         assertNotNull(candidate);
-        DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        var candidateRoot = candidate.getRootNode();
         checkChange(null, OUTER_LIST, ModificationType.WRITE, candidateRoot);
 
         changes = listener.getReceivedChanges().get(1);
@@ -311,32 +300,30 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
     @Test
     public void listEntryChangeNonRootRegistrationTest() throws ExecutionException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(2);
+        final var latch = new CountDownLatch(2);
 
-        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
-        assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
-                dataTreeChangeService);
+        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!", dataTreeChangeService);
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.commit().get();
 
-        final TestDataTreeListener listener = new TestDataTreeListener(latch);
-        final ListenerRegistration<TestDataTreeListener> listenerReg =
-                dataTreeChangeService.registerDataTreeChangeListener(OUTER_LIST_DATA_TREE_ID, listener);
+        final var listener = new TestDataTreeListener(latch);
+        final var listenerReg = dataTreeChangeService.registerDataTreeChangeListener(OUTER_LIST_DATA_TREE_ID, listener);
 
-        final NodeIdentifierWithPredicates outerListEntryId1 =
+        final var outerListEntryId1 =
                 NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
-        final NodeIdentifierWithPredicates outerListEntryId2 =
+        final var outerListEntryId2 =
                 NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
-        final NodeIdentifierWithPredicates outerListEntryId3 =
+        final var outerListEntryId3 =
                 NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
 
-        final MapEntryNode outerListEntry1 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
-        final MapEntryNode outerListEntry2 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
-        final MapEntryNode outerListEntry3 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
+        final var outerListEntry1 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
+        final var outerListEntry2 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
+        final var outerListEntry3 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
 
-        final MapNode listAfter = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+        final var listAfter = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
                 .withChild(outerListEntry2)
                 .withChild(outerListEntry3)
                 .build();
@@ -352,12 +339,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        var changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.get(0);
+        var candidate = changes.get(0);
         assertNotNull(candidate);
-        DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        var candidateRoot = candidate.getRootNode();
         checkChange(null, OUTER_LIST, ModificationType.WRITE, candidateRoot);
 
         changes = listener.getReceivedChanges().get(1);
@@ -367,11 +354,11 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(OUTER_LIST, listAfter, ModificationType.SUBTREE_MODIFIED, candidateRoot);
-        final DataTreeCandidateNode entry1Canditate = candidateRoot.getModifiedChild(outerListEntryId1);
+        final var entry1Canditate = candidateRoot.getModifiedChild(outerListEntryId1);
         checkChange(outerListEntry1, null, ModificationType.DELETE, entry1Canditate);
-        final DataTreeCandidateNode entry2Canditate = candidateRoot.getModifiedChild(outerListEntryId2);
+        final var entry2Canditate = candidateRoot.getModifiedChild(outerListEntryId2);
         checkChange(null, outerListEntry2, ModificationType.WRITE, entry2Canditate);
-        final DataTreeCandidateNode entry3Canditate = candidateRoot.getModifiedChild(outerListEntryId3);
+        final var entry3Canditate = candidateRoot.getModifiedChild(outerListEntryId3);
         checkChange(null, outerListEntry3, ModificationType.WRITE, entry3Canditate);
         listenerReg.close();
     }

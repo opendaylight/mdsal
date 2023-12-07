@@ -9,10 +9,12 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -24,15 +26,15 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
             ListenerRegistration<T>, DOMMountPointListener {
     private static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointListenerAdapter.class);
 
-    private final T listener;
-    private final ListenerRegistration<DOMMountPointListener> registration;
+    private final @NonNull T listener;
     private final AdapterContext adapterContext;
+    private final Registration registration;
 
     BindingDOMMountPointListenerAdapter(final T listener, final AdapterContext adapterContext,
             final DOMMountPointService mountService) {
         this.listener = requireNonNull(listener);
         this.adapterContext = requireNonNull(adapterContext);
-        this.registration = mountService.registerProvisionListener(this);
+        registration = mountService.registerProvisionListener(this);
     }
 
     @Override
@@ -48,8 +50,7 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
     @Override
     public void onMountPointCreated(final YangInstanceIdentifier path) {
         try {
-            final InstanceIdentifier<? extends DataObject> bindingPath = toBinding(path);
-            listener.onMountPointCreated(bindingPath);
+            listener.onMountPointCreated(toBinding(path));
         } catch (final DeserializationException e) {
             LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
         }
@@ -58,8 +59,7 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
     @Override
     public void onMountPointRemoved(final YangInstanceIdentifier path) {
         try {
-            final InstanceIdentifier<? extends DataObject> bindingPath = toBinding(path);
-            listener.onMountPointRemoved(bindingPath);
+            listener.onMountPointRemoved(toBinding(path));
         } catch (final DeserializationException e) {
             LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
         }

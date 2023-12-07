@@ -11,14 +11,13 @@ import static java.util.Objects.requireNonNull;
 
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 
 class BindingDataTreeChangeListenerRegistration<L extends DataTreeChangeListener<?>>
         extends AbstractListenerRegistration<L> {
+    private final Registration domReg;
 
-    private final ListenerRegistration<?> domReg;
-
-    BindingDataTreeChangeListenerRegistration(final L listener, final ListenerRegistration<?> domReg) {
+    BindingDataTreeChangeListenerRegistration(final L listener, final Registration domReg) {
         super(listener);
         this.domReg = requireNonNull(domReg);
     }

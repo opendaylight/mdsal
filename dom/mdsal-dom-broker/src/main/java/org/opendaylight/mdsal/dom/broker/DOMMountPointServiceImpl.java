@@ -22,8 +22,8 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMMountPoint;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
@@ -59,7 +59,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     }
 
     @Override
-    public ListenerRegistration<DOMMountPointListener> registerProvisionListener(final DOMMountPointListener listener) {
+    public Registration registerProvisionListener(final DOMMountPointListener listener) {
         return listeners.register(listener);
     }
 

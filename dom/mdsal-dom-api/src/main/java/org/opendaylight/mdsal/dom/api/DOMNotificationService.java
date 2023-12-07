@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -28,39 +27,37 @@ public interface DOMNotificationService extends DOMService<DOMNotificationServic
 
     /**
      * Register a {@link DOMNotificationListener} to receive a set of notifications. As with other
-     * {@link ListenerRegistration}-based interfaces, registering an instance multiple times results in
+     * {@link Registration}-based interfaces, registering an instance multiple times results in
      * notifications being delivered for each registration.
      *
      * @param listener Notification instance to register
-     * @param types Notification types which should be delivered to the listener. Duplicate entries
-     *        are processed only once, null entries are ignored.
-     * @return Registration handle. Invoking {@link ListenerRegistration#close()} will stop the
-     *         delivery of notifications to the listener
-     * @throws IllegalArgumentException if types is empty or contains an invalid element, such as
-     *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
-     * @throws NullPointerException if either of the arguments is null
+     * @param types Notification types which should be delivered to the listener. Duplicate entries are processed only
+     *        once, null entries are ignored.
+     * @return Registration handle. Invoking {@link Registration#close()} will stop the delivery of notifications to the
+     *         listener
+     * @throws IllegalArgumentException if types is empty or contains an invalid element, such as {@code null} or a
+     *         schema node identifier which does not represent a valid {@link DOMNotification} type.
+     * @throws NullPointerException if either of the arguments is {@code null}
      */
-    // FIXME: just Registration and default implementation forwarding to Map-based thing
-    <T extends DOMNotificationListener> @NonNull ListenerRegistration<T>
-            registerNotificationListener(@NonNull T listener, @NonNull Collection<Absolute> types);
+    @NonNull Registration registerNotificationListener(@NonNull DOMNotificationListener listener,
+        @NonNull Collection<Absolute> types);
 
     /**
      * Register a {@link DOMNotificationListener} to receive a set of notifications. As with other
-     * {@link ListenerRegistration}-based interfaces, registering an instance multiple times results in
+     * {@link Registration}-based interfaces, registering an instance multiple times results in
      * notifications being delivered for each registration.
      *
      * @param listener Notification instance to register
-     * @param types Notification types which should be delivered to the listener. Duplicate entries
-     *        are processed only once, null entries are ignored.
-     * @return Registration handle. Invoking {@link ListenerRegistration#close()} will stop the
-     *         delivery of notifications to the listener
-     * @throws IllegalArgumentException if types is empty or contains an invalid element, such as
-     *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
-     * @throws NullPointerException if listener is null
+     * @param types Notification types which should be delivered to the listener. Duplicate entries are processed only
+     *        once, null entries are ignored.
+     * @return Registration handle. Invoking {@link Registration#close()} will stop the delivery of notifications to the
+     *         listener
+     * @throws IllegalArgumentException if types is empty or contains an invalid element, such as {@code null} or a
+     *         schema node identifier which does not represent a valid {@link DOMNotification} type.
+     * @throws NullPointerException if listener is {@code null}
      */
-    // FIXME: just Registration
-    default <T extends DOMNotificationListener> @NonNull ListenerRegistration<T>
-            registerNotificationListener(@NonNull final T listener, final Absolute... types) {
+    default @NonNull Registration registerNotificationListener(@NonNull final DOMNotificationListener listener,
+            final Absolute... types) {
         return registerNotificationListener(listener, List.of(types));
     }
 

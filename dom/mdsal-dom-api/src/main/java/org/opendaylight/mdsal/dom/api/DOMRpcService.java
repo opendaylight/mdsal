@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
@@ -49,8 +49,8 @@ public interface DOMRpcService extends DOMService<DOMRpcService, DOMRpcService.E
      * occurring.
      *
      * @param listener {@link DOMRpcAvailabilityListener} instance to register
-     * @return A {@link ListenerRegistration} representing this registration. Performing a
-     *         {@link ListenerRegistration#close()} will cancel it. Returned object is guaranteed to be non-null.
+     * @return A {@link Registration} representing this registration. Performing a {@link Registration#close()} will
+     *         cancel it. Returned object is guaranteed to be non-null.
      */
-    @NonNull <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(@NonNull T listener);
+    @NonNull Registration registerRpcListener(@NonNull DOMRpcAvailabilityListener listener);
 }

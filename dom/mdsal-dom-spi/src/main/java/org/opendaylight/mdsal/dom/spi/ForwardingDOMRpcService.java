@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
@@ -30,7 +30,7 @@ public abstract class ForwardingDOMRpcService extends ForwardingObject implement
     }
 
     @Override
-    public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
+    public Registration registerRpcListener(final DOMRpcAvailabilityListener listener) {
         return delegate().registerRpcListener(listener);
     }
 }
