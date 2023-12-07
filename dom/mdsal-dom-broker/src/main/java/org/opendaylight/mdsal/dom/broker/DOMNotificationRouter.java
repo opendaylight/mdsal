@@ -114,7 +114,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
-    private volatile Multimap<Absolute, Reg<?>> listeners = ImmutableMultimap.of();
+    private volatile ImmutableMultimap<Absolute, Reg<?>> listeners = ImmutableMultimap.of();
 
     @Inject
     public DOMNotificationRouter(final int maxQueueCapacity) {
