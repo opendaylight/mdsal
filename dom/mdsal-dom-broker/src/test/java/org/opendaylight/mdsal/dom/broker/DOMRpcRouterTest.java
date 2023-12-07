@@ -46,14 +46,12 @@ import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMRpcRouterTest {
@@ -179,7 +177,7 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testClose() {
-        final ListenerRegistration<EffectiveModelContextListener> reg = mock(ListenerRegistration.class);
+        final var reg = mock(Registration.class);
         doNothing().when(reg).close();
         final DOMSchemaService schema = mock(DOMSchemaService.class);
         doReturn(reg).when(schema).registerSchemaContextListener(any());
