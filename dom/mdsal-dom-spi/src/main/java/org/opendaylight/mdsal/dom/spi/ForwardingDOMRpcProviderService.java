@@ -13,7 +13,6 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.yangtools.concepts.Registration;
 
@@ -26,14 +25,14 @@ public abstract class ForwardingDOMRpcProviderService extends ForwardingObject i
     protected abstract @NonNull DOMRpcProviderService delegate();
 
     @Override
-    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-            final T implementation, final DOMRpcIdentifier... types) {
+    public Registration registerRpcImplementation(final DOMRpcImplementation implementation,
+            final DOMRpcIdentifier... types) {
         return delegate().registerRpcImplementation(implementation, types);
     }
 
     @Override
-    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-            final T implementation, final Set<DOMRpcIdentifier> types) {
+    public Registration registerRpcImplementation(final DOMRpcImplementation implementation,
+            final Set<DOMRpcIdentifier> types) {
         return delegate().registerRpcImplementation(implementation, types);
     }
 
