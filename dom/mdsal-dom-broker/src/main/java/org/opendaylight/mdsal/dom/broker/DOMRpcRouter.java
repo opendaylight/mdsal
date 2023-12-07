@@ -81,9 +81,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@Component(immediate = true, service = DOMRpcRouterServices.class)
-public final class DOMRpcRouter extends AbstractRegistration
-        implements DOMRpcRouterServices, EffectiveModelContextListener {
+@Component(service = DOMRpcRouter.class)
+public final class DOMRpcRouter extends AbstractRegistration implements EffectiveModelContextListener {
     private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
@@ -131,23 +130,19 @@ public final class DOMRpcRouter extends AbstractRegistration
         close();
     }
 
-    @Override
-    public DOMActionService getActionService() {
+    public @NonNull DOMActionService actionService() {
         return actionService;
     }
 
-    @Override
-    public DOMActionProviderService getActionProviderService() {
+    public @NonNull DOMActionProviderService actionProviderService() {
         return actionProviderService;
     }
 
-    @Override
-    public DOMRpcService getRpcService() {
+    public @NonNull DOMRpcService rpcService() {
         return rpcService;
     }
 
-    @Override
-    public DOMRpcProviderService getRpcProviderService() {
+    public @NonNull DOMRpcProviderService rpcProviderService() {
         return rpcProviderService;
     }
 

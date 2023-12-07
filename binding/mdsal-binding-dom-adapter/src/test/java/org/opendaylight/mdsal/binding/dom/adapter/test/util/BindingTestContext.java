@@ -186,11 +186,11 @@ public class BindingTestContext implements AutoCloseable {
     }
 
     public DOMRpcProviderService getDomRpcRegistry() {
-        return domRouter.getRpcProviderService();
+        return domRouter.rpcProviderService();
     }
 
     public DOMRpcService getDomRpcInvoker() {
-        return domRouter.getRpcService();
+        return domRouter.rpcService();
     }
 
     public RpcProviderService getBindingRpcProviderRegistry() {

@@ -38,18 +38,15 @@ import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.Availabilit
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -74,11 +71,11 @@ public class DOMRpcRouterTest {
         try (DOMRpcRouter rpcRouter = rpcsRouter()) {
             assertOperationKeys(rpcRouter);
 
-            final Registration fooReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
+            final Registration fooReg = rpcRouter.rpcProviderService().registerRpcImplementation(
                 getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
             assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            final Registration barReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
+            final Registration barReg = rpcRouter.rpcProviderService().registerRpcImplementation(
                 getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.BAR, null));
             assertOperationKeys(rpcRouter, Rpcs.FOO, Rpcs.BAR);
 
@@ -94,11 +91,11 @@ public class DOMRpcRouterTest {
         try (DOMRpcRouter rpcRouter = rpcsRouter()) {
             assertOperationKeys(rpcRouter);
 
-            final Registration fooReg = rpcRouter.getRpcProviderService().registerRpcImplementations(
+            final Registration fooReg = rpcRouter.rpcProviderService().registerRpcImplementations(
                 Map.of(DOMRpcIdentifier.create(Rpcs.FOO, null), getTestRpcImplementation()));
             assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            final Registration barReg = rpcRouter.getRpcProviderService().registerRpcImplementations(
+            final Registration barReg = rpcRouter.rpcProviderService().registerRpcImplementations(
                 Map.of(
                     DOMRpcIdentifier.create(Rpcs.BAR, null), getTestRpcImplementation(),
                     DOMRpcIdentifier.create(Rpcs.BAZ, null), getTestRpcImplementation()));
@@ -118,8 +115,8 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testFailedInvokeRpc() {
-        try (DOMRpcRouter rpcRouter = rpcsRouter()) {
-            final ListenableFuture<?> future = rpcRouter.getRpcService().invokeRpc(Rpcs.FOO, null);
+        try (var rpcRouter = rpcsRouter()) {
+            final ListenableFuture<?> future = rpcRouter.rpcService().invokeRpc(Rpcs.FOO, null);
             final Throwable cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
             assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
             assertEquals("No implementation of RPC (rpcs)foo available", cause.getMessage());
@@ -128,19 +125,19 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testRpcListener() {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = new DOMRpcRouter()) {
             assertEquals(List.of(), rpcRouter.listeners());
 
-            final DOMRpcAvailabilityListener listener = mock(DOMRpcAvailabilityListener.class);
+            final var listener = mock(DOMRpcAvailabilityListener.class);
             doCallRealMethod().when(listener).acceptsImplementation(any());
             doNothing().when(listener).onRpcAvailable(any());
             doNothing().when(listener).onRpcUnavailable(any());
 
-            final Registration reg = rpcRouter.getRpcService().registerRpcListener(listener);
+            final var reg = rpcRouter.rpcService().registerRpcListener(listener);
             assertNotNull(reg);
             assertEquals(List.of(reg), rpcRouter.listeners());
 
-            final Registration implReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
+            final var implReg = rpcRouter.rpcProviderService().registerRpcImplementation(
                 getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
             verify(listener, timeout(1000)).onRpcAvailable(any());
 
@@ -154,11 +151,11 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testActionListener() {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = new DOMRpcRouter()) {
             assertEquals(List.of(), rpcRouter.actionListeners());
 
-            final AvailabilityListener listener = mock(AvailabilityListener.class);
-            final Registration reg = rpcRouter.getActionService().getExtensions()
+            final var listener = mock(AvailabilityListener.class);
+            final var reg = rpcRouter.actionService().getExtensions()
                 .getInstance(DOMActionAvailabilityExtension.class).registerAvailabilityListener(listener);
             assertNotNull(reg);
             assertEquals(List.of(reg), rpcRouter.actionListeners());
@@ -186,23 +183,23 @@ public class DOMRpcRouterTest {
         final DOMSchemaService schema = mock(DOMSchemaService.class);
         doReturn(reg).when(schema).registerSchemaContextListener(any());
 
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter(schema);
+        final var rpcRouter = new DOMRpcRouter(schema);
         rpcRouter.close();
 
-        final DOMRpcProviderService svc = rpcRouter.getRpcProviderService();
+        final var svc = rpcRouter.rpcProviderService();
         assertThrows(RejectedExecutionException.class, () -> svc.registerRpcImplementation(getTestRpcImplementation(),
             DOMRpcIdentifier.create(Rpcs.FOO, null)));
     }
 
     @Test
     public void testActionInstanceRouting() throws ExecutionException {
-        try (DOMRpcRouter rpcRouter = actionsRouter()) {
-            final DOMActionProviderService actionProvider = rpcRouter.getActionProviderService();
+        try (var rpcRouter = actionsRouter()) {
+            final var actionProvider = rpcRouter.actionProviderService();
             assertNotNull(actionProvider);
-            final DOMActionService actionConsumer = rpcRouter.getActionService();
+            final var actionConsumer = rpcRouter.actionService();
             assertNotNull(actionConsumer);
 
-            try (ObjectRegistration<?> reg = actionProvider.registerActionImplementation(IMPL,
+            try (var reg = actionProvider.registerActionImplementation(IMPL,
                 DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, BAZ_PATH_GOOD))) {
 
                 assertAvailable(actionConsumer, BAZ_PATH_GOOD);
@@ -216,13 +213,13 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testActionDatastoreRouting() throws ExecutionException {
-        try (DOMRpcRouter rpcRouter = actionsRouter()) {
-            final DOMActionProviderService actionProvider = rpcRouter.getActionProviderService();
+        try (var rpcRouter = actionsRouter()) {
+            final var actionProvider = rpcRouter.actionProviderService();
             assertNotNull(actionProvider);
-            final DOMActionService actionConsumer = rpcRouter.getActionService();
+            final var actionConsumer = rpcRouter.actionService();
             assertNotNull(actionConsumer);
 
-            try (ObjectRegistration<?> reg = actionProvider.registerActionImplementation(IMPL,
+            try (var reg = actionProvider.registerActionImplementation(IMPL,
                 DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL,
                     YangInstanceIdentifier.of()))) {
 
