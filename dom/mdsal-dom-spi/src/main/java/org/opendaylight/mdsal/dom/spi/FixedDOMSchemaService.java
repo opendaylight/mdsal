@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.yangtools.concepts.NoOpListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -44,7 +43,7 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
         }
 
         @Override
-        public List<DOMSchemaServiceExtension> supportedExtensions() {
+        public List<Extension> supportedExtensions() {
             return List.of(this);
         }
 

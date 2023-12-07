@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.spi;
 import java.util.Collection;
 import java.util.List;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
@@ -25,7 +24,7 @@ public abstract class AbstractDOMSchemaService implements DOMSchemaService, Effe
     public abstract static class WithYangTextSources extends AbstractDOMSchemaService
             implements DOMYangTextSourceProvider {
         @Override
-        public Collection<? extends DOMSchemaServiceExtension> supportedExtensions() {
+        public Collection<? extends Extension> supportedExtensions() {
             return List.of(this);
         }
     }
