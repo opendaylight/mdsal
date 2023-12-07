@@ -19,7 +19,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CHILD;
 
-import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,7 +77,7 @@ public class DOMNotificationRouterTest {
         final DOMNotificationListener domNotificationListener = new TestListener(latch);
         final DOMNotificationRouter domNotificationRouter = new DOMNotificationRouter(1024);
 
-        Multimap<Absolute, ?> listeners = domNotificationRouter.listeners();
+        var listeners = domNotificationRouter.listeners();
 
         assertTrue(listeners.isEmpty());
         assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener,

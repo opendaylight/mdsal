@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -114,7 +113,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
-    private volatile Multimap<Absolute, Reg<?>> listeners = ImmutableMultimap.of();
+    private volatile ImmutableMultimap<Absolute, Reg<?>> listeners = ImmutableMultimap.of();
 
     @Inject
     public DOMNotificationRouter(final int maxQueueCapacity) {
@@ -190,7 +189,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
      *
      * @param newListeners is used to notify listenerTypes changed
      */
-    private void replaceListeners(final Multimap<Absolute, Reg<?>> newListeners) {
+    private void replaceListeners(final ImmutableMultimap<Absolute, Reg<?>> newListeners) {
         listeners = newListeners;
         notifyListenerTypesChanged(newListeners.keySet());
     }
@@ -289,7 +288,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     @VisibleForTesting
-    Multimap<Absolute, ?> listeners() {
+    ImmutableMultimap<Absolute, ?> listeners() {
         return listeners;
     }
 
