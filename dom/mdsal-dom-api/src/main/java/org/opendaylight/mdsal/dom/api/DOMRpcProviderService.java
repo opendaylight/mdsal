@@ -30,27 +30,27 @@ public interface DOMRpcProviderService extends DOMService<DOMRpcProviderService,
      * @param implementation RPC implementation, must not be null
      * @param rpcs Array of supported RPC identifiers. Must not be null, empty, or contain a null element.
      *             Each identifier is added exactly once, no matter how many times it occurs.
-     * @return A {@link DOMRpcImplementationRegistration} object, guaranteed to be non-null.
+     * @return A {@link Registration} object, guaranteed to be non-null.
      * @throws NullPointerException if implementation or types is null
      * @throws IllegalArgumentException if types is empty or contains a null element.
      */
-    // FIXME: just Registration and forward to set
-    // FIXME: single-instance specialization
-    @NonNull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
-        registerRpcImplementation(@NonNull T implementation, @NonNull DOMRpcIdentifier... rpcs);
+    default @NonNull Registration registerRpcImplementation(final @NonNull DOMRpcImplementation implementation,
+            final @NonNull DOMRpcIdentifier... rpcs) {
+        return registerRpcImplementation(implementation, Set.of(rpcs));
+    }
 
     /**
      * Register an {@link DOMRpcImplementation} object with this service.
      *
      * @param implementation RPC implementation, must not be null
      * @param rpcs Set of supported RPC identifiers. Must not be null, empty, or contain a null element.
-     * @return A {@link DOMRpcImplementationRegistration} object, guaranteed to be non-null.
+     * @return A {@link Registration} object, guaranteed to be non-null.
      * @throws NullPointerException if implementation or types is null
      * @throws IllegalArgumentException if types is empty or contains a null element.
      */
-    // FIXME: just Registration and forward to set
-    @NonNull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
-        registerRpcImplementation(@NonNull T implementation, @NonNull Set<DOMRpcIdentifier> rpcs);
+    // FIXME: just Registration and forward to Map
+    @NonNull Registration registerRpcImplementation(@NonNull DOMRpcImplementation implementation,
+        @NonNull Set<DOMRpcIdentifier> rpcs);
 
     /**
      * Register a set of {@link DOMRpcImplementation}s with this service. The registration is performed atomically.
