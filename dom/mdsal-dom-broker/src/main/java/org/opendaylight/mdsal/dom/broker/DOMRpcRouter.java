@@ -52,12 +52,10 @@ import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
@@ -481,14 +479,8 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
 
     private final class RpcProviderServiceFacade implements DOMRpcProviderService {
         @Override
-        public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-                final T implementation, final DOMRpcIdentifier... rpcs) {
-            return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
-        }
-
-        @Override
-        public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-                final T implementation, final Set<DOMRpcIdentifier> rpcs) {
+        public Registration registerRpcImplementation(final DOMRpcImplementation implementation,
+                final Set<DOMRpcIdentifier> rpcs) {
 
             synchronized (DOMRpcRouter.this) {
                 final DOMRpcRoutingTable oldTable = routingTable;
@@ -498,10 +490,10 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
                 listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
             }
 
-            return new AbstractDOMRpcImplementationRegistration<>(implementation) {
+            return new AbstractRegistration() {
                 @Override
                 protected void removeRegistration() {
-                    removeRpcImplementation(getInstance(), rpcs);
+                    removeRpcImplementation(implementation, rpcs);
                 }
             };
         }
