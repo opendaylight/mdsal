@@ -12,11 +12,11 @@ import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
- * A DOMSchemaServiceExtension exposing access to {@link YangTextSchemaSource}. Instances of this method should be
- * acquired from {@link DOMSchemaService}.
+ * A {@link DOMSchemaService.Extension} exposing access to {@link YangTextSchemaSource}. Instances of this method should
+ * be acquired from {@link DOMSchemaService}.
  */
 @Beta
-public interface DOMYangTextSourceProvider extends DOMSchemaServiceExtension,
-        SchemaSourceProvider<YangTextSchemaSource> {
+public interface DOMYangTextSourceProvider
+        extends DOMSchemaService.Extension, SchemaSourceProvider<YangTextSchemaSource> {
 
 }
