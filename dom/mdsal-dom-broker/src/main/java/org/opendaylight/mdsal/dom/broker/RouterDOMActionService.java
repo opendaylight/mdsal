@@ -7,26 +7,28 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.annotations.Beta;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.mdsal.dom.spi.ForwardingDOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
+import org.opendaylight.mdsal.dom.spi.ForwardingDOMActionService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-@Beta
-@Component(immediate = true, service = DOMRpcService.class)
-public final class OSGiDOMRpcService extends ForwardingDOMRpcService {
-    private final @NonNull DOMRpcService delegate;
+@Singleton
+@Component(service = DOMActionService.class)
+public final class RouterDOMActionService extends ForwardingDOMActionService {
+    private final @NonNull DOMActionService delegate;
 
+    @Inject
     @Activate
-    public OSGiDOMRpcService(@Reference final DOMRpcRouterServices router) {
-        delegate = router.getRpcService();
+    public RouterDOMActionService(@Reference final DOMRpcRouter router) {
+        delegate = router.actionService();
     }
 
     @Override
-    protected DOMRpcService delegate() {
+    protected DOMActionService delegate() {
         return delegate;
     }
 }
