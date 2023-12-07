@@ -13,13 +13,12 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionProviderServiceExtension;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
 @Beta
 @NonNullByDefault
 public abstract class ForwardingDOMActionProviderService
-        extends ForwardingDOMService<DOMActionProviderService, DOMActionProviderServiceExtension>
+        extends ForwardingDOMService<DOMActionProviderService, DOMActionProviderService.Extension>
         implements DOMActionProviderService {
     @Override
     public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
