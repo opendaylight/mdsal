@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * A {@link DOMDataBroker.Extension} which allows users to register for changes to a subtree.
  */
+@NonNullByDefault
 public interface DOMDataTreeChangeService extends DOMDataBroker.Extension {
     /**
      * Registers a {@link DOMDataTreeChangeListener} to receive notifications when data changes under a given path in
@@ -31,8 +32,8 @@ public interface DOMDataTreeChangeService extends DOMDataBroker.Extension {
      * an initial data change event, which will contain all pre-existing data, marked as created.
      *
      * <p>
-     * This method returns a {@link ListenerRegistration} object. To "unregister" your listener for changes call
-     * the {@link ListenerRegistration#close()} method on the returned object.
+     * This method returns a {@link Registration} object. To "unregister" your listener for changes call
+     * the {@link Registration#close()} method on the returned object.
      *
      * <p>
      * You MUST explicitly unregister your listener when you no longer want to receive notifications. This is especially
@@ -41,12 +42,9 @@ public interface DOMDataTreeChangeService extends DOMDataBroker.Extension {
      *
      * @param treeId Data tree identifier of the subtree which should be watched for changes.
      * @param listener Listener instance which is being registered
-     * @param <L> Listener type
-     * @return Listener registration object, which may be used to unregister your listener using
-     *         {@link ListenerRegistration#close()} to stop delivery of change events.
+     * @return A {@link Registration} object, which may be used to unregister your listener using
+     *         {@link Registration#close()} to stop delivery of change events.
      * @throws NullPointerException if any of the arguments is null
      */
-    // FIXME: just Registration
-    <L extends DOMDataTreeChangeListener> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
-            @NonNull DOMDataTreeIdentifier treeId, @NonNull L listener);
+    Registration registerDataTreeChangeListener(DOMDataTreeIdentifier treeId, DOMDataTreeChangeListener listener);
 }

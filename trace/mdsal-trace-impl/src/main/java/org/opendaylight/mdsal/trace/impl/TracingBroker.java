@@ -18,9 +18,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -28,7 +26,6 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.trace.api.TracingDOMDataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace.rev160908.Config;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -309,18 +306,14 @@ public class TracingBroker implements TracingDOMDataBroker {
     public <T extends Extension> T extension(final Class<T> type) {
         final var ext = delegate.extension(type);
         if (DOMDataTreeChangeService.class.equals(type) && ext instanceof DOMDataTreeChangeService treeChange) {
-            return type.cast(new DOMDataTreeChangeService() {
-                @Override
-                public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
-                        final DOMDataTreeIdentifier domDataTreeIdentifier, final L listener) {
-                    final var rootId = domDataTreeIdentifier.getRootIdentifier();
-                    if (isRegistrationWatched(rootId, domDataTreeIdentifier.getDatastoreType())) {
-                        LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
-                            listener instanceof ClusteredDOMDataTreeChangeListener ? "Clustered" : "Non-clustered",
+            return type.cast((DOMDataTreeChangeService) (domDataTreeIdentifier, listener) -> {
+                final var rootId = domDataTreeIdentifier.getRootIdentifier();
+                if (isRegistrationWatched(rootId, domDataTreeIdentifier.getDatastoreType())) {
+                    LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
+                        listener instanceof ClusteredDOMDataTreeChangeListener ? "Clustered" : "Non-clustered",
                             toPathString(rootId), getStackSummary());
-                    }
-                    return treeChange.registerDataTreeChangeListener(domDataTreeIdentifier, listener);
                 }
+                return treeChange.registerDataTreeChangeListener(domDataTreeIdentifier, listener);
             });
         }
         return ext;
@@ -369,14 +362,14 @@ public class TracingBroker implements TracingDOMDataBroker {
         return hasFound;
     }
 
-    final void logEmptySet(YangInstanceIdentifier yiid) {
+    final void logEmptySet(final YangInstanceIdentifier yiid) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Empty data set write to {}", toPathString(yiid));
         }
     }
 
     @SuppressFBWarnings(value = "SLF4J_SIGN_ONLY_FORMAT", justification = "pre-formatted logs")
-    static final void logOperations(final Object identifier, List<?> operations) {
+    static final void logOperations(final Object identifier, final List<?> operations) {
         if (LOG.isWarnEnabled()) {
             LOG.warn("Transaction {} contains the following operations:", identifier);
             for (var operation : operations) {

@@ -14,7 +14,6 @@ import org.opendaylight.mdsal.binding.api.DataListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -39,19 +38,17 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     @Override
     public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
             registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId, final L listener) {
-        final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(treeId);
-        final LogicalDatastoreType storeType = treeId.getDatastoreType();
-        final Class<T> target = treeId.getRootIdentifier().getTargetType();
-        final Class<T> augment = Augmentation.class.isAssignableFrom(target) ? target : null;
+        final var domIdentifier = toDomTreeIdentifier(treeId);
+        final var storeType = treeId.getDatastoreType();
+        final var target = treeId.getRootIdentifier().getTargetType();
+        final var augment = Augmentation.class.isAssignableFrom(target) ? target : null;
 
-        final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
-                listener instanceof ClusteredDataTreeChangeListener
-                        ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(
-                                adapterContext(), (ClusteredDataTreeChangeListener<T>) listener, storeType, augment)
-                        : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, storeType, augment);
+        final var domListener = listener instanceof ClusteredDataTreeChangeListener
+            ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(adapterContext(),
+                (ClusteredDataTreeChangeListener<T>) listener, storeType, augment)
+                : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, storeType, augment);
 
-        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg =
-                getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
+        final var domReg = getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
         return new BindingDataTreeChangeListenerRegistration<>(listener, domReg);
     }
 

@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.api;
 
 import java.util.Optional;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public interface DOMMountPointService extends DOMService<DOMMountPointService, DOMMountPointService.Extension> {
@@ -24,8 +24,7 @@ public interface DOMMountPointService extends DOMService<DOMMountPointService, D
 
     DOMMountPointBuilder createMountPoint(YangInstanceIdentifier path);
 
-    // FIXME: just Registration
-    ListenerRegistration<DOMMountPointListener> registerProvisionListener(DOMMountPointListener listener);
+    Registration registerProvisionListener(DOMMountPointListener listener);
 
     interface DOMMountPointBuilder {
 

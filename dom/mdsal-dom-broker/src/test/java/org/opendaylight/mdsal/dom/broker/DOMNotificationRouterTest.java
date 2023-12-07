@@ -197,7 +197,7 @@ public class DOMNotificationRouterTest {
 
         @Override
         ListenableFuture<? extends Object> publish(final DOMNotification notification,
-                final Collection<Reg<?>> subscribers) {
+                final Collection<Reg> subscribers) {
             if (triggerRejected) {
                 return DOMNotificationPublishService.REJECTED;
             }
