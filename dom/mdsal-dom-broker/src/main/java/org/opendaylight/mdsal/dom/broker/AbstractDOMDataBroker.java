@@ -7,16 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import java.util.Collection;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -36,7 +32,7 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
 
     private final AtomicLong txNum = new AtomicLong();
     private final AtomicLong chainNum = new AtomicLong();
-    private final ClassToInstanceMap<DOMDataBrokerExtension> extensions;
+    private final @NonNull List<Extension> supportedExtensions;
 
     private volatile AutoCloseable closeable;
 
@@ -44,7 +40,7 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         super(datastores);
 
         boolean treeChange = true;
-        for (DOMStore ds : datastores.values()) {
+        for (var ds : datastores.values()) {
             if (!(ds instanceof DOMStoreTreeChangePublisher)) {
                 treeChange = false;
                 break;
@@ -52,21 +48,19 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         }
 
         if (treeChange) {
-            extensions = ImmutableClassToInstanceMap.of(
-                    DOMDataTreeChangeService.class, new DOMDataTreeChangeService() {
-                        @Override
-                        public <L extends DOMDataTreeChangeListener> ListenerRegistration<L>
-                                registerDataTreeChangeListener(final DOMDataTreeIdentifier treeId, final L listener) {
-                            DOMStore publisher = getTxFactories().get(treeId.getDatastoreType());
-                            Preconditions.checkState(publisher != null,
-                                    "Requested logical data store is not available.");
-
-                            return ((DOMStoreTreeChangePublisher)publisher).registerTreeChangeListener(
-                                    treeId.getRootIdentifier(), listener);
-                            }
-                        });
+            supportedExtensions = List.of(new DOMDataTreeChangeService() {
+                @Override
+                public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
+                        final DOMDataTreeIdentifier treeId, final L listener) {
+                    final var dsType = treeId.getDatastoreType();
+                    if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
+                        return publisher.registerTreeChangeListener(treeId.getRootIdentifier(), listener);
+                    }
+                    throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
+                }
+            });
         } else {
-            extensions = ImmutableClassToInstanceMap.of();
+            supportedExtensions = List.of();
         }
     }
 
@@ -94,23 +88,23 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     }
 
     @Override
-    public final Collection<DOMDataBrokerExtension> supportedExtensions() {
-        return extensions.values();
+    public final List<Extension> supportedExtensions() {
+        return supportedExtensions;
     }
+
 
     @Override
     public DOMTransactionChain createTransactionChain(final DOMTransactionChainListener listener) {
         checkNotClosed();
 
-        final Map<LogicalDatastoreType, DOMStoreTransactionChain> backingChains =
-                new EnumMap<>(LogicalDatastoreType.class);
-        for (Entry<LogicalDatastoreType, DOMStore> entry : getTxFactories().entrySet()) {
-            backingChains.put(entry.getKey(), entry.getValue().createTransactionChain());
+        final var delegates = new EnumMap<LogicalDatastoreType, DOMStoreTransactionChain>(LogicalDatastoreType.class);
+        for (var entry : getTxFactories().entrySet()) {
+            delegates.put(entry.getKey(), entry.getValue().createTransactionChain());
         }
 
         final long chainId = chainNum.getAndIncrement();
         LOG.debug("Transactoin chain {} created with listener {}, backing store chains {}", chainId, listener,
-                backingChains);
-        return new DOMDataBrokerTransactionChainImpl(chainId, backingChains, this, listener);
+                delegates);
+        return new DOMDataBrokerTransactionChainImpl(chainId, delegates, this, listener);
     }
 }
