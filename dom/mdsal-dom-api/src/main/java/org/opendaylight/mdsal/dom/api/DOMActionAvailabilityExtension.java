@@ -16,14 +16,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
- * An {@link DOMActionServiceExtension} exposed by {@link DOMActionService}s which allow their users to listen
+ * A {@link DOMActionService.Extension} exposed by {@link DOMActionService}s which allow their users to listen
  * for actions are becoming available.
- *
- * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
-public interface DOMActionAvailabilityExtension extends DOMActionServiceExtension {
+public interface DOMActionAvailabilityExtension extends DOMActionService.Extension {
     /**
      * Register a {@link AvailabilityListener} with this service to receive notifications about operation
      * implementations becoming (un)available. The listener will be invoked with the current implementations reported
