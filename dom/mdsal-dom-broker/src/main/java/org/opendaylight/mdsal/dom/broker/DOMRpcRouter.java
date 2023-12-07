@@ -47,7 +47,6 @@ import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
-import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -399,7 +398,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
     @NonNullByDefault
     private final class ActionServiceFacade implements DOMActionService, DOMActionAvailabilityExtension {
         @Override
-        public Collection<DOMActionServiceExtension> supportedExtensions() {
+        public List<Extension> supportedExtensions() {
             return List.of(this);
         }
 
