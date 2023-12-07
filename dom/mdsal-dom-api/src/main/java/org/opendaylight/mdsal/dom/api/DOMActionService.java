@@ -20,7 +20,14 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
  */
 @Beta
 @NonNullByDefault
-public interface DOMActionService extends DOMService<DOMActionService, DOMActionServiceExtension> {
+public interface DOMActionService extends DOMService<DOMActionService, DOMActionService.Extension> {
+    /**
+     * Marker interface for extensions of {@link DOMActionService}.
+     */
+    public interface Extension extends DOMService.Extension<DOMActionService, Extension> {
+        // Marker interface
+    }
+
     /**
      * Initiate invocation of an Action. This method is guaranteed to not block on any external resources.
      *
