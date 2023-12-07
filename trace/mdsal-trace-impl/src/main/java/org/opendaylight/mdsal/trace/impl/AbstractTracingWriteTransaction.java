@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.trace.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +20,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransaction {
-
+    private final List<String> logs = new ArrayList<>();
     private final DOMDataTreeWriteTransaction delegate;
     private final TracingBroker tracingBroker;
-    private final List<String> logs = new ArrayList<>();
 
     AbstractTracingWriteTransaction(final DOMDataTreeWriteTransaction delegate, final TracingBroker tracingBroker) {
         this.delegate = requireNonNull(delegate);
@@ -38,14 +36,11 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
             return;
         }
 
-        final Object value = node != null ? node.body() : null;
-
-        if (value != null && value instanceof ImmutableSet && ((Set<?>)value).isEmpty()) {
-            if (TracingBroker.LOG.isDebugEnabled()) {
-                TracingBroker.LOG.debug("Empty data set write to {}", tracingBroker.toPathString(yiid));
-            }
+        final var value = node != null ? node.body() : null;
+        if (value instanceof Set<?> set && set.isEmpty()) {
+            tracingBroker.logEmptySet(yiid);
         } else {
-            StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             sb.append("Method \"").append(method).append('"');
             if (store != null) {
                 sb.append(" to ").append(store);
@@ -67,16 +62,6 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
             synchronized (this) {
                 logs.add(sb.toString());
             }
-        }
-    }
-
-    private synchronized void logOps() {
-        synchronized (this) {
-            if (TracingBroker.LOG.isWarnEnabled()) {
-                TracingBroker.LOG.warn("Transaction {} contains the following operations:", getIdentifier());
-                logs.forEach(TracingBroker.LOG::warn);
-            }
-            logs.clear();
         }
     }
 
@@ -109,7 +94,10 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
     @Override
     public FluentFuture<? extends CommitInfo> commit() {
         recordOp(null, null, "commit", null);
-        logOps();
+        synchronized (this) {
+            TracingBroker.logOperations(getIdentifier(), logs);
+            logs.clear();
+        }
         return delegate.commit();
     }
 

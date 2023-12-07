@@ -92,8 +92,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  */
 public class TracingBroker implements TracingDOMDataBroker {
-    @SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")
-    static final Logger LOG = LoggerFactory.getLogger(TracingBroker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TracingBroker.class);
 
     private static final int STACK_TRACE_FIRST_RELEVANT_FRAME = 2;
 
@@ -368,6 +367,22 @@ public class TracingBroker implements TracingDOMDataBroker {
         ps.println();
 
         return hasFound;
+    }
+
+    final void logEmptySet(YangInstanceIdentifier yiid) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Empty data set write to {}", toPathString(yiid));
+        }
+    }
+
+    @SuppressFBWarnings(value = "SLF4J_SIGN_ONLY_FORMAT", justification = "pre-formatted logs")
+    static final void logOperations(final Object identifier, List<?> operations) {
+        if (LOG.isWarnEnabled()) {
+            LOG.warn("Transaction {} contains the following operations:", identifier);
+            for (var operation : operations) {
+                LOG.warn("{}", operation);
+            }
+        }
     }
 
     private <T extends CloseTracked<T>> boolean print(final CloseTrackedRegistry<T> registry, final PrintStream ps,
