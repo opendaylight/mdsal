@@ -13,16 +13,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,16 +45,12 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         }
 
         if (treeChange) {
-            supportedExtensions = List.of(new DOMDataTreeChangeService() {
-                @Override
-                public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
-                        final DOMDataTreeIdentifier treeId, final L listener) {
-                    final var dsType = treeId.getDatastoreType();
-                    if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
-                        return publisher.registerTreeChangeListener(treeId.getRootIdentifier(), listener);
-                    }
-                    throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
+            supportedExtensions = List.of((DOMDataTreeChangeService) (treeId, listener) -> {
+                final var dsType = treeId.getDatastoreType();
+                if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
+                    return publisher.registerTreeChangeListener(treeId.getRootIdentifier(), listener);
                 }
+                throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
             });
         } else {
             supportedExtensions = List.of();

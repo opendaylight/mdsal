@@ -92,11 +92,11 @@ public class DOMNotificationRouterTest {
 
         assertFalse(listeners.isEmpty());
 
-        assertEquals(0, domNotificationRouter.demandListeners().streamListeners().count());
+        assertEquals(0, domNotificationRouter.demandListeners().streamObjects().count());
 
         assertNotNull(demandExt.registerDemandListener(demandListener));
 
-        assertSame(demandListener, domNotificationRouter.demandListeners().streamListeners().findAny().orElseThrow());
+        assertSame(demandListener, domNotificationRouter.demandListeners().streamObjects().findAny().orElseThrow());
 
         final var domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
@@ -197,7 +197,7 @@ public class DOMNotificationRouterTest {
 
         @Override
         ListenableFuture<? extends Object> publish(final DOMNotification notification,
-                final Collection<Reg<?>> subscribers) {
+                final Collection<Reg> subscribers) {
             if (triggerRejected) {
                 return DOMNotificationPublishService.REJECTED;
             }

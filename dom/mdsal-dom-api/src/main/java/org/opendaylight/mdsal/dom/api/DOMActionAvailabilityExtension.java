@@ -11,7 +11,7 @@ import com.google.common.annotations.Beta;
 import java.util.EventListener;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -35,13 +35,12 @@ public interface DOMActionAvailabilityExtension extends DOMActionService.Extensi
      * <p>
      * Implementations are encouraged to take reasonable precautions to prevent this scenario from occurring.
      *
-     * @param <T> Listener type
      * @param listener {@link AvailabilityListener} instance to register
-     * @return A {@link ListenerRegistration} representing this registration. Performing a
-     *         {@link ListenerRegistration#close()} will cancel it.
+     * @return A {@link Registration} representing this registration. Performing a {@link Registration#close()} will
+     *         cancel it.
      * @throws NullPointerException if {@code listener} is null
      */
-    <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(T listener);
+    Registration registerAvailabilityListener(AvailabilityListener listener);
 
     /**
      * An {@link EventListener} used to track Operation implementations becoming (un)available
