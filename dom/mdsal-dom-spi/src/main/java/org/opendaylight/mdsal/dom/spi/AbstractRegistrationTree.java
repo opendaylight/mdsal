@@ -18,12 +18,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * @param <T> Type of registered object
  */
 public abstract class AbstractRegistrationTree<T> {
-    private final RegistrationTreeNode<T> rootNode = new RegistrationTreeNode<>(null, null);
-    private final Lock writeLock;
-    private final Lock readLock;
+    private final @NonNull RegistrationTreeNode<T> rootNode = new RegistrationTreeNode<>(null, null);
+    private final @NonNull Lock writeLock;
+    private final @NonNull Lock readLock;
 
     protected AbstractRegistrationTree() {
-        final StampedLock lock = new StampedLock();
+        final var lock = new StampedLock();
         readLock = lock.asReadLock();
         writeLock = lock.asWriteLock();
     }
@@ -51,11 +51,10 @@ public abstract class AbstractRegistrationTree<T> {
      * @return A registration node for the specified path
      */
     protected final @NonNull RegistrationTreeNode<T> findNodeFor(final @NonNull Iterable<PathArgument> path) {
-        RegistrationTreeNode<T> walkNode = rootNode;
-        for (final PathArgument arg : path) {
+        var walkNode = rootNode;
+        for (var arg : path) {
             walkNode = walkNode.ensureChild(arg);
         }
-
         return walkNode;
     }
 
