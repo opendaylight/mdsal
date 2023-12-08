@@ -10,16 +10,13 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistration;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistry;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 final class BindingDOMDataTreeCommitCohortRegistryAdapter
         extends AbstractBindingAdapter<DOMDataTreeCommitCohortRegistry> implements DataTreeCommitCohortRegistry {
-
     BindingDOMDataTreeCommitCohortRegistryAdapter(final AdapterContext codec,
             final DOMDataTreeCommitCohortRegistry registry) {
         super(codec, registry);
@@ -28,14 +25,12 @@ final class BindingDOMDataTreeCommitCohortRegistryAdapter
     @Override
     public <D extends DataObject, T extends DataTreeCommitCohort<D>> ObjectRegistration<T> registerCommitCohort(
             final DataTreeIdentifier<D> subtree, final T cohort) {
-        final Class<D> target = subtree.getRootIdentifier().getTargetType();
-
-        final BindingDOMDataTreeCommitCohortAdapter<D> adapter = new BindingDOMDataTreeCommitCohortAdapter<>(
-            adapterContext(), cohort, Augmentation.class.isAssignableFrom(target) ? target : null);
-        final DOMDataTreeIdentifier domPath = currentSerializer().toDOMDataTreeIdentifier(subtree);
-        final DOMDataTreeCommitCohortRegistration<?> domReg = getDelegate().registerCommitCohort(domPath, adapter);
+        final var target = subtree.getRootIdentifier().getTargetType();
+        final var adapter = new BindingDOMDataTreeCommitCohortAdapter<>(adapterContext(), cohort,
+            Augmentation.class.isAssignableFrom(target) ? target : null);
+        final var domPath = currentSerializer().toDOMDataTreeIdentifier(subtree);
+        final var domReg = getDelegate().registerCommitCohort(domPath, adapter);
         return new ObjectRegistration<>() {
-
             @Override
             public T getInstance() {
                 return cohort;

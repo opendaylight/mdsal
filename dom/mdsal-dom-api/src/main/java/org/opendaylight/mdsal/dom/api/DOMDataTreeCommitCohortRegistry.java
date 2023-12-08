@@ -7,19 +7,22 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.concepts.Registration;
+
 /**
  * Commit Cohort registry for {@link DOMDataTreeWriteTransaction}. See {@link DOMDataTreeCommitCohort} for more details.
  */
+@NonNullByDefault
 public interface DOMDataTreeCommitCohortRegistry extends DOMDataBroker.Extension {
     /**
      * Register commit cohort which will participate in three-phase commit protocols of
-     * {@link DOMDataTreeWriteTransaction}in data broker associated with this instance of extension.
+     * {@link DOMDataTreeWriteTransaction} in data broker associated with this instance of extension.
      *
      * @param path Subtree path on which commit cohort operates.
      * @param cohort Commit cohort
-     * @param <T> Cohort subclass
-     * @return Registaration object for DOM Data Three Commit cohort.
+     * @return A {@link Registration}
+     * @throws NullPointerException if any argument is {@code null}
      */
-    <T extends DOMDataTreeCommitCohort> DOMDataTreeCommitCohortRegistration<T> registerCommitCohort(
-            DOMDataTreeIdentifier path, T cohort);
+    Registration registerCommitCohort(DOMDataTreeIdentifier path, DOMDataTreeCommitCohort cohort);
 }
