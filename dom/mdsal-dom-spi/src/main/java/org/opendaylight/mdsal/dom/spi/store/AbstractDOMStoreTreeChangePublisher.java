@@ -19,7 +19,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.AbstractRegistrationTree;
-import org.opendaylight.mdsal.dom.spi.RegistrationTreeNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
@@ -93,7 +92,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
         // Take the write lock
         takeLock();
         try {
-            final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
+            final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
                     findNodeFor(treeId.getPathArguments());
             final var reg = new AbstractDOMDataTreeChangeListenerRegistration<>(listener) {
                 @Override
@@ -112,19 +111,19 @@ public abstract class AbstractDOMStoreTreeChangePublisher
     }
 
     private void lookupAndNotify(final List<PathArgument> args,
-            final int offset, final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node,
+            final int offset, final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> node,
             final DataTreeCandidate candidate,
             final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
         if (args.size() != offset) {
             final PathArgument arg = args.get(offset);
 
-            final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> exactChild
+            final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> exactChild
                 = node.getExactChild(arg);
             if (exactChild != null) {
                 lookupAndNotify(args, offset + 1, exactChild, candidate, listenerChanges);
             }
 
-            for (RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> c :
+            for (Node<AbstractDOMDataTreeChangeListenerRegistration<?>> c :
                     node.getInexactChildren(arg)) {
                 lookupAndNotify(args, offset + 1, c, candidate, listenerChanges);
             }
@@ -134,7 +133,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
     }
 
     private void notifyNode(final YangInstanceIdentifier path,
-            final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> regNode,
+            final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> regNode,
             final DataTreeCandidateNode candNode,
             final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
         if (candNode.modificationType() == ModificationType.UNMODIFIED) {

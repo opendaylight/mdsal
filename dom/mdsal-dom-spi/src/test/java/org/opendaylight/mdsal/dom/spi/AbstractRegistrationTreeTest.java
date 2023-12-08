@@ -21,9 +21,9 @@ public class AbstractRegistrationTreeTest extends AbstractRegistrationTree<Objec
     @Test
     public void basicTest() throws Exception {
         final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
-        final RegistrationTreeNode<Object> registrationTreeNodeParent = new RegistrationTreeNode<>(null, pathArgument);
-        final RegistrationTreeNode<Object> registrationTreeNode =
-                new RegistrationTreeNode<>(registrationTreeNodeParent, pathArgument);
+        final Node<Object> registrationTreeNodeParent = new Node<>(null, pathArgument);
+        final Node<Object> registrationTreeNode =
+                new Node<>(registrationTreeNodeParent, pathArgument);
 
         final Object registration = new Object();
         takeLock();
