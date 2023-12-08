@@ -28,7 +28,7 @@ public interface EntityOwnershipService extends
     Registration registerCandidate(Entity entity) throws CandidateAlreadyRegisteredException;
 
     @Override
-    EntityOwnershipListenerRegistration registerListener(String entityType, EntityOwnershipListener listener);
+    Registration registerListener(String entityType, EntityOwnershipListener listener);
 
     @Override
     Optional<EntityOwnershipState> getOwnershipState(Entity forEntity);

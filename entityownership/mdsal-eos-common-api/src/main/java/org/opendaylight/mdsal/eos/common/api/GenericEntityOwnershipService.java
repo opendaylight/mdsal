@@ -55,7 +55,7 @@ public interface GenericEntityOwnershipService<P extends HierarchicalIdentifier<
      * @param listener the listener that is interested in the entities
      * @return a registration object that can be used to unregister the Listener
      */
-    GenericEntityOwnershipListenerRegistration<P, L> registerListener(@NonNull String entityType, @NonNull L listener);
+    @NonNull Registration registerListener(@NonNull String entityType, @NonNull L listener);
 
     /**
      * Gets the current ownership state information for an entity.

@@ -29,7 +29,6 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
@@ -95,9 +94,9 @@ public abstract class AbstractDOMClusterServiceProviderTest {
     @Mock
     public Registration mockDoubleEntityCandReg;
     @Mock
-    public DOMEntityOwnershipListenerRegistration mockEosEntityListReg;
+    public Registration mockEosEntityListReg;
     @Mock
-    public DOMEntityOwnershipListenerRegistration mockEosDoubleEntityListReg;
+    public Registration mockEosDoubleEntityListReg;
 
     public DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
     public TestClusterSingletonService clusterSingletonService;

@@ -12,9 +12,9 @@ import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 
@@ -26,8 +26,7 @@ public class DOMClusterSingletonServiceProviderImpl extends
         AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
                                                     DOMEntityOwnershipChange,
                                                     DOMEntityOwnershipListener,
-                                                    DOMEntityOwnershipService,
-                                                    DOMEntityOwnershipListenerRegistration>
+                                                    DOMEntityOwnershipService>
         implements DOMEntityOwnershipListener {
 
     public DOMClusterSingletonServiceProviderImpl() {
@@ -45,8 +44,7 @@ public class DOMClusterSingletonServiceProviderImpl extends
     }
 
     @Override
-    protected DOMEntityOwnershipListenerRegistration registerListener(final String type,
-            final DOMEntityOwnershipService eos) {
+    protected Registration registerListener(final String type, final DOMEntityOwnershipService eos) {
         return eos.registerListener(type, this);
     }
 

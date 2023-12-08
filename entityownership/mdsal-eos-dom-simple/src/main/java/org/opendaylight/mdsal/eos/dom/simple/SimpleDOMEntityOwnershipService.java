@@ -29,10 +29,8 @@ import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.simple.di.LocalDOMEntityOwnershipService;
-import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -87,9 +85,7 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
     }
 
     @Override
-    public DOMEntityOwnershipListenerRegistration registerListener(final String entityType,
-            final DOMEntityOwnershipListener listener) {
-
+    public Registration registerListener(final String entityType, final DOMEntityOwnershipListener listener) {
         final Collection<DOMEntity> owned;
         synchronized (entities) {
             owned = ImmutableList.copyOf(entities.row(entityType).values());
@@ -100,11 +96,19 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
             listeners.put(entityType, listener);
         }
 
-        for (DOMEntity entity : owned) {
+        for (var entity : owned) {
             notifyListener(listener, new DOMEntityOwnershipChange(entity, LOCAL_OWNERSHIP_GRANTED));
         }
         LOG.debug("{}: registered listener {}", uuid, listener);
-        return new ListenerRegistration(entityType, listener);
+        return new AbstractRegistration() {
+            @Override
+            protected void removeRegistration() {
+                synchronized (listeners) {
+                    listeners.remove(entityType, listener);
+                    LOG.debug("{}: unregistered listener {}", uuid, listener);
+                }
+            }
+        };
     }
 
     @Override
@@ -139,7 +143,6 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
     }
 
     private void notifyListeners(final DOMEntity entity, final EntityOwnershipChangeState state) {
-        final DOMEntityOwnershipChange change = new DOMEntityOwnershipChange(entity, state);
 
         final Collection<DOMEntityOwnershipListener> snap;
 
@@ -147,15 +150,9 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
             snap = ImmutableList.copyOf(listeners.get(entity.getType()));
         }
 
-        for (DOMEntityOwnershipListener listener : snap) {
+        final var change = new DOMEntityOwnershipChange(entity, state);
+        for (var listener : snap) {
             notifyListener(listener, change);
-        }
-    }
-
-    void unregisterListener(final ListenerRegistration reg) {
-        synchronized (listeners) {
-            listeners.remove(reg.getEntityType(), reg.getInstance());
-            LOG.debug("{}: unregistered listener {}", uuid, reg.getInstance());
         }
     }
 
@@ -169,25 +166,5 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
             helper.add("listeners", listeners);
         }
         return helper.toString();
-    }
-
-    private final class ListenerRegistration extends AbstractObjectRegistration<DOMEntityOwnershipListener>
-            implements DOMEntityOwnershipListenerRegistration {
-        private final String entityType;
-
-        ListenerRegistration(final String entityType, final DOMEntityOwnershipListener listener) {
-            super(listener);
-            this.entityType = requireNonNull(entityType);
-        }
-
-        @Override
-        public String getEntityType() {
-            return entityType;
-        }
-
-        @Override
-        protected void removeRegistration() {
-            unregisterListener(this);
-        }
     }
 }
