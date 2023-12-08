@@ -16,12 +16,10 @@ import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
 /**
  * Simple {@link DOMEntityOwnershipService} operating as an isolated island. It has no awareness of the world outside
  * of itself.
- *
- * @author Robert Varga
  */
 @Beta
 @Singleton
-public class LocalDOMEntityOwnershipService extends SimpleDOMEntityOwnershipService {
+public final class LocalDOMEntityOwnershipService extends SimpleDOMEntityOwnershipService {
     @Inject
     public LocalDOMEntityOwnershipService() {
         // Exposed for DI

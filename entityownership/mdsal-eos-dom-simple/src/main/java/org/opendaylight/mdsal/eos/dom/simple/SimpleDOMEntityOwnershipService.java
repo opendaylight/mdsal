@@ -13,7 +13,6 @@ import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState.L
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
@@ -28,20 +27,24 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.simple.di.LocalDOMEntityOwnershipService;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
+import org.opendaylight.yangtools.concepts.AbstractRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 @MetaInfServices
-@Component(immediate = true)
-public class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService {
+public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService
+        permits LocalDOMEntityOwnershipService {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleDOMEntityOwnershipService.class);
 
     @GuardedBy("entities")
@@ -52,20 +55,20 @@ public class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipServic
 
     private final UUID uuid;
 
+    @Activate
+    public SimpleDOMEntityOwnershipService() {
+        this(UUID.randomUUID());
+    }
+
     @VisibleForTesting
     SimpleDOMEntityOwnershipService(final UUID uuid) {
         this.uuid = requireNonNull(uuid);
     }
 
-    public SimpleDOMEntityOwnershipService() {
-        this(UUID.randomUUID());
-    }
-
     @Override
-    public DOMEntityOwnershipCandidateRegistration registerCandidate(final DOMEntity entity)
-            throws CandidateAlreadyRegisteredException {
+    public Registration registerCandidate(final DOMEntity entity) throws CandidateAlreadyRegisteredException {
         synchronized (entities) {
-            final DOMEntity prev = entities.get(entity.getType(), entity.getIdentifier());
+            final var prev = entities.get(entity.getType(), entity.getIdentifier());
             if (prev != null) {
                 throw new CandidateAlreadyRegisteredException(prev);
             }
@@ -75,7 +78,12 @@ public class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipServic
         }
 
         notifyListeners(entity, LOCAL_OWNERSHIP_GRANTED);
-        return new EntityRegistration(entity);
+        return new AbstractRegistration() {
+            @Override
+            protected void removeRegistration() {
+                removeEntity(entity);
+            }
+        };
     }
 
     @Override
@@ -153,28 +161,14 @@ public class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipServic
 
     @Override
     public String toString() {
-        final ToStringHelper h = MoreObjects.toStringHelper(SimpleDOMEntityOwnershipService.class).add("uuid", uuid);
-
+        final var helper = MoreObjects.toStringHelper(SimpleDOMEntityOwnershipService.class).add("uuid", uuid);
         synchronized (entities) {
-            h.add("entities", entities);
+            helper.add("entities", entities);
         }
         synchronized (listeners) {
-            h.add("listeners", listeners);
+            helper.add("listeners", listeners);
         }
-
-        return h.toString();
-    }
-
-    private final class EntityRegistration extends AbstractObjectRegistration<DOMEntity> implements
-            DOMEntityOwnershipCandidateRegistration {
-        EntityRegistration(final DOMEntity entity) {
-            super(entity);
-        }
-
-        @Override
-        protected void removeRegistration() {
-            removeEntity(getInstance());
-        }
+        return helper.toString();
     }
 
     private final class ListenerRegistration extends AbstractObjectRegistration<DOMEntityOwnershipListener>

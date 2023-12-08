@@ -28,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
@@ -37,6 +36,7 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.mdsal.singleton.dom.impl.util.TestEntity;
 import org.opendaylight.mdsal.singleton.dom.impl.util.TestInstanceIdentifier;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * Testing {@link ClusterSingletonServiceGroupImpl}.
@@ -54,9 +54,9 @@ public class ClusterSingletonServiceGroupImplTest {
     @Mock
     public ClusterSingletonService mockClusterSingletonServiceSecond;
     @Mock
-    public GenericEntityOwnershipCandidateRegistration<?, ?> mockEntityCandReg;
+    public Registration mockEntityCandReg;
     @Mock
-    public GenericEntityOwnershipCandidateRegistration<?, ?> mockCloseEntityCandReg;
+    public Registration mockCloseEntityCandReg;
     @Mock
     public GenericEntityOwnershipListener<TestInstanceIdentifier,
         GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>> mockEosListener;

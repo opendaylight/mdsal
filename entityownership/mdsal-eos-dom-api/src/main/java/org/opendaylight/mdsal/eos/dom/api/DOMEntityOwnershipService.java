@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
@@ -23,8 +24,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public interface DOMEntityOwnershipService extends
         GenericEntityOwnershipService<YangInstanceIdentifier, DOMEntity, DOMEntityOwnershipListener> {
     @Override
-    DOMEntityOwnershipCandidateRegistration registerCandidate(DOMEntity entity)
-            throws CandidateAlreadyRegisteredException;
+    Registration registerCandidate(DOMEntity entity) throws CandidateAlreadyRegisteredException;
 
     @Override
     DOMEntityOwnershipListenerRegistration registerListener(String entityType,

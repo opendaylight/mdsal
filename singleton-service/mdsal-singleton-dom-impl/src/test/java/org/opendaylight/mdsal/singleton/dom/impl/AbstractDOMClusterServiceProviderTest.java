@@ -28,13 +28,13 @@ import org.mockito.Mock;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * Abstract {@link DOMClusterSingletonServiceProviderImpl} testing substrate.
@@ -70,7 +70,7 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
         @Override
         public final void instantiateServiceInstance() {
-            this.serviceState = TestClusterSingletonServiceState.STARTED;
+            serviceState = TestClusterSingletonServiceState.STARTED;
         }
 
         final TestClusterSingletonServiceState getServiceState() {
@@ -79,7 +79,7 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
         @Override
         public ListenableFuture<Void> closeServiceInstance() {
-            this.serviceState = TestClusterSingletonServiceState.DESTROYED;
+            serviceState = TestClusterSingletonServiceState.DESTROYED;
             return Futures.immediateFuture(null);
         }
     }
@@ -91,9 +91,9 @@ public abstract class AbstractDOMClusterServiceProviderTest {
     @Mock
     public DOMEntityOwnershipService mockEos;
     @Mock
-    public DOMEntityOwnershipCandidateRegistration mockEntityCandReg;
+    public Registration mockEntityCandReg;
     @Mock
-    public DOMEntityOwnershipCandidateRegistration mockDoubleEntityCandReg;
+    public Registration mockDoubleEntityCandReg;
     @Mock
     public DOMEntityOwnershipListenerRegistration mockEosEntityListReg;
     @Mock

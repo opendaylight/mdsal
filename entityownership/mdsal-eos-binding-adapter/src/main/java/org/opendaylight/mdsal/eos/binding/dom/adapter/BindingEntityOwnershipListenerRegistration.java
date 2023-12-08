@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
 /**
  * Implementation of EntityOwnershipListenerRegistration whose instances are returned from the
- * {@link BindingDOMEntityOwnershipServiceAdapter}.
+ * {@link DefaultEntityOwnershipService}.
  *
  * @author Thomas Pantelis
  */

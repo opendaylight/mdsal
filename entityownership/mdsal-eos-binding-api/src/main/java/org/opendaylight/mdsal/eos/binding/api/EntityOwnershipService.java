@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -24,12 +25,10 @@ public interface EntityOwnershipService extends
         GenericEntityOwnershipService<InstanceIdentifier<?>, Entity, EntityOwnershipListener> {
 
     @Override
-    EntityOwnershipCandidateRegistration registerCandidate(Entity entity)
-            throws CandidateAlreadyRegisteredException;
+    Registration registerCandidate(Entity entity) throws CandidateAlreadyRegisteredException;
 
     @Override
-    EntityOwnershipListenerRegistration registerListener(String entityType,
-            EntityOwnershipListener listener);
+    EntityOwnershipListenerRegistration registerListener(String entityType, EntityOwnershipListener listener);
 
     @Override
     Optional<EntityOwnershipState> getOwnershipState(Entity forEntity);

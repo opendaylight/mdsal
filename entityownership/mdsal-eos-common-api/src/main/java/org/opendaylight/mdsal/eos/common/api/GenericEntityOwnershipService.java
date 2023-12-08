@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.eos.common.api;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * <p>
@@ -29,7 +30,6 @@ import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
  */
 public interface GenericEntityOwnershipService<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
         L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, E>>> {
-
     /**
      * Registers a candidate for ownership of the given entity. Only one such request can be made per entity
      * per process. If multiple requests for registering a candidate for a given entity are received in the
@@ -43,8 +43,7 @@ public interface GenericEntityOwnershipService<P extends HierarchicalIdentifier<
      * @return a registration object that can be used to unregister the Candidate
      * @throws CandidateAlreadyRegisteredException if the candidate was already registered
      */
-    GenericEntityOwnershipCandidateRegistration<P, E> registerCandidate(@NonNull E entity)
-            throws CandidateAlreadyRegisteredException;
+    @NonNull Registration registerCandidate(@NonNull E entity) throws CandidateAlreadyRegisteredException;
 
     /**
      * Registers a listener that is interested in ownership changes for entities of the given entity type. The

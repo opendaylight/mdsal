@@ -37,13 +37,13 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +164,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * acquire {@link #cleanupEntity}.
      */
     @GuardedBy("this")
-    private GenericEntityOwnershipCandidateRegistration<P, E> serviceEntityReg = null;
+    private Registration serviceEntityReg = null;
     /**
      * Service (base) entity last reported state.
      */
@@ -176,7 +176,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * and startup.
      */
     @GuardedBy("this")
-    private GenericEntityOwnershipCandidateRegistration<P, E> cleanupEntityReg;
+    private Registration cleanupEntityReg;
     /**
      * Cleanup (owner) entity last reported state.
      */

@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -23,6 +22,10 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Adapter that bridges between the binding and DOM EntityOwnershipService interfaces.
@@ -30,22 +33,22 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
  * @author Thomas Pantelis
  */
 @Singleton
-public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService, AutoCloseable {
+@Component
+public final class DefaultEntityOwnershipService implements EntityOwnershipService {
     private final @NonNull DOMEntityOwnershipService domService;
     private final @NonNull AdapterContext adapterContext;
 
     @Inject
-    public BindingDOMEntityOwnershipServiceAdapter(final @NonNull DOMEntityOwnershipService domService,
-            final @NonNull AdapterContext adapterContext) {
+    @Activate
+    public DefaultEntityOwnershipService(@Reference final @NonNull DOMEntityOwnershipService domService,
+            @Reference final @NonNull AdapterContext adapterContext) {
         this.domService = requireNonNull(domService);
         this.adapterContext = requireNonNull(adapterContext);
     }
 
     @Override
-    public EntityOwnershipCandidateRegistration registerCandidate(final Entity entity)
-            throws CandidateAlreadyRegisteredException {
-        return new BindingEntityOwnershipCandidateRegistration(
-                domService.registerCandidate(toDOMEntity(entity)), entity);
+    public Registration registerCandidate(final Entity entity) throws CandidateAlreadyRegisteredException {
+        return domService.registerCandidate(toDOMEntity(entity));
     }
 
     @Override
@@ -68,9 +71,5 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
     private @NonNull DOMEntity toDOMEntity(final Entity entity) {
         return new DOMEntity(entity.getType(),
             adapterContext.currentSerializer().toYangInstanceIdentifier(entity.getIdentifier()));
-    }
-
-    @Override
-    public void close() {
     }
 }

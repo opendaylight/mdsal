@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.eos.dom.simple;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -19,102 +20,88 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class SimpleDOMEntityOwnershipServiceTest {
-    public static final String FOO_TYPE = "foo";
-    public static final String BAR_TYPE = "bar";
+@ExtendWith(MockitoExtension.class)
+class SimpleDOMEntityOwnershipServiceTest {
+    private static final String FOO_TYPE = "foo";
+    private static final String BAR_TYPE = "bar";
+    private static final DOMEntity FOO_FOO_ENTITY = new DOMEntity(FOO_TYPE, "foo");
+    private static final DOMEntity FOO_BAR_ENTITY = new DOMEntity(FOO_TYPE, "bar");
 
-    public static final DOMEntity FOO_FOO_ENTITY = new DOMEntity(FOO_TYPE, "foo");
-    public static final DOMEntity FOO_BAR_ENTITY = new DOMEntity(FOO_TYPE, "bar");
-
-    public final DOMEntityOwnershipService service = new SimpleDOMEntityOwnershipService();
+    final DOMEntityOwnershipService service = new SimpleDOMEntityOwnershipService();
 
     @Test
-    public void testNonExistingEntity() {
+    void testNonExistingEntity() {
         assertFalse(service.isCandidateRegistered(FOO_FOO_ENTITY));
-        final Optional<EntityOwnershipState> state = service.getOwnershipState(FOO_FOO_ENTITY);
-        assertNotNull(state);
-        assertFalse(state.isPresent());
+        assertEquals(Optional.empty(), service.getOwnershipState(FOO_FOO_ENTITY));
     }
 
     @Test
-    public void testExistingEntity() throws CandidateAlreadyRegisteredException {
-        final DOMEntityOwnershipCandidateRegistration reg = service.registerCandidate(FOO_FOO_ENTITY);
-        assertNotNull(reg);
+    void testExistingEntity() throws Exception {
+        try (var reg = service.registerCandidate(FOO_FOO_ENTITY)) {
+            assertNotNull(reg);
 
-        assertTrue(service.isCandidateRegistered(FOO_FOO_ENTITY));
-        assertFalse(service.isCandidateRegistered(FOO_BAR_ENTITY));
+            assertTrue(service.isCandidateRegistered(FOO_FOO_ENTITY));
+            assertFalse(service.isCandidateRegistered(FOO_BAR_ENTITY));
 
-        final Optional<EntityOwnershipState> state = service.getOwnershipState(FOO_FOO_ENTITY);
-        assertNotNull(state);
-        assertTrue(state.isPresent());
-        assertEquals(EntityOwnershipState.IS_OWNER, state.orElseThrow());
-
-        reg.close();
+            assertEquals(Optional.of(EntityOwnershipState.IS_OWNER), service.getOwnershipState(FOO_FOO_ENTITY));
+        }
         assertFalse(service.isCandidateRegistered(FOO_FOO_ENTITY));
     }
 
-    @Test(expected = CandidateAlreadyRegisteredException.class)
-    public void testDuplicateRegistration() throws CandidateAlreadyRegisteredException {
-        final DOMEntityOwnershipCandidateRegistration reg = service.registerCandidate(FOO_FOO_ENTITY);
-        assertNotNull(reg);
+    @Test
+    void testDuplicateRegistration() throws Exception {
+        assertNotNull(service.registerCandidate(FOO_FOO_ENTITY));
 
         // Should throw
-        service.registerCandidate(FOO_FOO_ENTITY);
+        assertThrows(CandidateAlreadyRegisteredException.class, () -> service.registerCandidate(FOO_FOO_ENTITY));
     }
 
     @Test
-    public void testListener() throws CandidateAlreadyRegisteredException {
-        final DOMEntityOwnershipCandidateRegistration entityReg = service.registerCandidate(FOO_FOO_ENTITY);
+    void testListener() throws Exception {
+        final var entityReg = service.registerCandidate(FOO_FOO_ENTITY);
         assertNotNull(entityReg);
 
         // Mismatched type, not triggered
-        final DOMEntityOwnershipListener barListener = mock(DOMEntityOwnershipListener.class);
-        final DOMEntityOwnershipListenerRegistration barReg = service.registerListener(BAR_TYPE, barListener);
+        final var barListener = mock(DOMEntityOwnershipListener.class);
+        try (var barReg = service.registerListener(BAR_TYPE, barListener)) {
+            // Matching type should be triggered
+            final var fooListener = mock(DOMEntityOwnershipListener.class);
+            doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
+            try (var fooReg = service.registerListener(FOO_TYPE, fooListener)) {
+                final var fooCaptor = ArgumentCaptor.forClass(DOMEntityOwnershipChange.class);
+                verify(fooListener).ownershipChanged(fooCaptor.capture());
 
-        // Matching type should be triggered
-        final DOMEntityOwnershipListener fooListener = mock(DOMEntityOwnershipListener.class);
-        doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
-        final DOMEntityOwnershipListenerRegistration fooReg = service.registerListener(FOO_TYPE, fooListener);
-        final ArgumentCaptor<DOMEntityOwnershipChange> fooCaptor = ArgumentCaptor.forClass(
-            DOMEntityOwnershipChange.class);
-        verify(fooListener).ownershipChanged(fooCaptor.capture());
+                var fooChange = fooCaptor.getValue();
+                assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
+                assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, fooChange.getState());
 
-        DOMEntityOwnershipChange fooChange = fooCaptor.getValue();
-        assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
-        assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, fooChange.getState());
-
-        reset(fooListener);
-        doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
-        entityReg.close();
-        verify(fooListener).ownershipChanged(fooCaptor.capture());
-        fooChange = fooCaptor.getValue();
-        assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
-        assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER, fooChange.getState());
-
-        fooReg.close();
-        barReg.close();
+                reset(fooListener);
+                doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
+                entityReg.close();
+                verify(fooListener).ownershipChanged(fooCaptor.capture());
+                fooChange = fooCaptor.getValue();
+                assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
+                assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER, fooChange.getState());
+            }
+        }
     }
 
     @Test
-    public void testToString() throws CandidateAlreadyRegisteredException {
-        final UUID uuid = UUID.randomUUID();
-        final String expected = String.format("SimpleDOMEntityOwnershipService{uuid=%s, entities={}, listeners={}}",
-            uuid);
+    void testToString() throws Exception {
+        final var uuid = UUID.randomUUID();
+        final var expected = String.format("SimpleDOMEntityOwnershipService{uuid=%s, entities={}, listeners={}}", uuid);
         assertEquals(expected, new SimpleDOMEntityOwnershipService(uuid).toString());
     }
 }
