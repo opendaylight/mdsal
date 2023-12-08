@@ -7,18 +7,16 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
-import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.AbstractRegistrationTree;
+import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
@@ -32,32 +30,73 @@ import org.slf4j.LoggerFactory;
  * Abstract base class for {@link DOMStoreTreeChangePublisher} implementations.
  */
 public abstract class AbstractDOMStoreTreeChangePublisher
-    extends AbstractRegistrationTree<AbstractDOMDataTreeChangeListenerRegistration<?>>
+        extends AbstractRegistrationTree<AbstractDOMStoreTreeChangePublisher.RegImpl>
         implements DOMStoreTreeChangePublisher {
+    /**
+     * A handle to a registered {@link DOMDataTreeChangeListener}. Implementations of this interface are guaranteed to
+     * use identity-based equality.
+     */
+    @NonNullByDefault
+    protected sealed interface Reg permits RegImpl {
+        /**
+         * Return the underlying listener.
+         *
+         * @return the underlying listener
+         */
+        DOMDataTreeChangeListener listener();
+
+        /**
+         * Check if this handle has not been closed yet.
+         *
+         * @return {@code true} if this handle is still open
+         */
+        boolean notClosed();
+    }
+
+    /**
+     * Registration handle for a {@link DOMDataTreeChangeListener}. This class is exposed to subclasses only as a
+     * convenience, so they can use its identity-based equality while at the same time having access to the listener.
+     *
+     * <p>
+     * Implementations must not invoke {@link #close()} nor should otherwise interact with the registration.
+     */
+    @NonNullByDefault
+    final class RegImpl extends AbstractObjectRegistration<DOMDataTreeChangeListener> implements Reg {
+        private RegImpl(final DOMDataTreeChangeListener instance) {
+            super(instance);
+        }
+
+        @Override
+        public DOMDataTreeChangeListener listener() {
+            return getInstance();
+        }
+
+        @Override
+        protected void removeRegistration() {
+            registrationRemoved(this);
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMStoreTreeChangePublisher.class);
 
     /**
      * Callback for subclass to notify a specified registration of a list of candidates. This method is guaranteed
      * to be only called from within {@link #processCandidateTree(DataTreeCandidate)}.
+     *
      * @param registration the registration to notify
      * @param changes the list of DataTreeCandidate changes
      */
-    protected abstract void notifyListener(@NonNull AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            @NonNull List<DataTreeCandidate> changes);
+    protected abstract void notifyListener(@NonNull Reg registration, @NonNull List<DataTreeCandidate> changes);
 
     /**
-     * Callback notifying the subclass that the specified registration is being
-     * closed and it's user no longer
-     * wishes to receive notifications. This notification is invoked while
-     * the {@link org.opendaylight.yangtools.concepts.ListenerRegistration#close()}
-     * method is executing. Subclasses can use this callback to properly
-     * remove any delayed notifications pending
-     * towards the registration.
+     * Callback notifying the subclass that the specified registration is being closed and it's user no longer wishes to
+     * receive notifications. This notification is invoked while the
+     * {@link org.opendaylight.yangtools.concepts.Registration#close()} method is executing. Subclasses can use this
+     * callback to properly remove any delayed notifications pending towards the registration.
      *
      * @param registration Registration which is being closed
      */
-    protected abstract void registrationRemoved(
-            @NonNull AbstractDOMDataTreeChangeListenerRegistration<?> registration);
+    protected abstract void registrationRemoved(@NonNull Reg registration);
 
     /**
      * Process a candidate tree with respect to registered listeners.
@@ -66,19 +105,18 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      * @return true if at least one listener was notified or false.
      */
     protected final boolean processCandidateTree(final @NonNull DataTreeCandidate candidate) {
-        final DataTreeCandidateNode node = candidate.getRootNode();
+        final var node = candidate.getRootNode();
         if (node.modificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", candidate);
             return false;
         }
 
         try (var snapshot = takeSnapshot()) {
-            final List<PathArgument> toLookup = ImmutableList.copyOf(candidate.getRootPath().getPathArguments());
-            final ListMultimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges =
-                    Multimaps.newListMultimap(new IdentityHashMap<>(), ArrayList::new);
+            final var toLookup = List.copyOf(candidate.getRootPath().getPathArguments());
+            final var listenerChanges = new IdentityHashMap<Reg, List<DataTreeCandidate>>();
             lookupAndNotify(toLookup, 0, snapshot.getRootNode(), candidate, listenerChanges);
 
-            for (var entry : Multimaps.asMap(listenerChanges).entrySet()) {
+            for (var entry : listenerChanges.entrySet()) {
                 notifyListener(entry.getKey(), entry.getValue());
             }
 
@@ -87,22 +125,13 @@ public abstract class AbstractDOMStoreTreeChangePublisher
     }
 
     @Override
-    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
-        registerTreeChangeListener(final YangInstanceIdentifier treeId, final L listener) {
+    public final Registration registerTreeChangeListener(final YangInstanceIdentifier treeId,
+            final DOMDataTreeChangeListener listener) {
         // Take the write lock
         takeLock();
         try {
-            final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
-                    findNodeFor(treeId.getPathArguments());
-            final var reg = new AbstractDOMDataTreeChangeListenerRegistration<>(listener) {
-                @Override
-                protected void removeRegistration() {
-                    AbstractDOMStoreTreeChangePublisher.this.removeRegistration(node, this);
-                    registrationRemoved(this);
-                }
-            };
-
-            addRegistration(node, reg);
+            final var reg = new RegImpl(listener);
+            addRegistration(findNodeFor(treeId.getPathArguments()), reg);
             return reg;
         } finally {
             // Always release the lock
@@ -110,32 +139,25 @@ public abstract class AbstractDOMStoreTreeChangePublisher
         }
     }
 
-    private void lookupAndNotify(final List<PathArgument> args,
-            final int offset, final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> node,
-            final DataTreeCandidate candidate,
-            final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
-        if (args.size() != offset) {
-            final PathArgument arg = args.get(offset);
-
-            final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> exactChild
-                = node.getExactChild(arg);
-            if (exactChild != null) {
-                lookupAndNotify(args, offset + 1, exactChild, candidate, listenerChanges);
-            }
-
-            for (Node<AbstractDOMDataTreeChangeListenerRegistration<?>> c :
-                    node.getInexactChildren(arg)) {
-                lookupAndNotify(args, offset + 1, c, candidate, listenerChanges);
-            }
-        } else {
+    private void lookupAndNotify(final List<PathArgument> args, final int offset, final Node<RegImpl> node,
+            final DataTreeCandidate candidate, final Map<Reg, List<DataTreeCandidate>> listenerChanges) {
+        if (args.size() == offset) {
             notifyNode(candidate.getRootPath(), node, candidate.getRootNode(), listenerChanges);
+            return;
+        }
+
+        final var arg = args.get(offset);
+        final var exactChild = node.getExactChild(arg);
+        if (exactChild != null) {
+            lookupAndNotify(args, offset + 1, exactChild, candidate, listenerChanges);
+        }
+        for (var child : node.getInexactChildren(arg)) {
+            lookupAndNotify(args, offset + 1, child, candidate, listenerChanges);
         }
     }
 
-    private void notifyNode(final YangInstanceIdentifier path,
-            final Node<AbstractDOMDataTreeChangeListenerRegistration<?>> regNode,
-            final DataTreeCandidateNode candNode,
-            final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
+    private void notifyNode(final YangInstanceIdentifier path, final Node<RegImpl> regNode,
+            final DataTreeCandidateNode candNode, final Map<Reg, List<DataTreeCandidate>> listenerChanges) {
         if (candNode.modificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", path);
             return;
@@ -143,7 +165,10 @@ public abstract class AbstractDOMStoreTreeChangePublisher
 
         final var regs = regNode.getRegistrations();
         if (!regs.isEmpty()) {
-            addToListenerChanges(regs, path, candNode, listenerChanges);
+            final var dataTreeCandidate = DataTreeCandidates.newDataTreeCandidate(path, candNode);
+            for (var reg : regs) {
+                listenerChanges.computeIfAbsent(reg, ignored -> new ArrayList<>()).add(dataTreeCandidate);
+            }
         }
 
         for (var candChild : candNode.childNodes()) {
@@ -157,17 +182,6 @@ public abstract class AbstractDOMStoreTreeChangePublisher
                     notifyNode(path.node(candChild.name()), rc, candChild, listenerChanges);
                 }
             }
-        }
-    }
-
-    private static void addToListenerChanges(
-            final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
-            final YangInstanceIdentifier path, final DataTreeCandidateNode node,
-            final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
-        final DataTreeCandidate dataTreeCandidate = DataTreeCandidates.newDataTreeCandidate(path, node);
-
-        for (AbstractDOMDataTreeChangeListenerRegistration<?> reg : registrations) {
-            listenerChanges.put(reg, dataTreeCandidate);
         }
     }
 }
