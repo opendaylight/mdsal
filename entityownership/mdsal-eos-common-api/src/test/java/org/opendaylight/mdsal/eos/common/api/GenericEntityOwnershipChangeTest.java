@@ -7,22 +7,26 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-public class GenericEntityOwnershipChangeTest {
+@ExtendWith(MockitoExtension.class)
+class GenericEntityOwnershipChangeTest {
+    @Mock
+    private GenericEntity<?> genericEntity;
 
     @Test
-    public void basicTest() throws Exception {
-        final GenericEntity genericEntity = mock(GenericEntity.class);
+    void basicTest() {
         doReturn("testEntity").when(genericEntity).toString();
-        final GenericEntityOwnershipChange genericEntityOwnershipChange =
-                new GenericEntityOwnershipChange(genericEntity, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+        final var genericEntityOwnershipChange = new GenericEntityOwnershipChange<>(genericEntity,
+            EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
 
         assertEquals(genericEntity, genericEntityOwnershipChange.getEntity());
         assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, genericEntityOwnershipChange.getState());

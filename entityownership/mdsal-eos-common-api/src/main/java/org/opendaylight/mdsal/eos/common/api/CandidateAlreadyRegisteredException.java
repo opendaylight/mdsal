@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.eos.common.api;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
@@ -18,7 +17,7 @@ import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
  * duplicate registration or two different components within the same process trying to register a Candidate.
  */
 public class CandidateAlreadyRegisteredException extends Exception {
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     private final @NonNull GenericEntity<?> entity;
@@ -33,7 +32,6 @@ public class CandidateAlreadyRegisteredException extends Exception {
      * Gets the entity for which a Candidate has already been registered in the current process.
      *
      * @param <T> the instance identifier path type
-     *
      * @return the entity.
      */
     @SuppressWarnings("unchecked")

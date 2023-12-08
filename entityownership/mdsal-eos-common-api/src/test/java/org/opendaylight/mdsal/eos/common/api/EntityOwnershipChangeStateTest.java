@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.eos.common.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -19,9 +20,8 @@ import org.junit.Test;
  * @author Thomas Pantelis
  */
 public class EntityOwnershipChangeStateTest {
-
     @Test
-    public void testFromWithValid() throws Exception {
+    public void testFromWithValid() {
         assertEquals("from(false, true, true)", EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED,
                 EntityOwnershipChangeState.from(false, true, true));
         assertEquals("from(true, false, true)", EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER,
@@ -36,19 +36,19 @@ public class EntityOwnershipChangeStateTest {
                 EntityOwnershipChangeState.from(true, true, true));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFromWithInvalidFalseTrueFalse() {
-        EntityOwnershipChangeState.from(false, true, false);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testFromWithInvalidTrueTrueFalse() {
-        EntityOwnershipChangeState.from(true, true, false);
+        assertThrows(IllegalArgumentException.class, () -> EntityOwnershipChangeState.from(false, true, false));
     }
 
     @Test
-    public void basicTest() throws Exception {
-        EntityOwnershipChangeState entityOwnershipChangeState = EntityOwnershipChangeState.from(false, true, true);
+    public void testFromWithInvalidTrueTrueFalse() {
+        assertThrows(IllegalArgumentException.class, () -> EntityOwnershipChangeState.from(true, true, false));
+    }
+
+    @Test
+    public void basicTest() {
+        final var entityOwnershipChangeState = EntityOwnershipChangeState.from(false, true, true);
         assertTrue(entityOwnershipChangeState.hasOwner());
         assertTrue(entityOwnershipChangeState.isOwner());
         assertFalse(entityOwnershipChangeState.wasOwner());

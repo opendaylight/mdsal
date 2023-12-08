@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Enumerates the current ownership state for an entity.
  *
@@ -28,13 +30,10 @@ public enum EntityOwnershipState {
      */
     NO_OWNER;
 
-    public static EntityOwnershipState from(boolean isOwner, boolean hasOwner) {
+    public static @NonNull EntityOwnershipState from(final boolean isOwner, final boolean hasOwner) {
         if (isOwner) {
             return IS_OWNER;
-        } else if (hasOwner) {
-            return OWNED_BY_OTHER;
-        } else {
-            return NO_OWNER;
         }
+        return hasOwner ? OWNED_BY_OTHER : NO_OWNER;
     }
 }

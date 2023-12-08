@@ -7,16 +7,15 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EntityOwnershipStateTest {
-
+class EntityOwnershipStateTest {
     @Test
-    public void fromTest() throws Exception {
-        assertEquals(EntityOwnershipState.NO_OWNER, EntityOwnershipState.from(false, false));
-        assertEquals(EntityOwnershipState.IS_OWNER, EntityOwnershipState.from(true, false));
-        assertEquals(EntityOwnershipState.OWNED_BY_OTHER, EntityOwnershipState.from(false, true));
+    void fromTest() {
+        assertSame(EntityOwnershipState.NO_OWNER, EntityOwnershipState.from(false, false));
+        assertSame(EntityOwnershipState.IS_OWNER, EntityOwnershipState.from(true, false));
+        assertSame(EntityOwnershipState.OWNED_BY_OTHER, EntityOwnershipState.from(false, true));
     }
 }

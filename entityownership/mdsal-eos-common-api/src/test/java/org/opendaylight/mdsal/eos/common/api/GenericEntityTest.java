@@ -7,22 +7,20 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.Serial;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
-public class GenericEntityTest {
-
+class GenericEntityTest {
     @Test
-    public void basicTest() throws Exception {
-        final TestClass testClass = new TestClass();
-        final GenericEntity<?> genericEntity = new GenericEntity<>("testType", testClass);
-        final GenericEntity<?> genericEntityDiff = new GenericEntity<>("differentTestType", new TestClassDiff());
+    void basicTest() {
+        final var testClass = new TestClass();
+        final var genericEntity = new GenericEntity<>("testType", testClass);
+        final var genericEntityDiff = new GenericEntity<>("differentTestType", new TestClassDiff());
 
         assertEquals(TestClass.class, genericEntity.getIdentifier().getClass());
         assertEquals("testType", genericEntity.getType());
@@ -36,7 +34,7 @@ public class GenericEntityTest {
     }
 
     private static final class TestClass implements HierarchicalIdentifier<TestClass> {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -46,7 +44,7 @@ public class GenericEntityTest {
     }
 
     private static final class TestClassDiff implements HierarchicalIdentifier<TestClassDiff> {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         @Override
