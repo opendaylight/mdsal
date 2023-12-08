@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -27,13 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a single node within the registration tree. Note that the data returned from
- * and instance of this class is guaranteed to have any relevance or consistency
- * only as long as the {@link RegistrationTreeSnapshot} instance through which it is reached
- * remains unclosed.
+ * This is a single node within the registration tree. Note that the data returned from and instance of this class is
+ * guaranteed to have any relevance or consistency only as long as the {@link RegistrationTreeSnapshot} instance through
+ * which it is reached remains unclosed.
  *
  * @param <T> registration type
- * @author Robert Varga
  */
 public final class RegistrationTreeNode<T> implements Identifiable<PathArgument> {
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationTreeNode.class);
@@ -58,9 +58,9 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
      * Return the child matching a {@link PathArgument} specification.
      *
      * @param arg Child identifier
-     * @return Child matching exactly, or null.
+     * @return Child matching exactly, or {@code null}.
      */
-    public RegistrationTreeNode<T> getExactChild(final @NonNull PathArgument arg) {
+    public @Nullable RegistrationTreeNode<T> getExactChild(final @NonNull PathArgument arg) {
         return children.get(requireNonNull(arg));
     }
 
@@ -80,7 +80,7 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
              *       partial wildcards by iterating over the registrations and matching the maps for
              *       partial matches.
              */
-            final RegistrationTreeNode<T> child = children.get(new NodeIdentifier(arg.getNodeType()));
+            final var child = children.get(new NodeIdentifier(arg.getNodeType()));
             if (child == null) {
                 return Collections.emptyList();
             }
@@ -95,30 +95,29 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
         return publicRegistrations;
     }
 
-    RegistrationTreeNode<T> ensureChild(final @NonNull PathArgument child) {
-        RegistrationTreeNode<T> potential = children.get(requireNonNull(child));
-        if (potential == null) {
-            potential = new RegistrationTreeNode<>(this, child);
-            children.put(child, potential);
-        }
-        return potential;
+    @VisibleForTesting
+    @NonNull RegistrationTreeNode<T> ensureChild(final @NonNull PathArgument child) {
+        return children.computeIfAbsent(requireNonNull(child), key -> new RegistrationTreeNode<>(this, key));
     }
 
+    @VisibleForTesting
     void addRegistration(final @NonNull T registration) {
         registrations.add(requireNonNull(registration));
         LOG.debug("Registration {} added", registration);
     }
 
+    @VisibleForTesting
     void removeRegistration(final @NonNull T registration) {
-        registrations.remove(requireNonNull(registration));
-        LOG.debug("Registration {} removed", registration);
+        if (registrations.remove(requireNonNull(registration))) {
+            LOG.debug("Registration {} removed", registration);
 
-        // We have been called with the write-lock held, so we can perform some cleanup.
-        removeThisIfUnused();
+            // We have been called with the write-lock held, so we can perform some cleanup.
+            removeThisIfUnused();
+        }
     }
 
     private void removeThisIfUnused() {
-        final RegistrationTreeNode<T> p = parent.get();
+        final var p = parent.get();
         if (p != null && registrations.isEmpty() && children.isEmpty()) {
             p.removeChild(identifier);
         }
