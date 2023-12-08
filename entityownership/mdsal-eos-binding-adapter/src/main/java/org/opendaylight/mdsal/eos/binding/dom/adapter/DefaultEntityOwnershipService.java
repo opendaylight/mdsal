@@ -16,7 +16,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
@@ -52,10 +51,8 @@ public final class DefaultEntityOwnershipService implements EntityOwnershipServi
     }
 
     @Override
-    public EntityOwnershipListenerRegistration registerListener(final String entityType,
-            final EntityOwnershipListener listener) {
-        return new BindingEntityOwnershipListenerRegistration(entityType, listener,
-            domService.registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, adapterContext)));
+    public Registration registerListener(final String entityType, final EntityOwnershipListener listener) {
+        return domService.registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, adapterContext));
     }
 
     @Override

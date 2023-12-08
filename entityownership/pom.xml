@@ -24,7 +24,6 @@
 
     <modules>
         <module>mdsal-eos-common-api</module>
-        <module>mdsal-eos-common-spi</module>
         <module>mdsal-eos-dom-api</module>
         <module>mdsal-eos-dom-simple</module>
         <module>mdsal-eos-binding-api</module>

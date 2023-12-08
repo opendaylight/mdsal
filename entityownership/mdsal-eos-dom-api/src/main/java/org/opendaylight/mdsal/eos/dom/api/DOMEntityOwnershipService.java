@@ -27,8 +27,7 @@ public interface DOMEntityOwnershipService extends
     Registration registerCandidate(DOMEntity entity) throws CandidateAlreadyRegisteredException;
 
     @Override
-    DOMEntityOwnershipListenerRegistration registerListener(String entityType,
-            DOMEntityOwnershipListener listener);
+    Registration registerListener(String entityType, DOMEntityOwnershipListener listener);
 
     @Override
     Optional<EntityOwnershipState> getOwnershipState(DOMEntity forEntity);

@@ -31,9 +31,5 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-eos-common-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-eos-common-spi</artifactId>
-        </dependency>
     </dependencies>
 </project>

@@ -30,14 +30,12 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.yangtools.concepts.Registration;
 
@@ -65,9 +63,7 @@ public class DefaultEntityOwnershipServiceTest {
                 BINDING_ENTITY.getIdentifier());
         doReturn(BINDING_ENTITY.getIdentifier()).when(mockCodecRegistry).fromYangInstanceIdentifier(
                 DOM_ENTITY.getIdentifier());
-
-        adapter = new DefaultEntityOwnershipService(mockDOMService,
-            new ConstantAdapterContext(mockCodecRegistry));
+        adapter = new DefaultEntityOwnershipService(mockDOMService, new ConstantAdapterContext(mockCodecRegistry));
     }
 
     @Test
@@ -83,35 +79,28 @@ public class DefaultEntityOwnershipServiceTest {
 
     @Test
     public void testRegisterListener() {
-        final DOMEntityOwnershipListenerRegistration mockDOMReg = mock(DOMEntityOwnershipListenerRegistration.class);
+        final var mockDOMReg = mock(Registration.class);
         doReturn(mockDOMReg).when(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),
                 any(DOMEntityOwnershipListener.class));
-        final EntityOwnershipListener mockListener = mock(EntityOwnershipListener.class);
+        final var mockListener = mock(EntityOwnershipListener.class);
 
-        final EntityOwnershipListenerRegistration reg = adapter.registerListener(
-                BINDING_ENTITY.getType(), mockListener);
+        try (var reg = adapter.registerListener(BINDING_ENTITY.getType(), mockListener)) {
+            assertNotNull("registerListener returned null", reg);
 
-        assertNotNull("registerListener returned null", reg);
-        assertEquals("getInstance", mockListener, reg.getInstance());
-        assertEquals("getEntityType", BINDING_ENTITY.getType(), reg.getEntityType());
+            final var domListenerCaptor = ArgumentCaptor.forClass(DOMEntityOwnershipListener.class);
+            verify(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),  domListenerCaptor.capture());
 
-        final ArgumentCaptor<DOMEntityOwnershipListener> domListenerCaptor = ArgumentCaptor.forClass(
-                DOMEntityOwnershipListener.class);
-        verify(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),  domListenerCaptor.capture());
-
-        final DOMEntityOwnershipChange domOwnershipChange = new DOMEntityOwnershipChange(DOM_ENTITY,
+            final var domOwnershipChange = new DOMEntityOwnershipChange(DOM_ENTITY,
                 EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
-        domListenerCaptor.getValue().ownershipChanged(domOwnershipChange);
+            domListenerCaptor.getValue().ownershipChanged(domOwnershipChange);
 
-        final ArgumentCaptor<EntityOwnershipChange> ownershipChangeCaptor = ArgumentCaptor.forClass(
-                EntityOwnershipChange.class);
-        verify(mockListener).ownershipChanged(ownershipChangeCaptor.capture());
+            final var ownershipChangeCaptor = ArgumentCaptor.forClass(EntityOwnershipChange.class);
+            verify(mockListener).ownershipChanged(ownershipChangeCaptor.capture());
 
-        final EntityOwnershipChange change = ownershipChangeCaptor.getValue();
-        assertEquals("getEntity", BINDING_ENTITY, change.getEntity());
-        assertEquals("getState", EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, change.getState());
-
-        reg.close();
+            final var change = ownershipChangeCaptor.getValue();
+            assertEquals("getEntity", BINDING_ENTITY, change.getEntity());
+            assertEquals("getState", EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, change.getState());
+        }
         verify(mockDOMReg).close();
     }
 
