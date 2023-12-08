@@ -13,6 +13,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
@@ -27,11 +28,10 @@ import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true)
+@Component
 @MetaInfServices
 @Singleton
 public final class DOMMountPointServiceImpl implements DOMMountPointService {
@@ -40,6 +40,12 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     private final Map<YangInstanceIdentifier, DOMMountPoint> mountPoints = new HashMap<>();
 
     private final ListenerRegistry<DOMMountPointListener> listeners = ListenerRegistry.create();
+
+    @Inject
+    @Activate
+    public DOMMountPointServiceImpl() {
+        // Exposed only for DI
+    }
 
     @Override
     public Optional<DOMMountPoint> getMountPoint(final YangInstanceIdentifier path) {
@@ -55,18 +61,6 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     @Override
     public ListenerRegistration<DOMMountPointListener> registerProvisionListener(final DOMMountPointListener listener) {
         return listeners.register(listener);
-    }
-
-    @Activate
-    @SuppressWarnings("static-method")
-    void activate() {
-        LOG.info("DOMMountPointService activated");
-    }
-
-    @Deactivate
-    @SuppressWarnings("static-method")
-    void deactivate() {
-        LOG.info("DOMMountPointService deactivated");
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
