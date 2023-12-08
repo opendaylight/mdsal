@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
-import org.opendaylight.yangtools.concepts.NoOpListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
@@ -60,7 +59,7 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
     }
 
     public static @NonNull DOMSchemaService of(final EffectiveModelContext effectiveModel) {
-        final EffectiveModelContext checked = requireNonNull(effectiveModel);
+        final var checked = requireNonNull(effectiveModel);
         return of(() -> checked);
     }
 
@@ -74,13 +73,13 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
     }
 
     @Override
-    public final EffectiveModelContext getGlobalContext() {
+    public final @NonNull EffectiveModelContext getGlobalContext() {
         return schemaContextProvider.getEffectiveModelContext();
     }
 
     @Override
     public final Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
         listener.onModelContextUpdated(getGlobalContext());
-        return NoOpListenerRegistration.of(listener);
+        return () -> { };
     }
 }
