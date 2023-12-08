@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
@@ -25,9 +26,8 @@ import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
-import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTree;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
@@ -56,7 +56,7 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     private final InMemoryDOMStoreTreeChangePublisher changePublisher;
     private final ExecutorService dataChangeListenerExecutor;
     private final boolean debugTransactions;
-    private final String name;
+    private final @NonNull String name;
 
     private volatile AutoCloseable closeable;
 
@@ -86,10 +86,6 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         dataTree = new InMemoryDataTreeFactory().create(config);
         changePublisher = new InMemoryDOMStoreTreeChangePublisher("name", this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
-    }
-
-    public EqualityQueuedNotificationManager<?, ?> getDataChangeListenerNotificationManager() {
-        return changePublisher.getNotificationManager();
     }
 
     public void setCloseable(final AutoCloseable closeable) {
@@ -152,12 +148,10 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     }
 
     @Override
-    public synchronized <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
-            final YangInstanceIdentifier treeId, final L listener) {
-        /*
-         * Make sure commit is not occurring right now. Listener has to be
-         * registered and its state capture enqueued at a consistent point.
-         */
+    public synchronized Registration registerTreeChangeListener(final YangInstanceIdentifier treeId,
+            final DOMDataTreeChangeListener listener) {
+        // Make sure commit is not occurring right now. Listener has to be registered and its state capture enqueued at
+        // a consistent point.
         return changePublisher.registerTreeChangeListener(treeId, listener, dataTree.takeSnapshot());
     }
 
