@@ -81,7 +81,7 @@ final class InstanceNotificationServiceAdapter implements InstanceNotificationSe
             final @NonNull InstanceIdentifier<?> path, final @NonNull DOMInstanceNotificationListener listener) {
         final var serializer = adapterContext.currentSerializer();
         return domNotifService.registerNotificationListener(
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, serializer.toYangInstanceIdentifier(path)),
+            DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, serializer.toYangInstanceIdentifier(path)),
             serializer.getNotificationPath(spec).lastNodeIdentifier(), listener);
     }
 }

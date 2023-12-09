@@ -8,6 +8,7 @@
 module org.opendaylight.mdsal.common.api {
     exports org.opendaylight.mdsal.common.api;
 
+    requires transitive org.opendaylight.yangtools.concepts;
     requires transitive org.opendaylight.yangtools.yang.common;
     requires transitive org.opendaylight.yangtools.util;
 
