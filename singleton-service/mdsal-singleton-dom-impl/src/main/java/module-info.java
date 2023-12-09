@@ -17,7 +17,7 @@ module org.opendaylight.mdsal.singleton.dom.impl {
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
     requires static transitive java.annotation;
-    requires static javax.inject;
+    requires static transitive javax.inject;
     requires static org.checkerframework.checker.qual;
     requires static org.osgi.service.component.annotations;
 }

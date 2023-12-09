@@ -136,15 +136,13 @@ public final class EOSClusterSingletonServiceProvider
         return reg;
     }
 
-    private ServiceGroup createGroup(final String serviceIdentifier,
-            final List<ServiceRegistration> services) {
+    private ServiceGroup createGroup(final String serviceIdentifier, final List<ServiceRegistration> services) {
         return new ActiveServiceGroup(serviceIdentifier, entityOwnershipService,
             createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier),
             createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier), services);
     }
 
-    private void initializeOrRemoveGroup(final ServiceGroup group)
-            throws CandidateAlreadyRegisteredException {
+    private void initializeOrRemoveGroup(final ServiceGroup group) throws CandidateAlreadyRegisteredException {
         try {
             group.initialize();
         } catch (CandidateAlreadyRegisteredException e) {
@@ -167,7 +165,7 @@ public final class EOSClusterSingletonServiceProvider
             LOG.debug("Closing service group {}", serviceIdentifier);
             placeHolder = new PlaceholderServiceGroup(lookup, future);
 
-            final String identifier = reg.getInstance().getIdentifier().getName();
+            final var identifier = reg.getInstance().getIdentifier().getName();
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
             LOG.debug("Replaced group {} with {}", serviceIdentifier, placeHolder);
 

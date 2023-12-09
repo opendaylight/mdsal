@@ -100,8 +100,8 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActiveServiceGroup.class);
 
-    private final DOMEntityOwnershipService entityOwnershipService;
-    private final String identifier;
+    private final @NonNull DOMEntityOwnershipService entityOwnershipService;
+    private final @NonNull String identifier;
 
     /* Entity instances */
     private final @NonNull DOMEntity serviceEntity;
@@ -206,7 +206,7 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     @Override
     ListenableFuture<?> closeClusterSingletonGroup() {
-        final ListenableFuture<?> ret = destroyGroup();
+        final var ret = destroyGroup();
         members.clear();
         markDirty();
 
@@ -245,7 +245,7 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     @Override
     void registerService(final ServiceRegistration reg) {
-        final ClusterSingletonService service = verifyRegistration(reg);
+        final var service = verifyRegistration(reg);
         checkNotClosed();
 
         checkState(initialized, "Service group %s is not initialized yet", identifier);
@@ -287,7 +287,7 @@ final class ActiveServiceGroup extends ServiceGroup {
     }
 
     private ClusterSingletonService verifyRegistration(final ServiceRegistration reg) {
-        final ClusterSingletonService service = reg.getInstance();
+        final var service = reg.getInstance();
         verify(identifier.equals(service.getIdentifier().getName()));
         return service;
     }

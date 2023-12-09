@@ -100,9 +100,9 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     @Mock
     public Registration mockEosDoubleEntityListReg;
 
-    public EOSClusterSingletonServiceProvider clusterSingletonServiceProvider;
-    public TestClusterSingletonService clusterSingletonService;
-    public TestClusterSingletonService clusterSingletonService2;
+    EOSClusterSingletonServiceProvider clusterSingletonServiceProvider;
+    TestClusterSingletonService clusterSingletonService;
+    TestClusterSingletonService clusterSingletonService2;
 
     @Before
     public void setup() throws Exception {
@@ -158,11 +158,9 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
      */
     @Test
     public void makeEntityClusterSingletonServiceProviderTest() {
-        final var testEntity = EOSClusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE,
-            SERVICE_NAME);
+        final var testEntity = EOSClusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
         assertEquals(ENTITY, testEntity);
-        final var testDbEn = EOSClusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE,
-                SERVICE_NAME);
+        final var testDbEn = EOSClusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
         assertEquals(DOUBLE_ENTITY, testDbEn);
     }
 
