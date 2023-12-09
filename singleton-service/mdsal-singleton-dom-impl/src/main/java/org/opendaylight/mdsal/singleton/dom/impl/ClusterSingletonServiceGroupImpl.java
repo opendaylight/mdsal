@@ -307,9 +307,10 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     private synchronized @NonNull ListenableFuture<?> destroyGroup() {
-        final SettableFuture<Void> future = SettableFuture.create();
-        if (!closeFuture.compareAndSet(null, future)) {
-            return verifyNotNull(closeFuture.get());
+        final var future = SettableFuture.<Void>create();
+        final var witness = closeFuture.compareAndExchange(null, future);
+        if (witness != null) {
+            return witness;
         }
 
         if (serviceEntityReg != null) {
