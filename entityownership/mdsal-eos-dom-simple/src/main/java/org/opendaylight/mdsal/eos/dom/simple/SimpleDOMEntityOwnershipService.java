@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.eos.dom.simple;
 
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED;
-import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
@@ -25,8 +25,8 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -143,7 +143,7 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
         }
     }
 
-    private void notifyListeners(final DOMEntity entity, final EntityOwnershipChangeState state) {
+    private void notifyListeners(final DOMEntity entity, final EntityOwnershipStateChange state) {
 
         final Collection<DOMEntityOwnershipListener> snap;
 

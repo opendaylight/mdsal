@@ -30,8 +30,8 @@ import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -89,7 +89,7 @@ public class DefaultEntityOwnershipServiceTest {
             verify(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),  domListenerCaptor.capture());
 
             final var domOwnershipChange = new EntityOwnershipChange<>(DOM_ENTITY,
-                EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
+                EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, true);
             domListenerCaptor.getValue().ownershipChanged(domOwnershipChange);
 
             final var ownershipChangeCaptor = ArgumentCaptor.forClass(EntityOwnershipChange.class);
@@ -97,7 +97,7 @@ public class DefaultEntityOwnershipServiceTest {
 
             final var change = ownershipChangeCaptor.getValue();
             assertEquals("getEntity", BINDING_ENTITY, change.getEntity());
-            assertEquals("getState", EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, change.getState());
+            assertEquals("getState", EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, change.getState());
         }
         verify(mockDOMReg).close();
     }
@@ -125,7 +125,7 @@ public class DefaultEntityOwnershipServiceTest {
         final var domEntityOwnershipListenerAdapter = new DOMEntityOwnershipListenerAdapter(listener,
                 new ConstantAdapterContext(mockCodecRegistry));
         final var domOwnershipChange = new EntityOwnershipChange<>(DOM_ENTITY,
-            EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+            EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
 
         domEntityOwnershipListenerAdapter.ownershipChanged(domOwnershipChange);
     }

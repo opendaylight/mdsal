@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
@@ -132,50 +132,50 @@ public abstract class AbstractDOMClusterServiceProviderTest {
     }
 
     static final EntityOwnershipChange<DOMEntity> getEntityToMaster() {
-        return new EntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+        return new EntityOwnershipChange(ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
     }
 
     static final EntityOwnershipChange<DOMEntity> getEntityToSlave() {
-        return new EntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
+        return new EntityOwnershipChange(ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
     }
 
     static final EntityOwnershipChange<DOMEntity> getInitEntityToSlave() {
-        return new EntityOwnershipChange(ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_CHANGED);
+        return new EntityOwnershipChange(ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED);
     }
 
     static final EntityOwnershipChange<DOMEntity> getInitEntityToSlaveNoMaster() {
-        return new EntityOwnershipChange<>(ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER);
+        return new EntityOwnershipChange<>(ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER);
     }
 
     static final EntityOwnershipChange<DOMEntity> getEntityToJeopardy() {
-        return new EntityOwnershipChange<>(ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
+        return new EntityOwnershipChange<>(ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
     }
 
     static final EntityOwnershipChange<DOMEntity> getEntityMasterJeopardy() {
-        return new EntityOwnershipChange<>(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE,
+        return new EntityOwnershipChange<>(ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE,
             true);
     }
 
     static final EntityOwnershipChange<DOMEntity> getDoubleEntityToMaster() {
-        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
     }
 
     static final EntityOwnershipChange<DOMEntity> getInitDoubleEntityToSlave() {
-        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_CHANGED);
+        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED);
     }
 
     static final EntityOwnershipChange<DOMEntity> getDoubleEntityToSlave() {
-        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
+        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
     }
 
     static final EntityOwnershipChange<DOMEntity> getDoubleEntityToJeopardy() {
-        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER,
+        return new EntityOwnershipChange<>(DOUBLE_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER,
             true);
     }
 
     static final EntityOwnershipChange<DOMEntity> getDoubleEntityMasterJeopardy() {
         return new EntityOwnershipChange<>(DOUBLE_ENTITY,
-            EntityOwnershipChangeState.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
+            EntityOwnershipStateChange.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
     }
 
     /**

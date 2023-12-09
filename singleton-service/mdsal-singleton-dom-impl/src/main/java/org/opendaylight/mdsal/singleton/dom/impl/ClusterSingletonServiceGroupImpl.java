@@ -36,7 +36,7 @@ import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
@@ -362,7 +362,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     @Holding("this")
-    private void cleanupCandidateOwnershipChanged(final EntityOwnershipChangeState state, final boolean jeopardy) {
+    private void cleanupCandidateOwnershipChanged(final EntityOwnershipStateChange state, final boolean jeopardy) {
         if (jeopardy) {
             cleanupEntityState = switch (state) {
                 case LOCAL_OWNERSHIP_GRANTED, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE -> {
@@ -391,7 +391,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     @Holding("this")
-    private void serviceOwnershipChanged(final EntityOwnershipChangeState state, final boolean jeopardy) {
+    private void serviceOwnershipChanged(final EntityOwnershipStateChange state, final boolean jeopardy) {
         if (jeopardy) {
             LOG.info("Service group {} service entity ownership uncertain", identifier);
             serviceEntityState = switch (state) {

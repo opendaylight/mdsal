@@ -26,8 +26,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -85,7 +85,7 @@ class SimpleDOMEntityOwnershipServiceTest {
 
                 var fooChange = fooCaptor.getValue();
                 assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
-                assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, fooChange.getState());
+                assertEquals(EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, fooChange.getState());
 
                 reset(fooListener);
                 doNothing().when(fooListener).ownershipChanged(any(EntityOwnershipChange.class));
@@ -93,7 +93,7 @@ class SimpleDOMEntityOwnershipServiceTest {
                 verify(fooListener).ownershipChanged(fooCaptor.capture());
                 fooChange = fooCaptor.getValue();
                 assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
-                assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER, fooChange.getState());
+                assertEquals(EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER, fooChange.getState());
             }
         }
     }

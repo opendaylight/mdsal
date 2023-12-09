@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
@@ -510,40 +510,40 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     private static EntityOwnershipChange<TestEntity> getEntityToMaster() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
     }
 
     private static EntityOwnershipChange<TestEntity> getEntityToSlave() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
+        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
     }
 
     private static EntityOwnershipChange<TestEntity> getEntityToSlaveNoMaster() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER);
+        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER);
     }
 
     private static EntityOwnershipChange<TestEntity> getEntityToMasterJeopardy() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
+        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, true);
     }
 
     private static EntityOwnershipChange<TestEntity> getEntityToJeopardy() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER,
+        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER,
             true);
     }
 
     private static EntityOwnershipChange<TestEntity> getDoubleEntityToMaster() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
     }
 
     private static EntityOwnershipChange<TestEntity> getDoubleEntityToSlave() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
+        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
     }
 
     private static EntityOwnershipChange<TestEntity> getInitDoubleEntityToSlave() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_CHANGED);
+        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED);
     }
 
     private static EntityOwnershipChange<TestEntity> getDoubleEntityToJeopardy() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER,
+        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER,
             true);
     }
 }

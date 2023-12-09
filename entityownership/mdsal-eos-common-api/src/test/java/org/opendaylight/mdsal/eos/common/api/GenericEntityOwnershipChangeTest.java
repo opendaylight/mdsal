@@ -26,10 +26,10 @@ class GenericEntityOwnershipChangeTest {
     void basicTest() {
         doReturn("testEntity").when(genericEntity).toString();
         final var genericEntityOwnershipChange = new EntityOwnershipChange<>(genericEntity,
-            EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+            EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
 
         assertEquals(genericEntity, genericEntityOwnershipChange.getEntity());
-        assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, genericEntityOwnershipChange.getState());
+        assertEquals(EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, genericEntityOwnershipChange.getState());
         assertFalse(genericEntityOwnershipChange.inJeopardy());
         assertTrue(genericEntityOwnershipChange.toString().contains("testEntity"));
     }

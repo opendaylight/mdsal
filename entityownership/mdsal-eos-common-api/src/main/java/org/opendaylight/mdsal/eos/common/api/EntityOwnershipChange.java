@@ -20,14 +20,14 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public final class EntityOwnershipChange<E extends GenericEntity<?>> {
     private final @NonNull E entity;
-    private final @NonNull EntityOwnershipChangeState state;
+    private final @NonNull EntityOwnershipStateChange state;
     private final boolean inJeopardy;
 
-    public EntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state) {
+    public EntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipStateChange state) {
         this(entity, state, false);
     }
 
-    public EntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state,
+    public EntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipStateChange state,
             final boolean inJeopardy) {
         this.entity = requireNonNull(entity, "entity can't be null");
         this.state = requireNonNull(state, "state can't be null");
@@ -44,9 +44,9 @@ public final class EntityOwnershipChange<E extends GenericEntity<?>> {
 
     /**
      * Returns the ownership change state.
-     * @return an EntityOwnershipChangeState enum
+     * @return an EntityOwnershipStateChange enum
      */
-    public @NonNull EntityOwnershipChangeState getState() {
+    public @NonNull EntityOwnershipStateChange getState() {
         return state;
     }
 

@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * @author Thomas Pantelis
  */
-public enum EntityOwnershipChangeState {
+public enum EntityOwnershipStateChange {
     /**
      * The local process instance has been granted ownership.
      */
@@ -48,10 +48,10 @@ public enum EntityOwnershipChangeState {
      */
     REMOTE_OWNERSHIP_LOST_NO_OWNER(false, false, false);
 
-    private static final ImmutableMap<Key, EntityOwnershipChangeState> BY_KEY;
+    private static final ImmutableMap<Key, EntityOwnershipStateChange> BY_KEY;
 
     static {
-        final var builder = ImmutableMap.<Key, EntityOwnershipChangeState>builder();
+        final var builder = ImmutableMap.<Key, EntityOwnershipStateChange>builder();
         for (var e : values()) {
             builder.put(new Key(e.wasOwner, e.isOwner, e.hasOwner), e);
         }
@@ -62,7 +62,7 @@ public enum EntityOwnershipChangeState {
     private final boolean isOwner;
     private final boolean hasOwner;
 
-    EntityOwnershipChangeState(final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
+    EntityOwnershipStateChange(final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
         this.wasOwner = wasOwner;
         this.isOwner = isOwner;
         this.hasOwner = hasOwner;
@@ -98,7 +98,7 @@ public enum EntityOwnershipChangeState {
         return name() + " [wasOwner=" + wasOwner + ", isOwner=" + isOwner + ", hasOwner=" + hasOwner + "]";
     }
 
-    public static @NonNull EntityOwnershipChangeState from(final boolean wasOwner, final boolean isOwner,
+    public static @NonNull EntityOwnershipStateChange from(final boolean wasOwner, final boolean isOwner,
             final boolean hasOwner) {
         final var state = BY_KEY.get(new Key(wasOwner, isOwner, hasOwner));
         if (state != null) {
