@@ -7,36 +7,32 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
-import com.google.common.annotations.Beta;
 import java.util.Map;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@Beta
+@NonNullByDefault
 @Component(factory = OSGiRpcService.FACTORY_NAME)
 public final class OSGiRpcService extends AbstractAdaptedService<RpcService> implements RpcService {
     // OSGi DS Component Factory name
     static final String FACTORY_NAME = "org.opendaylight.mdsal.binding.dom.adapter.osgi.OSGiRpcConsumerRegistry";
 
-    public OSGiRpcService() {
-        super(RpcService.class);
-    }
-
-    @Override
-    public <T extends Rpc<?, ?>> T getRpc(final Class<T> rpcInterface) {
-        return delegate().getRpc(rpcInterface);
-    }
-
     @Activate
-    void activate(final Map<String, ?> properties) {
-        start(properties);
+    public OSGiRpcService(final Map<String, ?> properties) {
+        super(RpcService.class, properties);
     }
 
     @Deactivate
     void deactivate(final int reason) {
         stop(reason);
+    }
+
+    @Override
+    public <T extends Rpc<?, ?>> T getRpc(final Class<T> rpcInterface) {
+        return delegate.getRpc(rpcInterface);
     }
 }

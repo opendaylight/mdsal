@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
-import com.google.common.annotations.Beta;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.MountPoint;
@@ -18,34 +17,29 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@Beta
 @Component(factory = OSGiMountPointService.FACTORY_NAME)
 public final class OSGiMountPointService extends AbstractAdaptedService<MountPointService>
         implements MountPointService {
     // OSGi DS Component Factory name
     static final String FACTORY_NAME = "org.opendaylight.mdsal.binding.dom.adapter.osgi.OSGiMountPointService";
 
-    public OSGiMountPointService() {
-        super(MountPointService.class);
-    }
-
-    @Override
-    public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
-        return delegate().getMountPoint(mountPoint);
-    }
-
-    @Override
-    public Registration registerListener(final InstanceIdentifier<?> path, final MountPointListener listener) {
-        return delegate().registerListener(path, listener);
-    }
-
     @Activate
-    void activate(final Map<String, ?> properties) {
-        start(properties);
+    public OSGiMountPointService(final Map<String, ?> properties) {
+        super(MountPointService.class, properties);
     }
 
     @Deactivate
     void deactivate(final int reason) {
         stop(reason);
+    }
+
+    @Override
+    public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
+        return delegate.getMountPoint(mountPoint);
+    }
+
+    @Override
+    public Registration registerListener(final InstanceIdentifier<?> path, final MountPointListener listener) {
+        return delegate.registerListener(path, listener);
     }
 }
