@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 import java.util.ServiceLoader;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -21,12 +20,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
  * Binding version of {@link AbstractClusterSingletonServiceProviderImpl}.
  */
 @MetaInfServices(value = ClusterSingletonServiceProvider.class)
-public class DOMClusterSingletonServiceProviderImpl extends
-        AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
-                                                    DOMEntityOwnershipListener,
-                                                    DOMEntityOwnershipService>
-        implements DOMEntityOwnershipListener {
-
+public class DOMClusterSingletonServiceProviderImpl extends AbstractClusterSingletonServiceProviderImpl {
     public DOMClusterSingletonServiceProviderImpl() {
         this(ServiceLoader.load(DOMEntityOwnershipService.class).findFirst().orElseThrow(
             () -> new IllegalStateException("Could not find DOMEntityOwnershipService")));
@@ -34,11 +28,6 @@ public class DOMClusterSingletonServiceProviderImpl extends
 
     protected DOMClusterSingletonServiceProviderImpl(final DOMEntityOwnershipService entityOwnershipService) {
         super(entityOwnershipService);
-    }
-
-    @Override
-    protected DOMEntity createEntity(final String type, final String ident) {
-        return new DOMEntity(type, ident);
     }
 
     @Override
