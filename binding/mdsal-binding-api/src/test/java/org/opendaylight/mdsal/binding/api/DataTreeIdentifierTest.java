@@ -12,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
@@ -56,6 +60,21 @@ class DataTreeIdentifierTest {
         assertNotEquals(TEST_IDENTIFIER1, TEST_IDENTIFIER2, "Different");
         assertNotEquals(TEST_IDENTIFIER1, null, "Equals null");
         assertNotEquals(TEST_IDENTIFIER1, new Object(), "Different object");
+    }
+
+    @Test
+    void serializationTest() throws Exception {
+        final var bos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(TEST_IDENTIFIER1);
+        }
+
+        final var bytes = bos.toByteArray();
+        assertEquals(728, bytes.length);
+
+        try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+            assertEquals(TEST_IDENTIFIER1, ois.readObject());
+        }
     }
 
     private interface TestDataObject1 extends ChildOf<DataRoot> {
