@@ -7,62 +7,63 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collection;
-import java.util.Map;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.ListenerTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.ListenerTestBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.listener.test.ListItem;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.listener.test.ListItemBuilder;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.common.Uint32;
 
 /**
  * Regression test suite for https://bugs.opendaylight.org/show_bug.cgi?id=4513 - Change event is empty when
  * Homogeneous composite key is used homogeneous composite key is used.
  */
-public class Bug4513Test extends AbstractDataBrokerTest {
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test
-    public void testDataTreeChangeListener() {
-        DataBroker dataBroker = getDataBroker();
+@ExtendWith(MockitoExtension.class)
+class Bug4513Test extends AbstractDataBrokerTest {
+    @Mock
+    private DataTreeChangeListener<ListItem> listener;
+    @Captor
+    private ArgumentCaptor<Collection<DataTreeModification<ListItem>>> captor;
 
-        DataTreeChangeListener<ListItem> listener = mock(DataTreeChangeListener.class);
-        InstanceIdentifier<ListItem> wildCard = InstanceIdentifier.builder(ListenerTest.class)
-                .child(ListItem.class).build();
-        ListenerRegistration<DataTreeChangeListener<ListItem>> reg = dataBroker.registerDataTreeChangeListener(
+    @Test
+    void testDataTreeChangeListener() {
+        final var dataBroker = getDataBroker();
+
+        final var wildCard = InstanceIdentifier.builder(ListenerTest.class).child(ListItem.class).build();
+        final var reg = dataBroker.registerDataTreeChangeListener(
                 DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, wildCard), listener);
 
-        final ListItem item = writeListItem();
-
-        ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var item = writeListItem();
 
         verify(listener, timeout(100)).onDataTreeChanged(captor.capture());
 
-        Collection<DataTreeModification<ListItem>> mods = captor.getValue();
-        assertEquals("ListItem", item, mods.iterator().next().getRootNode().getDataAfter());
+        final var mods = captor.getValue();
+        assertEquals(1, mods.size());
+        assertEquals(item, mods.iterator().next().getRootNode().getDataAfter());
     }
 
     private ListItem writeListItem() {
-        WriteTransaction writeTransaction = getDataBroker().newWriteOnlyTransaction();
-        final ListItem item = new ListItemBuilder().setSip("name").setOp(Uint32.valueOf(43)).build();
-        ListenerTestBuilder builder = new ListenerTestBuilder().setListItem(Map.of(item.key(), item));
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(
-                ListenerTest.class).build(), builder.build());
+        final var writeTransaction = getDataBroker().newWriteOnlyTransaction();
+        final var item = new ListItemBuilder().setSip("name").setOp(Uint32.valueOf(43)).build();
+        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(ListenerTest.class),
+            new ListenerTestBuilder().setListItem(BindingMap.of(item)).build());
         assertCommit(writeTransaction.commit());
         return item;
     }

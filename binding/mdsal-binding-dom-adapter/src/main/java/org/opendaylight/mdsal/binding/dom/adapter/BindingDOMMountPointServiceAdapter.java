@@ -12,9 +12,8 @@ import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class BindingDOMMountPointServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMMountPointService, DOMMountPoint, BindingMountPointAdapter>
@@ -26,15 +25,13 @@ public class BindingDOMMountPointServiceAdapter
 
     @Override
     public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
-        YangInstanceIdentifier domPath = currentSerializer().toCachedYangInstanceIdentifier(mountPoint);
-        Optional<DOMMountPoint> domMount = getDelegate().getMountPoint(domPath);
-        return domMount.map(this::getAdapter);
+        final var domPath = currentSerializer().toCachedYangInstanceIdentifier(mountPoint);
+        return getDelegate().getMountPoint(domPath).map(this::getAdapter);
     }
 
     @Override
-    public <T extends MountPointListener> ListenerRegistration<T> registerListener(final InstanceIdentifier<?> path,
-            final T listener) {
-        return new BindingDOMMountPointListenerAdapter<>(listener, adapterContext(), getDelegate());
+    public Registration registerListener(final InstanceIdentifier<?> path, final MountPointListener listener) {
+        return new BindingDOMMountPointListenerAdapter(listener, adapterContext(), getDelegate());
     }
 
     @Override
