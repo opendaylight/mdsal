@@ -8,26 +8,21 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- * Commit Cohort registry.
- *
- * <p>
- * See {@link DataTreeCommitCohort} for more details.
- *
- * @author Tony Tkacik &lt;ttkacik@cisco.com&gt;
+ * Commit Cohort registry. See {@link DataTreeCommitCohort} for more details.
  */
 public interface DataTreeCommitCohortRegistry {
     /**
-     * Register commit cohort which will participate in three-phase commit protocols of write
-     * transaction in data broker associated with this instance of extension.
+     * Register commit cohort which will participate in three-phase commit protocols of write transaction in data broker
+     * associated with this instance of extension.
      *
      * @param subtree Subtree path on which commit cohort operates.
      * @param cohort Commit cohort
-     * @return Registaration object for DOM Data Three Commit cohort.
+     * @return Registration object for DOM Data Three Commit cohort.
      */
-    <D extends DataObject, T extends DataTreeCommitCohort<D>> @NonNull ObjectRegistration<T> registerCommitCohort(
-            @NonNull DataTreeIdentifier<D> subtree, @NonNull T cohort);
+    <D extends DataObject> @NonNull Registration registerCommitCohort(@NonNull DataTreeIdentifier<D> subtree,
+        @NonNull DataTreeCommitCohort<D> cohort);
 }

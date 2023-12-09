@@ -7,15 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
@@ -25,7 +25,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+@ExtendWith(MockitoExtension.class)
 public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
+    @Mock
+    private DOMDataTreeCommitCohortRegistry cohortRegistry;
+    @Mock
+    private Registration cohortRegistration;
+    @Mock
+    private DataTreeCommitCohort<Top> dataTreeCommitCohort;
+
     @Test
     void basicTest() {
         final var bindingBrokerTestFactory = new BindingBrokerTestFactory();
@@ -33,8 +41,6 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
         final var bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
-        final var cohortRegistry = mock(DOMDataTreeCommitCohortRegistry.class);
-        final var cohortRegistration = mock(Registration.class);
         doReturn(cohortRegistration).when(cohortRegistry).registerCommitCohort(any(), any());
         doNothing().when(cohortRegistration).close();
         final var registryAdapter = new BindingDOMDataTreeCommitCohortRegistryAdapter(bindingTestContext.getCodec(),
@@ -42,10 +48,8 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
 
         final var dataTreeIdentifier = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(Top.class));
-        final DataTreeCommitCohort<Top> dataTreeCommitCohort = mock(DataTreeCommitCohort.class);
-        try (var objectRegistration = registryAdapter.registerCommitCohort(dataTreeIdentifier, dataTreeCommitCohort)) {
-            assertSame(dataTreeCommitCohort, objectRegistration.getInstance());
+        try (var reg = registryAdapter.registerCommitCohort(dataTreeIdentifier, dataTreeCommitCohort)) {
+            // Nothing else
         }
-        verify(cohortRegistration).close();
     }
 }

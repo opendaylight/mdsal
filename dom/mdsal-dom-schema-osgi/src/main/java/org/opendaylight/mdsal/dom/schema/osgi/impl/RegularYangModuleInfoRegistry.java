@@ -18,7 +18,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotResolver;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.YangFeatureProvider;
@@ -99,7 +98,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
             @Override
             protected void removeRegistration() {
                 featureRegs.forEach(Registration::close);
-                infoRegs.forEach(ObjectRegistration::close);
+                infoRegs.forEach(Registration::close);
             }
         };
     }

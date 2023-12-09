@@ -56,9 +56,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -87,10 +85,10 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
     private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
 
     @GuardedBy("this")
-    private ImmutableList<RegImpl> listeners = ImmutableList.of();
+    private ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
 
     @GuardedBy("this")
-    private ImmutableList<ActionRegistration> actionListeners = ImmutableList.of();
+    private ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
 
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
 
@@ -166,11 +164,11 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
     }
 
-    private synchronized void removeListener(final RegImpl reg) {
+    private synchronized void removeListener(final RpcAvailReg reg) {
         listeners = ImmutableList.copyOf(Collections2.filter(listeners, input -> !reg.equals(input)));
     }
 
-    private synchronized void removeActionListener(final ActionRegistration reg) {
+    private synchronized void removeActionListener(final ActionAvailReg reg) {
         actionListeners = ImmutableList.copyOf(Collections2.filter(actionListeners, input -> !reg.equals(input)));
     }
 
@@ -248,13 +246,15 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         return routingTable;
     }
 
-    private static final class RegImpl extends AbstractObjectRegistration<DOMRpcAvailabilityListener> {
+    private static final class RpcAvailReg extends AbstractRegistration {
+        private final DOMRpcAvailabilityListener listener;
+
         private Map<QName, Set<YangInstanceIdentifier>> prevRpcs;
         private DOMRpcRouter router;
 
-        RegImpl(final DOMRpcRouter router, final DOMRpcAvailabilityListener listener,
+        RpcAvailReg(final DOMRpcRouter router, final DOMRpcAvailabilityListener listener,
                 final Map<QName, Set<YangInstanceIdentifier>> rpcs) {
-            super(listener);
+            this.listener = requireNonNull(listener);
             this.router = requireNonNull(router);
             prevRpcs = requireNonNull(rpcs);
         }
@@ -271,17 +271,16 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
             if (!added.isEmpty()) {
-                getInstance().onRpcAvailable(added);
+                listener.onRpcAvailable(added);
             }
         }
 
         void addRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-            final var l = getInstance();
-            if (!l.acceptsImplementation(impl)) {
+            if (!listener.acceptsImplementation(impl)) {
                 return;
             }
 
-            final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
+            final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(listener));
             final MapDifference<QName, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final List<DOMRpcIdentifier> added = new ArrayList<>();
@@ -296,17 +295,16 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
 
             prevRpcs = rpcs;
             if (!added.isEmpty()) {
-                l.onRpcAvailable(added);
+                listener.onRpcAvailable(added);
             }
         }
 
         void removeRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-            final var l = getInstance();
-            if (!l.acceptsImplementation(impl)) {
+            if (!listener.acceptsImplementation(impl)) {
                 return;
             }
 
-            final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
+            final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(listener));
             final MapDifference<QName, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final List<DOMRpcIdentifier> removed = new ArrayList<>();
@@ -321,18 +319,20 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
 
             prevRpcs = rpcs;
             if (!removed.isEmpty()) {
-                l.onRpcUnavailable(removed);
+                listener.onRpcUnavailable(removed);
             }
         }
     }
 
-    private static final class ActionRegistration extends AbstractObjectRegistration<AvailabilityListener> {
+    private static final class ActionAvailReg extends AbstractRegistration {
+        private final AvailabilityListener listener;
+
         private Map<Absolute, Set<DOMDataTreeIdentifier>> prevActions;
         private DOMRpcRouter router;
 
-        ActionRegistration(final DOMRpcRouter router, final AvailabilityListener listener,
+        ActionAvailReg(final DOMRpcRouter router, final AvailabilityListener listener,
                 final Map<Absolute, Set<DOMDataTreeIdentifier>> actions) {
-            super(listener);
+            this.listener = requireNonNull(listener);
             this.router = requireNonNull(router);
             prevActions = requireNonNull(actions);
         }
@@ -349,17 +349,16 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
             }
             if (!added.isEmpty()) {
-                getInstance().onActionsChanged(ImmutableSet.of(), ImmutableSet.copyOf(added));
+                listener.onActionsChanged(ImmutableSet.of(), ImmutableSet.copyOf(added));
             }
         }
 
         void actionChanged(final DOMActionRoutingTable newTable, final DOMActionImplementation impl) {
-            final var l = getInstance();
-            if (!l.acceptsImplementation(impl)) {
+            if (!listener.acceptsImplementation(impl)) {
                 return;
             }
 
-            final Map<Absolute, Set<DOMDataTreeIdentifier>> actions = verifyNotNull(newTable.getOperations(l));
+            final Map<Absolute, Set<DOMDataTreeIdentifier>> actions = verifyNotNull(newTable.getOperations(listener));
             final MapDifference<Absolute, Set<DOMDataTreeIdentifier>> diff = Maps.difference(prevActions, actions);
 
             final Set<DOMActionInstance> removed = new HashSet<>();
@@ -385,7 +384,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
 
             prevActions = actions;
             if (!removed.isEmpty() || !added.isEmpty()) {
-                l.onActionsChanged(removed, added);
+                listener.onActionsChanged(removed, added);
             }
         }
     }
@@ -412,9 +411,9 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         @Override
         public Registration registerAvailabilityListener(final AvailabilityListener listener) {
             synchronized (DOMRpcRouter.this) {
-                final var ret = new ActionRegistration(DOMRpcRouter.this, listener,
+                final var ret = new ActionAvailReg(DOMRpcRouter.this, listener,
                     actionRoutingTable.getOperations(listener));
-                actionListeners = ImmutableList.<ActionRegistration>builder()
+                actionListeners = ImmutableList.<ActionAvailReg>builder()
                     .addAll(actionListeners)
                     .add(ret)
                     .build();
@@ -428,8 +427,8 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
     @NonNullByDefault
     private final class ActionProviderServiceFacade implements DOMActionProviderService {
         @Override
-        public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-                final T implementation, final Set<DOMActionInstance> instances) {
+        public Registration registerActionImplementation(final DOMActionImplementation implementation,
+                final Set<DOMActionInstance> instances) {
             checkArgument(!instances.isEmpty(), "Instances must not be empty");
 
             synchronized (DOMRpcRouter.this) {
@@ -440,10 +439,10 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
                 listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
             }
 
-            return new AbstractObjectRegistration<>(implementation) {
+            return new AbstractRegistration() {
                 @Override
                 protected void removeRegistration() {
-                    removeActionImplementation(getInstance(), instances);
+                    removeActionImplementation(implementation, instances);
                 }
             };
         }
@@ -464,8 +463,8 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         @Override
         public Registration registerRpcListener(final DOMRpcAvailabilityListener listener) {
             synchronized (DOMRpcRouter.this) {
-                final var ret = new RegImpl(DOMRpcRouter.this, listener, routingTable.getOperations(listener));
-                listeners = ImmutableList.<RegImpl>builder().addAll(listeners).add(ret).build();
+                final var ret = new RpcAvailReg(DOMRpcRouter.this, listener, routingTable.getOperations(listener));
+                listeners = ImmutableList.<RpcAvailReg>builder().addAll(listeners).add(ret).build();
 
                 listenerNotifier.execute(ret::initialTable);
                 return ret;

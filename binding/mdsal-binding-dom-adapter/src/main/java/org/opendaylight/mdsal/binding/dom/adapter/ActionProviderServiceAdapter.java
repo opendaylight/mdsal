@@ -29,8 +29,7 @@ import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
-import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -75,8 +74,8 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     }
 
     @Override
-    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
-            ObjectRegistration<S> registerImplementation(final ActionSpec<A, P> spec, final S implementation,
+    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+            Registration registerImplementation(final ActionSpec<A, P> spec, final A implementation,
                 final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
         final CurrentAdapterSerializer serializer = currentSerializer();
         final Absolute actionPath = serializer.getActionPath(spec);
@@ -90,14 +89,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
                     .collect(Collectors.toUnmodifiableSet()));
 
 
-        final ObjectRegistration<?> reg = getDelegate().registerActionImplementation(impl, instance);
-
-        return new AbstractObjectRegistration<>(implementation) {
-            @Override
-            protected void removeRegistration() {
-                reg.close();
-            }
-        };
+        return getDelegate().registerActionImplementation(impl, instance);
     }
 
     private static final class Impl implements DOMActionImplementation {

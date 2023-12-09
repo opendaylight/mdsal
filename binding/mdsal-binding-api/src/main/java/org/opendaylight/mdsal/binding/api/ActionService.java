@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -20,10 +19,7 @@ import org.opendaylight.yangtools.yang.binding.RpcInput;
 /**
  * Provides access to registered {@code action} implementations. Each action is defined in a YANG model,
  * and implementations are added dynamically at runtime, via {@link ActionProviderService}.
- *
- * @author Robert Varga
  */
-@Beta
 @NonNullByDefault
 public interface ActionService extends BindingService {
     /**

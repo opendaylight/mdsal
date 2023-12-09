@@ -7,12 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -22,10 +21,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * and implementations can be invoked  dynamically at runtime, via {@link ActionService}. Implementations registered
  * with this interface may throw {@link IllegalArgumentException}s when they encounter inconsistent input data and
  * {@link IllegalStateException} in they are unable to service the request.
- *
- * @author Robert Varga
  */
-@Beta
 public interface ActionProviderService extends BindingService {
     /**
      * Register an implementation of an action, potentially constrained to a set of nodes.
@@ -35,24 +31,24 @@ public interface ActionProviderService extends BindingService {
      * @param datastore {@link LogicalDatastoreType} on which the implementation operates
      * @param validNodes Set of nodes this implementation is constrained to, empty if this implementation can handle
      *                   any target node.
-     * @return An {@link ObjectRegistration}
+     * @return A {@link Registration}
      * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if any of the {@code validNodes} does not match {@code datastore}
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
-    <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
-        @NonNull ObjectRegistration<S> registerImplementation(@NonNull ActionSpec<A, P> spec, @NonNull S implementation,
+    <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+        @NonNull Registration registerImplementation(@NonNull ActionSpec<A, P> spec, @NonNull A implementation,
             @NonNull LogicalDatastoreType datastore, @NonNull Set<? extends InstanceIdentifier<P>> validNodes);
 
-    default <P extends DataObject, T extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionSpec<T, P> spec,
-            final @NonNull S implementation, final @NonNull LogicalDatastoreType datastore) {
+    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+        @NonNull Registration registerImplementation(final @NonNull ActionSpec<A, P> spec,
+            final @NonNull A implementation, final @NonNull LogicalDatastoreType datastore) {
         return registerImplementation(spec, implementation, datastore, ImmutableSet.of());
     }
 
-    default <P extends DataObject, T extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionSpec<T, P> spec,
-            final @NonNull S implementation) {
+    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+            @NonNull Registration registerImplementation(final @NonNull ActionSpec<A, P> spec,
+                final @NonNull A implementation) {
         return registerImplementation(spec, implementation, LogicalDatastoreType.OPERATIONAL);
     }
 }

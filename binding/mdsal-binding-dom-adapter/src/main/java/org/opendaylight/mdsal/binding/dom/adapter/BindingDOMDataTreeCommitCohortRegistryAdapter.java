@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistry;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -23,23 +23,12 @@ final class BindingDOMDataTreeCommitCohortRegistryAdapter
     }
 
     @Override
-    public <D extends DataObject, T extends DataTreeCommitCohort<D>> ObjectRegistration<T> registerCommitCohort(
-            final DataTreeIdentifier<D> subtree, final T cohort) {
+    public <D extends DataObject> Registration registerCommitCohort(final DataTreeIdentifier<D> subtree,
+            final DataTreeCommitCohort<D> cohort) {
         final var target = subtree.path().getTargetType();
         final var adapter = new BindingDOMDataTreeCommitCohortAdapter<>(adapterContext(), cohort,
             Augmentation.class.isAssignableFrom(target) ? target : null);
         final var domPath = currentSerializer().toDOMDataTreeIdentifier(subtree);
-        final var domReg = getDelegate().registerCommitCohort(domPath, adapter);
-        return new ObjectRegistration<>() {
-            @Override
-            public T getInstance() {
-                return cohort;
-            }
-
-            @Override
-            public void close() {
-                domReg.close();
-            }
-        };
+        return getDelegate().registerCommitCohort(domPath, adapter);
     }
 }
