@@ -9,27 +9,23 @@ package org.opendaylight.mdsal.eos.common.api;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
- * <p>
- * An interface that provides the means for a component/application to request ownership for a given
- * Entity on the current cluster member. Entity ownership is always tied to a process and two components on the same
- * process cannot register a candidate for a given Entity.
- * </p>
+ * An interface that provides the means for a component/application to request ownership for a given Entity on the
+ * current cluster member. Entity ownership is always tied to a process and two components on the same process cannot
+ * register a candidate for a given Entity.
+ *
  * <p>
  * A component/application may also register interest in the ownership status of an Entity. The listener would be
  * notified whenever the ownership status changes.
- * </p>
  *
- * @author Thomas Pantelis
- *
- * @param <P> the instance identifier path type
  * @param <E> the GenericEntity type
+ * @param <L> the GenericEntityOwnershipListener type
+ * @author Thomas Pantelis
  */
-public interface GenericEntityOwnershipService<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
-        L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, E>>> {
+public interface GenericEntityOwnershipService<E extends GenericEntity<?>,
+        L extends GenericEntityOwnershipListener<E>> {
     /**
      * Registers a candidate for ownership of the given entity. Only one such request can be made per entity
      * per process. If multiple requests for registering a candidate for a given entity are received in the

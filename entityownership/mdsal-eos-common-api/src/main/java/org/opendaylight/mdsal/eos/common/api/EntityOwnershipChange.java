@@ -9,27 +9,25 @@ package org.opendaylight.mdsal.eos.common.api;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * A DTO that encapsulates an ownership change for an entity.
  *
+ * @param <E> the {@link GenericEntity} type
  * @author Thomas Pantelis
- *
- * @param <P> the instance identifier path type
- * @param <E> the GenericEntity type
  */
-public class GenericEntityOwnershipChange<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>> {
+public final class EntityOwnershipChange<E extends GenericEntity<?>> {
     private final @NonNull E entity;
     private final @NonNull EntityOwnershipChangeState state;
     private final boolean inJeopardy;
 
-    public GenericEntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state) {
+    public EntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state) {
         this(entity, state, false);
     }
 
-    public GenericEntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state,
+    public EntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state,
             final boolean inJeopardy) {
         this.entity = requireNonNull(entity, "entity can't be null");
         this.state = requireNonNull(state, "state can't be null");
@@ -64,7 +62,10 @@ public class GenericEntityOwnershipChange<P extends HierarchicalIdentifier<P>, E
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [entity=" + entity + ", state=" + state
-                + ", inJeopardy=" + inJeopardy + "]";
+        return MoreObjects.toStringHelper(this)
+            .add("entity", entity)
+            .add("state", state)
+            .add("inJeopardy", inJeopardy)
+            .toString();
     }
 }

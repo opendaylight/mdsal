@@ -35,9 +35,9 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
@@ -70,8 +70,8 @@ import org.slf4j.LoggerFactory;
  * @param <S> the GenericEntityOwnershipService type
  */
 final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
-        C extends GenericEntityOwnershipChange<P, E>,  G extends GenericEntityOwnershipListener<P, C>,
-        S extends GenericEntityOwnershipService<P, E, G>> extends ClusterSingletonServiceGroup<P, E, C> {
+        G extends GenericEntityOwnershipListener<E>, S extends GenericEntityOwnershipService<E, G>>
+        extends ClusterSingletonServiceGroup<P, E> {
 
     private enum EntityState {
         /**
@@ -200,8 +200,8 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
         checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
-        this.serviceEntity = requireNonNull(mainEntity);
-        this.cleanupEntity = requireNonNull(closeEntity);
+        serviceEntity = requireNonNull(mainEntity);
+        cleanupEntity = requireNonNull(closeEntity);
         members.addAll(services);
 
         LOG.debug("Instantiated new service group for {}", identifier);
@@ -324,7 +324,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     @Override
-    void ownershipChanged(final C ownershipChange) {
+    void ownershipChanged(final EntityOwnershipChange<E> ownershipChange) {
         LOG.debug("Ownership change {} for ClusterSingletonServiceGroup {}", ownershipChange, identifier);
 
         synchronized (this) {
@@ -348,7 +348,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * @param ownershipChange reported change
      */
     @Holding("this")
-    private void lockedOwnershipChanged(final C ownershipChange) {
+    private void lockedOwnershipChanged(final EntityOwnershipChange<E> ownershipChange) {
         final E entity = ownershipChange.getEntity();
         if (serviceEntity.equals(entity)) {
             serviceOwnershipChanged(ownershipChange.getState(), ownershipChange.inJeopardy());

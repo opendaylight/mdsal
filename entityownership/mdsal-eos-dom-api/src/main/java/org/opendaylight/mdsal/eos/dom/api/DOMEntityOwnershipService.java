@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
  * DOM version of {@link GenericEntityOwnershipService}.
@@ -21,8 +20,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Beta
-public interface DOMEntityOwnershipService extends
-        GenericEntityOwnershipService<YangInstanceIdentifier, DOMEntity, DOMEntityOwnershipListener> {
+public interface DOMEntityOwnershipService
+        extends GenericEntityOwnershipService<DOMEntity, DOMEntityOwnershipListener> {
     @Override
     Registration registerCandidate(DOMEntity entity) throws CandidateAlreadyRegisteredException;
 

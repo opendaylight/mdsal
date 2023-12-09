@@ -35,8 +35,6 @@ import org.opendaylight.yangtools.concepts.Identifiable;
  * Note that an entity identifier must conform to a valid yang schema. If there is no existing yang schema to
  * represent an entity, the general-entity yang model can be used.
  *
- * <p>
- *
  * @param <T> the entity identifier type
  * @author Thomas Pantelis
  */

@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Binding version of {@link GenericEntityOwnershipService}.
@@ -21,8 +20,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Beta
-public interface EntityOwnershipService extends
-        GenericEntityOwnershipService<InstanceIdentifier<?>, Entity, EntityOwnershipListener> {
+public interface EntityOwnershipService extends GenericEntityOwnershipService<Entity, EntityOwnershipListener> {
 
     @Override
     Registration registerCandidate(Entity entity) throws CandidateAlreadyRegisteredException;

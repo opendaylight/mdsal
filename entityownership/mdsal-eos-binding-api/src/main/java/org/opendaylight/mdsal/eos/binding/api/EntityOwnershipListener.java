@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.eos.binding.api;
 
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Binding interface for GenericEntityOwnershipListener.
@@ -17,9 +16,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Beta
-public interface EntityOwnershipListener extends
-        GenericEntityOwnershipListener<InstanceIdentifier<?>, EntityOwnershipChange> {
-
-    @Override
-    void ownershipChanged(EntityOwnershipChange ownershipChange);
+public interface EntityOwnershipListener extends GenericEntityOwnershipListener<Entity> {
+    // Nothing else here
 }

@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.eos.dom.api;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -21,7 +22,7 @@ public class DOMEntityOwnershipChangeTest {
 
     @Test
     public void createTest() {
-        assertNotNull(new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED));
-        assertNotNull(new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, false));
+        assertNotNull(new EntityOwnershipChange<>(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED));
+        assertNotNull(new EntityOwnershipChange<>(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, false));
     }
 }

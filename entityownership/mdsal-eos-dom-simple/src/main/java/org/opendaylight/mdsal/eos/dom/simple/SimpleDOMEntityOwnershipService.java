@@ -24,10 +24,10 @@ import java.util.UUID;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.simple.di.LocalDOMEntityOwnershipService;
@@ -97,7 +97,7 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
         }
 
         for (var entity : owned) {
-            notifyListener(listener, new DOMEntityOwnershipChange(entity, LOCAL_OWNERSHIP_GRANTED));
+            notifyListener(listener, new EntityOwnershipChange<>(entity, LOCAL_OWNERSHIP_GRANTED));
         }
         LOG.debug("{}: registered listener {}", uuid, listener);
         return new AbstractRegistration() {
@@ -133,7 +133,8 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    private void notifyListener(final DOMEntityOwnershipListener listener, final DOMEntityOwnershipChange change) {
+    private void notifyListener(final DOMEntityOwnershipListener listener,
+            final EntityOwnershipChange<DOMEntity> change) {
         try {
             LOG.trace("{} notifying listener {} change {}", uuid, listener, change);
             listener.ownershipChanged(change);
@@ -150,7 +151,7 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
             snap = ImmutableList.copyOf(listeners.get(entity.getType()));
         }
 
-        final var change = new DOMEntityOwnershipChange(entity, state);
+        final var change = new EntityOwnershipChange<>(entity, state);
         for (var listener : snap) {
             notifyListener(listener, change);
         }

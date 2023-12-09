@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
  * DOM interface for GenericEntityOwnershipListener.
@@ -17,10 +16,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Beta
-public interface DOMEntityOwnershipListener extends
-        GenericEntityOwnershipListener<YangInstanceIdentifier, DOMEntityOwnershipChange> {
-
-
-    @Override
-    void ownershipChanged(DOMEntityOwnershipChange ownershipChange);
+public interface DOMEntityOwnershipListener extends GenericEntityOwnershipListener<DOMEntity> {
+    // Nothing else here
 }

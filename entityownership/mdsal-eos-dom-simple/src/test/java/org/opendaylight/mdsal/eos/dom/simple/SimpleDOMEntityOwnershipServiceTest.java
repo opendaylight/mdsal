@@ -25,10 +25,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 
@@ -78,9 +78,9 @@ class SimpleDOMEntityOwnershipServiceTest {
         try (var barReg = service.registerListener(BAR_TYPE, barListener)) {
             // Matching type should be triggered
             final var fooListener = mock(DOMEntityOwnershipListener.class);
-            doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
+            doNothing().when(fooListener).ownershipChanged(any(EntityOwnershipChange.class));
             try (var fooReg = service.registerListener(FOO_TYPE, fooListener)) {
-                final var fooCaptor = ArgumentCaptor.forClass(DOMEntityOwnershipChange.class);
+                final var fooCaptor = ArgumentCaptor.forClass(EntityOwnershipChange.class);
                 verify(fooListener).ownershipChanged(fooCaptor.capture());
 
                 var fooChange = fooCaptor.getValue();
@@ -88,7 +88,7 @@ class SimpleDOMEntityOwnershipServiceTest {
                 assertEquals(EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, fooChange.getState());
 
                 reset(fooListener);
-                doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
+                doNothing().when(fooListener).ownershipChanged(any(EntityOwnershipChange.class));
                 entityReg.close();
                 verify(fooListener).ownershipChanged(fooCaptor.capture());
                 fooChange = fooCaptor.getValue();

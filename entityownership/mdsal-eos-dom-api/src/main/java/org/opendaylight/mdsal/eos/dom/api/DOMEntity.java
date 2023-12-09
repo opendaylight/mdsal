@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.eos.dom.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -23,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  */
 @Beta
 public class DOMEntity extends GenericEntity<YangInstanceIdentifier> {
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     static final QName ENTITY = QName.create(

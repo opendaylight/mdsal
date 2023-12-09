@@ -13,13 +13,11 @@ import static java.util.Objects.requireNonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,9 +41,9 @@ final class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListe
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "generic getEntity()")
-    public void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
-        final DOMEntity domEntity = ownershipChange.getEntity();
-        final YangInstanceIdentifier domId = domEntity.getIdentifier();
+    public void ownershipChanged(final EntityOwnershipChange<DOMEntity> ownershipChange) {
+        final var domEntity = ownershipChange.getEntity();
+        final var domId = domEntity.getIdentifier();
         final InstanceIdentifier<?> bindingId;
         try {
             bindingId = verifyNotNull(adapterContext.currentSerializer().fromYangInstanceIdentifier(domId));
@@ -54,13 +52,13 @@ final class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListe
             return;
         }
 
-        final Entity bindingEntity = new Entity(domEntity.getType(), bindingId);
-        final EntityOwnershipChange change = new EntityOwnershipChange(bindingEntity,
-            ownershipChange.getState(), ownershipChange.inJeopardy());
+        final var bindingEntity = new Entity(domEntity.getType(), bindingId);
+        final var bindingChange = new EntityOwnershipChange<>(bindingEntity, ownershipChange.getState(),
+            ownershipChange.inJeopardy());
         try {
-            bindingListener.ownershipChanged(change);
+            bindingListener.ownershipChanged(bindingChange);
         } catch (Exception e) {
-            LOG.error("Listener {} failed during change notification {}", bindingListener, change, e);
+            LOG.error("Listener {} failed during change notification {}", bindingListener, bindingChange, e);
         }
     }
 }

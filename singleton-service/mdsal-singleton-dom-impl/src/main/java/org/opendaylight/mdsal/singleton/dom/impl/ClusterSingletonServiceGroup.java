@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -28,11 +28,9 @@ import org.opendaylight.yangtools.concepts.Identifiable;
  *
  * @param <P> the instance identifier path type
  * @param <E> the GenericEntity type
- * @param <C> the GenericEntityOwnershipChange type
  */
-abstract class ClusterSingletonServiceGroup<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
-                                       C extends GenericEntityOwnershipChange<P, E>> implements Identifiable<String> {
-
+abstract class ClusterSingletonServiceGroup<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>>
+        implements Identifiable<String> {
     /**
      * This method must be called once on startup to initialize this group and
      * register the relevant group entity candidate. It means create relevant
@@ -67,7 +65,7 @@ abstract class ClusterSingletonServiceGroup<P extends HierarchicalIdentifier<P>,
      *
      * @param ownershipChange change role for ClusterSingletonServiceGroup
      */
-    abstract void ownershipChanged(C ownershipChange);
+    abstract void ownershipChanged(EntityOwnershipChange<E> ownershipChange);
 
     /**
      * Closes this service group. All registered service providers are also closed. Please be careful

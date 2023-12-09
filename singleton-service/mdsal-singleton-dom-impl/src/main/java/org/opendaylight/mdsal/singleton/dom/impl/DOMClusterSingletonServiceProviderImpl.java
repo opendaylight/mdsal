@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 import java.util.ServiceLoader;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
@@ -24,7 +23,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 @MetaInfServices(value = ClusterSingletonServiceProvider.class)
 public class DOMClusterSingletonServiceProviderImpl extends
         AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
-                                                    DOMEntityOwnershipChange,
                                                     DOMEntityOwnershipListener,
                                                     DOMEntityOwnershipService>
         implements DOMEntityOwnershipListener {
