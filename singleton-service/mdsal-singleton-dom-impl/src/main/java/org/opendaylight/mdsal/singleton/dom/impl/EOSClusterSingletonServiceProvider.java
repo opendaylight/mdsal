@@ -7,13 +7,11 @@
  */
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -104,10 +102,7 @@ public final class EOSClusterSingletonServiceProvider
     public synchronized Registration registerClusterSingletonService(final ClusterSingletonService service) {
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
-        final String serviceIdentifier = service.getIdentifier().getName();
-        checkArgument(!Strings.isNullOrEmpty(serviceIdentifier),
-            "ClusterSingletonService identifier may not be null nor empty");
-
+        final var serviceIdentifier = service.getIdentifier().value();
         final ServiceGroup serviceGroup;
         final var existing = serviceGroupMap.get(serviceIdentifier);
         if (existing == null) {
@@ -165,7 +160,7 @@ public final class EOSClusterSingletonServiceProvider
             LOG.debug("Closing service group {}", serviceIdentifier);
             placeHolder = new PlaceholderServiceGroup(lookup, future);
 
-            final var identifier = reg.getInstance().getIdentifier().getName();
+            final var identifier = reg.getInstance().getIdentifier().value();
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
             LOG.debug("Replaced group {} with {}", serviceIdentifier, placeHolder);
 

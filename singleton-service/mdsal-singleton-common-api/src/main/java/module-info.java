@@ -9,7 +9,6 @@ module org.opendaylight.mdsal.singleton.common.api {
     exports org.opendaylight.mdsal.singleton.common.api;
 
     requires transitive org.opendaylight.yangtools.concepts;
-    requires org.opendaylight.yangtools.util;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;

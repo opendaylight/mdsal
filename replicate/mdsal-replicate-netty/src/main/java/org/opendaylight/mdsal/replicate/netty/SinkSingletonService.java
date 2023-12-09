@@ -42,8 +42,7 @@ import org.slf4j.LoggerFactory;
 
 final class SinkSingletonService extends ChannelInitializer<SocketChannel> implements ClusterSingletonService {
     private static final Logger LOG = LoggerFactory.getLogger(SinkSingletonService.class);
-    private static final ServiceGroupIdentifier SGID =
-            ServiceGroupIdentifier.create(SinkSingletonService.class.getName());
+    private static final ServiceGroupIdentifier SGID = new ServiceGroupIdentifier(SinkSingletonService.class.getName());
     // TODO: allow different trees?
     private static final DOMDataTreeIdentifier TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
         YangInstanceIdentifier.of());
@@ -90,7 +89,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     @Override
     public synchronized void instantiateServiceInstance() {
         LOG.info("Replication sink started with source {}", sourceAddress);
-        this.bs = bootstrapSupport.newBootstrap();
+        bs = bootstrapSupport.newBootstrap();
         doConnect();
     }
 

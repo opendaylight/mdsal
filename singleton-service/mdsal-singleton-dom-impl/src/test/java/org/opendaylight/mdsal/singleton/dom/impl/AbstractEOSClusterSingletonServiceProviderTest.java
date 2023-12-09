@@ -60,7 +60,7 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     }
 
     static class TestClusterSingletonService implements ClusterSingletonService {
-        private static final @NonNull ServiceGroupIdentifier SERVICE_ID = ServiceGroupIdentifier.create(SERVICE_NAME);
+        private static final @NonNull ServiceGroupIdentifier SERVICE_ID = new ServiceGroupIdentifier(SERVICE_NAME);
 
         private TestClusterSingletonServiceState serviceState = TestClusterSingletonServiceState.INITIALIZED;
 

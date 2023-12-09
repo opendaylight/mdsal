@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 final class SourceSingletonService extends ChannelInitializer<SocketChannel> implements ClusterSingletonService {
     private static final Logger LOG = LoggerFactory.getLogger(SourceSingletonService.class);
     private static final ServiceGroupIdentifier SGID =
-            ServiceGroupIdentifier.create(SourceSingletonService.class.getName());
+        new ServiceGroupIdentifier(SourceSingletonService.class.getName());
 
     private final BootstrapSupport bootstrapSupport;
     private final DOMDataTreeChangeService dtcs;
