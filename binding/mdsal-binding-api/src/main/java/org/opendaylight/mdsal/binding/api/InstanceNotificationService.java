@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.EventListener;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -51,7 +50,7 @@ public interface InstanceNotificationService extends BindingService {
      * Interface for listeners on instance (YANG 1.1) notifications.
      */
     @FunctionalInterface
-    interface Listener<P extends DataObject, N extends InstanceNotification<N, P>> extends EventListener {
+    interface Listener<P extends DataObject, N extends InstanceNotification<N, P>> {
         /**
          * Process an instance notification.
          *
@@ -66,7 +65,7 @@ public interface InstanceNotificationService extends BindingService {
      */
     @FunctionalInterface
     interface KeyedListListener<P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>,
-            K extends Key<P>> extends EventListener {
+            K extends Key<P>> {
         /**
          * Process an instance notification.
          *

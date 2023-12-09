@@ -7,13 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Interface implemented by listeners interested in {@link DOMNotification}s.
  */
-public interface DOMNotificationListener extends EventListener {
+public interface DOMNotificationListener {
     /**
      * Invoked whenever a {@link DOMNotification} matching the subscription
      * criteria is received.
