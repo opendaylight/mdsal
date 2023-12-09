@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import java.util.EventListener;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -43,10 +42,9 @@ public interface DOMActionAvailabilityExtension extends DOMActionService.Extensi
     Registration registerAvailabilityListener(AvailabilityListener listener);
 
     /**
-     * An {@link EventListener} used to track Operation implementations becoming (un)available
-     * to a {@link DOMActionService}.
+     * A listener used to track Operation implementations becoming (un)available to a {@link DOMActionService}.
      */
-    interface AvailabilityListener extends EventListener {
+    interface AvailabilityListener {
         /**
          * Method invoked whenever an action type becomes available or unavailable. There are two sets reported,
          * removed and added. To reconstruct the state, first apply removed and then added operations, like this:

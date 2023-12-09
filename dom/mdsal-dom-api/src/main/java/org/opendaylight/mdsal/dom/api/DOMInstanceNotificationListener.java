@@ -8,17 +8,16 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * An {@link EventListener} registered to receive instance (YANG 1.1) {@link DOMNotification}s from a
+ * A listener registered to receive instance (YANG 1.1) {@link DOMNotification}s from a
  * {@link DOMInstanceNotificationService}.
  */
 @Beta
 @FunctionalInterface
 @NonNullByDefault
-public interface DOMInstanceNotificationListener extends EventListener {
+public interface DOMInstanceNotificationListener {
     /**
      * Invoked whenever a {@link DOMNotification} matching the subscription criteria is received.
      *

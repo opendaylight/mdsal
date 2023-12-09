@@ -5,13 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.api;
 
-import java.util.EventListener;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public interface DOMMountPointListener extends EventListener {
+public interface DOMMountPointListener {
 
     void onMountPointCreated(YangInstanceIdentifier path);
 

@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
-import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
@@ -35,7 +34,7 @@ public interface DOMNotificationPublishDemandExtension extends DOMNotificationPu
      * Listener for changes in demand for {@link DOMNotification} types. Changes are communnicated via
      * {@link #onDemandUpdated(ImmutableSet)}, which reports the delta between last reported and current state.
      */
-    interface DemandListener extends EventListener {
+    interface DemandListener {
         /**
          * Update the view of what {@link DOMNotification}s are in demand.
          *
