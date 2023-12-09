@@ -56,7 +56,7 @@ public final class EOSClusterSingletonServiceProvider
     @VisibleForTesting
     static final @NonNull String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
 
-    private final ConcurrentMap<String, ClusterSingletonServiceGroup> serviceGroupMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ServiceGroup> serviceGroupMap = new ConcurrentHashMap<>();
     private final DOMEntityOwnershipService entityOwnershipService;
 
     /* EOS Entity Listeners Registration */
@@ -86,7 +86,7 @@ public final class EOSClusterSingletonServiceProvider
         serviceEntityListenerReg = null;
 
         final var future = Futures.allAsList(serviceGroupMap.values().stream()
-            .map(ClusterSingletonServiceGroup::closeClusterSingletonGroup)
+            .map(ServiceGroup::closeClusterSingletonGroup)
             .toList());
         try {
             LOG.debug("Waiting for service groups to stop");
@@ -108,7 +108,7 @@ public final class EOSClusterSingletonServiceProvider
         checkArgument(!Strings.isNullOrEmpty(serviceIdentifier),
             "ClusterSingletonService identifier may not be null nor empty");
 
-        final ClusterSingletonServiceGroup serviceGroup;
+        final ServiceGroup serviceGroup;
         final var existing = serviceGroupMap.get(serviceIdentifier);
         if (existing == null) {
             serviceGroup = createGroup(serviceIdentifier, new ArrayList<>(1));
@@ -136,14 +136,14 @@ public final class EOSClusterSingletonServiceProvider
         return reg;
     }
 
-    private ClusterSingletonServiceGroup createGroup(final String serviceIdentifier,
+    private ServiceGroup createGroup(final String serviceIdentifier,
             final List<ServiceRegistration> services) {
-        return new ClusterSingletonServiceGroupImpl(serviceIdentifier, entityOwnershipService,
+        return new ActiveServiceGroup(serviceIdentifier, entityOwnershipService,
             createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier),
             createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier), services);
     }
 
-    private void initializeOrRemoveGroup(final ClusterSingletonServiceGroup group)
+    private void initializeOrRemoveGroup(final ServiceGroup group)
             throws CandidateAlreadyRegisteredException {
         try {
             group.initialize();
@@ -154,7 +154,7 @@ public final class EOSClusterSingletonServiceProvider
     }
 
     private void removeRegistration(final String serviceIdentifier, final ServiceRegistration reg) {
-        final PlaceholderGroup placeHolder;
+        final PlaceholderServiceGroup placeHolder;
         final ListenableFuture<?> future;
         synchronized (this) {
             final var lookup = verifyNotNull(serviceGroupMap.get(serviceIdentifier));
@@ -165,7 +165,7 @@ public final class EOSClusterSingletonServiceProvider
 
             // Close the group and replace it with a placeholder
             LOG.debug("Closing service group {}", serviceIdentifier);
-            placeHolder = new PlaceholderGroup(lookup, future);
+            placeHolder = new PlaceholderServiceGroup(lookup, future);
 
             final String identifier = reg.getInstance().getIdentifier().getName();
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
@@ -177,7 +177,7 @@ public final class EOSClusterSingletonServiceProvider
         future.addListener(() -> finishShutdown(placeHolder), MoreExecutors.directExecutor());
     }
 
-    private synchronized void finishShutdown(final PlaceholderGroup placeHolder) {
+    private synchronized void finishShutdown(final PlaceholderServiceGroup placeHolder) {
         final var identifier = placeHolder.getIdentifier();
         LOG.debug("Service group {} closed", identifier);
 

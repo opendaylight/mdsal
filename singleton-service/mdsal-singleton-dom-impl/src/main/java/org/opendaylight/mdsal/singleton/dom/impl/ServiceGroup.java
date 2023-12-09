@@ -16,19 +16,16 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
- * {@link ClusterSingletonServiceGroup} maintains a group of {@link ClusterSingletonService} instances.
+ * {@link ServiceGroup} maintains a group of {@link ClusterSingletonService} instances.
  * All EntityOwnershipChange notifications have to applied to all registered services at the same time in the same
  * manner. All registered services have only one instantiated service instance in a cluster at one time on same
  * Cluster Node. This is realized via a double candidate approach where a service group instance maintains a candidate
  * registration for ownership of the service entity in the cluster and also a registration that acts as a guard to
  * ensure a service group instance has fully closed prior to relinquishing service ownership. To achieve ownership
  * of the service group, a service group candidate must hold ownership of both these entities.
- *
- * @param <P> the instance identifier path type
- * @param <E> the GenericEntity type
  */
-// FIXME: rename to ServiceGroup and seal
-abstract class ClusterSingletonServiceGroup implements Identifiable<String> {
+// FIXME: seal
+abstract class ServiceGroup implements Identifiable<String> {
     /**
      * This method must be called once on startup to initialize this group and register the relevant group entity
      * candidate. It means create relevant Group Entity Candidate Registration.

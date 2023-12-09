@@ -23,19 +23,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Intermediate place-holder to catch user requests while asynchronous shutdown of previous incarnation of
- * a {@link ClusterSingletonServiceGroup} finishes.
+ * a {@link ServiceGroup} finishes.
  */
-// FIXME: rename to PlaceholderServiceGroup
-final class PlaceholderGroup extends ClusterSingletonServiceGroup {
-    private static final Logger LOG = LoggerFactory.getLogger(PlaceholderGroup.class);
+final class PlaceholderServiceGroup extends ServiceGroup {
+    private static final Logger LOG = LoggerFactory.getLogger(PlaceholderServiceGroup.class);
 
     private final List<ServiceRegistration> services = new ArrayList<>(0);
-    private final ClusterSingletonServiceGroup previous;
+    private final ServiceGroup previous;
     private final ListenableFuture<?> closeFuture;
 
-    private volatile ClusterSingletonServiceGroup successor;
+    private volatile ServiceGroup successor;
 
-    PlaceholderGroup(final ClusterSingletonServiceGroup previous, final ListenableFuture<?> closeFuture) {
+    PlaceholderServiceGroup(final ServiceGroup previous, final ListenableFuture<?> closeFuture) {
         this.previous = requireNonNull(previous);
         this.closeFuture = requireNonNull(closeFuture);
     }
@@ -85,7 +84,7 @@ final class PlaceholderGroup extends ClusterSingletonServiceGroup {
         return services;
     }
 
-    void setSuccessor(final ClusterSingletonServiceGroup successor) {
+    void setSuccessor(final ServiceGroup successor) {
         verifyNoSuccessor();
         this.successor = verifyNotNull(successor);
         LOG.debug("{}: successor set to {}", this, successor);
