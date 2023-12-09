@@ -48,19 +48,18 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
         final var codec = serializer.getSubtreeCodec(bindingPath);
         final var modification = LazyDataObjectModification.from(codec, domChange.getRootNode());
         return modification == null ? null
-            : new LazyDataTreeModification(DataTreeIdentifier.create(datastoreType, bindingPath), modification);
+            : new LazyDataTreeModification(DataTreeIdentifier.of(datastoreType, bindingPath), modification);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <T extends DataObject> @Nullable DataTreeModification<T> from(final CurrentAdapterSerializer serializer,
             final DOMDataTreeCandidate candidate, final Class<T> augment) {
         final var domRootPath = candidate.getRootPath();
-        final var bindingPath = createBindingPath(serializer, domRootPath.getRootIdentifier(), augment);
+        final var bindingPath = createBindingPath(serializer, domRootPath.path(), augment);
         final var codec = serializer.getSubtreeCodec(bindingPath);
         final var modification = LazyDataObjectModification.from(codec, candidate.getRootNode());
         return modification == null ? null
-            : new LazyDataTreeModification(DataTreeIdentifier.create(domRootPath.getDatastoreType(), bindingPath),
-                modification);
+            : new LazyDataTreeModification(DataTreeIdentifier.of(domRootPath.datastore(), bindingPath), modification);
     }
 
     static <T extends DataObject> @NonNull List<DataTreeModification<T>> from(final CurrentAdapterSerializer codec,

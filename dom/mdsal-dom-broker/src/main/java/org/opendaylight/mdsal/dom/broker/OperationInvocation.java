@@ -33,8 +33,7 @@ final class OperationInvocation {
             final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
         var impls = entry.getImplementations(path);
         if (impls == null) {
-            impls = entry.getImplementations(
-                new DOMDataTreeIdentifier(path.getDatastoreType(), YangInstanceIdentifier.of()));
+            impls = entry.getImplementations(DOMDataTreeIdentifier.of(path.datastore(), YangInstanceIdentifier.of()));
             if (impls == null) {
                 return Futures.immediateFailedFuture(new DOMActionNotAvailableException(
                     "No implementation of Action %s available for %s", type, path));

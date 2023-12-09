@@ -37,13 +37,13 @@ final class DTIv1 implements Externalizable {
 
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
-        id.getDatastoreType().writeTo(out);
-        out.writeObject(id.getRootIdentifier());
+        id.datastore().writeTo(out);
+        out.writeObject(id.path());
     }
 
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-        id = DataTreeIdentifier.create(LogicalDatastoreType.readFrom(in), (InstanceIdentifier<?>) in.readObject());
+        id = DataTreeIdentifier.of(LogicalDatastoreType.readFrom(in), (InstanceIdentifier<?>) in.readObject());
     }
 
     @java.io.Serial

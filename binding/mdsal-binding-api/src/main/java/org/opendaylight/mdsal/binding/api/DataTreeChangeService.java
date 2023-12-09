@@ -118,7 +118,7 @@ public interface DataTreeChangeService extends BindingService {
 
     private static <T extends DataObject> @NonNull DataTreeIdentifier<T> checkNotWildcard(
             final DataTreeIdentifier<T> treeId) {
-        final var instanceIdentifier = treeId.getRootIdentifier();
+        final var instanceIdentifier = treeId.path();
         if (instanceIdentifier.isWildcarded()) {
             throw new IllegalArgumentException("Cannot register listener for wildcard " + instanceIdentifier);
         }

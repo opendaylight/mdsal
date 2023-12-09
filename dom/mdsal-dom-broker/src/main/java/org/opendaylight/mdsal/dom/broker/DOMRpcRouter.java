@@ -400,7 +400,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         @Override
         public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final YangInstanceIdentifier pathRoot = path.getRootIdentifier();
+            final YangInstanceIdentifier pathRoot = path.path();
             checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");
 
             final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);

@@ -43,7 +43,7 @@ public final class DOMActionInstance implements Immutable {
 
     public static DOMActionInstance of(final Absolute type, final LogicalDatastoreType datastore,
             final YangInstanceIdentifier path) {
-        return new DOMActionInstance(type, ImmutableSet.of(new DOMDataTreeIdentifier(datastore, path)));
+        return new DOMActionInstance(type, ImmutableSet.of(DOMDataTreeIdentifier.of(datastore, path)));
     }
 
     /**

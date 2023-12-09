@@ -46,9 +46,9 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
 
         if (treeChange) {
             supportedExtensions = List.of((DOMDataTreeChangeService) (treeId, listener) -> {
-                final var dsType = treeId.getDatastoreType();
+                final var dsType = treeId.datastore();
                 if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
-                    return publisher.registerTreeChangeListener(treeId.getRootIdentifier(), listener);
+                    return publisher.registerTreeChangeListener(treeId.path(), listener);
                 }
                 throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
             });

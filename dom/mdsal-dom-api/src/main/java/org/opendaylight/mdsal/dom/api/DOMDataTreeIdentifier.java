@@ -12,16 +12,15 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.MoreObjects;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.common.api.LogicalDatastorePath;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
- * A unique identifier for a particular subtree. It is composed of the logical data store type and the instance
- * identifier of the root node.
+ * A DOM version of {@link LogicalDatastorePath}. Uses {@link YangInstanceIdentifier} for path addressing.
  */
 @NonNullByDefault
-public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDataTreeIdentifier>,
+public final class DOMDataTreeIdentifier implements LogicalDatastorePath<DOMDataTreeIdentifier, YangInstanceIdentifier>,
         Comparable<DOMDataTreeIdentifier> {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
@@ -29,49 +28,66 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
     private final YangInstanceIdentifier rootIdentifier;
     private final LogicalDatastoreType datastoreType;
 
-    public DOMDataTreeIdentifier(final LogicalDatastoreType datastoreType,
-            final YangInstanceIdentifier rootIdentifier) {
-        this.datastoreType = requireNonNull(datastoreType);
-        this.rootIdentifier = requireNonNull(rootIdentifier);
+    /**
+     * Default constructor.
+     *
+     * @param datastore {@link LogicalDatastoreType} of this identifier
+     * @param path {@link YangInstanceIdentifier} path of this identifier
+     * @throws NullPointerException if any argument is {@code null}
+     * @deprecated Use {@link #of(LogicalDatastoreType, YangInstanceIdentifier)} instead
+     */
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    public DOMDataTreeIdentifier(final LogicalDatastoreType datastore, final YangInstanceIdentifier path) {
+        datastoreType = requireNonNull(datastore);
+        rootIdentifier = requireNonNull(path);
+    }
+
+    /**
+     * Create a new {@link DOMDataTreeIdentifier} with specified datastore and path.
+     *
+     * @param datastore {@link LogicalDatastoreType} of this identifier
+     * @param path {@link YangInstanceIdentifier} path of this identifier
+     * @throws NullPointerException if any argument is {@code null}
+     */
+    public static DOMDataTreeIdentifier of(final LogicalDatastoreType datastore, final YangInstanceIdentifier path) {
+        return new DOMDataTreeIdentifier(datastore, path);
+    }
+
+    @Override
+    public LogicalDatastoreType datastore() {
+        return datastoreType;
     }
 
     /**
      * Return the logical data store type.
      *
      * @return Logical data store type. Guaranteed to be non-null.
+     * @deprecated Use {@link #datastore()} instead
      */
+    @Deprecated(since = "13.0.0", forRemoval = true)
     public LogicalDatastoreType getDatastoreType() {
-        return datastoreType;
+        return datastore();
+    }
+
+    @Override
+    public YangInstanceIdentifier path() {
+        return rootIdentifier;
     }
 
     /**
      * Return the {@link YangInstanceIdentifier} of the root node.
      *
      * @return Instance identifier corresponding to the root node.
+     * @deprecated Use {@link #path()} instead
      */
+    @Deprecated(since = "13.0.0", forRemoval = true)
     public YangInstanceIdentifier getRootIdentifier() {
-        return rootIdentifier;
-    }
-
-    @Override
-    public boolean contains(final DOMDataTreeIdentifier other) {
-        return datastoreType == other.datastoreType && rootIdentifier.contains(other.rootIdentifier);
+        return path();
     }
 
     public DOMDataTreeIdentifier toOptimized() {
         final var opt = rootIdentifier.toOptimized();
-        return opt == rootIdentifier ? this : new DOMDataTreeIdentifier(datastoreType, opt);
-    }
-
-    @Override
-    public int hashCode() {
-        return datastoreType.hashCode() * 31 + rootIdentifier.hashCode();
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object obj) {
-        return this == obj || obj instanceof DOMDataTreeIdentifier other && datastoreType == other.datastoreType
-            && rootIdentifier.equals(other.rootIdentifier);
+        return opt == rootIdentifier ? this : DOMDataTreeIdentifier.of(datastoreType, opt);
     }
 
     @Override
@@ -98,6 +114,17 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
         }
 
         return otherIter.hasNext() ? -1 : 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return datastoreType.hashCode() * 31 + rootIdentifier.hashCode();
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object obj) {
+        return this == obj || obj instanceof DOMDataTreeIdentifier other && datastoreType == other.datastoreType
+            && rootIdentifier.equals(other.rootIdentifier);
     }
 
     @Override
