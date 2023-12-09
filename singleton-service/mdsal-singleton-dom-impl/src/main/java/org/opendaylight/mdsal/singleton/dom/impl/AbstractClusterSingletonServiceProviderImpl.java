@@ -20,14 +20,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
@@ -48,8 +48,7 @@ import org.slf4j.LoggerFactory;
  * @param <S> the GenericEntityOwnershipService type
  */
 public abstract class AbstractClusterSingletonServiceProviderImpl<P extends HierarchicalIdentifier<P>,
-        E extends GenericEntity<P>, G extends GenericEntityOwnershipListener<E>,
-        S extends GenericEntityOwnershipService<E, G>>
+        E extends GenericEntity<P>, G extends GenericEntityOwnershipListener<E>>
         implements ClusterSingletonServiceProvider, GenericEntityOwnershipListener<E> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractClusterSingletonServiceProviderImpl.class);
 
@@ -58,8 +57,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
     @VisibleForTesting
     static final @NonNull String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
 
-    private final S entityOwnershipService;
-    private final Map<String, ClusterSingletonServiceGroup<P, E>> serviceGroupMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ClusterSingletonServiceGroup<P, E>> serviceGroupMap = new ConcurrentHashMap<>();
+    private final DOMEntityOwnershipService entityOwnershipService;
 
     /* EOS Entity Listeners Registration */
     private Registration serviceEntityListenerReg;
@@ -70,7 +69,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
      *
      * @param entityOwnershipService relevant EOS
      */
-    protected AbstractClusterSingletonServiceProviderImpl(final @NonNull S entityOwnershipService) {
+    protected AbstractClusterSingletonServiceProviderImpl(
+            final @NonNull DOMEntityOwnershipService entityOwnershipService) {
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
     }
 
@@ -238,7 +238,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
      * @param entityOwnershipServiceInst - EOS type
      * @return a {@link Registration}
      */
-    protected abstract Registration registerListener(String entityType, S entityOwnershipServiceInst);
+    protected abstract Registration registerListener(String entityType,
+        DOMEntityOwnershipService entityOwnershipServiceInst);
 
     /**
      * Creates an extended {@link GenericEntity} instance.

@@ -38,7 +38,7 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -69,8 +69,7 @@ import org.slf4j.LoggerFactory;
  * @param <S> the GenericEntityOwnershipService type
  */
 final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
-        G extends GenericEntityOwnershipListener<E>, S extends GenericEntityOwnershipService<E, G>>
-        extends ClusterSingletonServiceGroup<P, E> {
+        G extends GenericEntityOwnershipListener<E>> extends ClusterSingletonServiceGroup<P, E> {
 
     private enum EntityState {
         /**
@@ -111,7 +110,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
 
     private static final Logger LOG = LoggerFactory.getLogger(ClusterSingletonServiceGroupImpl.class);
 
-    private final S entityOwnershipService;
+    private final DOMEntityOwnershipService entityOwnershipService;
     private final String identifier;
 
     /* Entity instances */
@@ -194,8 +193,8 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * @param parent parent service
      * @param services Services list
      */
-    ClusterSingletonServiceGroupImpl(final String identifier, final S entityOwnershipService, final E mainEntity,
-            final E closeEntity, final Collection<ClusterSingletonServiceRegistration> services) {
+    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
+            final E mainEntity, final E closeEntity, final Collection<ClusterSingletonServiceRegistration> services) {
         checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
@@ -207,8 +206,8 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     @VisibleForTesting
-    ClusterSingletonServiceGroupImpl(final String identifier, final E mainEntity,
-            final E closeEntity, final S entityOwnershipService) {
+    ClusterSingletonServiceGroupImpl(final String identifier, final E mainEntity, final E closeEntity,
+            final DOMEntityOwnershipService entityOwnershipService) {
         this(identifier, entityOwnershipService, mainEntity, closeEntity, ImmutableList.of());
     }
 
@@ -618,7 +617,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
                     return null;
                 }
 
-                Futures.addCallback(future, new FutureCallback<Object>() {
+                Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onSuccess(final Object result) {
                         LOG.debug("Service group {} service {} stopped successfully", identifier, service);

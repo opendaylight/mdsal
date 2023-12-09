@@ -34,7 +34,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
@@ -66,11 +66,10 @@ public class ClusterSingletonServiceGroupImplTest {
     public GenericEntityOwnershipListener<TestEntity> mockEosListener;
 
     @Mock
-    public GenericEntityOwnershipService<TestEntity, GenericEntityOwnershipListener<TestEntity>> mockEosService;
+    public DOMEntityOwnershipService mockEosService;
 
     public ClusterSingletonServiceGroupImpl<TestInstanceIdentifier, TestEntity,
-        GenericEntityOwnershipListener<TestEntity>,
-        GenericEntityOwnershipService<TestEntity, GenericEntityOwnershipListener<TestEntity>>> singletonServiceGroup;
+        GenericEntityOwnershipListener<TestEntity>> singletonServiceGroup;
 
     public ClusterSingletonServiceRegistration firstReg;
     public ClusterSingletonServiceRegistration secondReg;

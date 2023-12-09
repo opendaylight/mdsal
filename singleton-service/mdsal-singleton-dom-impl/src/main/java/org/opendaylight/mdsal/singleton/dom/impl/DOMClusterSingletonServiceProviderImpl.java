@@ -22,9 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
  */
 @MetaInfServices(value = ClusterSingletonServiceProvider.class)
 public class DOMClusterSingletonServiceProviderImpl extends
-        AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
-                                                    DOMEntityOwnershipListener,
-                                                    DOMEntityOwnershipService>
+        AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity, DOMEntityOwnershipListener>
         implements DOMEntityOwnershipListener {
 
     public DOMClusterSingletonServiceProviderImpl() {
