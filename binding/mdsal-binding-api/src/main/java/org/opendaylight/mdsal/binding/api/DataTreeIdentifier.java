@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -22,7 +21,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * data store type and the instance identifier of the root node.
  */
 public final class DataTreeIdentifier<T extends DataObject> implements HierarchicalIdentifier<DataTreeIdentifier<?>> {
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     private final @NonNull InstanceIdentifier<T> rootIdentifier;
@@ -64,26 +63,13 @@ public final class DataTreeIdentifier<T extends DataObject> implements Hierarchi
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + datastoreType.hashCode();
-        result = prime * result + rootIdentifier.hashCode();
-        return result;
+        return 31 * datastoreType.hashCode() + rootIdentifier.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof DataTreeIdentifier)) {
-            return false;
-        }
-        final DataTreeIdentifier<?> other = (DataTreeIdentifier<?>) obj;
-        if (datastoreType != other.datastoreType) {
-            return false;
-        }
-        return rootIdentifier.equals(other.rootIdentifier);
+        return this == obj || obj instanceof DataTreeIdentifier<?> other && datastoreType == other.datastoreType
+            && rootIdentifier.equals(other.rootIdentifier);
     }
 
     @Override
