@@ -52,6 +52,7 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
         delegate.merge(store, path, data);
     }
 
+    @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
