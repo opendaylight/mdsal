@@ -33,7 +33,7 @@ abstract class AbstractInstanceNotificationListenerAdapter<P extends DataObject,
     AbstractInstanceNotificationListenerAdapter(final AdapterContext adapterContext, final Class<N> nofiticationClass,
             final L delegate, final Executor executor) {
         this.adapterContext = requireNonNull(adapterContext);
-        this.notificationClass = requireNonNull(nofiticationClass);
+        notificationClass = requireNonNull(nofiticationClass);
         this.delegate = requireNonNull(delegate);
         this.executor = requireNonNull(executor);
     }
@@ -54,7 +54,7 @@ abstract class AbstractInstanceNotificationListenerAdapter<P extends DataObject,
             return;
         }
 
-        final var bindingPath = serializer.fromYangInstanceIdentifier(path.getRootIdentifier());
+        final var bindingPath = serializer.fromYangInstanceIdentifier(path.path());
         executor.execute(() -> onNotification(delegate, bindingPath, castNotification));
     }
 

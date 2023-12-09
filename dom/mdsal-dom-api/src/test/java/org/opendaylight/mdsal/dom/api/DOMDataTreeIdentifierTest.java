@@ -35,26 +35,26 @@ class DOMDataTreeIdentifierTest {
     private static final YangInstanceIdentifier TEST_YII_IID =
         YangInstanceIdentifier.of(QName.create(TEST_MODULE, TEST_LISTS));
     private static final DOMDataTreeIdentifier REF_TREE =
-        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID);
+        DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, REF_YII_IID);
     private static final DOMDataTreeIdentifier TEST_DIFF_TREE =
-        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,TEST_YII_IID);
+        DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,TEST_YII_IID);
 
     @Test
     void constructTest() {
-        assertNotNull(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID), "Instantiation");
+        assertNotNull(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, REF_YII_IID), "Instantiation");
     }
 
     @Test
     void hashCodeTest() {
         assertEquals(REF_TREE.hashCode(),
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID).hashCode());
+            DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, REF_YII_IID).hashCode());
         assertNotEquals(REF_TREE.hashCode(), TEST_DIFF_TREE.hashCode());
     }
 
     @Test
     void equalsTest() {
-        assertEquals(REF_TREE, new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
-        assertNotEquals(REF_TREE, new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, REF_YII_IID));
+        assertEquals(REF_TREE, DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
+        assertNotEquals(REF_TREE, DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, REF_YII_IID));
         assertEquals(REF_TREE, REF_TREE);
         assertNotEquals(REF_TREE, new Object());
         assertNotEquals(REF_TREE, TEST_DIFF_TREE);
@@ -65,21 +65,21 @@ class DOMDataTreeIdentifierTest {
         final var compareFirstIid = YangInstanceIdentifier.of(QName.create(TEST_MODULE, COMPARE_FIRST_LISTS));
         final var compareSecondIid = YangInstanceIdentifier.of(QName.create(TEST_MODULE, COMPARE_SECOND_LISTS));
 
-        assertEquals(0, REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
+        assertEquals(0, REF_TREE.compareTo(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
         assertNotEquals(0,
-            REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, REF_YII_IID)));
-        assertEquals(1, new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+            REF_TREE.compareTo(DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, REF_YII_IID)));
+        assertEquals(1, DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
             YangInstanceIdentifier.of(QName.create(TEST_MODULE, REF_LISTS), QName.create(TEST_MODULE, TEST_LISTS)))
                 .compareTo(REF_TREE));
-        assertTrue(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareFirstIid)
-            .compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareSecondIid)) < 0);
-        assertTrue(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareSecondIid)
-            .compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, compareFirstIid)) > 0);
+        assertTrue(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, compareFirstIid)
+            .compareTo(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, compareSecondIid)) < 0);
+        assertTrue(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, compareSecondIid)
+            .compareTo(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, compareFirstIid)) > 0);
     }
 
     @Test
     void containsTest() {
-        assertTrue(REF_TREE.contains(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
+        assertTrue(REF_TREE.contains(DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
         assertEquals(false, REF_TREE.contains(TEST_DIFF_TREE));
     }
 

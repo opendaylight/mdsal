@@ -38,8 +38,8 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     public <T extends DataObject> Registration registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
             final DataTreeChangeListener<T> listener) {
         final var domIdentifier = toDomTreeIdentifier(treeId);
-        final var storeType = treeId.getDatastoreType();
-        final var target = treeId.getRootIdentifier().getTargetType();
+        final var storeType = treeId.datastore();
+        final var target = treeId.path().getTargetType();
         final var augment = Augmentation.class.isAssignableFrom(target) ? target : null;
 
         final var domListener = listener instanceof ClusteredDataTreeChangeListener
@@ -65,12 +65,12 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     }
 
     private @NonNull DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
-        return new DOMDataTreeIdentifier(treeId.getDatastoreType(),
-            currentSerializer().toYangInstanceIdentifier(treeId.getRootIdentifier()));
+        return DOMDataTreeIdentifier.of(treeId.datastore(),
+            currentSerializer().toYangInstanceIdentifier(treeId.path()));
     }
 
     private @NonNull DOMDataTreeIdentifier toDomTreeInstance(final DataTreeIdentifier<?> treeId) {
-        final var instanceIdentifier = treeId.getRootIdentifier();
+        final var instanceIdentifier = treeId.path();
         if (instanceIdentifier.isWildcarded()) {
             throw new IllegalArgumentException("Cannot register listener for wildcard " + instanceIdentifier);
         }

@@ -63,7 +63,7 @@ final class PublisherAdapter<N extends InstanceNotification<N, P>, P extends Dat
 
     private static @NonNull DOMDataTreeIdentifier toDomPath(final CurrentAdapterSerializer serializer,
             final InstanceIdentifier<?> path) {
-        return new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, serializer.toYangInstanceIdentifier(path));
+        return DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, serializer.toYangInstanceIdentifier(path));
     }
 
     private @NonNull DOMNotification toDomNotification(final CurrentAdapterSerializer serializer,

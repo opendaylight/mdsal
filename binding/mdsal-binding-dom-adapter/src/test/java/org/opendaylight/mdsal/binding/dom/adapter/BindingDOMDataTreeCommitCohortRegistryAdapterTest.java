@@ -40,7 +40,7 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
         final var registryAdapter = new BindingDOMDataTreeCommitCohortRegistryAdapter(bindingTestContext.getCodec(),
             cohortRegistry);
 
-        final var dataTreeIdentifier = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
+        final var dataTreeIdentifier = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(Top.class));
         final DataTreeCommitCohort<Top> dataTreeCommitCohort = mock(DataTreeCommitCohort.class);
         try (var objectRegistration = registryAdapter.registerCommitCohort(dataTreeIdentifier, dataTreeCommitCohort)) {

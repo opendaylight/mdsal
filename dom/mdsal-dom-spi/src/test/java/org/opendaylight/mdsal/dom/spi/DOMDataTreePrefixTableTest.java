@@ -24,7 +24,7 @@ public class DOMDataTreePrefixTableTest {
         final Object testObject = new Object();
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
         final DOMDataTreeIdentifier domDataTreeIdentifier =
-                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, yangInstanceIdentifier);
+                DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, yangInstanceIdentifier);
 
         domDataTreePrefixTable.store(domDataTreeIdentifier, testObject);
         assertEquals(QName.create("", "test"),
@@ -33,7 +33,7 @@ public class DOMDataTreePrefixTableTest {
         assertNull(domDataTreePrefixTable.lookup(domDataTreeIdentifier));
 
         final DOMDataTreeIdentifier invalidDOMDataTreeIdentifier =
-                new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, yangInstanceIdentifier);
+                DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, yangInstanceIdentifier);
         domDataTreePrefixTable.remove(invalidDOMDataTreeIdentifier);
         assertNull(domDataTreePrefixTable.lookup(invalidDOMDataTreeIdentifier));
     }

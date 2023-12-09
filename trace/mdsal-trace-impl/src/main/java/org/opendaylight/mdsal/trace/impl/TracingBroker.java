@@ -307,8 +307,8 @@ public class TracingBroker implements TracingDOMDataBroker {
         final var ext = delegate.extension(type);
         if (DOMDataTreeChangeService.class.equals(type) && ext instanceof DOMDataTreeChangeService treeChange) {
             return type.cast((DOMDataTreeChangeService) (domDataTreeIdentifier, listener) -> {
-                final var rootId = domDataTreeIdentifier.getRootIdentifier();
-                if (isRegistrationWatched(rootId, domDataTreeIdentifier.getDatastoreType())) {
+                final var rootId = domDataTreeIdentifier.path();
+                if (isRegistrationWatched(rootId, domDataTreeIdentifier.datastore())) {
                     LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
                         listener instanceof ClusteredDOMDataTreeChangeListener ? "Clustered" : "Non-clustered",
                             toPathString(rootId), getStackSummary());

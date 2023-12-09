@@ -48,7 +48,7 @@ class Bug4513Test extends AbstractDataBrokerTest {
 
         final var wildCard = InstanceIdentifier.builder(ListenerTest.class).child(ListItem.class).build();
         final var reg = dataBroker.registerDataTreeChangeListener(
-                DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, wildCard), listener);
+                DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, wildCard), listener);
 
         final var item = writeListItem();
 

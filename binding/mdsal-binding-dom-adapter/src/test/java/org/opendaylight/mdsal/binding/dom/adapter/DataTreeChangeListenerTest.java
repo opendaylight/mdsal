@@ -55,7 +55,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     private static final PathArgument BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
     private static final DataTreeIdentifier<Top> TOP_IDENTIFIER
-            = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
+            = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
 
@@ -120,24 +120,24 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     @Test
     public void testWildcardedListListener() throws Exception {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
-        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
         dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
 
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().getRootIdentifier());
+        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().path());
         verifyModification(fooWriteEvent.getRootNode(), FOO_ARGUMENT, ModificationType.WRITE);
 
         putTx(BAR_PATH, BAR_DATA).commit().get();
         final DataTreeModification<TopLevelList> barWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(BAR_PATH, barWriteEvent.getRootPath().getRootIdentifier());
+        assertEquals(BAR_PATH, barWriteEvent.getRootPath().path());
         verifyModification(barWriteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.WRITE);
 
         deleteTx(BAR_PATH).commit().get();
         final DataTreeModification<TopLevelList> barDeleteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(BAR_PATH, barDeleteEvent.getRootPath().getRootIdentifier());
+        assertEquals(BAR_PATH, barDeleteEvent.getRootPath().path());
         verifyModification(barDeleteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.DELETE);
     }
 
@@ -146,12 +146,12 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
-        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
         dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().getRootIdentifier());
+        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().path());
         verifyModification(fooWriteEvent.getRootNode(), FOO_ARGUMENT, ModificationType.WRITE);
     }
 

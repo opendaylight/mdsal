@@ -71,7 +71,7 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
         doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
                 domDataTreeIdentifier(TOP_YIID),
                 any(DOMDataTreeChangeListener.class));
-        final DataTreeIdentifier<Top> treeId = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
+        final DataTreeIdentifier<Top> treeId = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
         final TestClusteredDataTreeChangeListener mockClusteredListener = new TestClusteredDataTreeChangeListener();
         service.registerDataTreeChangeListener(treeId , mockClusteredListener);
 
@@ -89,8 +89,7 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
     }
 
     static DOMDataTreeIdentifier domDataTreeIdentifier(final YangInstanceIdentifier yangID) {
-        return argThat(arg -> arg.getDatastoreType() == LogicalDatastoreType.CONFIGURATION
-                && yangID.equals(arg.getRootIdentifier()));
+        return argThat(arg -> arg.datastore() == LogicalDatastoreType.CONFIGURATION && yangID.equals(arg.path()));
     }
 
     private static final class TestClusteredDataTreeChangeListener implements ClusteredDataTreeChangeListener<Top> {

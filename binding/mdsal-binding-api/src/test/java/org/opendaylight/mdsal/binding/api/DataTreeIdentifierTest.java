@@ -24,42 +24,43 @@ import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 class DataTreeIdentifierTest {
-    private static final DataTreeIdentifier<TestDataObject1> TEST_IDENTIFIER1 = DataTreeIdentifier.create(
-            LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class));
-    private static final DataTreeIdentifier<TestDataObject2> TEST_IDENTIFIER2 = DataTreeIdentifier.create(
-            LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject2.class));
+    private static final DataTreeIdentifier<TestDataObject1> TEST_IDENTIFIER1 =
+        DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class));
+    private static final DataTreeIdentifier<TestDataObject2> TEST_IDENTIFIER2 =
+        DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject2.class));
 
     @Test
     void basicTest() throws Exception {
-        assertEquals(LogicalDatastoreType.OPERATIONAL, TEST_IDENTIFIER1.getDatastoreType());
-        assertEquals(InstanceIdentifier.create(TestDataObject1.class), TEST_IDENTIFIER1.getRootIdentifier());
+        assertEquals(LogicalDatastoreType.OPERATIONAL, TEST_IDENTIFIER1.datastore());
+        assertEquals(InstanceIdentifier.create(TestDataObject1.class), TEST_IDENTIFIER1.path());
     }
 
     @Test
     void containsTest() {
-        assertTrue(TEST_IDENTIFIER1.contains(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                InstanceIdentifier.create(TestDataObject1.class))), "Contains");
-        assertFalse(TEST_IDENTIFIER1.contains(TEST_IDENTIFIER2), "Not Contains");
+        assertTrue(TEST_IDENTIFIER1.contains(
+            DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class))));
+        assertFalse(TEST_IDENTIFIER1.contains(TEST_IDENTIFIER2));
     }
 
     @Test
     void hashCodeTest() {
         assertEquals(TEST_IDENTIFIER1.hashCode(),
-            DataTreeIdentifier.create(
-                LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class)).hashCode());
+            DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class))
+                .hashCode());
         assertNotEquals(TEST_IDENTIFIER1.hashCode(), TEST_IDENTIFIER2.hashCode());
     }
 
     @Test
     void equalsTest() {
-        assertEquals(TEST_IDENTIFIER1, TEST_IDENTIFIER1, "Equals");
-        assertEquals(TEST_IDENTIFIER1, DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                InstanceIdentifier.create(TestDataObject1.class)), "Equals");
-        assertNotEquals(TEST_IDENTIFIER1, DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.create(TestDataObject1.class)), "Different");
-        assertNotEquals(TEST_IDENTIFIER1, TEST_IDENTIFIER2, "Different");
-        assertNotEquals(TEST_IDENTIFIER1, null, "Equals null");
-        assertNotEquals(TEST_IDENTIFIER1, new Object(), "Different object");
+        assertEquals(TEST_IDENTIFIER1, TEST_IDENTIFIER1);
+        assertEquals(TEST_IDENTIFIER1,
+            DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(TestDataObject1.class)));
+        assertNotEquals(TEST_IDENTIFIER1,
+            DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION,
+                InstanceIdentifier.create(TestDataObject1.class)));
+        assertNotEquals(TEST_IDENTIFIER1, TEST_IDENTIFIER2);
+        assertNotEquals(TEST_IDENTIFIER1, null);
+        assertNotEquals(TEST_IDENTIFIER1, new Object());
     }
 
     @Test

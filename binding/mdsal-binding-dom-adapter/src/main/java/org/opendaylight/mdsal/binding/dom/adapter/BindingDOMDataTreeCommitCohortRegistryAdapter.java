@@ -25,7 +25,7 @@ final class BindingDOMDataTreeCommitCohortRegistryAdapter
     @Override
     public <D extends DataObject, T extends DataTreeCommitCohort<D>> ObjectRegistration<T> registerCommitCohort(
             final DataTreeIdentifier<D> subtree, final T cohort) {
-        final var target = subtree.getRootIdentifier().getTargetType();
+        final var target = subtree.path().getTargetType();
         final var adapter = new BindingDOMDataTreeCommitCohortAdapter<>(adapterContext(), cohort,
             Augmentation.class.isAssignableFrom(target) ? target : null);
         final var domPath = currentSerializer().toDOMDataTreeIdentifier(subtree);
