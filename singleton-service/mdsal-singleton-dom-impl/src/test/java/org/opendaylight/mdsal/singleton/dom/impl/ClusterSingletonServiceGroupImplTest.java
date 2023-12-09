@@ -15,20 +15,24 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED;
+import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER;
 import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.CLOSE_SERVICE_ENTITY_TYPE;
 import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.SERVICE_ENTITY_TYPE;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
@@ -46,8 +50,9 @@ public class ClusterSingletonServiceGroupImplTest {
     public static final String SERVICE_IDENTIFIER = "TestServiceIdent";
     public static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = ServiceGroupIdentifier.create(SERVICE_IDENTIFIER);
 
-    public static final TestEntity MAIN_ENTITY = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
-    public static final TestEntity CLOSE_ENTITY = new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    public static final @NonNull TestEntity MAIN_ENTITY = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    public static final @NonNull TestEntity CLOSE_ENTITY =
+        new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
 
     @Mock
     public ClusterSingletonService mockClusterSingletonService;
@@ -163,7 +168,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToSlave());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
     }
@@ -178,7 +183,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NO_OWNER, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
     }
@@ -193,7 +198,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
     }
@@ -266,7 +271,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToSlave());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
     }
 
@@ -280,7 +285,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
     }
@@ -295,10 +300,10 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService).instantiateServiceInstance();
     }
 
@@ -313,10 +318,10 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getInitDoubleEntityToSlave());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
@@ -331,10 +336,10 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
@@ -351,10 +356,10 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.registerService(secondReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
@@ -369,18 +374,18 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService).instantiateServiceInstance();
 
         // Base entity in jeopardy should not matter...
-        singletonServiceGroup.ownershipChanged(getEntityToMasterJeopardy());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, true);
         verify(mockClusterSingletonService, never()).closeServiceInstance();
 
         // ... application state is actually guarded by cleanup
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToJeopardy());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
         verify(mockClusterSingletonService).closeServiceInstance();
     }
 
@@ -394,12 +399,12 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        singletonServiceGroup.ownershipChanged(getEntityToSlave());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockClusterSingletonService).closeServiceInstance();
     }
 
@@ -423,14 +428,14 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService).instantiateServiceInstance();
         assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NO_OWNER, false);
         verify(mockClusterSingletonService).closeServiceInstance();
     }
 
@@ -445,12 +450,12 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockClusterSingletonService).closeServiceInstance();
     }
 
@@ -466,10 +471,10 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToSlave());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -487,10 +492,10 @@ public class ClusterSingletonServiceGroupImplTest {
         assertFalse(future.isDone());
         verify(mockClusterSingletonService).closeServiceInstance();
 
-        singletonServiceGroup.ownershipChanged(getEntityToSlave());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         verify(mockCloseEntityCandReg).close();
 
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         assertTrue(future.isDone());
         assertNull(future.get());
     }
@@ -503,47 +508,9 @@ public class ClusterSingletonServiceGroupImplTest {
     private void initializeGroupAndStartService() throws CandidateAlreadyRegisteredException {
         initialize();
         singletonServiceGroup.registerService(firstReg);
-        singletonServiceGroup.ownershipChanged(getEntityToMaster());
+        singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
-        singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
+        singletonServiceGroup.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockClusterSingletonService).instantiateServiceInstance();
-    }
-
-    private static EntityOwnershipChange<TestEntity> getEntityToMaster() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getEntityToSlave() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getEntityToSlaveNoMaster() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getEntityToMasterJeopardy() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, true);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getEntityToJeopardy() {
-        return new EntityOwnershipChange<>(MAIN_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER,
-            true);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getDoubleEntityToMaster() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getDoubleEntityToSlave() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getInitDoubleEntityToSlave() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED);
-    }
-
-    private static EntityOwnershipChange<TestEntity> getDoubleEntityToJeopardy() {
-        return new EntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER,
-            true);
     }
 }

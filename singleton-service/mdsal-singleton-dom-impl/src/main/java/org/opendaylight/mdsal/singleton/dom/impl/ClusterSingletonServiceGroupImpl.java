@@ -35,7 +35,6 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
@@ -116,8 +115,8 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     private final String identifier;
 
     /* Entity instances */
-    private final E serviceEntity;
-    private final E cleanupEntity;
+    private final @NonNull E serviceEntity;
+    private final @NonNull E cleanupEntity;
 
     private final Set<ClusterSingletonServiceRegistration> members = ConcurrentHashMap.newKeySet();
     // Guarded by lock
@@ -324,11 +323,9 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     @Override
-    void ownershipChanged(final EntityOwnershipChange<E> ownershipChange) {
-        LOG.debug("Ownership change {} for ClusterSingletonServiceGroup {}", ownershipChange, identifier);
-
+    void ownershipChanged(final E entity, final EntityOwnershipStateChange change, final boolean inJeopardy) {
         synchronized (this) {
-            lockedOwnershipChanged(ownershipChange);
+            lockedOwnershipChanged(entity, change, inJeopardy);
         }
 
         if (isDirty()) {
@@ -348,16 +345,16 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * @param ownershipChange reported change
      */
     @Holding("this")
-    private void lockedOwnershipChanged(final EntityOwnershipChange<E> ownershipChange) {
-        final E entity = ownershipChange.getEntity();
+    private void lockedOwnershipChanged(final E entity, final EntityOwnershipStateChange change,
+            final boolean inJeopardy) {
         if (serviceEntity.equals(entity)) {
-            serviceOwnershipChanged(ownershipChange.getState(), ownershipChange.inJeopardy());
+            serviceOwnershipChanged(change, inJeopardy);
             markDirty();
         } else if (cleanupEntity.equals(entity)) {
-            cleanupCandidateOwnershipChanged(ownershipChange.getState(), ownershipChange.inJeopardy());
+            cleanupCandidateOwnershipChanged(change, inJeopardy);
             markDirty();
         } else {
-            LOG.warn("Group {} received unrecognized change {}", identifier, ownershipChange);
+            LOG.warn("Group {} received unrecognized entity {}", identifier, entity);
         }
     }
 

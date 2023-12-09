@@ -19,7 +19,9 @@ public interface GenericEntityOwnershipListener<E extends GenericEntity<?>> {
     /**
      * A notification that is generated when the ownership status of an entity changes.
      *
-     * @param ownershipChange contains the entity and its ownership change state
+     * @param entity the entity whose ownership status changed
+     * @param change the change the entity underwent
+     * @param inJeopardy {@code true} if ownership is in jeopardy and the reported change may be inaccurate
      */
-    void ownershipChanged(@NonNull EntityOwnershipChange<E> ownershipChange);
+    void ownershipChanged(@NonNull E entity, @NonNull EntityOwnershipStateChange change, boolean inJeopardy);
 }

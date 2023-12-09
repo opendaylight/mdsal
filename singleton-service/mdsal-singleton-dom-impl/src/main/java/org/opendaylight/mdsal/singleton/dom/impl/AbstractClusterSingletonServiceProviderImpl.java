@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
@@ -54,9 +54,9 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
     private static final Logger LOG = LoggerFactory.getLogger(AbstractClusterSingletonServiceProviderImpl.class);
 
     @VisibleForTesting
-    static final String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
+    static final @NonNull String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
     @VisibleForTesting
-    static final String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
+    static final @NonNull String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
 
     private final S entityOwnershipService;
     private final Map<String, ClusterSingletonServiceGroup<P, E>> serviceGroupMap = new ConcurrentHashMap<>();
@@ -218,12 +218,14 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
     }
 
     @Override
-    public final void ownershipChanged(final EntityOwnershipChange<E> ownershipChange) {
-        LOG.debug("Ownership change for ClusterSingletonService Provider {}", ownershipChange);
-        final String serviceIdentifier = getServiceIdentifierFromEntity(ownershipChange.getEntity());
+    public final void ownershipChanged(final E entity, final EntityOwnershipStateChange change,
+            final boolean inJeopardy) {
+        LOG.debug("Ownership change for ClusterSingletonService Provider on {} {} inJeopardy={}", entity, change,
+            inJeopardy);
+        final var serviceIdentifier = getServiceIdentifierFromEntity(entity);
         final var serviceHolder = serviceGroupMap.get(serviceIdentifier);
         if (serviceHolder != null) {
-            serviceHolder.ownershipChanged(ownershipChange);
+            serviceHolder.ownershipChanged(entity, change, inJeopardy);
         } else {
             LOG.debug("ClusterSingletonServiceGroup was not found for serviceIdentifier {}", serviceIdentifier);
         }

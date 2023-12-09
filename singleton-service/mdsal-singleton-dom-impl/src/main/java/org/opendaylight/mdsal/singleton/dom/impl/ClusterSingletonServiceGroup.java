@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
@@ -63,9 +63,11 @@ abstract class ClusterSingletonServiceGroup<P extends HierarchicalIdentifier<P>,
     /**
      * Method implementation has to apply ownershipChange for all registered services.
      *
-     * @param ownershipChange change role for ClusterSingletonServiceGroup
+     * @param entity the entity whose ownership status changed
+     * @param change the change the entity underwent
+     * @param inJeopardy {@code true} if ownership is in jeopardy and the reported change may be inaccurate
      */
-    abstract void ownershipChanged(EntityOwnershipChange<E> ownershipChange);
+    abstract void ownershipChanged(E entity, EntityOwnershipStateChange change, boolean inJeopardy);
 
     /**
      * Closes this service group. All registered service providers are also closed. Please be careful

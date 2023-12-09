@@ -16,7 +16,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -68,10 +68,10 @@ final class PlaceholderGroup<P extends HierarchicalIdentifier<P>, E extends Gene
     }
 
     @Override
-    void ownershipChanged(final EntityOwnershipChange<E> ownershipChange) {
+    void ownershipChanged(final E entity, final EntityOwnershipStateChange change, final boolean inJeopardy) {
         // This really should not happen, but let's be defensive
         final var local = successor;
-        (local == null ? previous : local).ownershipChanged(ownershipChange);
+        (local == null ? previous : local).ownershipChanged(entity, change, inJeopardy);
     }
 
     @Override

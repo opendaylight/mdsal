@@ -15,16 +15,15 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.checkerframework.checker.lock.qual.GuardedBy;
+import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
@@ -86,9 +85,9 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
 
     @Override
     public Registration registerListener(final String entityType, final DOMEntityOwnershipListener listener) {
-        final Collection<DOMEntity> owned;
+        final List<DOMEntity> owned;
         synchronized (entities) {
-            owned = ImmutableList.copyOf(entities.row(entityType).values());
+            owned = List.copyOf(entities.row(entityType).values());
             LOG.trace("{}: acquired candidates {} for new listener {}", uuid, owned, listener);
         }
 
@@ -97,7 +96,7 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
         }
 
         for (var entity : owned) {
-            notifyListener(listener, new EntityOwnershipChange<>(entity, LOCAL_OWNERSHIP_GRANTED));
+            notifyListener(listener, entity, LOCAL_OWNERSHIP_GRANTED);
         }
         LOG.debug("{}: registered listener {}", uuid, listener);
         return new AbstractRegistration() {
@@ -133,27 +132,24 @@ public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershi
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    private void notifyListener(final DOMEntityOwnershipListener listener,
-            final EntityOwnershipChange<DOMEntity> change) {
+    private void notifyListener(final DOMEntityOwnershipListener listener, final @NonNull DOMEntity entity,
+            final @NonNull EntityOwnershipStateChange change) {
         try {
             LOG.trace("{} notifying listener {} change {}", uuid, listener, change);
-            listener.ownershipChanged(change);
+            listener.ownershipChanged(entity, change, false);
         } catch (RuntimeException e) {
-            LOG.warn("{}: Listener {} change {} failed", uuid, listener, change, e);
+            LOG.warn("{}: Listener {} failed on {} change {}", uuid, listener, entity, change, e);
         }
     }
 
     private void notifyListeners(final DOMEntity entity, final EntityOwnershipStateChange state) {
-
-        final Collection<DOMEntityOwnershipListener> snap;
-
+        final List<DOMEntityOwnershipListener> snap;
         synchronized (listeners) {
-            snap = ImmutableList.copyOf(listeners.get(entity.getType()));
+            snap = List.copyOf(listeners.get(entity.getType()));
         }
 
-        final var change = new EntityOwnershipChange<>(entity, state);
         for (var listener : snap) {
-            notifyListener(listener, change);
+            notifyListener(listener, entity, state);
         }
     }
 

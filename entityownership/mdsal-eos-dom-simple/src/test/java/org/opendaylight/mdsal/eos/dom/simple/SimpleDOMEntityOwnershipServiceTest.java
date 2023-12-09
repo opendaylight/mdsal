@@ -12,20 +12,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
@@ -78,22 +73,12 @@ class SimpleDOMEntityOwnershipServiceTest {
         try (var barReg = service.registerListener(BAR_TYPE, barListener)) {
             // Matching type should be triggered
             final var fooListener = mock(DOMEntityOwnershipListener.class);
-            doNothing().when(fooListener).ownershipChanged(any(EntityOwnershipChange.class));
+            doNothing().when(fooListener)
+                .ownershipChanged(FOO_FOO_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, true);
             try (var fooReg = service.registerListener(FOO_TYPE, fooListener)) {
-                final var fooCaptor = ArgumentCaptor.forClass(EntityOwnershipChange.class);
-                verify(fooListener).ownershipChanged(fooCaptor.capture());
-
-                var fooChange = fooCaptor.getValue();
-                assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
-                assertEquals(EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED, fooChange.getState());
-
-                reset(fooListener);
-                doNothing().when(fooListener).ownershipChanged(any(EntityOwnershipChange.class));
+                doNothing().when(fooListener)
+                    .ownershipChanged(FOO_FOO_ENTITY, EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER, false);
                 entityReg.close();
-                verify(fooListener).ownershipChanged(fooCaptor.capture());
-                fooChange = fooCaptor.getValue();
-                assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
-                assertEquals(EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NO_OWNER, fooChange.getState());
             }
         }
     }
