@@ -7,21 +7,21 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import java.util.EventListener;
 import java.util.Optional;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface MountPointService extends BindingService {
 
     Optional<MountPoint> getMountPoint(InstanceIdentifier<?> mountPoint);
 
-    <T extends MountPointListener> ListenerRegistration<T> registerListener(InstanceIdentifier<?> path, T listener);
+    @NonNull Registration registerListener(InstanceIdentifier<?> path, MountPointListener listener);
 
-    interface MountPointListener extends EventListener {
+    interface MountPointListener {
 
-        void onMountPointCreated(InstanceIdentifier<?> path);
+        void onMountPointCreated(@NonNull InstanceIdentifier<?> path);
 
-        void onMountPointRemoved(InstanceIdentifier<?> path);
+        void onMountPointRemoved(@NonNull InstanceIdentifier<?> path);
     }
 }

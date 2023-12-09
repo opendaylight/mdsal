@@ -9,11 +9,11 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -22,24 +22,19 @@ import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> implements
-            ListenerRegistration<T>, DOMMountPointListener {
+final class BindingDOMMountPointListenerAdapter implements Registration, DOMMountPointListener {
     private static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointListenerAdapter.class);
 
-    private final @NonNull T listener;
+    @VisibleForTesting
+    final @NonNull MountPointListener listener;
     private final AdapterContext adapterContext;
     private final Registration registration;
 
-    BindingDOMMountPointListenerAdapter(final T listener, final AdapterContext adapterContext,
+    BindingDOMMountPointListenerAdapter(final MountPointListener listener, final AdapterContext adapterContext,
             final DOMMountPointService mountService) {
         this.listener = requireNonNull(listener);
         this.adapterContext = requireNonNull(adapterContext);
         registration = mountService.registerProvisionListener(this);
-    }
-
-    @Override
-    public T getInstance() {
-        return listener;
     }
 
     @Override
@@ -78,6 +73,4 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
         }
         return binding;
     }
-
-
 }

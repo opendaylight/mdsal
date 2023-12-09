@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
@@ -22,15 +22,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMMountPointListenerAdapterTest {
-
-    private BindingDOMMountPointListenerAdapter<?> bindingDOMMountPointListenerAdapter;
+    private BindingDOMMountPointListenerAdapter adapter;
     private AdapterContext codec;
 
     @Mock private MountPointListener listener;
@@ -39,34 +37,33 @@ public class BindingDOMMountPointListenerAdapterTest {
 
     @Before
     public void setUp() throws Exception {
-        final BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
+        final var testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
-        final BindingTestContext testContext = testFactory.getTestContext();
+        final var testContext = testFactory.getTestContext();
         testContext.start();
         codec = testContext.getCodec();
         doReturn(listenerRegistration).when(mountPointService).registerProvisionListener(any());
-        bindingDOMMountPointListenerAdapter =
-                new BindingDOMMountPointListenerAdapter<>(listener, codec, mountPointService);
+        adapter = new BindingDOMMountPointListenerAdapter(listener, codec, mountPointService);
     }
 
     @Test
     public void basicTest() throws Exception {
-        assertEquals(listener, bindingDOMMountPointListenerAdapter.getInstance());
-        bindingDOMMountPointListenerAdapter.close();
+        assertSame(listener, adapter.listener);
+        adapter.close();
         verify(listenerRegistration).close();
     }
 
     @Test
     public void onMountPointCreatedWithExceptionTest() throws Exception {
         reset(listener);
-        bindingDOMMountPointListenerAdapter.onMountPointCreated(YangInstanceIdentifier.of());
+        adapter.onMountPointCreated(YangInstanceIdentifier.of());
         verifyNoInteractions(listener);
     }
 
     @Test
     public void onMountPointRemovedWithExceptionTest() throws Exception {
         reset(listener);
-        bindingDOMMountPointListenerAdapter.onMountPointRemoved(YangInstanceIdentifier.of());
+        adapter.onMountPointRemoved(YangInstanceIdentifier.of());
         verifyNoInteractions(listener);
     }
 }

@@ -25,7 +25,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -75,6 +75,15 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
             listener);
     }
 
+    @Override
+    public <T extends DataObject> Registration registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
+            final DataTreeChangeListener<T> listener) {
+        if (treeChangeService == null) {
+            throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
+        }
+        return treeChangeService.registerDataTreeChangeListener(treeId, listener);
+    }
+
     private static class Builder extends BindingDOMAdapterBuilder<DataBroker> {
         Builder(final AdapterContext adapterContext) {
             super(adapterContext);
@@ -91,13 +100,4 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
         }
     }
 
-    @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>>
-            ListenerRegistration<L> registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
-                final L listener) {
-        if (treeChangeService == null) {
-            throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
-        }
-        return treeChangeService.registerDataTreeChangeListener(treeId, listener);
-    }
 }
