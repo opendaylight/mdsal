@@ -98,7 +98,7 @@ class DOMDataTreeIdentifierTest {
         }
 
         final var bytes = bos.toByteArray();
-        assertEquals(561, bytes.length);
+        assertEquals(275, bytes.length);
 
         try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             assertEquals(REF_TREE, ois.readObject());

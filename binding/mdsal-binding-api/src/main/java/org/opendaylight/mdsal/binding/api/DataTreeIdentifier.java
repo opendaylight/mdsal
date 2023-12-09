@@ -76,4 +76,9 @@ public final class DataTreeIdentifier<T extends DataObject> implements Hierarchi
     public String toString() {
         return MoreObjects.toStringHelper(this).add("datastore", datastoreType).add("root", rootIdentifier).toString();
     }
+
+    @java.io.Serial
+    Object writeReplace() {
+        return new DTIv1(this);
+    }
 }

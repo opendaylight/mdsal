@@ -15,7 +15,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 /**
  * A unique identifier for a particular subtree. It is composed of the logical data store type and the instance
@@ -24,6 +23,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 @NonNullByDefault
 public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDataTreeIdentifier>,
         Comparable<DOMDataTreeIdentifier> {
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     private final YangInstanceIdentifier rootIdentifier;
@@ -59,7 +59,7 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
     }
 
     public DOMDataTreeIdentifier toOptimized() {
-        final YangInstanceIdentifier opt = rootIdentifier.toOptimized();
+        final var opt = rootIdentifier.toOptimized();
         return opt == rootIdentifier ? this : new DOMDataTreeIdentifier(datastoreType, opt);
     }
 
@@ -89,8 +89,8 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
                 return 1;
             }
 
-            final PathArgument myPathArg = myIter.next();
-            final PathArgument otherPathArg = otherIter.next();
+            final var myPathArg = myIter.next();
+            final var otherPathArg = otherIter.next();
             cmp = myPathArg.compareTo(otherPathArg);
             if (cmp != 0) {
                 return cmp;
@@ -103,5 +103,10 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("datastore", datastoreType).add("root", rootIdentifier).toString();
+    }
+
+    @java.io.Serial
+    Object writeReplace() {
+        return new DTIv1(this);
     }
 }
