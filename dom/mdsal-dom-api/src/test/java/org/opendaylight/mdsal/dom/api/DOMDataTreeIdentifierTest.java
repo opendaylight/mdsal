@@ -13,6 +13,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -98,5 +102,20 @@ public class DOMDataTreeIdentifierTest {
     public void toStringTest() {
         assertTrue("ToString", REF_TREE.toString().contains(REF_TREE.getRootIdentifier().toString()) && REF_TREE
                 .toString().contains(REF_TREE.getDatastoreType().toString()));
+    }
+
+    @Test
+    public void serializationTest() throws Exception {
+        final var bos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(REF_TREE);
+        }
+
+        final var bytes = bos.toByteArray();
+        assertEquals(561, bytes.length);
+
+        try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+            assertEquals(REF_TREE, ois.readObject());
+        }
     }
 }

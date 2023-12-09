@@ -12,6 +12,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
@@ -56,6 +60,21 @@ public class DataTreeIdentifierTest {
         assertFalse("Different", TEST_IDENTIFIER1.equals(TEST_IDENTIFIER2));
         assertFalse("Equals null", TEST_IDENTIFIER1.equals(null));
         assertFalse("Different object", TEST_IDENTIFIER1.equals(new Object()));
+    }
+
+    @Test
+    public void serializationTest() throws Exception {
+        final var bos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(TEST_IDENTIFIER1);
+        }
+
+        final var bytes = bos.toByteArray();
+        assertEquals(728, bytes.length);
+
+        try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+            assertEquals(TEST_IDENTIFIER1, ois.readObject());
+        }
     }
 
     private interface TestDataObject1 extends ChildOf<DataRoot> {
