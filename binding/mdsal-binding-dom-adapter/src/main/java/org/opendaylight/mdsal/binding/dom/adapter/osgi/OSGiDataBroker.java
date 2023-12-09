@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
 import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -50,9 +50,8 @@ public final class OSGiDataBroker extends AbstractAdaptedService<DataBroker> imp
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>>
-            ListenerRegistration<L> registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
-                    final L listener) {
+    public <T extends DataObject> Registration registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
+            final DataTreeChangeListener<T> listener) {
         return delegate().registerDataTreeChangeListener(treeId, listener);
     }
 
