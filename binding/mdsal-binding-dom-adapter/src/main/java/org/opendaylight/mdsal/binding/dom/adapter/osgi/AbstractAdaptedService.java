@@ -8,11 +8,9 @@
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import static com.google.common.base.Verify.verifyNotNull;
-import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,25 +20,16 @@ abstract class AbstractAdaptedService<B extends BindingService> {
     static final @NonNull String DELEGATE =
             "org.opendaylight.mdsal.binding.dom.adapter.osgi.AbstractAdaptedService.DELEGATE";
 
-    private final Class<B> bindingService;
+    private final String serviceName;
+    final @NonNull B delegate;
 
-    private @Nullable B delegate;
-
-    AbstractAdaptedService(final Class<B> bindingService) {
-        this.bindingService = requireNonNull(bindingService);
-    }
-
-    final void start(final Map<String, ?> properties) {
+    AbstractAdaptedService(final Class<B> bindingService, final Map<String, ?> properties) {
+        serviceName = bindingService.getSimpleName();
         delegate = bindingService.cast(verifyNotNull(properties.get(DELEGATE)));
-        LOG.info("Binding/DOM adapter for {} activated", bindingService.getSimpleName());
+        LOG.info("Binding/DOM adapter for {} activated", serviceName);
     }
 
     final void stop(final int reason) {
-        delegate = null;
-        LOG.info("Binding/DOM adapter for {} deactivated (reason {})", bindingService.getSimpleName(), reason);
-    }
-
-    final @NonNull B delegate() {
-        return verifyNotNull(delegate);
+        LOG.info("Binding/DOM adapter for {} deactivated (reason {})", serviceName, reason);
     }
 }

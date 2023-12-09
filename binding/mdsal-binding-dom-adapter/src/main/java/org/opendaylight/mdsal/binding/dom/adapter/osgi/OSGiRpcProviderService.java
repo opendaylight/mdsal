@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ClassToInstanceMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,46 +18,41 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@Beta
 @Component(factory = OSGiRpcProviderService.FACTORY_NAME)
 public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProviderService>
         implements RpcProviderService {
     // OSGi DS Component Factory name
     static final String FACTORY_NAME = "org.opendaylight.mdsal.binding.dom.adapter.osgi.OSGiRpcProviderService";
 
-    public OSGiRpcProviderService() {
-        super(RpcProviderService.class);
-    }
-
-    @Override
-    public Registration registerRpcImplementation(final Rpc<?, ?> implementation) {
-        return delegate().registerRpcImplementation(implementation);
-    }
-
-    @Override
-    public Registration registerRpcImplementation(final Rpc<?, ?> implementation,
-            final Set<InstanceIdentifier<?>> paths) {
-        return delegate().registerRpcImplementation(implementation, paths);
-    }
-
-    @Override
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
-        return delegate().registerRpcImplementations(implementations);
-    }
-
-    @Override
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
-        return delegate().registerRpcImplementations(implementations, paths);
-    }
-
     @Activate
-    void activate(final Map<String, ?> properties) {
-        start(properties);
+    public OSGiRpcProviderService(final Map<String, ?> properties) {
+        super(RpcProviderService.class, properties);
     }
 
     @Deactivate
     void deactivate(final int reason) {
         stop(reason);
+    }
+
+    @Override
+    public Registration registerRpcImplementation(final Rpc<?, ?> implementation) {
+        return delegate.registerRpcImplementation(implementation);
+    }
+
+    @Override
+    public Registration registerRpcImplementation(final Rpc<?, ?> implementation,
+            final Set<InstanceIdentifier<?>> paths) {
+        return delegate.registerRpcImplementation(implementation, paths);
+    }
+
+    @Override
+    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
+        return delegate.registerRpcImplementations(implementations);
+    }
+
+    @Override
+    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
+            final Set<InstanceIdentifier<?>> paths) {
+        return delegate.registerRpcImplementations(implementations, paths);
     }
 }
