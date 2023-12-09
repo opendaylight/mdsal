@@ -32,7 +32,7 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
  * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation
  */
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public final class DOMClusterSingletonServiceProviderAsyncImplTest extends AbstractDOMClusterServiceProviderTest {
+public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractEOSClusterSingletonServiceProviderTest {
     /*
      * Test implementation of {@link ClusterSingletonService}
      */

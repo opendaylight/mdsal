@@ -21,8 +21,8 @@ import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.L
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_LOST_NEW_OWNER;
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED;
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER;
-import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.CLOSE_SERVICE_ENTITY_TYPE;
-import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.SERVICE_ENTITY_TYPE;
+import static org.opendaylight.mdsal.singleton.dom.impl.EOSClusterSingletonServiceProvider.CLOSE_SERVICE_ENTITY_TYPE;
+import static org.opendaylight.mdsal.singleton.dom.impl.EOSClusterSingletonServiceProvider.SERVICE_ENTITY_TYPE;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -39,9 +39,9 @@ import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
- * Abstract {@link DOMClusterSingletonServiceProviderImpl} testing substrate.
+ * Abstract {@link EOSClusterSingletonServiceProvider} testing substrate.
  */
-public abstract class AbstractDOMClusterServiceProviderTest {
+abstract class AbstractEOSClusterSingletonServiceProviderTest {
     /**
      * Base states for AbstractClusterProjectProvider.
      */
@@ -101,7 +101,7 @@ public abstract class AbstractDOMClusterServiceProviderTest {
     @Mock
     public Registration mockEosDoubleEntityListReg;
 
-    public DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
+    public EOSClusterSingletonServiceProvider clusterSingletonServiceProvider;
     public TestClusterSingletonService clusterSingletonService;
     public TestClusterSingletonService clusterSingletonService2;
 
@@ -112,14 +112,13 @@ public abstract class AbstractDOMClusterServiceProviderTest {
         doNothing().when(mockEntityCandReg).close();
         doNothing().when(mockDoubleEntityCandReg).close();
         doReturn(mockEosEntityListReg).when(mockEos).registerListener(eq(SERVICE_ENTITY_TYPE),
-                any(DOMClusterSingletonServiceProviderImpl.class));
+                any(EOSClusterSingletonServiceProvider.class));
         doReturn(mockEosDoubleEntityListReg).when(mockEos).registerListener(eq(CLOSE_SERVICE_ENTITY_TYPE),
-                any(DOMClusterSingletonServiceProviderImpl.class));
+                any(EOSClusterSingletonServiceProvider.class));
         doReturn(mockEntityCandReg).when(mockEos).registerCandidate(ENTITY);
         doReturn(mockDoubleEntityCandReg).when(mockEos).registerCandidate(DOUBLE_ENTITY);
 
-        clusterSingletonServiceProvider = new DOMClusterSingletonServiceProviderImpl(mockEos);
-        clusterSingletonServiceProvider.initializeProvider();
+        clusterSingletonServiceProvider = new EOSClusterSingletonServiceProvider(mockEos);
         verify(mockEos).registerListener(SERVICE_ENTITY_TYPE, clusterSingletonServiceProvider);
         verify(mockEos).registerListener(CLOSE_SERVICE_ENTITY_TYPE, clusterSingletonServiceProvider);
 
@@ -138,11 +137,11 @@ public abstract class AbstractDOMClusterServiceProviderTest {
      */
     @Test
     public void initializationClusterSingletonServiceProviderNullInputTest() {
-        assertThrows(NullPointerException.class, () -> new DOMClusterSingletonServiceProviderImpl(null));
+        assertThrows(NullPointerException.class, () -> new EOSClusterSingletonServiceProvider(null));
     }
 
     /**
-     * Test GoldPath for close {@link DOMClusterSingletonServiceProviderImpl}.
+     * Test GoldPath for close {@link EOSClusterSingletonServiceProvider}.
      *
      * @throws Exception if the condition does not meet
      */
@@ -160,10 +159,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
      */
     @Test
     public void makeEntityClusterSingletonServiceProviderTest() {
-        final var testEntity = AbstractClusterSingletonServiceProviderImpl.createEntity(SERVICE_ENTITY_TYPE,
+        final var testEntity = EOSClusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE,
             SERVICE_NAME);
         assertEquals(ENTITY, testEntity);
-        final var testDbEn = AbstractClusterSingletonServiceProviderImpl.createEntity(CLOSE_SERVICE_ENTITY_TYPE,
+        final var testDbEn = EOSClusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE,
                 SERVICE_NAME);
         assertEquals(DOUBLE_ENTITY, testDbEn);
     }
@@ -173,8 +172,8 @@ public abstract class AbstractDOMClusterServiceProviderTest {
      */
     @Test
     public void getIdentifierClusterSingletonServiceProviderTest() {
-        assertEquals(SERVICE_NAME, clusterSingletonServiceProvider.getServiceIdentifierFromEntity(ENTITY));
-        assertEquals(SERVICE_NAME, clusterSingletonServiceProvider.getServiceIdentifierFromEntity(DOUBLE_ENTITY));
+        assertEquals(SERVICE_NAME, EOSClusterSingletonServiceProvider.getServiceIdentifierFromEntity(ENTITY));
+        assertEquals(SERVICE_NAME, EOSClusterSingletonServiceProvider.getServiceIdentifierFromEntity(DOUBLE_ENTITY));
     }
 
     /**

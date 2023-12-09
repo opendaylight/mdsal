@@ -5,14 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
-import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
-
 module org.opendaylight.mdsal.singleton.dom.impl {
-    exports org.opendaylight.mdsal.singleton.dom.impl.di;
-
-    provides ClusterSingletonServiceProvider with DOMClusterSingletonServiceProviderImpl;
+    exports org.opendaylight.mdsal.singleton.dom.impl;
 
     requires transitive org.opendaylight.mdsal.singleton.common.api;
     requires transitive org.opendaylight.mdsal.eos.dom.api;
@@ -20,12 +14,10 @@ module org.opendaylight.mdsal.singleton.dom.impl {
     requires org.opendaylight.yangtools.concepts;
     requires org.slf4j;
 
-    uses DOMEntityOwnershipService;
-
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
+    requires static transitive java.annotation;
     requires static javax.inject;
     requires static org.checkerframework.checker.qual;
-    requires static org.kohsuke.metainf_services;
     requires static org.osgi.service.component.annotations;
 }

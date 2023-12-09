@@ -14,7 +14,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -22,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
@@ -32,17 +35,22 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract class {@link AbstractClusterSingletonServiceProviderImpl} represents implementations of
- * {@link ClusterSingletonServiceProvider} and it implements {@link DOMEntityOwnershipListener} for providing
- * OwnershipChange for all registered {@link ClusterSingletonServiceGroup} entity candidate.
+ * Implementation of {@link ClusterSingletonServiceProvider} working on top a {@link DOMEntityOwnershipService}.
  */
-public abstract class AbstractClusterSingletonServiceProviderImpl
-        implements ClusterSingletonServiceProvider, DOMEntityOwnershipListener {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractClusterSingletonServiceProviderImpl.class);
+@Singleton
+@Component(service = ClusterSingletonServiceProvider.class)
+public final class EOSClusterSingletonServiceProvider
+        implements ClusterSingletonServiceProvider, DOMEntityOwnershipListener, AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(EOSClusterSingletonServiceProvider.class);
 
     @VisibleForTesting
     static final @NonNull String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
@@ -56,27 +64,45 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
     private Registration serviceEntityListenerReg;
     private Registration asyncCloseEntityListenerReg;
 
-    /**
-     * Class constructor.
-     *
-     * @param entityOwnershipService relevant EOS
-     */
-    protected AbstractClusterSingletonServiceProviderImpl(
-            final @NonNull DOMEntityOwnershipService entityOwnershipService) {
+    @Inject
+    @Activate
+    public EOSClusterSingletonServiceProvider(@Reference final DOMEntityOwnershipService entityOwnershipService) {
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
+        serviceEntityListenerReg = entityOwnershipService.registerListener(SERVICE_ENTITY_TYPE, this);
+        asyncCloseEntityListenerReg = entityOwnershipService.registerListener(CLOSE_SERVICE_ENTITY_TYPE, this);
+        LOG.info("Cluster Singleton Service started");
     }
 
-    /**
-     * This method must be called once on startup to initialize this provider.
-     */
-    public final void initializeProvider() {
-        LOG.debug("Initialization method for ClusterSingletonService Provider {}", this);
-        serviceEntityListenerReg = registerListener(SERVICE_ENTITY_TYPE, entityOwnershipService);
-        asyncCloseEntityListenerReg = registerListener(CLOSE_SERVICE_ENTITY_TYPE, entityOwnershipService);
+    @PreDestroy
+    @Deactivate
+    @Override
+    public synchronized void close() throws ExecutionException, InterruptedException {
+        if (serviceEntityListenerReg == null) {
+            // Idempotent
+            return;
+        }
+
+        LOG.info("Cluster Singleton Service stopping");
+        serviceEntityListenerReg.close();
+        serviceEntityListenerReg = null;
+
+        final var future = Futures.allAsList(serviceGroupMap.values().stream()
+            .map(ClusterSingletonServiceGroup::closeClusterSingletonGroup)
+            .toList());
+        try {
+            LOG.debug("Waiting for service groups to stop");
+            future.get();
+        } finally {
+            asyncCloseEntityListenerReg.close();
+            asyncCloseEntityListenerReg = null;
+            serviceGroupMap.clear();
+        }
+
+        LOG.info("Cluster Singleton Service stopped");
     }
 
     @Override
-    public final synchronized ClusterSingletonServiceRegistration registerClusterSingletonService(
+    public synchronized ClusterSingletonServiceRegistration registerClusterSingletonService(
             final ClusterSingletonService service) {
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
@@ -99,12 +125,12 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
             serviceGroup = existing;
         }
 
-        final var reg =  new AbstractClusterSingletonServiceRegistration(service) {
+        final var reg = new AbstractClusterSingletonServiceRegistration(service) {
             @Override
             protected void removeRegistration() {
                 // We need to bounce the unregistration through a ordered lock in order not to deal with asynchronous
                 // shutdown of the group and user registering it again.
-                AbstractClusterSingletonServiceProviderImpl.this.removeRegistration(serviceIdentifier, this);
+                EOSClusterSingletonServiceProvider.this.removeRegistration(serviceIdentifier, this);
             }
         };
 
@@ -129,7 +155,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
         }
     }
 
-    void removeRegistration(final String serviceIdentifier, final ClusterSingletonServiceRegistration reg) {
+    private void removeRegistration(final String serviceIdentifier, final ClusterSingletonServiceRegistration reg) {
         final PlaceholderGroup placeHolder;
         final ListenableFuture<?> future;
         synchronized (this) {
@@ -153,7 +179,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
         future.addListener(() -> finishShutdown(placeHolder), MoreExecutors.directExecutor());
     }
 
-    synchronized void finishShutdown(final PlaceholderGroup placeHolder) {
+    private synchronized void finishShutdown(final PlaceholderGroup placeHolder) {
         final var identifier = placeHolder.getIdentifier();
         LOG.debug("Service group {} closed", identifier);
 
@@ -182,38 +208,11 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
     }
 
     @Override
-    public final void close() {
-        LOG.debug("Close method for ClusterSingletonService Provider {}", this);
-
-        if (serviceEntityListenerReg != null) {
-            serviceEntityListenerReg.close();
-            serviceEntityListenerReg = null;
-        }
-
-        final var futures = serviceGroupMap.values().stream()
-            .map(ClusterSingletonServiceGroup::closeClusterSingletonGroup)
-            .toList();
-        final var future = Futures.allAsList(futures);
-        Futures.addCallback(future, new FutureCallback<>() {
-            @Override
-            public void onSuccess(final List<Object> result) {
-                cleanup();
-            }
-
-            @Override
-            public void onFailure(final Throwable throwable) {
-                LOG.warn("Unexpected problem by closing ClusterSingletonServiceProvider {}",
-                    AbstractClusterSingletonServiceProviderImpl.this, throwable);
-                cleanup();
-            }
-        }, MoreExecutors.directExecutor());
-    }
-
-    @Override
-    public final void ownershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change,
+    public void ownershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change,
             final boolean inJeopardy) {
         LOG.debug("Ownership change for ClusterSingletonService Provider on {} {} inJeopardy={}", entity, change,
             inJeopardy);
+
         final var serviceIdentifier = getServiceIdentifierFromEntity(entity);
         final var serviceHolder = serviceGroupMap.get(serviceIdentifier);
         if (serviceHolder != null) {
@@ -223,14 +222,12 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
         }
     }
 
-    /**
-     * Method implementation registers the listener.
-     *
-     * @param entityType the type of the entity
-     * @param eos - EOS type
-     * @return a {@link Registration}
-     */
-    protected abstract Registration registerListener(String entityType, DOMEntityOwnershipService eos);
+    @VisibleForTesting
+    static String getServiceIdentifierFromEntity(final DOMEntity entity) {
+        final var yii = entity.getIdentifier();
+        final var niiwp = (NodeIdentifierWithPredicates) yii.getLastPathArgument();
+        return niiwp.values().iterator().next().toString();
+    }
 
     /**
      * Creates an extended {@link DOMEntity} instance.
@@ -240,27 +237,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl
      * @return instance of Entity extended GenericEntity type
      */
     @VisibleForTesting
-    static final DOMEntity createEntity(final String entityType, final String entityIdentifier) {
+    static DOMEntity createEntity(final String entityType, final String entityIdentifier) {
         return new DOMEntity(entityType, entityIdentifier);
-    }
-
-    /**
-     * Method is responsible for parsing ServiceGroupIdentifier from E entity.
-     *
-     * @param entity instance of GenericEntity type
-     * @return ServiceGroupIdentifier parsed from entity key value.
-     */
-    protected abstract String getServiceIdentifierFromEntity(DOMEntity entity);
-
-    /**
-     * Method is called async. from close method in end of Provider lifecycle.
-     */
-    final void cleanup() {
-        LOG.debug("Final cleaning ClusterSingletonServiceProvider {}", this);
-        if (asyncCloseEntityListenerReg != null) {
-            asyncCloseEntityListenerReg.close();
-            asyncCloseEntityListenerReg = null;
-        }
-        serviceGroupMap.clear();
     }
 }

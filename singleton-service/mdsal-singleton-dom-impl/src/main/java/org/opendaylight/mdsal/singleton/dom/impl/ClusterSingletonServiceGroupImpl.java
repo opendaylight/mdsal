@@ -579,7 +579,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
                     continue;
                 }
 
-                services.put(reg, ServiceInfo.started());
+                services.put(reg, ServiceInfo.STARTED);
             }
         }
     }

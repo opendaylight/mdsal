@@ -19,7 +19,6 @@ import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.L
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.REMOTE_OWNERSHIP_CHANGED;
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.REMOTE_OWNERSHIP_LOST_NO_OWNER;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -30,16 +29,7 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
  * Synchronous test suite.
  */
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClusterServiceProviderTest {
-    /**
-     * Initialization functionality for every Tests in this suite.
-     */
-    @Override
-    @Before
-    public void setup() throws Exception {
-        super.setup();
-    }
-
+public class SyncEOSClusterSingletonServiceProviderTest extends AbstractEOSClusterSingletonServiceProviderTest {
     /**
      * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
      *

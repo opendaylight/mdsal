@@ -18,7 +18,7 @@ package org.opendaylight.mdsal.singleton.common.api;
  * closed prior to relinquishing service group ownership. To achieve ownership of the service group,
  * a service group candidate must hold ownership of both these entities.
  */
-public interface ClusterSingletonServiceProvider extends AutoCloseable {
+public interface ClusterSingletonServiceProvider {
     /**
      * Method registers {@link ClusterSingletonService} to Provider.
      * Method returns {@link java.lang.RuntimeException} for unexpected state, so be careful with implementation.

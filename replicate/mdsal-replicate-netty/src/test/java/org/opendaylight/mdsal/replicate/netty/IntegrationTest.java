@@ -33,7 +33,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
-import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.dom.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.Entity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
@@ -59,17 +59,16 @@ public class IntegrationTest extends AbstractDataBrokerTest {
     private static final QName ENTITY_NAME_QNAME = QName.create(ENTITY_QNAME, "name");
 
     private AbstractBootstrapSupport support;
-    private DefaultClusterSingletonServiceProvider css;
+    private EOSClusterSingletonServiceProvider css;
 
     @Before
     public void before() {
         support = AbstractBootstrapSupport.create();
-        css = new DefaultClusterSingletonServiceProvider(new SimpleDOMEntityOwnershipService());
-        css.initializeProvider();
+        css = new EOSClusterSingletonServiceProvider(new SimpleDOMEntityOwnershipService());
     }
 
     @After
-    public void after() throws InterruptedException {
+    public void after() throws Exception {
         support.close();
         css.close();
     }
