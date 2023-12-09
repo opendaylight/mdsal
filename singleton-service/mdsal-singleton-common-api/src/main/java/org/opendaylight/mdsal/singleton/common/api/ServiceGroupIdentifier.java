@@ -7,32 +7,21 @@
  */
 package org.opendaylight.mdsal.singleton.common.api;
 
-import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.util.AbstractStringIdentifier;
+import org.opendaylight.yangtools.concepts.Identifier;
 
 /**
- * Identifier represents a service group competence. It's based on String.
+ * An {@link Identifier} of a group of {@link ClusterSingletonService}s.
+ *
+ * @param value String value, must not be {@link String#isBlank()}
  */
-public class ServiceGroupIdentifier extends AbstractStringIdentifier<ServiceGroupIdentifier> {
-    @Serial
-    private static final long serialVersionUID = 6853612584804702662L;
+public record ServiceGroupIdentifier(@NonNull String value) implements Identifier {
+    @java.io.Serial
+    private static final long serialVersionUID = 1L;
 
-    protected ServiceGroupIdentifier(final @NonNull String string) {
-        super(string);
-    }
-
-    /**
-     * Method to create immutable instances of {@link ServiceGroupIdentifier}.
-     *
-     * @param name the String identifier for the ServiceGroupIdentifier instance
-     * @return {@link ServiceGroupIdentifier} new instance
-     */
-    public static @NonNull ServiceGroupIdentifier create(final String name) {
-        return new ServiceGroupIdentifier(name);
-    }
-
-    public final @NonNull String getName() {
-        return getValue();
+    public ServiceGroupIdentifier {
+        if (value.isBlank()) {
+            throw new IllegalArgumentException("Value must not be blank");
+        }
     }
 }

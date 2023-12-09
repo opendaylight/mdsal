@@ -288,7 +288,7 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     private ClusterSingletonService verifyRegistration(final ServiceRegistration reg) {
         final var service = reg.getInstance();
-        verify(identifier.equals(service.getIdentifier().getName()));
+        verify(identifier.equals(service.getIdentifier().value()));
         return service;
     }
 
