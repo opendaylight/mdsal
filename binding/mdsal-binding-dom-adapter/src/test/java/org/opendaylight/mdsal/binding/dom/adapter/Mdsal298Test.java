@@ -60,14 +60,14 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 public class Mdsal298Test extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<Container> CONTAINER = InstanceIdentifier.create(Container.class);
-    private static final DataTreeIdentifier<Container> CONTAINER_TID = DataTreeIdentifier.create(CONFIGURATION,
+    private static final DataTreeIdentifier<Container> CONTAINER_TID = DataTreeIdentifier.of(CONFIGURATION,
         CONTAINER);
     private static final NodeIdentifier CONTAINER_NID = new NodeIdentifier(Container.QNAME);
     private static final QName FOO_QNAME = QName.create(Container.QNAME, "foo");
     private static final QName BAZ_QNAME = QName.create(UnaddressableCont.QNAME, "baz");
 
     private static final InstanceIdentifier<WithChoice> CHOICE_CONTAINER = InstanceIdentifier.create(WithChoice.class);
-    private static final DataTreeIdentifier<WithChoice> CHOICE_CONTAINER_TID = DataTreeIdentifier.create(CONFIGURATION,
+    private static final DataTreeIdentifier<WithChoice> CHOICE_CONTAINER_TID = DataTreeIdentifier.of(CONFIGURATION,
         CHOICE_CONTAINER);
     private static final NodeIdentifier CHOICE_CONTAINER_NID = new NodeIdentifier(WithChoice.QNAME);
     private static final NodeIdentifier CHOICE_NID = new NodeIdentifier(Foo.QNAME);
@@ -76,13 +76,13 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
     private static final InstanceIdentifier<AddressableCont> ADDRESSABLE_CONTAINER =
             InstanceIdentifier.create(AddressableCont.class);
-    private static final DataTreeIdentifier<AddressableCont> ADDRESSABLE_CONTAINER_TID = DataTreeIdentifier.create(
+    private static final DataTreeIdentifier<AddressableCont> ADDRESSABLE_CONTAINER_TID = DataTreeIdentifier.of(
         CONFIGURATION, ADDRESSABLE_CONTAINER);
     private static final NodeIdentifier ADDRESSABLE_CONTAINER_NID = new NodeIdentifier(AddressableCont.QNAME);
 
     private static final InstanceIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER =
             InstanceIdentifier.create(UnaddressableCont.class);
-    private static final DataTreeIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER_TID = DataTreeIdentifier.create(
+    private static final DataTreeIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER_TID = DataTreeIdentifier.of(
         CONFIGURATION, UNADDRESSABLE_CONTAINER);
     private static final NodeIdentifier UNADDRESSABLE_CONTAINER_NID = new NodeIdentifier(UnaddressableCont.QNAME);
 
@@ -315,8 +315,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<T> listener = mock(DataTreeChangeListener.class);
         doNothing().when(listener).onDataTreeChanged(anyCollection());
 
-        final DataTreeIdentifier<T> dti = DataTreeIdentifier.create(CONFIGURATION,
-            InstanceIdentifier.create(bindingClass));
+        final DataTreeIdentifier<T> dti = DataTreeIdentifier.of(CONFIGURATION, InstanceIdentifier.create(bindingClass));
         getDataBroker().registerDataTreeChangeListener(dti, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
@@ -324,7 +323,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             ImmutableNodes.containerNode(qname));
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
         Collection<DataTreeModification<T>> capture = captor.getValue();
         assertEquals(1, capture.size());

@@ -49,8 +49,7 @@ public class DataListenerTest extends AbstractDataBrokerTest {
     public void testThrowExceptionOnRegister() {
         final InstanceIdentifier<Item> instanceIdentifier = InstanceIdentifier.builder(RegisterListenerTest.class)
             .child(Item.class).build();
-        final DataTreeIdentifier<Item> itemsDataTreeIdentifier = DataTreeIdentifier.create(
-            LogicalDatastoreType.OPERATIONAL,
+        final DataTreeIdentifier<Item> itemsDataTreeIdentifier = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
             instanceIdentifier);
 
         final Throwable dataListenerException = assertThrows(IllegalArgumentException.class,
@@ -69,7 +68,7 @@ public class DataListenerTest extends AbstractDataBrokerTest {
             .child(Item.class, new ItemKey(item.key())).build();
 
         dataBroker.registerDataListener(
-            DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, instanceIdentifier), listener);
+            DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, instanceIdentifier), listener);
 
         verify(listener, timeout(100)).dataChangedTo(item);
     }
@@ -81,7 +80,7 @@ public class DataListenerTest extends AbstractDataBrokerTest {
             .child(Item.class, new ItemKey(item.key())).build();
 
         dataBroker.registerDataChangeListener(
-            DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, instanceIdentifier), changeListener);
+            DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, instanceIdentifier), changeListener);
 
         verify(changeListener, timeout(100)).dataChanged(null, item);
     }

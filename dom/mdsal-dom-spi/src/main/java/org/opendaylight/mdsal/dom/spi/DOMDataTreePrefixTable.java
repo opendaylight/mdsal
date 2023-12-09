@@ -46,8 +46,8 @@ public final class DOMDataTreePrefixTable<V> {
      * @return closest non-null entry towards root or null if no entry towards root exists.
      */
     public @Nullable DOMDataTreePrefixTableEntry<V> lookup(final @NonNull DOMDataTreeIdentifier prefix) {
-        final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
-        return t == null ? null : t.lookup(prefix.getRootIdentifier());
+        final var entryt = roots.get(prefix.datastore());
+        return entryt == null ? null : entryt.lookup(prefix.path());
     }
 
     /**
@@ -58,13 +58,13 @@ public final class DOMDataTreePrefixTable<V> {
      * @throws IllegalStateException If value is already stored for provided prefix
      */
     public void store(final @NonNull DOMDataTreeIdentifier prefix, final @NonNull V value) {
-        DOMDataTreePrefixTableEntry<V> domDataTreePrefixTableEntry = roots.get(prefix.getDatastoreType());
+        var domDataTreePrefixTableEntry = roots.get(prefix.datastore());
         if (domDataTreePrefixTableEntry == null) {
             domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<>();
-            roots.put(prefix.getDatastoreType(), domDataTreePrefixTableEntry);
+            roots.put(prefix.datastore(), domDataTreePrefixTableEntry);
         }
 
-        domDataTreePrefixTableEntry.store(prefix.getRootIdentifier(), value);
+        domDataTreePrefixTableEntry.store(prefix.path(), value);
     }
 
     /**
@@ -75,12 +75,12 @@ public final class DOMDataTreePrefixTable<V> {
      * @param prefix to be removed
      */
     public void remove(final @NonNull DOMDataTreeIdentifier prefix) {
-        final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
-        if (t == null) {
+        final var entry = roots.get(prefix.datastore());
+        if (entry == null) {
             LOG.warn("Shard registration {} points to non-existent table", prefix);
             return;
         }
 
-        t.remove(prefix.getRootIdentifier());
+        entry.remove(prefix.path());
     }
 }

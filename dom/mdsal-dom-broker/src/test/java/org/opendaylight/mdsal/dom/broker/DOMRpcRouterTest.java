@@ -258,7 +258,7 @@ public class DOMRpcRouterTest {
     private static ListenableFuture<? extends DOMActionResult> invokeBaz(final DOMActionService actionService,
             final YangInstanceIdentifier path) {
         return actionService.invokeAction(Actions.BAZ_TYPE,
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, path),
+            DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path),
             Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.INPUT)).build());
     }
 }

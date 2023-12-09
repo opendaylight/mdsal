@@ -70,11 +70,11 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
             .withChild(OUTER_LIST_2)
             .build();
 
-    private static final DOMDataTreeIdentifier ROOT_DATA_TREE_ID = new DOMDataTreeIdentifier(
-            LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
+    private static final DOMDataTreeIdentifier ROOT_DATA_TREE_ID =
+        DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
 
-    private static final DOMDataTreeIdentifier OUTER_LIST_DATA_TREE_ID = new DOMDataTreeIdentifier(
-            LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
+    private static final DOMDataTreeIdentifier OUTER_LIST_DATA_TREE_ID =
+        DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
 
     @Before
     public void setupStore() {
