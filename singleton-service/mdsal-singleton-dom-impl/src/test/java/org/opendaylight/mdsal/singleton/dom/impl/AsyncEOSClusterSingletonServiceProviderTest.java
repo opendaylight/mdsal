@@ -40,7 +40,7 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
         public ListenableFuture<Void> closeServiceInstance() {
             super.closeServiceInstance();
 
-            final SettableFuture<Void> future = SettableFuture.create();
+            final var future = SettableFuture.<Void>create();
             TIMER.schedule(new TimerTask() {
                 @Override
                 public void run() {
