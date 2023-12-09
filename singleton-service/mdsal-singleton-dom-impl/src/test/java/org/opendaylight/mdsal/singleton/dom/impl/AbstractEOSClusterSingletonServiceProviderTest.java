@@ -60,8 +60,6 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     }
 
     static class TestClusterSingletonService implements ClusterSingletonService {
-        private static final @NonNull ServiceGroupIdentifier SERVICE_ID = new ServiceGroupIdentifier(SERVICE_NAME);
-
         private TestClusterSingletonServiceState serviceState = TestClusterSingletonServiceState.INITIALIZED;
 
         @Override
@@ -85,7 +83,8 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
         }
     }
 
-    static final @NonNull String SERVICE_NAME = "testServiceName";
+    private static final @NonNull String SERVICE_NAME = "testServiceName";
+    private static final @NonNull ServiceGroupIdentifier SERVICE_ID = new ServiceGroupIdentifier(SERVICE_NAME);
     static final @NonNull DOMEntity ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
     static final @NonNull DOMEntity DOUBLE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
 
@@ -158,10 +157,9 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
      */
     @Test
     public void makeEntityClusterSingletonServiceProviderTest() {
-        final var testEntity = EOSClusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
-        assertEquals(ENTITY, testEntity);
-        final var testDbEn = EOSClusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
-        assertEquals(DOUBLE_ENTITY, testDbEn);
+        assertEquals(ENTITY, EOSClusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE, SERVICE_ID));
+        assertEquals(DOUBLE_ENTITY,
+            EOSClusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_ID));
     }
 
     /**

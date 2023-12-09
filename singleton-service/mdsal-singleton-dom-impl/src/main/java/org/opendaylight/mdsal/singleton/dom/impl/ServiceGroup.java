@@ -13,6 +13,7 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
+import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
@@ -24,7 +25,8 @@ import org.opendaylight.yangtools.concepts.Identifiable;
  * ensure a service group instance has fully closed prior to relinquishing service ownership. To achieve ownership
  * of the service group, a service group candidate must hold ownership of both these entities.
  */
-abstract sealed class ServiceGroup implements Identifiable<String> permits ActiveServiceGroup, PlaceholderServiceGroup {
+abstract sealed class ServiceGroup implements Identifiable<ServiceGroupIdentifier>
+        permits ActiveServiceGroup, PlaceholderServiceGroup {
     /**
      * This method must be called once on startup to initialize this group and register the relevant group entity
      * candidate. It means create relevant Group Entity Candidate Registration.
