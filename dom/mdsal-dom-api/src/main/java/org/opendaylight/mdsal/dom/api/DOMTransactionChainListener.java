@@ -7,14 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import java.util.EventListener;
-
 /**
  * Listener for transaction chain events.
  */
 // FIXME: 6.0.0: remove this in favor of a TransactionChain destiny, available as a FluentFuture from
 //               DOMTransactionChain
-public interface DOMTransactionChainListener extends EventListener {
+public interface DOMTransactionChainListener {
     /**
      * Invoked if when a transaction in the chain fails. All transactions submitted after the failed transaction, in the
      * chain, are automatically cancelled by the time this notification is invoked. Open transactions need to be closed

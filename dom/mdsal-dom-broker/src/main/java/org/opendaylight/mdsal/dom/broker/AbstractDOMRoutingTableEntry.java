@@ -15,7 +15,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.EventListener;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +28,7 @@ import java.util.Set;
  * @param <K> routing key type
  */
 @Beta
-abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener, K> {
+abstract class AbstractDOMRoutingTableEntry<D, M, L, K> {
     private final Map<D, List<M>> implementations;
     private final K type;
 

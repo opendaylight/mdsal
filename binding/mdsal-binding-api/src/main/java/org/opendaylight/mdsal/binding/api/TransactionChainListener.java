@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Listener for transaction chain events.
  */
 // FIXME: 6.0.0: remove this in favor of a TransactionChain destiny, available as a FluentFuture from TransactionChain
-public interface TransactionChainListener extends EventListener {
+public interface TransactionChainListener {
     /**
      * Invoked if when a transaction in the chain fails. All transactions submitted after the failed transaction, in the
      * chain, are automatically cancelled by the time this notification is invoked. Open transactions need to be closed

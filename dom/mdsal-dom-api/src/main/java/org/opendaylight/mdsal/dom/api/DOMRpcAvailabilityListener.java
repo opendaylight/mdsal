@@ -8,14 +8,12 @@
 package org.opendaylight.mdsal.dom.api;
 
 import java.util.Collection;
-import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * An {@link EventListener} used to track RPC implementations becoming (un)available
- * to a {@link DOMRpcService}.
+ * A  listene} used to track RPC implementations becoming (un)available to a {@link DOMRpcService}.
  */
-public interface DOMRpcAvailabilityListener extends EventListener {
+public interface DOMRpcAvailabilityListener {
     /**
      * Method invoked whenever an RPC type becomes available.
      *

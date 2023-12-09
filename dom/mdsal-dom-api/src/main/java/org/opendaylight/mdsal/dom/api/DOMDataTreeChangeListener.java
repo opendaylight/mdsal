@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import java.util.EventListener;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
@@ -16,7 +15,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
  * Interface implemented by classes interested in receiving notifications about data tree changes. It provides
  * a cursor-based view of the change.
  */
-public interface DOMDataTreeChangeListener extends EventListener {
+public interface DOMDataTreeChangeListener {
     /**
      * Invoked when there was data change for the supplied path, which was used to register this listener.
      *

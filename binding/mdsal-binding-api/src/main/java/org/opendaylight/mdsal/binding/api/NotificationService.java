@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.EventListener;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
@@ -91,7 +90,7 @@ public interface NotificationService extends BindingService {
      * @param <N> Notification type
      */
     @FunctionalInterface
-    interface Listener<N extends Notification<N> & DataObject> extends EventListener {
+    interface Listener<N extends Notification<N> & DataObject> {
         /**
          * Process a global notification.
          *

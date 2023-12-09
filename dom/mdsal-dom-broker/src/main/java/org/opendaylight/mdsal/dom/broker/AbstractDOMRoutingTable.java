@@ -23,7 +23,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +43,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
  * @param <K> routing key type
  */
 @Beta
-abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
-        E extends AbstractDOMRoutingTableEntry<D, M, L, K>> {
+abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRoutingTableEntry<D, M, L, K>> {
     private final Map<K, E> operations;
     private final EffectiveModelContext schemaContext;
 
@@ -78,7 +76,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
         final Builder<K, E> mb = ImmutableMap.builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
-        for (Entry<K, E> re : this.operations.entrySet()) {
+        for (Entry<K, E> re : operations.entrySet()) {
             List<D> newOperations = new ArrayList<>(toAdd.removeAll(re.getKey()));
             if (!newOperations.isEmpty()) {
                 final E ne = (E) re.getValue().add(implementation, newOperations);
@@ -115,7 +113,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
         final var mb = ImmutableMap.<K, E>builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
-        for (Entry<K, E> re : this.operations.entrySet()) {
+        for (Entry<K, E> re : operations.entrySet()) {
             final var newImpls = toAdd.rowMap().remove(re.getKey());
             if (newImpls == null) {
                 mb.put(re);
@@ -153,7 +151,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
 
         // Now iterate over existing entries, modifying them as appropriate...
         final Builder<K, E> b = ImmutableMap.builder();
-        for (Entry<K, E> e : this.operations.entrySet()) {
+        for (Entry<K, E> e : operations.entrySet()) {
             final List<D> removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
             if (!removed.isEmpty()) {
                 final E ne = (E) e.getValue().remove(implementation, removed);
@@ -179,7 +177,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
         final var mb = ImmutableMap.<K, E>builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
-        for (Entry<K, E> re : this.operations.entrySet()) {
+        for (Entry<K, E> re : operations.entrySet()) {
             final var oldImpls = toRemove.rowMap().remove(re.getKey());
             if (oldImpls == null) {
                 mb.put(re);

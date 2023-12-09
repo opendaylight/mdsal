@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
-import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -17,7 +16,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * data tree changes. It provides a cursor-based view of the change, which has potentially
  * lower overhead and allow more flexible consumption of change event.
  */
-public interface DataTreeChangeListener<T extends DataObject> extends EventListener {
+public interface DataTreeChangeListener<T extends DataObject> {
     /**
      * Invoked when there was data change for the supplied path, which was used
      * to register this listener.
