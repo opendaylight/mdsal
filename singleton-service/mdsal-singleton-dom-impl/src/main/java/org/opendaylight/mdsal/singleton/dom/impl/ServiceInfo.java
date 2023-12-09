@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroupImpl.ServiceState;
+import org.opendaylight.mdsal.singleton.dom.impl.ActiveServiceGroup.ServiceState;
 
 final class ServiceInfo {
     static final @NonNull ServiceInfo STARTED = new ServiceInfo(ServiceState.STARTED, null);

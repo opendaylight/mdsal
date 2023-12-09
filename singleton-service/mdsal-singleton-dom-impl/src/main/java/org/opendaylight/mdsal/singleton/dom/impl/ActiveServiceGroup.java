@@ -42,29 +42,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ClusterSingletonServiceGroup} on top of the Entity Ownership Service. Since EOS is atomic
+ * Implementation of {@link ServiceGroup} on top of the Entity Ownership Service. Since EOS is atomic
  * in its operation and singleton services incur startup and most notably cleanup, we need to do something smart here.
  *
  * <p>
  * The implementation takes advantage of the fact that EOS provides stable ownership, i.e. owners are not moved as
  * a result on new candidates appearing. We use two entities:
- * - service entity, to which all nodes register
- * - cleanup entity, which only the service entity owner registers to
+ * <ol>
+ *   <li>service entity, to which all nodes register</li>
+ *   <li>cleanup entity, which only the service entity owner registers to</li>
+ * </ol>
  *
  * <p>
  * Once the cleanup entity ownership is acquired, services are started. As long as the cleanup entity is registered,
  * it should remain the owner. In case a new service owner emerges, the old owner will start the cleanup process,
  * eventually releasing the cleanup entity. The new owner registers for the cleanup entity -- but will not see it
  * granted until the old owner finishes the cleanup.
- *
- * @param <P> the instance identifier path type
- * @param <E> the GenericEntity type
- * @param <C> the GenericEntityOwnershipChange type
- * @param <G> the GenericEntityOwnershipListener type
- * @param <S> the GenericEntityOwnershipService type
  */
-// FIXME: rename to ActiveServiceGroup
-final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGroup {
+final class ActiveServiceGroup extends ServiceGroup {
 
     private enum EntityState {
         /**
@@ -103,7 +98,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
         STOPPING,
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClusterSingletonServiceGroupImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ActiveServiceGroup.class);
 
     private final DOMEntityOwnershipService entityOwnershipService;
     private final String identifier;
@@ -117,13 +112,13 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     private final Map<ServiceRegistration, ServiceInfo> services = new HashMap<>();
 
     // Marker for when any state changed
-    private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> DIRTY_UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(ClusterSingletonServiceGroupImpl.class, "dirty");
+    private static final AtomicIntegerFieldUpdater<ActiveServiceGroup> DIRTY_UPDATER =
+            AtomicIntegerFieldUpdater.newUpdater(ActiveServiceGroup.class, "dirty");
     private volatile int dirty;
 
     // Simplified lock: non-reentrant, support tryLock() only
-    private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> LOCK_UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(ClusterSingletonServiceGroupImpl.class, "lock");
+    private static final AtomicIntegerFieldUpdater<ActiveServiceGroup> LOCK_UPDATER =
+            AtomicIntegerFieldUpdater.newUpdater(ActiveServiceGroup.class, "lock");
     @SuppressWarnings("unused")
     private volatile int lock;
 
@@ -186,7 +181,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
      * @param parent parent service
      * @param services Services list
      */
-    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
+    ActiveServiceGroup(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
             final DOMEntity serviceEntity, final DOMEntity cleanupEntity, final List<ServiceRegistration> services) {
         checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
@@ -199,7 +194,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     }
 
     @VisibleForTesting
-    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntity serviceEntity,
+    ActiveServiceGroup(final String identifier, final DOMEntity serviceEntity,
             final DOMEntity cleanupEntity, final DOMEntityOwnershipService entityOwnershipService) {
         this(identifier, entityOwnershipService, serviceEntity, cleanupEntity, ImmutableList.of());
     }
