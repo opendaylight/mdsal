@@ -20,37 +20,30 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class {@link AbstractClusterSingletonServiceProviderImpl} represents implementations of
- * {@link ClusterSingletonServiceProvider} and it implements {@link GenericEntityOwnershipListener}
- * for providing OwnershipChange for all registered {@link ClusterSingletonServiceGroup} entity
- * candidate.
- *
- * @param <P> the instance identifier path type
- * @param <E> the GenericEntity type
- * @param <G> the GenericEntityOwnershipListener type
- * @param <S> the GenericEntityOwnershipService type
+ * {@link ClusterSingletonServiceProvider} and it implements {@link GenericEntityOwnershipListener} for providing
+ * OwnershipChange for all registered {@link ClusterSingletonServiceGroup} entity candidate.
  */
-public abstract class AbstractClusterSingletonServiceProviderImpl<P extends HierarchicalIdentifier<P>,
-        E extends GenericEntity<P>, G extends GenericEntityOwnershipListener<E>,
-        S extends GenericEntityOwnershipService<E, G>>
-        implements ClusterSingletonServiceProvider, GenericEntityOwnershipListener<E> {
+public abstract class AbstractClusterSingletonServiceProviderImpl
+        implements ClusterSingletonServiceProvider, DOMEntityOwnershipListener {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractClusterSingletonServiceProviderImpl.class);
 
     @VisibleForTesting
@@ -58,8 +51,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
     @VisibleForTesting
     static final @NonNull String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
 
-    private final S entityOwnershipService;
-    private final Map<String, ClusterSingletonServiceGroup<P, E>> serviceGroupMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ClusterSingletonServiceGroup> serviceGroupMap = new ConcurrentHashMap<>();
+    private final DOMEntityOwnershipService entityOwnershipService;
 
     /* EOS Entity Listeners Registration */
     private Registration serviceEntityListenerReg;
@@ -70,7 +63,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
      *
      * @param entityOwnershipService relevant EOS
      */
-    protected AbstractClusterSingletonServiceProviderImpl(final @NonNull S entityOwnershipService) {
+    protected AbstractClusterSingletonServiceProviderImpl(
+            final @NonNull DOMEntityOwnershipService entityOwnershipService) {
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
     }
 
@@ -92,7 +86,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
         checkArgument(!Strings.isNullOrEmpty(serviceIdentifier),
             "ClusterSingletonService identifier may not be null nor empty");
 
-        final ClusterSingletonServiceGroup<P, E> serviceGroup;
+        final ClusterSingletonServiceGroup serviceGroup;
         final var existing = serviceGroupMap.get(serviceIdentifier);
         if (existing == null) {
             serviceGroup = createGroup(serviceIdentifier, new ArrayList<>(1));
@@ -120,14 +114,14 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
         return reg;
     }
 
-    private ClusterSingletonServiceGroup<P, E> createGroup(final String serviceIdentifier,
+    private ClusterSingletonServiceGroup createGroup(final String serviceIdentifier,
             final List<ClusterSingletonServiceRegistration> services) {
-        return new ClusterSingletonServiceGroupImpl<>(serviceIdentifier, entityOwnershipService,
+        return new ClusterSingletonServiceGroupImpl(serviceIdentifier, entityOwnershipService,
             createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier),
             createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier), services);
     }
 
-    private void initializeOrRemoveGroup(final ClusterSingletonServiceGroup<P, E> group)
+    private void initializeOrRemoveGroup(final ClusterSingletonServiceGroup group)
             throws CandidateAlreadyRegisteredException {
         try {
             group.initialize();
@@ -138,7 +132,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
     }
 
     void removeRegistration(final String serviceIdentifier, final ClusterSingletonServiceRegistration reg) {
-        final PlaceholderGroup<P, E> placeHolder;
+        final PlaceholderGroup placeHolder;
         final ListenableFuture<?> future;
         synchronized (this) {
             final var lookup = verifyNotNull(serviceGroupMap.get(serviceIdentifier));
@@ -149,7 +143,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
 
             // Close the group and replace it with a placeholder
             LOG.debug("Closing service group {}", serviceIdentifier);
-            placeHolder = new PlaceholderGroup<>(lookup, future);
+            placeHolder = new PlaceholderGroup(lookup, future);
 
             final String identifier = reg.getInstance().getIdentifier().getName();
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
@@ -161,8 +155,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
         future.addListener(() -> finishShutdown(placeHolder), MoreExecutors.directExecutor());
     }
 
-    synchronized void finishShutdown(final PlaceholderGroup<P, E> placeHolder) {
-        final String identifier = placeHolder.getIdentifier();
+    synchronized void finishShutdown(final PlaceholderGroup placeHolder) {
+        final var identifier = placeHolder.getIdentifier();
         LOG.debug("Service group {} closed", identifier);
 
         final var services = placeHolder.getServices();
@@ -218,7 +212,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
     }
 
     @Override
-    public final void ownershipChanged(final E entity, final EntityOwnershipStateChange change,
+    public final void ownershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change,
             final boolean inJeopardy) {
         LOG.debug("Ownership change for ClusterSingletonService Provider on {} {} inJeopardy={}", entity, change,
             inJeopardy);
@@ -235,10 +229,10 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
      * Method implementation registers the listener.
      *
      * @param entityType the type of the entity
-     * @param entityOwnershipServiceInst - EOS type
+     * @param eos - EOS type
      * @return a {@link Registration}
      */
-    protected abstract Registration registerListener(String entityType, S entityOwnershipServiceInst);
+    protected abstract Registration registerListener(String entityType, DOMEntityOwnershipService eos);
 
     /**
      * Creates an extended {@link GenericEntity} instance.
@@ -247,7 +241,10 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
      * @param entityIdentifier the identifier of the entity
      * @return instance of Entity extended GenericEntity type
      */
-    protected abstract E createEntity(String entityType, String entityIdentifier);
+    @VisibleForTesting
+    static final DOMEntity createEntity(final String entityType, final String entityIdentifier) {
+        return new DOMEntity(entityType, entityIdentifier);
+    }
 
     /**
      * Method is responsible for parsing ServiceGroupIdentifier from E entity.
@@ -255,7 +252,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Hier
      * @param entity instance of GenericEntity type
      * @return ServiceGroupIdentifier parsed from entity key value.
      */
-    protected abstract String getServiceIdentifierFromEntity(E entity);
+    protected abstract String getServiceIdentifierFromEntity(DOMEntity entity);
 
     /**
      * Method is called async. from close method in end of Provider lifecycle.

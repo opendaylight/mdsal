@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 
@@ -34,12 +33,10 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
 public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClusterServiceProviderTest {
     /**
      * Initialization functionality for every Tests in this suite.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Override
     @Before
-    public void setup() throws CandidateAlreadyRegisteredException {
+    public void setup() throws Exception {
         super.setup();
     }
 

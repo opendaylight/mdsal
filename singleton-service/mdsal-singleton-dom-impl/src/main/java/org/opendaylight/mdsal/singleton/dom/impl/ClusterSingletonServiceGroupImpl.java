@@ -36,12 +36,10 @@ import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
-import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,9 +66,8 @@ import org.slf4j.LoggerFactory;
  * @param <G> the GenericEntityOwnershipListener type
  * @param <S> the GenericEntityOwnershipService type
  */
-final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
-        G extends GenericEntityOwnershipListener<E>, S extends GenericEntityOwnershipService<E, G>>
-        extends ClusterSingletonServiceGroup<P, E> {
+// FIXME: rename to ActiveServiceGroup
+final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGroup {
 
     private enum EntityState {
         /**
@@ -111,25 +108,23 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
 
     private static final Logger LOG = LoggerFactory.getLogger(ClusterSingletonServiceGroupImpl.class);
 
-    private final S entityOwnershipService;
+    private final DOMEntityOwnershipService entityOwnershipService;
     private final String identifier;
 
     /* Entity instances */
-    private final @NonNull E serviceEntity;
-    private final @NonNull E cleanupEntity;
+    private final @NonNull DOMEntity serviceEntity;
+    private final @NonNull DOMEntity cleanupEntity;
 
     private final Set<ClusterSingletonServiceRegistration> members = ConcurrentHashMap.newKeySet();
     // Guarded by lock
     private final Map<ClusterSingletonServiceRegistration, ServiceInfo> services = new HashMap<>();
 
     // Marker for when any state changed
-    @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> DIRTY_UPDATER =
             AtomicIntegerFieldUpdater.newUpdater(ClusterSingletonServiceGroupImpl.class, "dirty");
     private volatile int dirty;
 
     // Simplified lock: non-reentrant, support tryLock() only
-    @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> LOCK_UPDATER =
             AtomicIntegerFieldUpdater.newUpdater(ClusterSingletonServiceGroupImpl.class, "lock");
     @SuppressWarnings("unused")
@@ -188,28 +183,29 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * Class constructor. Note: last argument is reused as-is.
      *
      * @param identifier non-empty string as identifier
-     * @param mainEntity as Entity instance
-     * @param closeEntity as Entity instance
+     * @param serviceEntity as Entity instance
+     * @param cleanupEntity as Entity instance
      * @param entityOwnershipService GenericEntityOwnershipService instance
      * @param parent parent service
      * @param services Services list
      */
-    ClusterSingletonServiceGroupImpl(final String identifier, final S entityOwnershipService, final E mainEntity,
-            final E closeEntity, final Collection<ClusterSingletonServiceRegistration> services) {
+    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
+            final DOMEntity serviceEntity, final DOMEntity cleanupEntity,
+            final Collection<ClusterSingletonServiceRegistration> services) {
         checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
-        serviceEntity = requireNonNull(mainEntity);
-        cleanupEntity = requireNonNull(closeEntity);
+        this.serviceEntity = requireNonNull(serviceEntity);
+        this.cleanupEntity = requireNonNull(cleanupEntity);
         members.addAll(services);
 
         LOG.debug("Instantiated new service group for {}", identifier);
     }
 
     @VisibleForTesting
-    ClusterSingletonServiceGroupImpl(final String identifier, final E mainEntity,
-            final E closeEntity, final S entityOwnershipService) {
-        this(identifier, entityOwnershipService, mainEntity, closeEntity, ImmutableList.of());
+    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntity serviceEntity,
+            final DOMEntity cleanupEntity, final DOMEntityOwnershipService entityOwnershipService) {
+        this(identifier, entityOwnershipService, serviceEntity, cleanupEntity, ImmutableList.of());
     }
 
     @Override
@@ -323,7 +319,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     }
 
     @Override
-    void ownershipChanged(final E entity, final EntityOwnershipStateChange change, final boolean inJeopardy) {
+    void ownershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change, final boolean inJeopardy) {
         synchronized (this) {
             lockedOwnershipChanged(entity, change, inJeopardy);
         }
@@ -345,7 +341,7 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
      * @param ownershipChange reported change
      */
     @Holding("this")
-    private void lockedOwnershipChanged(final E entity, final EntityOwnershipStateChange change,
+    private void lockedOwnershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change,
             final boolean inJeopardy) {
         if (serviceEntity.equals(entity)) {
             serviceOwnershipChanged(change, inJeopardy);
