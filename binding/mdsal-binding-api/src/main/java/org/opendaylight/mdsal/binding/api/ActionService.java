@@ -63,7 +63,7 @@ public interface ActionService extends BindingService {
 
     default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final LogicalDatastoreType dataStore, final InstanceIdentifier<P> path) {
-        return getActionHandle(spec, ImmutableSet.of(DataTreeIdentifier.create(dataStore, path)));
+        return getActionHandle(spec, ImmutableSet.of(DataTreeIdentifier.of(dataStore, path)));
     }
 
     default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(

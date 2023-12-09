@@ -35,7 +35,6 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeCommitCohortAdapterTest {
-
     @Test
     public void canCommitTest() {
         final DataTreeCommitCohort<?> cohort = mock(DataTreeCommitCohort.class);
@@ -48,7 +47,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
 
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
         final DOMDataTreeIdentifier domDataTreeIdentifier =
-                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of());
+                DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of());
         final var bindingPath = InstanceIdentifier.create(BooleanContainer.class);
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
         final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
@@ -64,7 +63,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
 
         doReturn(PostCanCommitStep.NOOP_SUCCESSFUL_FUTURE).when(cohort).canCommit(any(), any());
         adapter.canCommit(txId, null, List.of(domDataTreeCandidate, domDataTreeCandidate));
-        ArgumentCaptor<Collection> modifications = ArgumentCaptor.forClass(Collection.class);
+        final var modifications = ArgumentCaptor.forClass(Collection.class);
         verify(cohort).canCommit(eq(txId), modifications.capture());
         assertEquals(2, modifications.getValue().size());
     }

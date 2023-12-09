@@ -61,13 +61,13 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                 break;
             case Naming.ACTION_INVOKE_NAME:
                 if (args.length == 2) {
-                    final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
+                    final var path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     checkArgument(!path.isWildcarded(), "Cannot invoke action on wildcard path %s", path);
 
-                    final RpcInput input = (RpcInput) requireNonNull(args[1]);
-                    final CurrentAdapterSerializer serializer = currentSerializer();
+                    final var input = (RpcInput) requireNonNull(args[1]);
+                    final var serializer = currentSerializer();
                     final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(actionPath,
-                        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+                        DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
                             serializer.toYangInstanceIdentifier(path)),
                         serializer.toLazyNormalizedNodeActionInput(spec.type(), inputName, input));
 

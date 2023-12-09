@@ -80,7 +80,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     DOMDataTreeIdentifier toDOMDataTreeIdentifier(final DataTreeIdentifier<?> path) {
-        return new DOMDataTreeIdentifier(path.getDatastoreType(), toYangInstanceIdentifier(path.getRootIdentifier()));
+        return DOMDataTreeIdentifier.of(path.datastore(), toYangInstanceIdentifier(path.path()));
     }
 
     Collection<DOMDataTreeIdentifier> toDOMDataTreeIdentifiers(final Collection<DataTreeIdentifier<?>> subtrees) {
