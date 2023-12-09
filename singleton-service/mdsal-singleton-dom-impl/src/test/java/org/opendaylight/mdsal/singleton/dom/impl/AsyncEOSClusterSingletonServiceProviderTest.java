@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange.LOCAL_OWNERSHIP_GRANTED;
@@ -20,27 +20,30 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Timer;
 import java.util.TimerTask;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 
 /*
  * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation
  */
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractEOSClusterSingletonServiceProviderTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractEOSClusterSingletonServiceProviderTest {
     /*
      * Test implementation of {@link ClusterSingletonService}
      */
-    public static class TestClusterSingletonAsyncServiceInstance extends TestClusterSingletonService {
+    private static final class TestClusterSingletonAsyncServiceInstance extends TestClusterSingletonService {
         @Override
         public ListenableFuture<Void> closeServiceInstance() {
             super.closeServiceInstance();
 
-            final SettableFuture<Void> future = SettableFuture.create();
+            final var future = SettableFuture.<Void>create();
             TIMER.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -51,16 +54,16 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
         }
     }
 
-    public static final long ASYNC_TIME_DELAY_MILLIS = 100L;
-    public static Timer TIMER;
+    private static final long ASYNC_TIME_DELAY_MILLIS = 100L;
+    private static Timer TIMER;
 
-    @BeforeClass
-    public static void asyncInitTest() {
+    @BeforeAll
+    static void asyncInitTest() {
         TIMER = new Timer();
     }
 
-    @AfterClass
-    public static void cleanTest() {
+    @AfterAll
+    static void cleanTest() {
         TIMER.cancel();
     }
 
@@ -71,27 +74,25 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
 
     /**
      * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
-    public void takeDoubleLeadershipClusterSingletonServiceTest() throws Exception {
+    void takeDoubleLeadershipClusterSingletonServiceTest() throws Exception {
         final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
-        verify(mockEos).registerCandidate(ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
-        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
+        verify(mockEos).registerCandidate(MAIN_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(CLOSE_ENTITY);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         Thread.sleep(ASYNC_TIME_DELAY_MILLIS * 2);
         verify(mockDoubleEntityCandReg).close();
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEosEntityListReg, never()).close();
@@ -100,22 +101,20 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
 
     /**
      * Test checks unexpected change for MASTER-TO-SLAVE double Candidate role change.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
-    public void unexpectedLostLeadershipDoubleCandidateTest() throws Exception {
+    void unexpectedLostLeadershipDoubleCandidateTest() throws Exception {
         final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
-        verify(mockEos).registerCandidate(ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
-        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
+        verify(mockEos).registerCandidate(MAIN_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(CLOSE_ENTITY);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_LOST_NEW_OWNER, false);
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         Thread.sleep(ASYNC_TIME_DELAY_MILLIS * 2);
         verify(mockEosDoubleEntityListReg, never()).close();
@@ -129,24 +128,22 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
 
     /**
      * Test checks inJeopardy Cluster Node state for Master Instance.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
-    public void inJeopardyMasterTest() throws Exception {
+    void inJeopardyMasterTest() throws Exception {
         final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
-        verify(mockEos).registerCandidate(ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
-        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
+        verify(mockEos).registerCandidate(MAIN_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(CLOSE_ENTITY);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         Thread.sleep(ASYNC_TIME_DELAY_MILLIS * 2);
         verify(mockEosEntityListReg, never()).close();
@@ -157,18 +154,16 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
 
     /**
      * Test checks close processing for {@link ServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
-    public void closeClusterSingletonServiceRegistrationMasterTest() throws Exception {
+    void closeClusterSingletonServiceRegistrationMasterTest() throws Exception {
         final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
-        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(MAIN_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(CLOSE_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
         verify(mockEntityCandReg).close();
@@ -182,18 +177,16 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
 
     /**
      * Test checks close processing for {@link ServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
-    public void closeClusterSingletonServiceRegistrationMasterCloseWithNotificationTimesTest() throws Exception {
+    void closeClusterSingletonServiceRegistrationMasterCloseWithNotificationTimesTest() throws Exception {
         final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
-        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(MAIN_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(CLOSE_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
         verify(mockEntityCandReg).close();
@@ -207,18 +200,16 @@ public final class AsyncEOSClusterSingletonServiceProviderTest extends AbstractE
 
     /**
      * Test checks close processing for {@link ServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
-    public void closeClusterSingletonServiceRegistrationMasterCloseCoupleTimesTest() throws Exception {
+    void closeClusterSingletonServiceRegistrationMasterCloseCoupleTimesTest() throws Exception {
         final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
-        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
-        clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(MAIN_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
+        verify(mockEos).registerCandidate(CLOSE_ENTITY);
+        clusterSingletonServiceProvider.ownershipChanged(CLOSE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
         reg.close();
