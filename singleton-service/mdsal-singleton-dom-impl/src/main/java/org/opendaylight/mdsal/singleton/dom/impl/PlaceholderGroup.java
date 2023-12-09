@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
-import org.opendaylight.mdsal.eos.common.api.GenericEntity;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,17 +26,17 @@ import org.slf4j.LoggerFactory;
  * Intermediate place-holder to catch user requests while asynchronous shutdown of previous incarnation of
  * a {@link ClusterSingletonServiceGroup} finishes.
  */
-final class PlaceholderGroup<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>>
-        extends ClusterSingletonServiceGroup<P, E> {
+// FIXME: rename to PlaceholderServiceGroup
+final class PlaceholderGroup extends ClusterSingletonServiceGroup {
     private static final Logger LOG = LoggerFactory.getLogger(PlaceholderGroup.class);
 
     private final List<ClusterSingletonServiceRegistration> services = new ArrayList<>(0);
-    private final ClusterSingletonServiceGroup<P, E> previous;
+    private final ClusterSingletonServiceGroup previous;
     private final ListenableFuture<?> closeFuture;
 
-    private volatile ClusterSingletonServiceGroup<P, E> successor;
+    private volatile ClusterSingletonServiceGroup successor;
 
-    PlaceholderGroup(final ClusterSingletonServiceGroup<P, E> previous, final ListenableFuture<?> closeFuture) {
+    PlaceholderGroup(final ClusterSingletonServiceGroup previous, final ListenableFuture<?> closeFuture) {
         this.previous = requireNonNull(previous);
         this.closeFuture = requireNonNull(closeFuture);
     }
@@ -68,7 +67,7 @@ final class PlaceholderGroup<P extends HierarchicalIdentifier<P>, E extends Gene
     }
 
     @Override
-    void ownershipChanged(final E entity, final EntityOwnershipStateChange change, final boolean inJeopardy) {
+    void ownershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change, final boolean inJeopardy) {
         // This really should not happen, but let's be defensive
         final var local = successor;
         (local == null ? previous : local).ownershipChanged(entity, change, inJeopardy);
@@ -87,7 +86,7 @@ final class PlaceholderGroup<P extends HierarchicalIdentifier<P>, E extends Gene
         return services;
     }
 
-    void setSuccessor(final ClusterSingletonServiceGroup<P, E> successor) {
+    void setSuccessor(final ClusterSingletonServiceGroup successor) {
         verifyNoSuccessor();
         this.successor = verifyNotNull(successor);
         LOG.debug("{}: successor set to {}", this, successor);
