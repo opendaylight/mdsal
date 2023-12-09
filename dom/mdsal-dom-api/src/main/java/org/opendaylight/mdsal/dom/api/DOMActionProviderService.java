@@ -7,17 +7,15 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * A {@link DOMService} which allows registration of action implementations with a conceptual router. The client
  * counterpart of this service is {@link DOMActionService}.
  */
-@Beta
 @NonNullByDefault
 public interface DOMActionProviderService
         extends DOMService<DOMActionProviderService, DOMActionProviderService.Extension> {
@@ -33,24 +31,23 @@ public interface DOMActionProviderService
      *
      * @param implementation action implementation, must not be null
      * @param instances Set of supported operation identifiers. Must not be null, empty, or contain a null element.
-     * @return A {@link ObjectRegistration} object, guaranteed to be non-null.
+     * @return A {@link Registration} object, guaranteed to be non-null.
      * @throws NullPointerException if {@code implementation} or {@code instances} is null, or if {@code instances}
      *                              contains a null element.
      * @throws IllegalArgumentException if {@code instances} is empty
      */
-    <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(T implementation,
-        Set<DOMActionInstance> instances);
+    Registration registerActionImplementation(DOMActionImplementation implementation, Set<DOMActionInstance> instances);
 
     /**
      * Register an {@link DOMActionImplementation} object with this service, servicing specified action instance.
      *
      * @param implementation action implementation, must not be null
      * @param instance supported operation identifier. Must not be null.
-     * @return A {@link ObjectRegistration} object, guaranteed to be non-null.
+     * @return A {@link Registration} object, guaranteed to be non-null.
      * @throws NullPointerException if any argument is null
      */
-    default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final DOMActionInstance instance) {
+    default Registration registerActionImplementation(final DOMActionImplementation implementation,
+            final DOMActionInstance instance) {
         return registerActionImplementation(implementation, ImmutableSet.of(instance));
     }
 
@@ -59,13 +56,13 @@ public interface DOMActionProviderService
      *
      * @param implementation action implementation, must not be null
      * @param instances Set of supported operation identifiers. Must not be null, empty, or contain a null element.
-     * @return A {@link ObjectRegistration} object, guaranteed to be non-null.
+     * @return A {@link Registration} object, guaranteed to be non-null.
      * @throws NullPointerException if {@code implementation} or {@code instances} is null, or if {@code instances}
      *                              contains a null element.
      * @throws IllegalArgumentException if {@code instances} is empty
      */
-    default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final DOMActionInstance... instances) {
+    default Registration registerActionImplementation(final DOMActionImplementation implementation,
+            final DOMActionInstance... instances) {
         return registerActionImplementation(implementation, ImmutableSet.copyOf(instances));
     }
 }

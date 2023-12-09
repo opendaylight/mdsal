@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
@@ -35,7 +37,6 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension.DemandListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
-import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ObjectRegistry;
@@ -72,9 +73,11 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     @VisibleForTesting
-    abstract static sealed class Reg extends AbstractObjectRegistration<DOMNotificationListener> {
+    abstract static sealed class Reg extends AbstractRegistration {
+        private final @NonNull DOMNotificationListener listener;
+
         Reg(final @NonNull DOMNotificationListener listener) {
-            super(listener);
+            this.listener = requireNonNull(listener);
         }
     }
 
@@ -323,7 +326,7 @@ public class DOMNotificationRouter implements AutoCloseable {
 
     private static void deliverEvents(final Reg reg, final ImmutableList<DOMNotificationRouterEvent> events) {
         if (reg.notClosed()) {
-            final var listener = reg.getInstance();
+            final var listener = reg.listener;
             for (var event : events) {
                 event.deliverTo(listener);
             }
