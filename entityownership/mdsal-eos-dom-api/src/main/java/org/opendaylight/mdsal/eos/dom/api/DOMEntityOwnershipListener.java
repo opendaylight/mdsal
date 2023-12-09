@@ -8,14 +8,23 @@
 package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 
 /**
- * DOM interface for GenericEntityOwnershipListener.
+ * An interface for a class that listens for {@link DOMEntity} ownership changes.
  *
  * @author Thomas Pantelis
  */
 @Beta
-public interface DOMEntityOwnershipListener extends GenericEntityOwnershipListener<DOMEntity> {
-    // Nothing else here
+@NonNullByDefault
+public interface DOMEntityOwnershipListener {
+    /**
+     * A notification that is generated when the ownership status of an entity changes.
+     *
+     * @param entity the entity whose ownership status changed
+     * @param change the change the entity underwent
+     * @param inJeopardy {@code true} if ownership is in jeopardy and the reported change may be inaccurate
+     */
+    void ownershipChanged(DOMEntity entity, EntityOwnershipStateChange change, boolean inJeopardy);
 }
