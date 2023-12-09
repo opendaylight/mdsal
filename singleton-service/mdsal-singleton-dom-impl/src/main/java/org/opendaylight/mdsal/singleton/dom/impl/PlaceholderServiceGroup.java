@@ -18,6 +18,7 @@ import java.util.List;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
+import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ final class PlaceholderServiceGroup extends ServiceGroup {
     }
 
     @Override
-    public String getIdentifier() {
+    public ServiceGroupIdentifier getIdentifier() {
         return previous.getIdentifier();
     }
 
