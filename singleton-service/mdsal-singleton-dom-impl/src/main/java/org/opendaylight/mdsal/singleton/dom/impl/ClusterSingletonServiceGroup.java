@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
@@ -31,33 +30,32 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 // FIXME: rename to ServiceGroup and seal
 abstract class ClusterSingletonServiceGroup implements Identifiable<String> {
     /**
-     * This method must be called once on startup to initialize this group and
-     * register the relevant group entity candidate. It means create relevant
-     * Group Entity Candidate Registration.
+     * This method must be called once on startup to initialize this group and register the relevant group entity
+     * candidate. It means create relevant Group Entity Candidate Registration.
      */
     abstract void initialize() throws CandidateAlreadyRegisteredException;
 
     /**
-     * This method registers a service instance for this service group. If the local node has
-     * ownership of the service group, the {@link ClusterSingletonService#instantiateServiceInstance()}
-     * method is called. Otherwise, the method is called once the local node gains ownership.
+     * This method registers a service instance for this service group. If the local node has ownership of the service
+     * group, the {@link ClusterSingletonService#instantiateServiceInstance()} method is called. Otherwise, the method
+     * is called once the local node gains ownership.
      *
      * @param service instance
      */
-    abstract void registerService(ClusterSingletonServiceRegistration reg);
+    abstract void registerService(ServiceRegistration reg);
 
     /**
-     * Method provides possibility to restart some service from group without change
-     * leadership for whole group. {@link ClusterSingletonServiceRegistration#close()}
-     * implementation has to call this service.
-     * Candidates are signed for group, so unregistration for group with one service
-     * has to trigger new election only otherwise we can see same behavior as on server
-     * without clustering.
+     * Method provides possibility to restart some service from group without change leadership for whole group.
+     * {@link ServiceRegistration#removeRegistration()} implementation has to call this service.
+     *
+     * <p>
+     * Candidates are signed for group, so unregistration for group with one service has to trigger new election only
+     * otherwise we can see same behavior as on server without clustering.
      *
      * @param service instance
      * @return Future which completes when this instance is shutdown if this was the last registration, null otherwise
      */
-    abstract @Nullable ListenableFuture<?> unregisterService(ClusterSingletonServiceRegistration reg);
+    abstract @Nullable ListenableFuture<?> unregisterService(ServiceRegistration reg);
 
     /**
      * Method implementation has to apply ownershipChange for all registered services.

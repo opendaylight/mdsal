@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.singleton.common.api;
 
+import org.opendaylight.yangtools.concepts.Registration;
+
 /**
  * {@link ClusterSingletonServiceProvider} provides a functionality to register and group services
  * {@link ClusterSingletonService} by service group identifier. Services could be Applications or RPCs.
@@ -30,7 +32,7 @@ public interface ClusterSingletonServiceProvider {
      * RuntimeException implementation is a hotfix for an unwanted API contract changes in boron release only.
      *
      * @param service ClusterSingletonService instance
-     * @return {@link AutoCloseable} registration
+     * @return {@link Registration} registration
      */
-    ClusterSingletonServiceRegistration registerClusterSingletonService(ClusterSingletonService service);
+    Registration registerClusterSingletonService(ClusterSingletonService service);
 }

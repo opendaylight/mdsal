@@ -22,11 +22,9 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -39,7 +37,6 @@ import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,9 +112,9 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     private final @NonNull DOMEntity serviceEntity;
     private final @NonNull DOMEntity cleanupEntity;
 
-    private final Set<ClusterSingletonServiceRegistration> members = ConcurrentHashMap.newKeySet();
+    private final Set<ServiceRegistration> members = ConcurrentHashMap.newKeySet();
     // Guarded by lock
-    private final Map<ClusterSingletonServiceRegistration, ServiceInfo> services = new HashMap<>();
+    private final Map<ServiceRegistration, ServiceInfo> services = new HashMap<>();
 
     // Marker for when any state changed
     private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> DIRTY_UPDATER =
@@ -190,8 +187,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
      * @param services Services list
      */
     ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
-            final DOMEntity serviceEntity, final DOMEntity cleanupEntity,
-            final Collection<ClusterSingletonServiceRegistration> services) {
+            final DOMEntity serviceEntity, final DOMEntity cleanupEntity, final List<ServiceRegistration> services) {
         checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
@@ -253,7 +249,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     }
 
     @Override
-    void registerService(final ClusterSingletonServiceRegistration reg) {
+    void registerService(final ServiceRegistration reg) {
         final ClusterSingletonService service = verifyRegistration(reg);
         checkNotClosed();
 
@@ -273,7 +269,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     }
 
     @Override
-    ListenableFuture<?> unregisterService(final ClusterSingletonServiceRegistration reg) {
+    ListenableFuture<?> unregisterService(final ServiceRegistration reg) {
         verifyRegistration(reg);
         checkNotClosed();
 
@@ -295,14 +291,14 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
         return null;
     }
 
-    private ClusterSingletonService verifyRegistration(final ClusterSingletonServiceRegistration reg) {
+    private ClusterSingletonService verifyRegistration(final ServiceRegistration reg) {
         final ClusterSingletonService service = reg.getInstance();
         verify(identifier.equals(service.getIdentifier().getName()));
         return service;
     }
 
     private synchronized @NonNull ListenableFuture<?> destroyGroup() {
-        final SettableFuture<Void> future = SettableFuture.create();
+        final var future = SettableFuture.<Void>create();
         if (!closeFuture.compareAndSet(null, future)) {
             return verifyNotNull(closeFuture.get());
         }
@@ -468,7 +464,7 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     // Has to be called with lock asserted
     private void tryReconcileState() {
         // First take a safe snapshot of current state on which we will base our decisions.
-        final Set<ClusterSingletonServiceRegistration> localMembers;
+        final Set<ServiceRegistration> localMembers;
         final boolean haveCleanup;
         final boolean haveService;
         synchronized (this) {
@@ -545,18 +541,18 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
 
     // Has to be called with lock asserted
     @SuppressWarnings("illegalCatch")
-    private void ensureServicesStarting(final Set<ClusterSingletonServiceRegistration> localConfig) {
+    private void ensureServicesStarting(final Set<ServiceRegistration> localConfig) {
         LOG.debug("Service group {} starting services", identifier);
 
         // This may look counter-intuitive, but the localConfig may be missing some services that are started -- for
         // example when this method is executed as part of unregisterService() call. In that case we need to ensure
         // services in the list are stopping
-        final Iterator<Entry<ClusterSingletonServiceRegistration, ServiceInfo>> it = services.entrySet().iterator();
+        final var it = services.entrySet().iterator();
         while (it.hasNext()) {
-            final Entry<ClusterSingletonServiceRegistration, ServiceInfo> entry = it.next();
-            final ClusterSingletonServiceRegistration reg = entry.getKey();
+            final var entry = it.next();
+            final var reg = entry.getKey();
             if (!localConfig.contains(reg)) {
-                final ServiceInfo newInfo = ensureStopping(reg, entry.getValue());
+                final var newInfo = ensureStopping(reg, entry.getValue());
                 if (newInfo != null) {
                     entry.setValue(newInfo);
                 } else {
@@ -566,9 +562,9 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
         }
 
         // Now make sure member services are being juggled around
-        for (ClusterSingletonServiceRegistration reg : localConfig) {
+        for (var reg : localConfig) {
             if (!services.containsKey(reg)) {
-                final ClusterSingletonService service = reg.getInstance();
+                final var service = reg.getInstance();
                 LOG.debug("Starting service {}", service);
 
                 try {
@@ -586,10 +582,10 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
 
     // Has to be called with lock asserted
     private void ensureServicesStopping() {
-        final Iterator<Entry<ClusterSingletonServiceRegistration, ServiceInfo>> it = services.entrySet().iterator();
+        final var it = services.entrySet().iterator();
         while (it.hasNext()) {
-            final Entry<ClusterSingletonServiceRegistration, ServiceInfo> entry = it.next();
-            final ServiceInfo newInfo = ensureStopping(entry.getKey(), entry.getValue());
+            final var entry = it.next();
+            final var newInfo = ensureStopping(entry.getKey(), entry.getValue());
             if (newInfo != null) {
                 entry.setValue(newInfo);
             } else {
@@ -599,10 +595,10 @@ final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGrou
     }
 
     @SuppressWarnings("illegalCatch")
-    private ServiceInfo ensureStopping(final ClusterSingletonServiceRegistration reg, final ServiceInfo info) {
+    private ServiceInfo ensureStopping(final ServiceRegistration reg, final ServiceInfo info) {
         switch (info.getState()) {
             case STARTED:
-                final ClusterSingletonService service = reg.getInstance();
+                final var service = reg.getInstance();
 
                 LOG.debug("Service group {} stopping service {}", identifier, service);
                 final @NonNull ListenableFuture<?> future;

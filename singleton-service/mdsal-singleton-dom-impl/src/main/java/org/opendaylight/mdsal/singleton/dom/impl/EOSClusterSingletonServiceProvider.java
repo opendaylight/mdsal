@@ -33,7 +33,6 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.osgi.service.component.annotations.Activate;
@@ -102,8 +101,7 @@ public final class EOSClusterSingletonServiceProvider
     }
 
     @Override
-    public synchronized ClusterSingletonServiceRegistration registerClusterSingletonService(
-            final ClusterSingletonService service) {
+    public synchronized Registration registerClusterSingletonService(final ClusterSingletonService service) {
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
         final String serviceIdentifier = service.getIdentifier().getName();
@@ -125,7 +123,7 @@ public final class EOSClusterSingletonServiceProvider
             serviceGroup = existing;
         }
 
-        final var reg = new AbstractClusterSingletonServiceRegistration(service) {
+        final var reg = new ServiceRegistration(service) {
             @Override
             protected void removeRegistration() {
                 // We need to bounce the unregistration through a ordered lock in order not to deal with asynchronous
@@ -139,7 +137,7 @@ public final class EOSClusterSingletonServiceProvider
     }
 
     private ClusterSingletonServiceGroup createGroup(final String serviceIdentifier,
-            final List<ClusterSingletonServiceRegistration> services) {
+            final List<ServiceRegistration> services) {
         return new ClusterSingletonServiceGroupImpl(serviceIdentifier, entityOwnershipService,
             createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier),
             createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier), services);
@@ -155,7 +153,7 @@ public final class EOSClusterSingletonServiceProvider
         }
     }
 
-    private void removeRegistration(final String serviceIdentifier, final ClusterSingletonServiceRegistration reg) {
+    private void removeRegistration(final String serviceIdentifier, final ServiceRegistration reg) {
         final PlaceholderGroup placeHolder;
         final ListenableFuture<?> future;
         synchronized (this) {

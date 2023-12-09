@@ -38,7 +38,6 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 
@@ -68,8 +67,8 @@ public class ClusterSingletonServiceGroupImplTest {
 
     public ClusterSingletonServiceGroupImpl singletonServiceGroup;
 
-    public ClusterSingletonServiceRegistration firstReg;
-    public ClusterSingletonServiceRegistration secondReg;
+    public ServiceRegistration firstReg;
+    public ServiceRegistration secondReg;
 
     /**
      * Initialization functionality for every Tests in this suite.
@@ -88,13 +87,13 @@ public class ClusterSingletonServiceGroupImplTest {
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonService).getIdentifier();
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonServiceSecond).getIdentifier();
 
-        firstReg = new AbstractClusterSingletonServiceRegistration(mockClusterSingletonService) {
+        firstReg = new ServiceRegistration(mockClusterSingletonService) {
             @Override
             protected void removeRegistration() {
                 // No-op
             }
         };
-        secondReg = new AbstractClusterSingletonServiceRegistration(mockClusterSingletonServiceSecond) {
+        secondReg = new ServiceRegistration(mockClusterSingletonServiceSecond) {
             @Override
             protected void removeRegistration() {
                 // No-op
@@ -420,7 +419,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test checks closing processing for close {@link ClusterSingletonServiceRegistration}.
+     * Test checks closing processing for close {@link ServiceRegistration}.
      *
      * @throws CandidateAlreadyRegisteredException - unexpected exception
      */

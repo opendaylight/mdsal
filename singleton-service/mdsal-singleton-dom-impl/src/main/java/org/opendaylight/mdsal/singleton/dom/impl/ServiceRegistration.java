@@ -8,13 +8,10 @@
 package org.opendaylight.mdsal.singleton.dom.impl;
 
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
-abstract class AbstractClusterSingletonServiceRegistration extends AbstractObjectRegistration<ClusterSingletonService>
-    implements ClusterSingletonServiceRegistration {
-
-    AbstractClusterSingletonServiceRegistration(final ClusterSingletonService instance) {
+abstract class ServiceRegistration extends AbstractObjectRegistration<ClusterSingletonService> {
+    ServiceRegistration(final ClusterSingletonService instance) {
         super(instance);
     }
 }

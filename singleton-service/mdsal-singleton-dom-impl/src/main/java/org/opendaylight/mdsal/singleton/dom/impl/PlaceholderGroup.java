@@ -18,7 +18,6 @@ import java.util.List;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ import org.slf4j.LoggerFactory;
 final class PlaceholderGroup extends ClusterSingletonServiceGroup {
     private static final Logger LOG = LoggerFactory.getLogger(PlaceholderGroup.class);
 
-    private final List<ClusterSingletonServiceRegistration> services = new ArrayList<>(0);
+    private final List<ServiceRegistration> services = new ArrayList<>(0);
     private final ClusterSingletonServiceGroup previous;
     private final ListenableFuture<?> closeFuture;
 
@@ -52,14 +51,14 @@ final class PlaceholderGroup extends ClusterSingletonServiceGroup {
     }
 
     @Override
-    void registerService(final ClusterSingletonServiceRegistration reg) {
+    void registerService(final ServiceRegistration reg) {
         verifyNoSuccessor();
         services.add(reg);
         LOG.debug("{}: added service {}", this, reg.getInstance());
     }
 
     @Override
-    ListenableFuture<?> unregisterService(final ClusterSingletonServiceRegistration reg) {
+    ListenableFuture<?> unregisterService(final ServiceRegistration reg) {
         verifyNoSuccessor();
         services.remove(reg);
         LOG.debug("{}: removed service {}", this, reg.getInstance());
@@ -80,7 +79,7 @@ final class PlaceholderGroup extends ClusterSingletonServiceGroup {
     }
 
     // Note: this is a leaked structure, the caller can reuse it at will, but has to regard
-    List<ClusterSingletonServiceRegistration> getServices() {
+    List<ServiceRegistration> getServices() {
         verifyNoSuccessor();
         LOG.trace("{}: returning services {}", this, services);
         return services;

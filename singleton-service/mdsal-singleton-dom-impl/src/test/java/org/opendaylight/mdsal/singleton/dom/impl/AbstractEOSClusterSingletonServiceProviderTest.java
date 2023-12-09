@@ -34,7 +34,6 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 
@@ -369,14 +368,13 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(DOUBLE_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService2.getServiceState());
     }
 
     /**
-     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ServiceRegistration}.
      */
     @Test
     public void closeClusterSingletonServiceRegistrationNoRoleTest() throws Exception {
@@ -393,7 +391,7 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     }
 
     /**
-     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ServiceRegistration}.
      */
     @Test
     public void closeClusterSingletonServiceRegistrationNoRoleTwoServicesTest() throws Exception {
@@ -414,7 +412,7 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     }
 
     /**
-     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ServiceRegistration}.
      */
     @Test
     public void closeClusterSingletonServiceRegistrationSlaveTest() throws Exception {
@@ -432,7 +430,7 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     }
 
     /**
-     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ServiceRegistration}.
      */
     @Test
     public void closeClusterSingletonServiceRegistrationSlaveTwoServicesTest() throws Exception {
@@ -454,7 +452,7 @@ abstract class AbstractEOSClusterSingletonServiceProviderTest {
     }
 
     /**
-     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ServiceRegistration}.
      */
     @Test
     public void closeClusterSingletonServiceRegistrationMasterTwoServicesTest() throws Exception {
