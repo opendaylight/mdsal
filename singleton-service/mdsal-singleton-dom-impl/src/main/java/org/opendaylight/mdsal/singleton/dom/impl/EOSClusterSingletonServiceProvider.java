@@ -31,6 +31,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.osgi.service.component.annotations.Activate;
@@ -100,14 +101,15 @@ public final class EOSClusterSingletonServiceProvider
 
     @Override
     public synchronized Registration registerClusterSingletonService(final ClusterSingletonService service) {
+        final var serviceIdentifier = requireNonNull(service.getIdentifier());
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
-        final var serviceIdentifier = service.getIdentifier().value();
+        final var identifierValue = serviceIdentifier.value();
         final ServiceGroup serviceGroup;
-        final var existing = serviceGroupMap.get(serviceIdentifier);
+        final var existing = serviceGroupMap.get(identifierValue);
         if (existing == null) {
             serviceGroup = createGroup(serviceIdentifier, new ArrayList<>(1));
-            serviceGroupMap.put(serviceIdentifier, serviceGroup);
+            serviceGroupMap.put(identifierValue, serviceGroup);
 
             try {
                 initializeOrRemoveGroup(serviceGroup);
@@ -131,10 +133,11 @@ public final class EOSClusterSingletonServiceProvider
         return reg;
     }
 
-    private ServiceGroup createGroup(final String serviceIdentifier, final List<ServiceRegistration> services) {
-        return new ActiveServiceGroup(serviceIdentifier, entityOwnershipService,
-            createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier),
-            createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier), services);
+    private ServiceGroup createGroup(final ServiceGroupIdentifier identifier,
+            final List<ServiceRegistration> services) {
+        return new ActiveServiceGroup(identifier, entityOwnershipService,
+            createEntity(SERVICE_ENTITY_TYPE, identifier), createEntity(CLOSE_SERVICE_ENTITY_TYPE, identifier),
+            services);
     }
 
     private void initializeOrRemoveGroup(final ServiceGroup group) throws CandidateAlreadyRegisteredException {
@@ -146,11 +149,11 @@ public final class EOSClusterSingletonServiceProvider
         }
     }
 
-    private void removeRegistration(final String serviceIdentifier, final ServiceRegistration reg) {
+    private void removeRegistration(final ServiceGroupIdentifier serviceIdentifier, final ServiceRegistration reg) {
         final PlaceholderServiceGroup placeHolder;
         final ListenableFuture<?> future;
         synchronized (this) {
-            final var lookup = verifyNotNull(serviceGroupMap.get(serviceIdentifier));
+            final var lookup = verifyNotNull(serviceGroupMap.get(serviceIdentifier.value()));
             future = lookup.unregisterService(reg);
             if (future == null) {
                 return;
@@ -177,17 +180,17 @@ public final class EOSClusterSingletonServiceProvider
         final var services = placeHolder.getServices();
         if (services.isEmpty()) {
             // No services, we are all done
-            if (serviceGroupMap.remove(identifier, placeHolder)) {
+            if (serviceGroupMap.remove(identifier.value(), placeHolder)) {
                 LOG.debug("Service group {} removed", placeHolder);
             } else {
-                LOG.debug("Service group {} superseded by {}", placeHolder, serviceGroupMap.get(identifier));
+                LOG.debug("Service group {} superseded by {}", placeHolder, serviceGroupMap.get(identifier.value()));
             }
             return;
         }
 
         // Placeholder is being retired, we are reusing its services as the seed for the group.
         final var group = createGroup(identifier, services);
-        verify(serviceGroupMap.replace(identifier, placeHolder, group));
+        verify(serviceGroupMap.replace(identifier.value(), placeHolder, group));
         placeHolder.setSuccessor(group);
         LOG.debug("Service group upgraded from {} to {}", placeHolder, group);
 
@@ -214,7 +217,7 @@ public final class EOSClusterSingletonServiceProvider
     }
 
     @VisibleForTesting
-    static String getServiceIdentifierFromEntity(final DOMEntity entity) {
+    static @NonNull String getServiceIdentifierFromEntity(final DOMEntity entity) {
         final var yii = entity.getIdentifier();
         final var niiwp = (NodeIdentifierWithPredicates) yii.getLastPathArgument();
         return niiwp.values().iterator().next().toString();
@@ -224,11 +227,11 @@ public final class EOSClusterSingletonServiceProvider
      * Creates an extended {@link DOMEntity} instance.
      *
      * @param entityType the type of the entity
-     * @param entityIdentifier the identifier of the entity
+     * @param sgi the identifier of the entity
      * @return instance of Entity extended GenericEntity type
      */
     @VisibleForTesting
-    static DOMEntity createEntity(final String entityType, final String entityIdentifier) {
-        return new DOMEntity(entityType, entityIdentifier);
+    static DOMEntity createEntity(final String entityType, final ServiceGroupIdentifier sgi) {
+        return new DOMEntity(entityType, sgi.value());
     }
 }
