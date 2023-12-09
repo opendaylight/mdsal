@@ -47,7 +47,7 @@ import org.opendaylight.yangtools.concepts.Registration;
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActiveServiceGroupTest {
     public static final String SERVICE_IDENTIFIER = "TestServiceIdent";
-    public static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = ServiceGroupIdentifier.create(SERVICE_IDENTIFIER);
+    public static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = new ServiceGroupIdentifier(SERVICE_IDENTIFIER);
 
     public static final @NonNull DOMEntity MAIN_ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
     public static final @NonNull DOMEntity CLOSE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
