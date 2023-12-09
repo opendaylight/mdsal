@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
@@ -37,6 +36,7 @@ import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
+import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +101,7 @@ final class ActiveServiceGroup extends ServiceGroup {
     private static final Logger LOG = LoggerFactory.getLogger(ActiveServiceGroup.class);
 
     private final @NonNull DOMEntityOwnershipService entityOwnershipService;
-    private final @NonNull String identifier;
+    private final @NonNull ServiceGroupIdentifier identifier;
 
     /* Entity instances */
     private final @NonNull DOMEntity serviceEntity;
@@ -181,10 +181,9 @@ final class ActiveServiceGroup extends ServiceGroup {
      * @param parent parent service
      * @param services Services list
      */
-    ActiveServiceGroup(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
+    ActiveServiceGroup(final ServiceGroupIdentifier identifier, final DOMEntityOwnershipService entityOwnershipService,
             final DOMEntity serviceEntity, final DOMEntity cleanupEntity, final List<ServiceRegistration> services) {
-        checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
-        this.identifier = identifier;
+        this.identifier = requireNonNull(identifier);
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
         this.serviceEntity = requireNonNull(serviceEntity);
         this.cleanupEntity = requireNonNull(cleanupEntity);
@@ -194,13 +193,13 @@ final class ActiveServiceGroup extends ServiceGroup {
     }
 
     @VisibleForTesting
-    ActiveServiceGroup(final String identifier, final DOMEntity serviceEntity,
+    ActiveServiceGroup(final ServiceGroupIdentifier identifier, final DOMEntity serviceEntity,
             final DOMEntity cleanupEntity, final DOMEntityOwnershipService entityOwnershipService) {
         this(identifier, entityOwnershipService, serviceEntity, cleanupEntity, ImmutableList.of());
     }
 
     @Override
-    public String getIdentifier() {
+    public ServiceGroupIdentifier getIdentifier() {
         return identifier;
     }
 
@@ -288,7 +287,7 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     private ClusterSingletonService verifyRegistration(final ServiceRegistration reg) {
         final var service = reg.getInstance();
-        verify(identifier.equals(service.getIdentifier().value()));
+        verify(identifier.equals(service.getIdentifier()));
         return service;
     }
 

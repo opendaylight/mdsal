@@ -99,7 +99,7 @@ public class ActiveServiceGroupTest {
             }
         };
 
-        singletonServiceGroup = new ActiveServiceGroup(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY, mockEosService);
+        singletonServiceGroup = new ActiveServiceGroup(SERVICE_GROUP_IDENT, MAIN_ENTITY, CLOSE_ENTITY, mockEosService);
     }
 
     /**
@@ -112,21 +112,12 @@ public class ActiveServiceGroupTest {
     }
 
     /**
-     * Test empty ServiceIdent input for new ServiceGroup instance.
-     */
-    @Test
-    public void instantiationClusterSingletonServiceGroupEmptyIdentTest() {
-        assertThrows(IllegalArgumentException.class,
-            () -> new ActiveServiceGroup("", MAIN_ENTITY, CLOSE_ENTITY, mockEosService));
-    }
-
-    /**
      * Test NULL MainEntity input for new ServiceGroup instance.
      */
     @Test
     public void instantiationClusterSingletonServiceGroupNullMainEntityTest() {
         assertThrows(NullPointerException.class,
-            () -> new ActiveServiceGroup(SERVICE_IDENTIFIER, null, CLOSE_ENTITY, mockEosService));
+            () -> new ActiveServiceGroup(SERVICE_GROUP_IDENT, null, CLOSE_ENTITY, mockEosService));
     }
 
     /**
@@ -135,7 +126,7 @@ public class ActiveServiceGroupTest {
     @Test
     public void instantiationClusterSingletonServiceGroupNullCloseEntityTest() {
         assertThrows(NullPointerException.class,
-            () -> new ActiveServiceGroup(SERVICE_IDENTIFIER, MAIN_ENTITY, null, mockEosService));
+            () -> new ActiveServiceGroup(SERVICE_GROUP_IDENT, MAIN_ENTITY, null, mockEosService));
     }
 
     /**
@@ -144,7 +135,7 @@ public class ActiveServiceGroupTest {
     @Test
     public void instantiationClusterSingletonServiceGroupNullEOS_Test() {
         assertThrows(NullPointerException.class,
-            () -> new ActiveServiceGroup(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY, null));
+            () -> new ActiveServiceGroup(SERVICE_GROUP_IDENT, MAIN_ENTITY, CLOSE_ENTITY, null));
     }
 
     /**
