@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
-import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -17,40 +16,35 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@Beta
 @Component(factory = OSGiNotificationPublishService.FACTORY_NAME)
 public final class OSGiNotificationPublishService extends AbstractAdaptedService<NotificationPublishService>
         implements NotificationPublishService {
     // OSGi DS Component Factory name
     static final String FACTORY_NAME = "org.opendaylight.mdsal.binding.dom.adapter.osgi.OSGiNotificationPublishService";
 
-    public OSGiNotificationPublishService() {
-        super(NotificationPublishService.class);
-    }
-
-    @Override
-    public void putNotification(final Notification<?> notification) throws InterruptedException {
-        delegate().putNotification(notification);
-    }
-
-    @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification) {
-        return delegate().offerNotification(notification);
-    }
-
-    @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification, final int timeout,
-            final TimeUnit unit) throws InterruptedException {
-        return delegate().offerNotification(notification, timeout, unit);
-    }
-
     @Activate
-    void activate(final Map<String, ?> properties) {
-        start(properties);
+    public OSGiNotificationPublishService(final Map<String, ?> properties) {
+        super(NotificationPublishService.class, properties);
     }
 
     @Deactivate
     void deactivate(final int reason) {
         stop(reason);
+    }
+
+    @Override
+    public void putNotification(final Notification<?> notification) throws InterruptedException {
+        delegate.putNotification(notification);
+    }
+
+    @Override
+    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification) {
+        return delegate.offerNotification(notification);
+    }
+
+    @Override
+    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification, final int timeout,
+            final TimeUnit unit) throws InterruptedException {
+        return delegate.offerNotification(notification, timeout, unit);
     }
 }
