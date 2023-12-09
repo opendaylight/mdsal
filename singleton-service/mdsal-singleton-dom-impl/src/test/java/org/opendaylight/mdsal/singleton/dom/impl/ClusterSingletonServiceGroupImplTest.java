@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -33,13 +34,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
-import org.opendaylight.mdsal.singleton.dom.impl.util.TestEntity;
-import org.opendaylight.mdsal.singleton.dom.impl.util.TestInstanceIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -50,9 +50,8 @@ public class ClusterSingletonServiceGroupImplTest {
     public static final String SERVICE_IDENTIFIER = "TestServiceIdent";
     public static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = ServiceGroupIdentifier.create(SERVICE_IDENTIFIER);
 
-    public static final @NonNull TestEntity MAIN_ENTITY = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
-    public static final @NonNull TestEntity CLOSE_ENTITY =
-        new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    public static final @NonNull DOMEntity MAIN_ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    public static final @NonNull DOMEntity CLOSE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
 
     @Mock
     public ClusterSingletonService mockClusterSingletonService;
@@ -63,14 +62,11 @@ public class ClusterSingletonServiceGroupImplTest {
     @Mock
     public Registration mockCloseEntityCandReg;
     @Mock
-    public GenericEntityOwnershipListener<TestEntity> mockEosListener;
-
+    public DOMEntityOwnershipListener mockEosListener;
     @Mock
-    public GenericEntityOwnershipService<TestEntity, GenericEntityOwnershipListener<TestEntity>> mockEosService;
+    public DOMEntityOwnershipService mockEosService;
 
-    public ClusterSingletonServiceGroupImpl<TestInstanceIdentifier, TestEntity,
-        GenericEntityOwnershipListener<TestEntity>,
-        GenericEntityOwnershipService<TestEntity, GenericEntityOwnershipListener<TestEntity>>> singletonServiceGroup;
+    public ClusterSingletonServiceGroupImpl singletonServiceGroup;
 
     public ClusterSingletonServiceRegistration firstReg;
     public ClusterSingletonServiceRegistration secondReg;
@@ -105,48 +101,53 @@ public class ClusterSingletonServiceGroupImplTest {
             }
         };
 
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
             mockEosService);
     }
 
     /**
      * Test NULL ServiceIdent input for new ServiceGroup instance.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void instantiationClusterSingletonServiceGroupNullIdentTest() {
-        new ClusterSingletonServiceGroupImpl<>(null, MAIN_ENTITY, CLOSE_ENTITY, mockEosService);
+        assertThrows(NullPointerException.class,
+            () -> new ClusterSingletonServiceGroupImpl(null, MAIN_ENTITY, CLOSE_ENTITY, mockEosService));
     }
 
     /**
      * Test empty ServiceIdent input for new ServiceGroup instance.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void instantiationClusterSingletonServiceGroupEmptyIdentTest() {
-        new ClusterSingletonServiceGroupImpl<>("", MAIN_ENTITY, CLOSE_ENTITY, mockEosService);
+        assertThrows(IllegalArgumentException.class,
+            () -> new ClusterSingletonServiceGroupImpl("", MAIN_ENTITY, CLOSE_ENTITY, mockEosService));
     }
 
     /**
      * Test NULL MainEntity input for new ServiceGroup instance.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void instantiationClusterSingletonServiceGroupNullMainEntityTest() {
-        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, null, CLOSE_ENTITY, mockEosService);
+        assertThrows(NullPointerException.class,
+            () -> new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, null, CLOSE_ENTITY, mockEosService));
     }
 
     /**
      * Test NULL CloseEntity input for new ServiceGroup instance.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void instantiationClusterSingletonServiceGroupNullCloseEntityTest() {
-        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, null, mockEosService);
+        assertThrows(NullPointerException.class,
+            () -> new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, MAIN_ENTITY, null, mockEosService));
     }
 
     /**
      * Test NULL EntityOwnershipService input for new ServiceGroup instance.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void instantiationClusterSingletonServiceGroupNullEOS_Test() {
-        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY, null);
+        assertThrows(NullPointerException.class,
+            () -> new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY, null));
     }
 
     /**

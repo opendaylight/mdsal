@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -107,7 +106,7 @@ public abstract class AbstractDOMClusterServiceProviderTest {
     public TestClusterSingletonService clusterSingletonService2;
 
     @Before
-    public void setup() throws CandidateAlreadyRegisteredException {
+    public void setup() throws Exception {
         doNothing().when(mockEosEntityListReg).close();
         doNothing().when(mockEosDoubleEntityListReg).close();
         doNothing().when(mockEntityCandReg).close();
@@ -161,9 +160,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
      */
     @Test
     public void makeEntityClusterSingletonServiceProviderTest() {
-        final DOMEntity testEntity = clusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
+        final var testEntity = AbstractClusterSingletonServiceProviderImpl.createEntity(SERVICE_ENTITY_TYPE,
+            SERVICE_NAME);
         assertEquals(ENTITY, testEntity);
-        final DOMEntity testDbEn = clusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE,
+        final var testDbEn = AbstractClusterSingletonServiceProviderImpl.createEntity(CLOSE_SERVICE_ENTITY_TYPE,
                 SERVICE_NAME);
         assertEquals(DOUBLE_ENTITY, testDbEn);
     }
@@ -173,21 +173,16 @@ public abstract class AbstractDOMClusterServiceProviderTest {
      */
     @Test
     public void getIdentifierClusterSingletonServiceProviderTest() {
-        final String entityIdentifier = clusterSingletonServiceProvider.getServiceIdentifierFromEntity(ENTITY);
-        assertEquals(SERVICE_NAME, entityIdentifier);
-        final String doubleEntityId = clusterSingletonServiceProvider.getServiceIdentifierFromEntity(DOUBLE_ENTITY);
-        assertEquals(SERVICE_NAME, doubleEntityId);
+        assertEquals(SERVICE_NAME, clusterSingletonServiceProvider.getServiceIdentifierFromEntity(ENTITY));
+        assertEquals(SERVICE_NAME, clusterSingletonServiceProvider.getServiceIdentifierFromEntity(DOUBLE_ENTITY));
     }
 
     /**
      * Test GoldPath for initialization {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void initializationClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void initializationClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -195,13 +190,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for initialization with init ownership result SLAVE {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void slaveInitClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void slaveInitClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
@@ -211,13 +203,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for initialization with init ownership result SLAVE, but NO-MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void slaveInitNoMasterClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void slaveInitNoMasterClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, REMOTE_OWNERSHIP_LOST_NO_OWNER, false);
@@ -227,13 +216,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void masterInitClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void masterInitClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
@@ -243,13 +229,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void masterInitSlaveDoubleCandidateClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void masterInitSlaveDoubleCandidateClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
@@ -260,13 +243,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void takeLeadershipClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void takeLeadershipClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
@@ -278,40 +258,31 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void masterInitClusterSingletonServiceTwoServicesTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void masterInitClusterSingletonServiceTwoServicesTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
     }
 
     /**
      * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void takeLeadershipClusterSingletonServiceTwoAddDuringWaitPhaseServicesTest()
-            throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void takeLeadershipClusterSingletonServiceTwoAddDuringWaitPhaseServicesTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
         verify(mockEos).registerCandidate(DOUBLE_ENTITY);
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
@@ -322,29 +293,21 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks CandidateAlreadyRegisteredException processing in initialization phase.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
-    @Test(expected = RuntimeException.class)
-    public void initializationClusterSingletonServiceCandidateAlreadyRegistredTest()
-            throws CandidateAlreadyRegisteredException {
+    @Test
+    public void initializationClusterSingletonServiceCandidateAlreadyRegistredTest() throws Exception {
         doThrow(CandidateAlreadyRegisteredException.class).when(mockEos).registerCandidate(ENTITY);
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
-        assertNull(reg);
+        assertThrows(RuntimeException.class,
+            () -> clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService));
     }
 
     /**
      * Test GoldPath for lostLeadership during tryToTakeLeadership with ownership result MASTER
      * {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void lostLeadershipDuringTryToTakeLeadershipClusterSingletonServiceTest()
-            throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void lostLeadershipDuringTryToTakeLeadershipClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
@@ -358,13 +321,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for lostLeadership with ownership result MASTER-TO-SLAVE {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void lostLeadershipClusterSingletonServiceTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void lostLeadershipClusterSingletonServiceTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
@@ -380,13 +340,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks inJeopardy Cluster Node state for Slave Instance.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void inJeopardySlaveTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void inJeopardySlaveTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
@@ -402,13 +359,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
-     *
-     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
     @Test
-    public void takeLeadershipClusterSingletonServiceTowServicesTest() throws CandidateAlreadyRegisteredException {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+    public void takeLeadershipClusterSingletonServiceTowServicesTest() throws Exception {
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
@@ -424,13 +378,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationNoRoleTest() throws Exception {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -444,17 +395,13 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationNoRoleTwoServicesTest() throws Exception {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
@@ -469,13 +416,10 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationSlaveTest() throws Exception {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         verify(mockEos).registerCandidate(ENTITY);
@@ -490,17 +434,13 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationSlaveTwoServicesTest() throws Exception {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
         verify(mockEos).registerCandidate(ENTITY);
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         clusterSingletonServiceProvider.ownershipChanged(ENTITY, REMOTE_OWNERSHIP_CHANGED, false);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -516,16 +456,12 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationMasterTwoServicesTest() throws Exception {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
@@ -546,16 +482,12 @@ public abstract class AbstractDOMClusterServiceProviderTest {
 
     /**
      * Test checks validation Error processing for SLAVE-TO-MASTER entity Candidate role change.
-     *
-     * @throws Exception if the condition does not meet
      */
     @Test
     public void tryToTakeLeaderForClosedServiceRegistrationTest() throws Exception {
-        final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService);
+        final var reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService);
         assertNotNull(reg);
-        final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
-                .registerClusterSingletonService(clusterSingletonService2);
+        final var reg2 = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
         assertNotNull(reg2);
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
