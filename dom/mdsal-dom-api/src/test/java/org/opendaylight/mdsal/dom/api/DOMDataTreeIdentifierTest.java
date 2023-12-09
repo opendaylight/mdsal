@@ -12,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -24,16 +28,16 @@ class DOMDataTreeIdentifierTest {
     private static final String TEST_LISTS = "test-lists";
     private static final String COMPARE_FIRST_LISTS = "A-test-lists";
     private static final String COMPARE_SECOND_LISTS = "B-test-lists";
-    private static final QNameModule TEST_MODULE = QNameModule.create(XMLNamespace.of(
-            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
-    private static final YangInstanceIdentifier REF_YII_IID = YangInstanceIdentifier.of(
-            QName.create(TEST_MODULE, REF_LISTS));
-    private static final YangInstanceIdentifier TEST_YII_IID = YangInstanceIdentifier.of(
-            QName.create(TEST_MODULE, TEST_LISTS));
-    private static final DOMDataTreeIdentifier REF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-            REF_YII_IID);
-    private static final DOMDataTreeIdentifier
-        TEST_DIFF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,TEST_YII_IID);
+    private static final QNameModule TEST_MODULE =
+        QNameModule.create(XMLNamespace.of("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
+    private static final YangInstanceIdentifier REF_YII_IID =
+        YangInstanceIdentifier.of(QName.create(TEST_MODULE, REF_LISTS));
+    private static final YangInstanceIdentifier TEST_YII_IID =
+        YangInstanceIdentifier.of(QName.create(TEST_MODULE, TEST_LISTS));
+    private static final DOMDataTreeIdentifier REF_TREE =
+        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID);
+    private static final DOMDataTreeIdentifier TEST_DIFF_TREE =
+        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,TEST_YII_IID);
 
     @Test
     void constructTest() {
@@ -84,5 +88,20 @@ class DOMDataTreeIdentifierTest {
         assertEquals("DOMDataTreeIdentifier{datastore=OPERATIONAL, "
             + "root=/(urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store)ref-lists}",
             REF_TREE.toString());
+    }
+
+    @Test
+    void serializationTest() throws Exception {
+        final var bos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(REF_TREE);
+        }
+
+        final var bytes = bos.toByteArray();
+        assertEquals(561, bytes.length);
+
+        try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+            assertEquals(REF_TREE, ois.readObject());
+        }
     }
 }
