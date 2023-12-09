@@ -294,8 +294,9 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     private synchronized @NonNull ListenableFuture<?> destroyGroup() {
         final var future = SettableFuture.<Void>create();
-        if (!closeFuture.compareAndSet(null, future)) {
-            return verifyNotNull(closeFuture.get());
+        final var witness = closeFuture.compareAndExchange(null, future);
+        if (witness != null) {
+            return witness;
         }
 
         if (serviceEntityReg != null) {
