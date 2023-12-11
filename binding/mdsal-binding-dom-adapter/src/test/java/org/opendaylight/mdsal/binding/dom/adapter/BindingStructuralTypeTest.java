@@ -7,25 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.opendaylight.yangtools.yang.data.api.schema.AnydataNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class BindingStructuralTypeTest {
+@ExtendWith(MockitoExtension.class)
+class BindingStructuralTypeTest {
     @Mock
-    private NormalizedNode normalizedNode;
+    private AnydataNode<?> normalizedNode;
     @Mock
     private DataTreeCandidateNode dataTreeCandidateNode;
 
     @Test
-    public void basicTest() {
+    void basicTest() {
         doReturn(normalizedNode).when(dataTreeCandidateNode).dataBefore();
         assertEquals(BindingStructuralType.UNKNOWN, BindingStructuralType.from(dataTreeCandidateNode));
     }
