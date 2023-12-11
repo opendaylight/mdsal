@@ -132,7 +132,7 @@ abstract class FutureSchema implements AutoCloseable {
         return addPostponedOpAndWait(new FutureSchemaPredicate() {
             @Override
             public boolean test(final BindingRuntimeContext input) {
-                return input.getEffectiveModelContext().findModule(module).isPresent();
+                return input.modelContext().findModule(module).isPresent();
             }
         });
     }

@@ -19,6 +19,7 @@ module org.opendaylight.mdsal.binding.dom.codec.osgi {
     requires org.slf4j;
 
     // Annotations
+    requires static com.github.spotbugs.annotations;
     requires static org.checkerframework.checker.qual;
     requires static org.osgi.service.component.annotations;
 }

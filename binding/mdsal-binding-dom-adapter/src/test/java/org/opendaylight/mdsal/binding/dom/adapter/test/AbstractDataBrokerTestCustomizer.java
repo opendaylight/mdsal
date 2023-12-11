@@ -42,14 +42,14 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public DOMStore createConfigurationDatastore() {
-        final InMemoryDOMDataStore store = new InMemoryDOMDataStore("CFG", getDataTreeChangeListenerExecutor());
-        schemaService.registerSchemaContextListener(store);
+        final var store = new InMemoryDOMDataStore("CFG", getDataTreeChangeListenerExecutor());
+        schemaService.registerSchemaContextListener(store::onModelContextUpdated);
         return store;
     }
 
     public DOMStore createOperationalDatastore() {
-        final InMemoryDOMDataStore store = new InMemoryDOMDataStore("OPER", getDataTreeChangeListenerExecutor());
-        schemaService.registerSchemaContextListener(store);
+        final var store = new InMemoryDOMDataStore("OPER", getDataTreeChangeListenerExecutor());
+        schemaService.registerSchemaContextListener(store::onModelContextUpdated);
         return store;
     }
 
