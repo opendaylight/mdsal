@@ -11,6 +11,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.primitives.UnsignedLong;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
@@ -46,6 +47,7 @@ public final class GlobalBindingDOMCodecServices extends ForwardingBindingDOMCod
     private static final Logger LOG = LoggerFactory.getLogger(GlobalBindingDOMCodecServices.class);
 
     @Reference(updated = "update")
+    @SuppressFBWarnings(value = "UWF_NULL_FIELD")
     volatile OSGiBindingDOMCodecServices osgi = null;
 
     private BindingDOMCodecServices delegate;
@@ -85,6 +87,7 @@ public final class GlobalBindingDOMCodecServices extends ForwardingBindingDOMCod
         LOG.info("Global Binding/DOM Codec deactivated");
     }
 
+    @SuppressFBWarnings(value = "NP_UNWRITTEN_FIELD")
     private void updateDelegate() {
         generation = osgi.getGeneration();
         delegate = osgi.getService();

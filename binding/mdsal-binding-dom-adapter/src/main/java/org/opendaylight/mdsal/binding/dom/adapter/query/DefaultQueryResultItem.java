@@ -41,10 +41,12 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
     private final DefaultQueryResult<T> result;
 
     @SuppressWarnings("unused")
-    @SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "Ungrokked type annotation")
+    @SuppressFBWarnings(value = { "NP_STORE_INTO_NONNULL_FIELD", "URF_UNREAD_FIELD"},
+        justification = "Ungrokked type annotation")
     private volatile @Nullable InstanceIdentifier<T> path = null;
     @SuppressWarnings("unused")
-    @SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "Ungrokked type annotation")
+    @SuppressFBWarnings(value = { "NP_STORE_INTO_NONNULL_FIELD", "URF_UNREAD_FIELD"},
+        justification = "Ungrokked type annotation")
     private volatile @Nullable T object = null;
 
     DefaultQueryResultItem(final DefaultQueryResult<T> result,

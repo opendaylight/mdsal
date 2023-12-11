@@ -9,6 +9,7 @@ package org.opendaylight.yangtools.yang.binding;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -69,6 +70,7 @@ class InstanceIdentifierV3<T extends DataObject> implements Externalizable {
     }
 
     @Override
+    @SuppressFBWarnings(value = "SE_PREVENT_EXT_OBJ_OVERWRITE")
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         targetType = (Class<T>) in.readObject();
         wildcarded = in.readBoolean();

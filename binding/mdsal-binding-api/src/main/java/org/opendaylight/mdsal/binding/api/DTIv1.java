@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.api;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -42,6 +43,7 @@ final class DTIv1 implements Externalizable {
     }
 
     @Override
+    @SuppressFBWarnings("SE_PREVENT_EXT_OBJ_OVERWRITE")
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         id = DataTreeIdentifier.of(LogicalDatastoreType.readFrom(in), (InstanceIdentifier<?>) in.readObject());
     }

@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,6 +44,7 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
     @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
+    @SuppressFBWarnings(value = "UWF_NULL_FIELD")
     ComponentFactory<EffectiveModelContextImpl> listenerFactory = null;
 
     private final List<EffectiveModelContextListener> listeners = new CopyOnWriteArrayList<>();
@@ -108,6 +110,7 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
         deactivated = true;
     }
 
+    @SuppressFBWarnings("NP_UNWRITTEN_FIELD")
     private @NonNull Registration registerListener(final @NonNull EffectiveModelContextListener listener) {
         final var reg = listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
         return new AbstractRegistration() {

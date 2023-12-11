@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.VerifyException;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
@@ -45,6 +46,7 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
 
     // Accessed via a VarHandle
     @SuppressWarnings("unused")
+    @SuppressFBWarnings(value = "UUF_UNUSED_FIELD")
     // FIXME: consider using a primitive int-based cache (with 0 being uninit)
     private volatile Integer cachedHashcode;
 

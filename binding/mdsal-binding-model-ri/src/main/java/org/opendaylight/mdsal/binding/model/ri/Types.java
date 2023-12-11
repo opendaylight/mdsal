@@ -15,6 +15,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -348,6 +349,7 @@ public final class Types {
          * @param rawType JAVA <code>Type</code> for raw type
          * @param actTypes array of actual parameters
          */
+        @SuppressFBWarnings(value = "CT_CONSTRUCTOR_THROW")
         ParametrizedTypeImpl(final Type rawType, final Type[] actTypes) {
             super(rawType.getIdentifier());
             this.rawType = requireNonNull(rawType);
