@@ -50,7 +50,7 @@ public final class InMemoryDOMDataStoreFactory {
             properties.getMaxDataChangeListenerQueueSize(), properties.getDebugTransactions());
 
         if (schemaService != null) {
-            schemaService.registerSchemaContextListener(dataStore);
+            schemaService.registerSchemaContextListener(dataStore::onModelContextUpdated);
         }
 
         return dataStore;

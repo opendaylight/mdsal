@@ -152,7 +152,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     private @NonNull Entry<SchemaInferenceStack, QNameModule> resolvePath(final @NonNull InstanceIdentifier<?> path) {
-        final var stack = SchemaInferenceStack.of(getRuntimeContext().getEffectiveModelContext());
+        final var stack = SchemaInferenceStack.of(getRuntimeContext().modelContext());
         final var it = toYangInstanceIdentifier(path).getPathArguments().iterator();
         verify(it.hasNext(), "Unexpected empty instance identifier for %s", path);
 

@@ -53,12 +53,12 @@ public abstract class AbstractSchemaAwareTest {
         return RUNTIME_CONTEXT_CACHE.getUnchecked(getModuleInfos());
     }
 
-    protected EffectiveModelContext getSchemaContext() throws Exception {
-        return getRuntimeContext().getEffectiveModelContext();
+    protected EffectiveModelContext modelContext() throws Exception {
+        return getRuntimeContext().modelContext();
     }
 
     protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
-        setupWithSchema(runtimeContext.getEffectiveModelContext());
+        setupWithSchema(runtimeContext.modelContext());
     }
 
     /**
