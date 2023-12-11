@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextSource;
 
 /**
  * A {@link DOMSchemaService.Extension} exposing access to {@link YangTextSchemaSource}. Instances of this method should
@@ -17,6 +17,6 @@ import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
  */
 @Beta
 public interface DOMYangTextSourceProvider
-        extends DOMSchemaService.Extension, SchemaSourceProvider<YangTextSchemaSource> {
+        extends DOMSchemaService.Extension, SchemaSourceProvider<YangTextSource> {
 
 }

@@ -69,7 +69,7 @@ final class DOMDataBrokerModification implements DataTreeModification {
     }
 
     @Override
-    public EffectiveModelContext getEffectiveModelContext() {
+    public EffectiveModelContext modelContext() {
         throw new UnsupportedOperationException();
     }
 }

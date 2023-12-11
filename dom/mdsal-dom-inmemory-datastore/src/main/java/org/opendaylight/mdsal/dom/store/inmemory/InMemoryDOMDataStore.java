@@ -37,7 +37,6 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedException;
 import org.opendaylight.yangtools.yang.data.tree.impl.di.InMemoryDataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore} contract.
  */
 public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements DOMStore,
-        Identifiable<String>, EffectiveModelContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
+        Identifiable<String>, AutoCloseable, DOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
 
     private final AtomicLong txCounter = new AtomicLong(0);
@@ -97,6 +96,10 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         return name;
     }
 
+    public final synchronized void onModelContextUpdated(final EffectiveModelContext newModelContext) {
+        dataTree.setEffectiveModelContext(newModelContext);
+    }
+
     @Override
     public DOMStoreReadTransaction newReadOnlyTransaction() {
         return SnapshotBackedTransactions.newReadTransaction(nextIdentifier(), debugTransactions,
@@ -118,11 +121,6 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     @Override
     public DOMStoreTransactionChain createTransactionChain() {
         return new DOMStoreTransactionChainImpl(this);
-    }
-
-    @Override
-    public synchronized void onModelContextUpdated(final EffectiveModelContext newModelContext) {
-        dataTree.setEffectiveModelContext(newModelContext);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
