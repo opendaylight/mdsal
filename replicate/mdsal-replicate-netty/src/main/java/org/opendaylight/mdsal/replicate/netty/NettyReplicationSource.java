@@ -46,24 +46,13 @@ public final class NettyReplicationSource {
         int maxMissedKeepalives() default 5;
     }
 
-    @Reference
-    private BootstrapSupport bootstrapSupport;
-
-    @Reference
-    private DOMDataBroker dataBroker;
-
-    @Reference
-    private ClusterSingletonServiceProvider singletonService;
-
     private Registration reg;
 
-    public NettyReplicationSource() {
-        // Visible for DI
-    }
-
     @Activate
-    void activate(final Config config) {
-        final Duration keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
+    public NettyReplicationSource(@Reference final BootstrapSupport bootstrapSupport,
+            @Reference final DOMDataBroker dataBroker,
+            @Reference final ClusterSingletonServiceProvider singletonService, final Config config) {
+        final var keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
 
         reg = createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listenPort(),
                 keepaliveInterval, config.maxMissedKeepalives());

@@ -21,6 +21,7 @@ module org.opendaylight.mdsal.dom.schema.osgi {
     requires org.slf4j;
 
     // Annotations
+    requires static com.github.spotbugs.annotations;
     requires static org.apache.karaf.features.core;
     requires static org.osgi.service.component.annotations;
 }

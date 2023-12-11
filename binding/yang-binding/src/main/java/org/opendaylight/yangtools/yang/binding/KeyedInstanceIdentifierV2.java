@@ -7,6 +7,7 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -38,6 +39,7 @@ final class KeyedInstanceIdentifierV2<T extends KeyAware<K> & DataObject, K exte
     }
 
     @Override
+    @SuppressFBWarnings(value = "SE_PREVENT_EXT_OBJ_OVERWRITE")
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         key = (K) in.readObject();
