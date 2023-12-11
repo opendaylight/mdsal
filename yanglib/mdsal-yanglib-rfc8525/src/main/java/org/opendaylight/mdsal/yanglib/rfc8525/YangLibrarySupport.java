@@ -46,7 +46,7 @@ public final class YangLibrarySupport implements YangLibSupport {
     @SuppressWarnings("deprecation")
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
     private final BindingIdentityCodec identityCodec;
-    private final EffectiveModelContext context;
+    private final EffectiveModelContext modelContext;
     private final BindingCodecTree codecTree;
 
     @Inject
@@ -57,10 +57,10 @@ public final class YangLibrarySupport implements YangLibSupport {
         final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder(parserFactory)
                 .add(YangLibrary.class)
                 .build();
-        context = snapshot.getEffectiveModelContext();
+        modelContext = snapshot.modelContext();
 
         codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
-            generator.generateTypeMapping(context), snapshot));
+            generator.generateTypeMapping(modelContext), snapshot));
 
         identityCodec = codecTree.getIdentityCodec();
         codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));
@@ -70,7 +70,7 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Override
     public MountPointContextFactory createMountPointContextFactory(final MountPointLabel label,
             final SchemaContextResolver resolver) {
-        return new MountPointContextFactoryImpl(label, resolver, context, identityCodec, codec, legacyCodec);
+        return new MountPointContextFactoryImpl(label, resolver, modelContext, identityCodec, codec, legacyCodec);
     }
 
     @Override

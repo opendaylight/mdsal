@@ -7,43 +7,45 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
-public class InMemoryDOMDataStoreFactoryTest {
+@ExtendWith(MockitoExtension.class)
+class InMemoryDOMDataStoreFactoryTest {
+    @Mock
+    private DOMSchemaService domSchemaService;
+    @Mock
+    private DOMDataTreeChangeListener domDataTreeChangeListener;
+    @Mock
+    private AutoCloseable autoCloseable;
 
     @Test
     public void basicTest() throws Exception {
         final String testStoreName = "TestStore";
-        final DOMSchemaService domSchemaService = mock(DOMSchemaService.class);
-        doReturn(null).when(domSchemaService).registerSchemaContextListener(any(EffectiveModelContextListener.class));
+        doReturn(null).when(domSchemaService).registerSchemaContextListener(any());
 
-        final InMemoryDOMDataStore inMemoryDOMDataStore =
-                InMemoryDOMDataStoreFactory.create(testStoreName, domSchemaService);
+        final var inMemoryDOMDataStore = InMemoryDOMDataStoreFactory.create(testStoreName, domSchemaService);
         assertNotNull(inMemoryDOMDataStore);
         assertEquals(testStoreName, inMemoryDOMDataStore.getIdentifier());
 
-        final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
-        doReturn("testListener").when(domDataTreeChangeListener).toString();
-        doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
         doNothing().when(domDataTreeChangeListener).onInitialData();
         inMemoryDOMDataStore.onModelContextUpdated(TestModel.createTestContext());
         inMemoryDOMDataStore.registerTreeChangeListener(YangInstanceIdentifier.of(), domDataTreeChangeListener);
 
-        final AutoCloseable autoCloseable = mock(AutoCloseable.class);
         doNothing().when(autoCloseable).close();
         inMemoryDOMDataStore.setCloseable(autoCloseable);
         inMemoryDOMDataStore.close();

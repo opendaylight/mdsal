@@ -34,8 +34,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextSource;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class CurrentAdapterSerializerTest {
@@ -126,12 +126,12 @@ public class CurrentAdapterSerializerTest {
         }
 
         @Override
-        public EffectiveModelContext getEffectiveModelContext() {
+        public EffectiveModelContext modelContext() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+        public ListenableFuture<? extends YangTextSource> getSource(final SourceIdentifier sourceIdentifier) {
             throw new UnsupportedOperationException();
         }
 

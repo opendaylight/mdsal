@@ -7,11 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.function.Consumer;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
+@NonNullByDefault
 public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchemaService.Extension> {
     /**
      * Type capture of a {@link DOMService.Extension} applicable to {@link DOMSchemaService} implementations.
@@ -34,5 +35,5 @@ public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchema
      * @return Listener registration handle
      * @throws NullPointerException if {@code listener} is {@code null}
      */
-    @NonNull Registration registerSchemaContextListener(EffectiveModelContextListener listener);
+    Registration registerSchemaContextListener(Consumer<EffectiveModelContext> listener);
 }
