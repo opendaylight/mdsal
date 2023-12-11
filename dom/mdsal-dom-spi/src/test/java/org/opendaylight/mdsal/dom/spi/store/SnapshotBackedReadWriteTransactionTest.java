@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
@@ -47,8 +47,8 @@ public class SnapshotBackedReadWriteTransactionTest {
 
     @Test
     public void basicTest() throws Exception {
-        final NormalizedNode testNode = mock(NormalizedNode.class);
-        final Optional<NormalizedNode> optional = Optional.of(testNode);
+        final var testNode = mock(ContainerNode.class);
+        final var optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
         doReturn(Optional.of(testNode)).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.of());
         assertTrue(snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.of()).get());
