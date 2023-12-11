@@ -62,7 +62,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -73,7 +72,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 @Component(service = DOMRpcRouter.class)
-public final class DOMRpcRouter extends AbstractRegistration implements EffectiveModelContextListener {
+public final class DOMRpcRouter extends AbstractRegistration {
     private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
@@ -106,7 +105,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
     @Inject
     @Activate
     public DOMRpcRouter(@Reference final DOMSchemaService schemaService) {
-        listenerRegistration = schemaService.registerSchemaContextListener(this);
+        listenerRegistration = schemaService.registerSchemaContextListener(this::onModelContextUpdated);
         LOG.info("DOM RPC/Action router started");
     }
 
@@ -209,8 +208,8 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
         }
     }
 
-    @Override
-    public synchronized void onModelContextUpdated(final EffectiveModelContext newModelContext) {
+
+    synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.setSchemaContext(newModelContext);
         routingTable = newTable;

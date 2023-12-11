@@ -8,15 +8,15 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
- * A {@link DOMSchemaService.Extension} exposing access to {@link YangTextSchemaSource}. Instances of this method should
+ * A {@link DOMSchemaService.Extension} exposing access to {@link YangTextSource}. Instances of this method should
  * be acquired from {@link DOMSchemaService}.
  */
 @Beta
 public interface DOMYangTextSourceProvider
-        extends DOMSchemaService.Extension, SchemaSourceProvider<YangTextSchemaSource> {
+        extends DOMSchemaService.Extension, SchemaSourceProvider<YangTextSource> {
 
 }
