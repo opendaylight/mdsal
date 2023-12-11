@@ -48,7 +48,7 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PingPongTransactionChainTest {
@@ -151,7 +151,7 @@ public class PingPongTransactionChainTest {
         tx.delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
         verify(rwTx).delete(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of());
 
-        final var data = mock(NormalizedNode.class);
+        final var data = mock(ContainerNode.class);
         doNothing().when(rwTx).merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
         tx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
         verify(rwTx).merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);

@@ -13,19 +13,18 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.util.ServiceLoader;
+import java.util.function.Consumer;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.util.ListenerRegistry;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.util.ObjectRegistry;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 
-public final class MockSchemaService implements DOMSchemaService, EffectiveModelContextProvider, AdapterContext {
+public final class MockSchemaService implements DOMSchemaService, AdapterContext {
     // Codec has some amount of non-trivial state, such as generated classes. Its operation should not be affected by
     // anything except BindingRuntimeContext, hence we should be able to reuse it.
     private static final LoadingCache<BindingRuntimeContext, BindingDOMCodecServices> CODEC_CACHE =
@@ -38,31 +37,25 @@ public final class MockSchemaService implements DOMSchemaService, EffectiveModel
                 }
             });
 
-    private EffectiveModelContext schemaContext;
+    private EffectiveModelContext modelContext;
     private CurrentAdapterSerializer serializer;
 
-    final ListenerRegistry<EffectiveModelContextListener> listeners = ListenerRegistry.create();
+    final ObjectRegistry<Consumer<EffectiveModelContext>> listeners = ObjectRegistry.createConcurrent("mock schema");
 
     @Override
     public synchronized EffectiveModelContext getGlobalContext() {
-        return schemaContext;
+        return modelContext;
     }
 
     @Override
-    public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
-            final EffectiveModelContextListener listener) {
+    public Registration registerSchemaContextListener(final Consumer<EffectiveModelContext> listener) {
         return listeners.register(listener);
-    }
-
-    @Override
-    public synchronized EffectiveModelContext getEffectiveModelContext() {
-        return schemaContext;
     }
 
     public synchronized void changeSchema(final BindingRuntimeContext newContext) {
         serializer = new CurrentAdapterSerializer(CODEC_CACHE.getUnchecked(newContext));
-        schemaContext = newContext.getEffectiveModelContext();
-        listeners.streamListeners().forEach(listener -> listener.onModelContextUpdated(schemaContext));
+        modelContext = newContext.modelContext();
+        listeners.streamObjects().forEach(listener -> listener.accept(modelContext));
     }
 
     @Override

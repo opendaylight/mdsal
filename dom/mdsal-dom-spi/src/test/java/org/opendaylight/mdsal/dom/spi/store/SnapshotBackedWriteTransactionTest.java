@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
@@ -39,8 +39,8 @@ public class SnapshotBackedWriteTransactionTest {
             mock(TransactionReadyPrototype.class);
     private static final DOMStoreThreePhaseCommitCohort DOM_STORE_THREE_PHASE_COMMIT_COHORT =
             mock(DOMStoreThreePhaseCommitCohort.class);
-    private static final NormalizedNode NORMALIZED_NODE = mock(NormalizedNode.class);
-    private static final Optional<NormalizedNode> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
+    private static final ContainerNode NORMALIZED_NODE = mock(ContainerNode.class);
+    private static final Optional<ContainerNode> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
     private static SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Before

@@ -8,8 +8,7 @@
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
 import java.util.ServiceLoader;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
@@ -26,18 +25,12 @@ abstract class AbstractYangLibraryTest {
     private static final BindingCodecTreeFactory CODEC_FACTORY = ServiceLoader.load(BindingCodecTreeFactory.class)
         .findFirst().orElseThrow();
 
-    static BindingRuntimeContext runtimeContext;
-    static BindingCodecTree codecTree;
+    static final BindingRuntimeContext RUNTIME_CONTEXT = BindingRuntimeHelpers.createRuntimeContext();
+    static final BindingCodecTree CODEC_TREE = CODEC_FACTORY.create(RUNTIME_CONTEXT);
 
     YangLibrarySupport yangLib;
 
-    @BeforeClass
-    public static void beforeClass() {
-        runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
-        codecTree = CODEC_FACTORY.create(runtimeContext);
-    }
-
-    @Before
+    @BeforeEach
     public void before() throws YangParserException {
         yangLib = new YangLibrarySupport(YANG_PARSER_FACTORY, BINDING_RUNTIME_GENERATOR, CODEC_FACTORY);
     }
