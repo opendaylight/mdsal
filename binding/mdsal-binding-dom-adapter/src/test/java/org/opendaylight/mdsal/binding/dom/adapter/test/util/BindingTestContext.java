@@ -99,10 +99,8 @@ public class BindingTestContext implements AutoCloseable {
 
     public void startNewDomDataBroker() {
         checkState(executor != null, "Executor needs to be set");
-        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
-            MoreExecutors.newDirectExecutorService());
-        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
-            MoreExecutors.newDirectExecutorService());
+        final var operStore = new InMemoryDOMDataStore("OPER", MoreExecutors.newDirectExecutorService());
+        final var configStore = new InMemoryDOMDataStore("CFG", MoreExecutors.newDirectExecutorService());
         newDatastores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(LogicalDatastoreType.OPERATIONAL, operStore)
                 .put(LogicalDatastoreType.CONFIGURATION, configStore)
@@ -110,8 +108,8 @@ public class BindingTestContext implements AutoCloseable {
 
         newDOMDataBroker = new SerializedDOMDataBroker(newDatastores, executor);
 
-        mockSchemaService.registerSchemaContextListener(configStore);
-        mockSchemaService.registerSchemaContextListener(operStore);
+        mockSchemaService.registerSchemaContextListener(configStore::onModelContextUpdated);
+        mockSchemaService.registerSchemaContextListener(operStore::onModelContextUpdated);
     }
 
     public void startBindingDataBroker() {
@@ -139,7 +137,7 @@ public class BindingTestContext implements AutoCloseable {
     }
 
     public EffectiveModelContext getContext() {
-        return mockSchemaService.getEffectiveModelContext();
+        return mockSchemaService.getGlobalContext();
     }
 
     public void start() {
@@ -167,8 +165,7 @@ public class BindingTestContext implements AutoCloseable {
 
     private void startDomBroker() {
         checkState(executor != null);
-        domRouter = new DOMRpcRouter();
-        mockSchemaService.registerSchemaContextListener(domRouter);
+        domRouter = new DOMRpcRouter(mockSchemaService);
     }
 
     public void startBindingNotificationBroker() {

@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
 
     private volatile AutoCloseable closeable;
 
+    @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
     protected AbstractDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores) {
         super(datastores);
 

@@ -8,14 +8,16 @@
 package org.opendaylight.mdsal.binding.runtime.api;
 
 import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextSource;
 
 @Beta
-public interface ModuleInfoSnapshot extends Immutable, EffectiveModelContextProvider,
-        SchemaSourceProvider<YangTextSchemaSource> {
+public interface ModuleInfoSnapshot extends Immutable, SchemaSourceProvider<YangTextSource> {
+
+    @NonNull EffectiveModelContext modelContext();
 
     <T> Class<T> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
 }
