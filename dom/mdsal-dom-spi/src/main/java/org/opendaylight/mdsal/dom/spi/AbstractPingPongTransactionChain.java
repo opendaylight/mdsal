@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.Map;
@@ -60,6 +61,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
     //  This VarHandle is used to manipulate the "ready" transaction. We perform only atomic get-and-set on it.
     private static final VarHandle READY_TX;
     @SuppressWarnings("unused")
+    @SuppressFBWarnings(value = "UUF_UNUSED_FIELD")
     private volatile PingPongTransaction readyTx;
 
     /*
@@ -68,6 +70,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
      * detect when a user is attempting to allocated multiple transactions concurrently.
      */
     private static final VarHandle LOCKED_TX;
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD")
     private volatile PingPongTransaction lockedTx;
 
     /*
@@ -75,6 +78,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
      * time. We perform only compare-and-swap on these.
      */
     private static final VarHandle INFLIGHT_TX;
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD")
     private volatile PingPongTransaction inflightTx;
 
     static {

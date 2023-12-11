@@ -52,26 +52,16 @@ public final class NettyReplicationSink {
         int maxMissedKeepalives() default 5;
     }
 
-    @Reference
-    private BootstrapSupport bootstrapSupport;
-
-    @Reference
-    private DOMDataBroker dataBroker;
-
-    @Reference
-    private ClusterSingletonServiceProvider singletonService;
-
     private Registration reg;
 
-    public NettyReplicationSink() {
-        // Visible for DI
-    }
-
     @Activate
-    void activate(final Config config) throws UnknownHostException {
-        final InetAddress sourceAddress = InetAddress.getByName(config.sourceHost());
-        final Duration reconnectDelay = Duration.ofMillis(config.reconnectDelayMillis());
-        final Duration keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
+    public NettyReplicationSink(@Reference final BootstrapSupport bootstrapSupport,
+            @Reference final DOMDataBroker dataBroker,
+            @Reference final ClusterSingletonServiceProvider singletonService, final Config config)
+                throws UnknownHostException {
+        final var sourceAddress = InetAddress.getByName(config.sourceHost());
+        final var reconnectDelay = Duration.ofMillis(config.reconnectDelayMillis());
+        final var keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
 
         reg = createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(), sourceAddress,
                 config.sourcePort(), reconnectDelay, keepaliveInterval, config.maxMissedKeepalives());

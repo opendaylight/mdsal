@@ -19,8 +19,8 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.util.ListenerRegistry;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.util.ObjectRegistry;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
@@ -41,7 +41,7 @@ public final class MockSchemaService implements DOMSchemaService, EffectiveModel
     private EffectiveModelContext schemaContext;
     private CurrentAdapterSerializer serializer;
 
-    final ListenerRegistry<EffectiveModelContextListener> listeners = ListenerRegistry.create();
+    final ObjectRegistry<EffectiveModelContextListener> listeners = ObjectRegistry.createConcurrent("mock schema");
 
     @Override
     public synchronized EffectiveModelContext getGlobalContext() {
@@ -49,8 +49,7 @@ public final class MockSchemaService implements DOMSchemaService, EffectiveModel
     }
 
     @Override
-    public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
-            final EffectiveModelContextListener listener) {
+    public Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
         return listeners.register(listener);
     }
 
@@ -62,7 +61,7 @@ public final class MockSchemaService implements DOMSchemaService, EffectiveModel
     public synchronized void changeSchema(final BindingRuntimeContext newContext) {
         serializer = new CurrentAdapterSerializer(CODEC_CACHE.getUnchecked(newContext));
         schemaContext = newContext.getEffectiveModelContext();
-        listeners.streamListeners().forEach(listener -> listener.onModelContextUpdated(schemaContext));
+        listeners.streamObjects().forEach(listener -> listener.onModelContextUpdated(schemaContext));
     }
 
     @Override

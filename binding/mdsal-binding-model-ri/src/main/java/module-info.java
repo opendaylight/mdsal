@@ -17,4 +17,5 @@ module org.opendaylight.mdsal.binding.model.ri {
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
+    requires static com.github.spotbugs.annotations;
 }
