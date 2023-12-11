@@ -10,8 +10,6 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -21,45 +19,38 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.Module;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.Module.ConformanceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.ModuleBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.ModuleKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 public class LegacyYangLibraryFormatTest extends AbstractYangLibraryTest {
     @Test
     public void testLegacyFormat() {
-        final var legacyCodec = codecTree.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
+        final var legacyCodec = CODEC_TREE.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
 
-        final Optional<ContainerNode> legacyContent = yangLib.newContentBuilder()
-            .defaultContext(runtimeContext.getEffectiveModelContext())
+        final var legacyContent = yangLib.newContentBuilder()
+            .defaultContext(RUNTIME_CONTEXT.modelContext())
             .includeLegacy()
             .formatYangLibraryLegacyContent();
 
         assertTrue(legacyContent.isPresent());
 
-        final ModulesState modulesState = legacyCodec.deserialize(legacyContent.orElseThrow());
-
-        assertEquals(4, modulesState.nonnullModule().size());
-        assertEquals(createControlModules(), modulesState.getModule());
-    }
-
-    private static Map<ModuleKey, Module> createControlModules() {
-        return BindingMap.of(
+        final var modulesState = legacyCodec.deserialize(legacyContent.orElseThrow());
+        assertEquals(BindingMap.of(
             createModule("ietf-yang-library", "urn:ietf:params:xml:ns:yang:ietf-yang-library", "2019-01-04"),
             createModule("ietf-inet-types", "urn:ietf:params:xml:ns:yang:ietf-inet-types", "2013-07-15"),
             createModule("ietf-datastores", "urn:ietf:params:xml:ns:yang:ietf-datastores", "2018-02-14"),
-            createModule("ietf-yang-types", "urn:ietf:params:xml:ns:yang:ietf-yang-types", "2013-07-15"));
+            createModule("ietf-yang-types", "urn:ietf:params:xml:ns:yang:ietf-yang-types", "2013-07-15")),
+            modulesState.getModule());
     }
 
     private static Module createModule(final String name, final String namespace, final String revision) {
         return new ModuleBuilder()
-                .setName(new YangIdentifier(name))
-                .setNamespace(new Uri(namespace))
-                .setRevision(new Revision(new RevisionIdentifier(revision)))
-                .setConformanceType(ConformanceType.Implement)
-                .setFeature(Set.of())
-                .build();
+            .setName(new YangIdentifier(name))
+            .setNamespace(new Uri(namespace))
+            .setRevision(new Revision(new RevisionIdentifier(revision)))
+            .setConformanceType(ConformanceType.Implement)
+            .setFeature(Set.of())
+            .build();
     }
 }

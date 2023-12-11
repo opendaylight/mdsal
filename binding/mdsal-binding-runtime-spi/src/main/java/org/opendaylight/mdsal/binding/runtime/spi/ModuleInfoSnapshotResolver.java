@@ -37,12 +37,11 @@ import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SubmoduleEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
@@ -167,7 +166,7 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
     public synchronized @NonNull ModuleInfoSnapshot takeSnapshot() {
         final var effectiveModel = ctxResolver.getEffectiveModelContext().orElseThrow();
         final var local = currentSnapshot;
-        if (local != null && local.getEffectiveModelContext().equals(effectiveModel)) {
+        if (local != null && local.modelContext().equals(effectiveModel)) {
             return local;
         }
 
@@ -175,10 +174,10 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
     }
 
     @Holding("this")
-    private @NonNull ModuleInfoSnapshot updateSnapshot(final EffectiveModelContext effectiveModel) {
+    private @NonNull ModuleInfoSnapshot updateSnapshot(final EffectiveModelContext modelContext) {
         // Alright, now let's find out which sources got captured
         final var sources = new HashSet<SourceIdentifier>();
-        for (var entry : effectiveModel.getModuleStatements().entrySet()) {
+        for (var entry : modelContext.getModuleStatements().entrySet()) {
             final var revision = entry.getKey().getRevision().orElse(null);
             final var module = entry.getValue();
 
@@ -202,7 +201,7 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
                 infoClass.getClassLoader());
         }
 
-        final var next = new DefaultModuleInfoSnapshot(effectiveModel, moduleInfos, classLoaders);
+        final var next = new DefaultModuleInfoSnapshot(modelContext, moduleInfos, classLoaders);
         currentSnapshot = next;
         return next;
     }
@@ -223,19 +222,19 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
         }
     }
 
-    static @NonNull YangTextSchemaSource toYangTextSource(final YangModuleInfo moduleInfo) {
-        return YangTextSchemaSource.delegateForCharSource(sourceIdentifierFrom(moduleInfo),
+    static @NonNull YangTextSource toYangTextSource(final YangModuleInfo moduleInfo) {
+        return YangTextSource.delegateForCharSource(sourceIdentifierFrom(moduleInfo),
             moduleInfo.getYangTextCharSource());
     }
 
-    private static @NonNull YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
+    private static @NonNull YangTextSource toYangTextSource(final SourceIdentifier identifier,
             final YangModuleInfo moduleInfo) {
-        return YangTextSchemaSource.delegateForCharSource(identifier, moduleInfo.getYangTextCharSource());
+        return YangTextSource.delegateForCharSource(identifier, moduleInfo.getYangTextCharSource());
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
         final var name = moduleInfo.getName();
-        return new SourceIdentifier(name.getLocalName(), name.getRevision().map(Revision::toString).orElse(null));
+        return new SourceIdentifier(name.getLocalName(), name.getRevision().orElse(null));
     }
 
     private static @NonNull List<@NonNull YangModuleInfo> flatDependencies(final YangModuleInfo moduleInfo) {

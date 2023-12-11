@@ -48,10 +48,6 @@ public final class NettyReplicationSource {
 
     private Registration reg;
 
-    public NettyReplicationSource() {
-        // Visible for DI
-    }
-
     @Activate
     public NettyReplicationSource(@Reference final BootstrapSupport bootstrapSupport,
             @Reference final DOMDataBroker dataBroker,
