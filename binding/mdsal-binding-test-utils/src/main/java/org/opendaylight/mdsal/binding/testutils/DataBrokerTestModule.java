@@ -9,13 +9,14 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
+import java.util.function.Supplier;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 @Beta
 public class DataBrokerTestModule {
@@ -65,7 +66,7 @@ public class DataBrokerTestModule {
         return dataBrokerTest.getDataBrokerTestCustomizer().getSchemaService();
     }
 
-    public EffectiveModelContextProvider getSchemaContextProvider() {
+    public Supplier<EffectiveModelContext> getModelContextSupplier() {
         return dataBrokerTest.getDataBrokerTestCustomizer().getSchemaService()::getGlobalContext;
     }
 }

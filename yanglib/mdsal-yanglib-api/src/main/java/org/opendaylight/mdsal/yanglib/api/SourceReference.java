@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.AbstractSimpleIdentifiable;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 
 /**
  * A reference to a YANG source, potentially containing a location hint.
