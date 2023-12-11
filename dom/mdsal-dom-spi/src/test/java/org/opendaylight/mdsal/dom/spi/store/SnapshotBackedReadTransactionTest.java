@@ -21,13 +21,12 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.util.concurrent.Futures;
-import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
 public class SnapshotBackedReadTransactionTest {
@@ -39,14 +38,14 @@ public class SnapshotBackedReadTransactionTest {
 
     @Test
     public void basicTest() throws Exception {
-        final NormalizedNode testNode = mock(NormalizedNode.class);
-        final Optional<NormalizedNode> optional = Optional.of(testNode);
+        final var testNode = mock(ContainerNode.class);
+        final var optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
         doReturn(Optional.of(testNode)).when(DATA_TREE_SNAPSHOT).readNode(YangInstanceIdentifier.of());
         assertTrue(snapshotBackedReadTransaction.exists(YangInstanceIdentifier.of()).get());
 
         assertEquals(optional, snapshotBackedReadTransaction.read(YangInstanceIdentifier.of()).get());
-        final Field stableSnapshotField = SnapshotBackedReadTransaction.class.getDeclaredField("stableSnapshot");
+        final var stableSnapshotField = SnapshotBackedReadTransaction.class.getDeclaredField("stableSnapshot");
         stableSnapshotField.setAccessible(true);
 
         DataTreeSnapshot stableSnapshot = (DataTreeSnapshot) stableSnapshotField.get(snapshotBackedReadTransaction);

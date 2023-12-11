@@ -12,32 +12,33 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
  * {@link DOMSchemaService} (and {@link DOMYangTextSourceProvider}) implementations backed by a
- * {@link EffectiveModelContextProvider} (and {@link SchemaSourceProvider}) which are known to be fixed and never change
- * schemas.
+ * {@code Supplier<EffectiveModelContext>} (and {@link SchemaSourceProvider}) which are known to be fixed and never
+ * change schemas.
  *
  * @author Michael Vorburger.ch
  */
 @Beta
-public class FixedDOMSchemaService extends AbstractDOMSchemaService {
+@NonNullByDefault
+public sealed class FixedDOMSchemaService implements DOMSchemaService {
     private static final class WithYangTextSources extends FixedDOMSchemaService implements DOMYangTextSourceProvider {
-        private final @NonNull SchemaSourceProvider<YangTextSchemaSource> schemaSourceProvider;
+        private final SchemaSourceProvider<YangTextSource> schemaSourceProvider;
 
-        WithYangTextSources(final EffectiveModelContextProvider schemaContextProvider,
-                final SchemaSourceProvider<YangTextSchemaSource> schemaSourceProvider) {
-            super(schemaContextProvider);
+        WithYangTextSources(final Supplier<EffectiveModelContext> modelContextSupplier,
+                final SchemaSourceProvider<YangTextSource> schemaSourceProvider) {
+            super(modelContextSupplier);
             this.schemaSourceProvider = requireNonNull(schemaSourceProvider);
         }
 
@@ -47,39 +48,39 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
         }
 
         @Override
-        public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+        public ListenableFuture<? extends YangTextSource> getSource(final SourceIdentifier sourceIdentifier) {
             return schemaSourceProvider.getSource(sourceIdentifier);
         }
     }
 
-    private final @NonNull EffectiveModelContextProvider schemaContextProvider;
+    private final Supplier<EffectiveModelContext> modelContextSupplier;
 
-    private FixedDOMSchemaService(final EffectiveModelContextProvider schemaContextProvider) {
-        this.schemaContextProvider = requireNonNull(schemaContextProvider);
+    private FixedDOMSchemaService(final Supplier<EffectiveModelContext> modelContextSupplier) {
+        this.modelContextSupplier = requireNonNull(modelContextSupplier);
     }
 
-    public static @NonNull DOMSchemaService of(final EffectiveModelContext effectiveModel) {
+    public static DOMSchemaService of(final EffectiveModelContext effectiveModel) {
         final var checked = requireNonNull(effectiveModel);
-        return of(() -> checked);
+        return new FixedDOMSchemaService(() -> checked);
     }
 
-    public static @NonNull DOMSchemaService of(final EffectiveModelContextProvider schemaContextProvider) {
-        return new FixedDOMSchemaService(schemaContextProvider);
+    public static DOMSchemaService of(final Supplier<EffectiveModelContext> modelContextSupplier) {
+        return new FixedDOMSchemaService(modelContextSupplier);
     }
 
-    public static @NonNull DOMSchemaService of(final EffectiveModelContextProvider schemaContextProvider,
-            final SchemaSourceProvider<YangTextSchemaSource> yangTextSourceProvider) {
-        return new WithYangTextSources(schemaContextProvider, requireNonNull(yangTextSourceProvider));
-    }
-
-    @Override
-    public final @NonNull EffectiveModelContext getGlobalContext() {
-        return schemaContextProvider.getEffectiveModelContext();
+    public static DOMSchemaService of(final Supplier<EffectiveModelContext> modelContextSupplier,
+            final SchemaSourceProvider<YangTextSource> yangTextSourceProvider) {
+        return new WithYangTextSources(modelContextSupplier, requireNonNull(yangTextSourceProvider));
     }
 
     @Override
-    public final Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
-        listener.onModelContextUpdated(getGlobalContext());
+    public final EffectiveModelContext getGlobalContext() {
+        return modelContextSupplier.get();
+    }
+
+    @Override
+    public final Registration registerSchemaContextListener(final Consumer<EffectiveModelContext> listener) {
+        listener.accept(getGlobalContext());
         return () -> { };
     }
 }

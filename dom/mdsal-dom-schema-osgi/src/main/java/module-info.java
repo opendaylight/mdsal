@@ -11,7 +11,7 @@ module org.opendaylight.mdsal.dom.schema.osgi {
     requires transitive com.google.common;
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
     requires org.opendaylight.mdsal.binding.runtime.spi;
-    requires org.opendaylight.mdsal.dom.spi;
+    requires org.opendaylight.mdsal.dom.api;
     requires org.opendaylight.yangtools.yang.binding;
     requires org.opendaylight.yangtools.yang.model.api;
     requires org.opendaylight.yangtools.yang.parser.api;

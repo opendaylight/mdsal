@@ -13,17 +13,17 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
-import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -39,20 +39,19 @@ import org.slf4j.LoggerFactory;
  * OSGi Service Registry-backed implementation of {@link DOMSchemaService}.
  */
 @Component(service = DOMSchemaService.class, immediate = true)
-public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYangTextSources {
+public final class OSGiDOMSchemaService implements DOMSchemaService, DOMYangTextSourceProvider {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
-
-    private final List<EffectiveModelContextListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<Consumer<EffectiveModelContext>> listeners = new CopyOnWriteArrayList<>();
     private final AtomicReference<ModuleInfoSnapshot> currentSnapshot = new AtomicReference<>();
-    private final ComponentFactory<EffectiveModelContextImpl> listenerFactory;
+    private final ComponentFactory<ModelContextListener> listenerFactory;
 
     private boolean deactivated;
 
     @Activate
     public OSGiDOMSchemaService(
-            @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
-            final ComponentFactory<EffectiveModelContextImpl> listenerFactory) {
+            @Reference(target = "(component.factory=" + ModelContextListener.FACTORY_NAME + ")")
+            final ComponentFactory<ModelContextListener> listenerFactory) {
         this.listenerFactory = requireNonNull(listenerFactory);
         LOG.info("DOM Schema services activated");
     }
@@ -67,7 +66,7 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     void bindSnapshot(final OSGiModuleInfoSnapshot newContext) {
         LOG.info("Updating context to generation {}", newContext.getGeneration());
         final var snapshot = newContext.getService();
-        final var modelContext = snapshot.getEffectiveModelContext();
+        final var modelContext = snapshot.modelContext();
         final var previous = currentSnapshot.getAndSet(snapshot);
         LOG.debug("Snapshot updated from {} to {}", previous, snapshot);
 
@@ -83,25 +82,25 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY)
-    void addListener(final EffectiveModelContextListener listener) {
+    void addListener(final Consumer<EffectiveModelContext> listener) {
         LOG.trace("Adding listener {}", listener);
         listeners.add(listener);
-        listener.onModelContextUpdated(getGlobalContext());
+        listener.accept(getGlobalContext());
     }
 
-    void removeListener(final EffectiveModelContextListener listener) {
+    void removeListener(final Consumer<EffectiveModelContext> listener) {
         LOG.trace("Removing listener {}", listener);
         listeners.remove(listener);
     }
 
     @Override
     public @NonNull EffectiveModelContext getGlobalContext() {
-        return currentSnapshot.get().getEffectiveModelContext();
+        return currentSnapshot.get().modelContext();
     }
 
     @Override
-    public Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
-        final var reg = listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
+    public Registration registerSchemaContextListener(final Consumer<EffectiveModelContext> listener) {
+        final var reg = listenerFactory.newInstance(ModelContextListener.props(listener));
         return new AbstractRegistration() {
             @Override
             protected void removeRegistration() {
@@ -111,15 +110,15 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     }
 
     @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+    public ListenableFuture<? extends YangTextSource> getSource(final SourceIdentifier sourceIdentifier) {
         return currentSnapshot.get().getSource(sourceIdentifier);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
     private static void notifyListener(final @NonNull EffectiveModelContext modelContext,
-            final EffectiveModelContextListener listener) {
+            final Consumer<EffectiveModelContext> listener) {
         try {
-            listener.onModelContextUpdated(modelContext);
+            listener.accept(modelContext);
         } catch (RuntimeException e) {
             LOG.warn("Failed to notify listener {}", listener, e);
         }

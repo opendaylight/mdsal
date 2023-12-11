@@ -147,8 +147,8 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         // AugmentationResult already points to parent path
         final var parentPath = normalized instanceof AugmentationResult ? path : path.getParent();
         if (parentPath != null && !parentPath.isEmpty()) {
-            final var parentNode = ImmutableNodes.fromInstanceId(
-                serializer.getRuntimeContext().getEffectiveModelContext(), parentPath);
+            final var parentNode = ImmutableNodes.fromInstanceId(serializer.getRuntimeContext().modelContext(),
+                parentPath);
             getDelegate().merge(store, YangInstanceIdentifier.of(parentNode.name()), parentNode);
         }
     }
