@@ -55,8 +55,8 @@ final class BindingRuntimeTypesFactory implements Mutable {
     static @NonNull BindingRuntimeTypes createTypes(final @NonNull EffectiveModelContext context) {
         final var moduleGens = new GeneratorReactor(context).execute(TypeBuilderFactory.runtime());
 
-        final Stopwatch sw = Stopwatch.createStarted();
-        final BindingRuntimeTypesFactory factory = new BindingRuntimeTypesFactory();
+        final var sw = Stopwatch.createStarted();
+        final var factory = new BindingRuntimeTypesFactory();
         factory.indexModules(moduleGens);
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
@@ -69,14 +69,12 @@ final class BindingRuntimeTypesFactory implements Mutable {
             final var modGen = entry.getValue();
 
             // index the module's runtime type
-            safePut(modules, "modules", entry.getKey(), modGen.runtimeType().orElseThrow());
+            safePut(modules, "modules", entry.getKey(), modGen.runtimeType());
 
             // index module's identities and RPC input/outputs
             for (var gen : modGen) {
                 if (gen instanceof IdentityGenerator idGen) {
-                    idGen.runtimeType().ifPresent(identity -> {
-                        safePut(identities, "identities", identity.statement().argument(), identity);
-                    });
+                    safePut(identities, "identities", idGen.statement().argument(), idGen.runtimeType());
                 }
             }
         }
@@ -85,9 +83,9 @@ final class BindingRuntimeTypesFactory implements Mutable {
     }
 
     private void indexRuntimeTypes(final Iterable<? extends Generator> generators) {
-        for (Generator gen : generators) {
+        for (var gen : generators) {
             if (gen instanceof AbstractExplicitGenerator<?, ?> explicitGen && gen.generatedType().isPresent()) {
-                final var type = explicitGen.runtimeType().orElseThrow();
+                final var type = explicitGen.runtimeType();
                 if (type.javaType() instanceof GeneratedType genType) {
                     final var name = genType.getIdentifier();
                     final var prev = allTypes.put(name, type);
