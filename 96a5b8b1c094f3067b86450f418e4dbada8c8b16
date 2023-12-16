@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "484c62e0_02d4465c",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:04:51Z",
+      "side": 1,
+      "message": "retain local variable type inference",
+      "range": {
+        "startLine": 676,
+        "startChar": 14,
+        "endLine": 676,
+        "endChar": 41
+      },
+      "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61ed9eed_3ec18ca7",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 781,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:04:51Z",
+      "side": 1,
+      "message": "var all around here, and below",
+      "range": {
+        "startLine": 781,
+        "startChar": 18,
+        "endLine": 781,
+        "endChar": 45
+      },
+      "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fce337e_f03ae2e0",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:04:51Z",
+      "side": 1,
+      "message": "extra space here and below",
+      "range": {
+        "startLine": 787,
+        "startChar": 19,
+        "endLine": 787,
+        "endChar": 20
+      },
+      "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cba4e9e_19f8c720",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 789,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:04:51Z",
+      "side": 1,
+      "message": "this seems inaccurate",
+      "range": {
+        "startLine": 789,
+        "startChar": 45,
+        "endLine": 789,
+        "endChar": 67
+      },
+      "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
