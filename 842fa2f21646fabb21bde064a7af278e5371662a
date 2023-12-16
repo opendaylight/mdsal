@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "79048ac6_647ad0e6",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ContainerGenerator.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:45:11Z",
+      "side": 1,
+      "message": "this is an incorrect check",
+      "range": {
+        "startLine": 69,
+        "startChar": 41,
+        "endLine": 69,
+        "endChar": 91
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "48055a3f_fb730287",
         "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ContainerGenerator.java",
         "patchSetId": 19
@@ -65,6 +88,29 @@
         "startChar": 10,
         "endLine": 355,
         "endChar": 11
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28d7812b_17960a43",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal44/mdsal-44.yang",
+        "patchSetId": 19
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:45:11Z",
+      "side": 1,
+      "message": "add\n\n    description \"foo\";\n\nand watch this patch explode",
+      "range": {
+        "startLine": 6,
+        "startChar": 8,
+        "endLine": 6,
+        "endChar": 21
       },
       "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
