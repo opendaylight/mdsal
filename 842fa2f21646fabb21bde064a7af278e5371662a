@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48055a3f_fb730287",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ContainerGenerator.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "Parent",
+      "range": {
+        "startLine": 75,
+        "startChar": 27,
+        "endLine": 75,
+        "endChar": 33
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03c89628_e9f80def",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 19
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "this should be guarded with targetType instanceof BoxableType",
+      "range": {
+        "startLine": 112,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 38
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ecb7c17_b2fa21b6",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 19
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "missing space",
+      "range": {
+        "startLine": 355,
+        "startChar": 10,
+        "endLine": 355,
+        "endChar": 11
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c86f36c_99d48471",
+        "filename": "binding/mdsal-binding-model-api/src/main/java/org/opendaylight/mdsal/binding/model/api/BoxableType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "this property should not exist -- see the comment about relationship with GeneratedType",
+      "range": {
+        "startLine": 26,
+        "startChar": 20,
+        "endLine": 26,
+        "endChar": 43
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2109adc1_110b947a",
+        "filename": "binding/mdsal-binding-model-api/src/main/java/org/opendaylight/mdsal/binding/model/api/GeneratedType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "other way around: BoxableType should be called BoxableGeneratedType and it should be a subtype of GeneratedType",
+      "range": {
+        "startLine": 32,
+        "startChar": 61,
+        "endLine": 32,
+        "endChar": 72
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "191c317c_7b203664",
+        "filename": "binding/mdsal-binding-model-api/src/main/java/org/opendaylight/mdsal/binding/model/api/type/builder/GeneratedTypeBuilder.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "these should be combined into a single method, setBoxableParent()",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 32
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12f1699e_359d4259",
+        "filename": "binding/mdsal-binding-model-ri/src/main/java/org/opendaylight/mdsal/binding/model/ri/generated/type/builder/CodegenGeneratedTypeBuilder.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T16:41:38Z",
+      "side": 1,
+      "message": "these should be in a dedicated subclass",
+      "range": {
+        "startLine": 69,
+        "startChar": 8,
+        "endLine": 69,
+        "endChar": 46
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
