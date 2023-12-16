@@ -19,10 +19,7 @@ import org.opendaylight.mdsal.binding.generator.impl.reactor.AbstractExplicitGen
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.IdentityGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.reactor.InputGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.reactor.OutputGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.reactor.RpcGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultBindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -30,9 +27,7 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.OutputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -50,10 +45,6 @@ final class BindingRuntimeTypesFactory implements Mutable {
     private final Map<QName, IdentityRuntimeType> identities = new HashMap<>();
     // All known types, indexed by their JavaTypeName
     private final Map<JavaTypeName, RuntimeType> allTypes = new HashMap<>();
-    // All RpcOutputs, indexed by their RPC's QName
-    private final Map<QName, OutputRuntimeType> rpcOutputs = new HashMap<>();
-    // All RpcInputs, indexed by their RPC's QName
-    private final Map<QName, InputRuntimeType> rpcInputs = new HashMap<>();
     // All known 'choice's to their corresponding cases
     private final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases = HashMultimap.create();
 
@@ -70,7 +61,7 @@ final class BindingRuntimeTypesFactory implements Mutable {
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
         return new DefaultBindingRuntimeTypes(context, factory.modules, factory.allTypes, factory.identities,
-            factory.rpcInputs, factory.rpcOutputs, factory.choiceToCases);
+            factory.choiceToCases);
     }
 
     private void indexModules(final Map<QNameModule, ModuleGenerator> moduleGens) {
@@ -84,17 +75,6 @@ final class BindingRuntimeTypesFactory implements Mutable {
             for (var gen : modGen) {
                 if (gen instanceof IdentityGenerator idGen) {
                     safePut(identities, "identities", idGen.statement().argument(), idGen.runtimeType());
-                }
-                // FIXME: do not collect these once we they generate a proper RuntimeType
-                if (gen instanceof RpcGenerator rpcGen) {
-                    final var rpcName = rpcGen.statement().argument();
-                    for (var subgen : gen) {
-                        if (subgen instanceof InputGenerator inputGen) {
-                            rpcInputs.put(rpcName, inputGen.runtimeType());
-                        } else if (subgen instanceof OutputGenerator outputGen) {
-                            rpcOutputs.put(rpcName, outputGen.runtimeType());
-                        }
-                    }
                 }
             }
         }
