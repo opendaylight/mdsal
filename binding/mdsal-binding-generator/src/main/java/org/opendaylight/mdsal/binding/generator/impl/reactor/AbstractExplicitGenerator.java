@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.VerifyException;
-import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
@@ -81,12 +80,12 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     }
 
     /**
-     * Return the {@link RuntimeType} associated with this object, if applicable. This represents the
-     * externally-accessible view of this object when considered outside the schema tree or binding tree hierarchy.
+     * Return the {@link RuntimeType} associated with this object. This represents the externally-accessible view of
+     * this object when considered outside the schema tree or binding tree hierarchy.
      *
-     * @return Associated run-time type, or empty
+     * @return Associated run-time type
      */
-    public final Optional<R> runtimeType() {
+    public final @NonNull R runtimeType() {
         if (!runtimeTypeInitialized) {
             final var type = runtimeJavaType();
             if (type != null) {
@@ -94,7 +93,12 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
             }
             runtimeTypeInitialized = true;
         }
-        return Optional.ofNullable(runtimeType);
+
+        final var local = runtimeType;
+        if (local == null) {
+            throw new VerifyException(this + " does not have a run-time type");
+        }
+        return local;
     }
 
     /**
@@ -268,7 +272,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     }
 
     final @NonNull QName getQName() {
-        final Object arg = statement.argument();
+        final var arg = statement.argument();
         if (arg instanceof QName qname) {
             return qname;
         }
@@ -277,7 +281,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
 
     @NonNull AbstractQName localName() {
         // FIXME: this should be done in a nicer way
-        final Object arg = statement.argument();
+        final var arg = statement.argument();
         if (arg instanceof AbstractQName aqn) {
             return aqn;
         }
@@ -311,7 +315,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
             return;
         }
 
-        final Type returnType = methodReturnType(builderFactory);
+        final var returnType = methodReturnType(builderFactory);
         constructGetter(builder, returnType);
         constructRequire(builder, returnType);
     }
@@ -322,7 +326,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
 
     final MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder,
             final Type returnType, final String methodName) {
-        final MethodSignatureBuilder getMethod = builder.addMethod(methodName).setReturnType(returnType);
+        final var getMethod = builder.addMethod(methodName).setReturnType(returnType);
 
         annotateDeprecatedIfNecessary(getMethod);
 
