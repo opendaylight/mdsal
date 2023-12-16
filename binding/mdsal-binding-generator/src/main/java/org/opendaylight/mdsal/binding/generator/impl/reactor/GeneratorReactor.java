@@ -79,10 +79,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // AugmentGenerators without having forward references.
         // FIXME: migrate to new ModuleDependencySort when it is available, which streamline things here
         children = ModuleDependencySort.sort(context.getModules()).stream()
-            .map(module -> {
-                verify(module instanceof ModuleEffectiveStatement, "Unexpected module %s", module);
-                return new ModuleGenerator((ModuleEffectiveStatement) module);
-            })
+            .map(module -> new ModuleGenerator(module.asEffectiveStatement()))
             .collect(Collectors.toUnmodifiableList());
         generators = Maps.uniqueIndex(children, gen -> gen.statement().localQNameModule());
     }
