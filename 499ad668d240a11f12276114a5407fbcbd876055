@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c27df304_434a5d13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T15:31:56Z",
+      "side": 1,
+      "message": "Also needs to be adjusted to cope with changes in MDSAL-669 patch",
+      "revId": "499ad668d240a11f12276114a5407fbcbd876055",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}

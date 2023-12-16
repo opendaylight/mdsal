@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09c74f3a_8d03dd95",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 756,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-16T15:31:56Z",
+      "side": 0,
+      "message": "this needs to be turned into an assertion -- the only case when NOOP_CODEC is allowed is a naked \u0027type empty\u0027.",
+      "range": {
+        "startLine": 755,
+        "startChar": 18,
+        "endLine": 756,
+        "endChar": 51
+      },
+      "revId": "45a1e9e2fe63ff084d60afd3a768b9ae998e02f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
