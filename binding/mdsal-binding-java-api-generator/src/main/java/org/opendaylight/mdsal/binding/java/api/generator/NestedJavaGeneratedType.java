@@ -7,16 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator;
 
-import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -69,19 +67,17 @@ final class NestedJavaGeneratedType extends AbstractJavaGeneratedType {
     @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION",
             justification = "SpotBugs confusion @Nullable vs @NonNullByDefault")
     private @Nullable List<String> findDescandantPath(final JavaTypeName type) {
-        Optional<JavaTypeName> optEnclosing = type.immediatelyEnclosingClass();
-        verify(optEnclosing.isPresent());
+        var enclosing = verifyNotNull(type.immediatelyEnclosingClass());
 
-        final Deque<String> queue = new ArrayDeque<>();
+        final var queue = new ArrayDeque<String>();
         queue.addFirst(type.simpleName());
-        while (optEnclosing.isPresent()) {
-            final JavaTypeName enclosing = optEnclosing.orElseThrow();
+        while (enclosing != null) {
             if (enclosing.equals(getName())) {
                 return ImmutableList.copyOf(queue);
             }
 
             queue.addFirst(enclosing.simpleName());
-            optEnclosing = enclosing.immediatelyEnclosingClass();
+            enclosing = enclosing.immediatelyEnclosingClass();
         }
 
         return null;

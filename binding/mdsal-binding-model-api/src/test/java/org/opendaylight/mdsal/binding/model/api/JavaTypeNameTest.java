@@ -7,24 +7,24 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
-import static com.google.common.collect.ImmutableList.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static java.util.List.of;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class JavaTypeNameTest {
-
+class JavaTypeNameTest {
     @Test
-    public void testOperations() {
+    void testOperations() {
         final JavaTypeName byteName = JavaTypeName.create(byte.class);
         assertEquals("", byteName.packageName());
         assertEquals("byte", byteName.simpleName());
         assertEquals("byte", byteName.toString());
-        assertEquals(Optional.empty(), byteName.immediatelyEnclosingClass());
+        assertNull(byteName.immediatelyEnclosingClass());
         assertSame(byteName, byteName.topLevelClass());
         assertEquals(of("byte"), byteName.localNameComponents());
         assertEquals("byte", byteName.localName());
@@ -33,7 +33,7 @@ public class JavaTypeNameTest {
         assertEquals("", charName.packageName());
         assertEquals("char", charName.simpleName());
         assertEquals("char", charName.toString());
-        assertEquals(Optional.empty(), charName.immediatelyEnclosingClass());
+        assertNull(charName.immediatelyEnclosingClass());
         assertSame(charName, charName.topLevelClass());
         assertEquals(of("char"), charName.localNameComponents());
         assertEquals("char", charName.localName());
@@ -42,7 +42,7 @@ public class JavaTypeNameTest {
         assertEquals("java.lang", threadName.packageName());
         assertEquals("Thread", threadName.simpleName());
         assertEquals("java.lang.Thread", threadName.toString());
-        assertEquals(Optional.empty(), threadName.immediatelyEnclosingClass());
+        assertNull(threadName.immediatelyEnclosingClass());
         assertTrue(threadName.canCreateEnclosed("Foo"));
         assertFalse(threadName.canCreateEnclosed("Thread"));
         assertEquals(threadName, JavaTypeName.create("java.lang", "Thread"));
@@ -54,14 +54,14 @@ public class JavaTypeNameTest {
         assertEquals("java.lang", stringName.packageName());
         assertEquals("String", stringName.simpleName());
         assertEquals("java.lang.String", stringName.toString());
-        assertEquals(Optional.empty(), stringName.immediatelyEnclosingClass());
+        assertNull(stringName.immediatelyEnclosingClass());
         assertEquals(stringName, JavaTypeName.create("java.lang", "String"));
 
         final JavaTypeName enclosedName = threadName.createEnclosed("Foo");
         assertEquals("java.lang", enclosedName.packageName());
         assertEquals("Foo", enclosedName.simpleName());
         assertEquals("java.lang.Thread.Foo", enclosedName.toString());
-        assertEquals(Optional.of(threadName), enclosedName.immediatelyEnclosingClass());
+        assertEquals(threadName, enclosedName.immediatelyEnclosingClass());
         assertSame(threadName, enclosedName.topLevelClass());
         assertEquals(of("Thread", "Foo"), enclosedName.localNameComponents());
         assertEquals("Thread.Foo", enclosedName.localName());
@@ -70,7 +70,7 @@ public class JavaTypeNameTest {
         assertEquals("java.lang", uehName.packageName());
         assertEquals("UncaughtExceptionHandler", uehName.simpleName());
         assertEquals("java.lang.Thread.UncaughtExceptionHandler", uehName.toString());
-        assertEquals(Optional.of(threadName), uehName.immediatelyEnclosingClass());
+        assertEquals(threadName, uehName.immediatelyEnclosingClass());
         assertTrue(uehName.canCreateEnclosed("Foo"));
         assertFalse(uehName.canCreateEnclosed("Thread"));
         assertFalse(uehName.canCreateEnclosed("UncaughtExceptionHandler"));
@@ -79,7 +79,7 @@ public class JavaTypeNameTest {
         assertEquals("java.lang", siblingName.packageName());
         assertEquals("Foo", siblingName.simpleName());
         assertEquals("java.lang.Thread.Foo", siblingName.toString());
-        assertEquals(Optional.of(threadName), siblingName.immediatelyEnclosingClass());
+        assertEquals(threadName, siblingName.immediatelyEnclosingClass());
         assertTrue(siblingName.canCreateEnclosed("UncaughtExceptionHandler"));
         assertFalse(siblingName.canCreateEnclosed("Thread"));
         assertFalse(siblingName.canCreateEnclosed("Foo"));
@@ -90,23 +90,25 @@ public class JavaTypeNameTest {
         assertFalse(threadName.equals("foo"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateEmptyPackage() {
-        JavaTypeName.create("", "Foo");
+    @Test
+    void testCreateEmptyPackage() {
+        assertThrows(IllegalArgumentException.class, () -> JavaTypeName.create("", "Foo"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateEmptyName() {
-        JavaTypeName.create("foo", "");
+        assertThrows(IllegalArgumentException.class, () -> JavaTypeName.create("foo", ""));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testCanCreateEnclosedPrimitive() {
-        JavaTypeName.create(byte.class).canCreateEnclosed("foo");
+    @Test
+    void testCanCreateEnclosedPrimitive() {
+        assertThrows(UnsupportedOperationException.class,
+            () -> JavaTypeName.create(byte.class).canCreateEnclosed("foo"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testCreateEnclosedPrimitive() {
-        JavaTypeName.create(byte.class).createEnclosed("foo");
+    @Test
+    void testCreateEnclosedPrimitive() {
+        assertThrows(UnsupportedOperationException.class,
+            () -> JavaTypeName.create(byte.class).createEnclosed("foo"));
     }
 }

@@ -278,7 +278,8 @@ public final class Types {
     }
 
     public static @Nullable String getOuterClassName(final Type valueType) {
-        return valueType.getIdentifier().immediatelyEnclosingClass().map(Object::toString).orElse(null);
+        final var enclosing = valueType.getIdentifier().immediatelyEnclosingClass();
+        return enclosing == null ? null : enclosing.toString();
     }
 
     /**
