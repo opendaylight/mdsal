@@ -12,12 +12,11 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSetMultimap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
@@ -40,22 +39,22 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     private final @NonNull EffectiveModelContext context;
     private final ImmutableSetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases;
     private final ImmutableMap<QNameModule, ModuleRuntimeType> modulesByNamespace;
-    private final ImmutableSortedMap<String, ModuleRuntimeType> modulesByPackage;
     private final ImmutableMap<QName, IdentityRuntimeType> identities;
-    private final ImmutableMap<JavaTypeName, RuntimeType> types;
+
+    private final @NonNull Object modulesByPackage;
+    private final @NonNull Object types;
 
     public DefaultBindingRuntimeTypes(final EffectiveModelContext context,
-            final Map<QNameModule, ModuleRuntimeType> modules, final Map<JavaTypeName, RuntimeType> types,
+            final Map<QNameModule, ModuleRuntimeType> modules, final Stream<RuntimeType> types,
             final Map<QName, IdentityRuntimeType> identities,
             final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases) {
         this.context = requireNonNull(context);
         this.identities = ImmutableMap.copyOf(identities);
-        this.types = ImmutableMap.copyOf(types);
+        this.types = RuntimeTypeMap.INSTANCE.index(types);
         this.choiceToCases = ImmutableSetMultimap.copyOf(choiceToCases);
 
         modulesByNamespace = ImmutableMap.copyOf(modules);
-        modulesByPackage = ImmutableSortedMap.copyOf(Maps.uniqueIndex(modules.values(),
-            module -> module.getIdentifier().packageName()));
+        modulesByPackage = PackageModuleRuntimeTypeMap.INSTANCE.index(modules.values().stream());
     }
 
     @Override
@@ -70,14 +69,14 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
 
     @Override
     public Optional<RuntimeType> findSchema(final JavaTypeName typeName) {
-        return Optional.ofNullable(types.get(requireNonNull(typeName)));
+        return Optional.ofNullable(RuntimeTypeMap.INSTANCE.lookup(types, typeName));
     }
 
     @Override
     public GeneratedRuntimeType bindingChild(final JavaTypeName typeName) {
         // The type can actually specify a sub-package, hence we to perform an inexact lookup
-        final var entry = modulesByPackage.floorEntry(typeName.packageName());
-        return entry == null ? null : entry.getValue().bindingChild(typeName);
+        final var module = PackageModuleRuntimeTypeMap.INSTANCE.floor(modulesByPackage, typeName.packageName());
+        return module == null ? null : module.bindingChild(typeName);
     }
 
     @Override
@@ -102,7 +101,7 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
         return MoreObjects.toStringHelper(this)
             .add("modules", modulesByNamespace.keySet())
             .add("identities", identities.size())
-            .add("types", types.size())
+            .add("types", RuntimeTypeMap.INSTANCE.size(types))
             .toString();
     }
 }
