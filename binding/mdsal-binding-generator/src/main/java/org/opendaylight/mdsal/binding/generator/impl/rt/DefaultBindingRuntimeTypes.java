@@ -18,6 +18,7 @@ import com.google.common.collect.SetMultimap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
@@ -37,20 +38,49 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
  * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
  */
 public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
+    private static final class Types extends ArrayIndex<JavaTypeName, RuntimeType> {
+        private static final RuntimeType[] EMPTY = new RuntimeType[0];
+        static final Types INSTANCE = new Types();
+
+        private Types() {
+            super(RuntimeType.class, RuntimeType[].class);
+        }
+
+        @Override
+        RuntimeType[] emptyArray() {
+            return EMPTY;
+        }
+
+        @Override
+        RuntimeType[] newArray(final int length) {
+            return new RuntimeType[length];
+        }
+
+        @Override
+        int compareValue(final RuntimeType obj, final JavaTypeName key) {
+            return key.compareTo(obj.javaType().getIdentifier());
+        }
+
+        @Override
+        int compareValues(final RuntimeType o1, final RuntimeType o2) {
+            return compareValue(o1, o2.javaType().getIdentifier());
+        }
+    }
+
     private final @NonNull EffectiveModelContext context;
     private final ImmutableSetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases;
     private final ImmutableMap<QNameModule, ModuleRuntimeType> modulesByNamespace;
     private final ImmutableSortedMap<String, ModuleRuntimeType> modulesByPackage;
     private final ImmutableMap<QName, IdentityRuntimeType> identities;
-    private final ImmutableMap<JavaTypeName, RuntimeType> types;
+    private final @NonNull Object types;
 
     public DefaultBindingRuntimeTypes(final EffectiveModelContext context,
-            final Map<QNameModule, ModuleRuntimeType> modules, final Map<JavaTypeName, RuntimeType> types,
+            final Map<QNameModule, ModuleRuntimeType> modules, final Stream<RuntimeType> types,
             final Map<QName, IdentityRuntimeType> identities,
             final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases) {
         this.context = requireNonNull(context);
         this.identities = ImmutableMap.copyOf(identities);
-        this.types = ImmutableMap.copyOf(types);
+        this.types = Types.INSTANCE.index(types);
         this.choiceToCases = ImmutableSetMultimap.copyOf(choiceToCases);
 
         modulesByNamespace = ImmutableMap.copyOf(modules);
@@ -70,7 +100,7 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
 
     @Override
     public Optional<RuntimeType> findSchema(final JavaTypeName typeName) {
-        return Optional.ofNullable(types.get(requireNonNull(typeName)));
+        return Optional.ofNullable(Types.INSTANCE.lookup(types, typeName));
     }
 
     @Override
@@ -102,7 +132,7 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
         return MoreObjects.toStringHelper(this)
             .add("modules", modulesByNamespace.keySet())
             .add("identities", identities.size())
-            .add("types", types.size())
+            .add("types", Types.INSTANCE.size(types))
             .toString();
     }
 }

@@ -60,8 +60,8 @@ final class BindingRuntimeTypesFactory implements Mutable {
         factory.indexModules(moduleGens);
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
-        return new DefaultBindingRuntimeTypes(context, factory.modules, factory.allTypes, factory.identities,
-            factory.choiceToCases);
+        return new DefaultBindingRuntimeTypes(context, factory.modules, factory.allTypes.values().stream(),
+            factory.identities, factory.choiceToCases);
     }
 
     private void indexModules(final Map<QNameModule, ModuleGenerator> moduleGens) {
