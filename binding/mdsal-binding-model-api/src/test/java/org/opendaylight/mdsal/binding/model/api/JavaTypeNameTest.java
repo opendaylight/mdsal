@@ -7,24 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
-import static com.google.common.collect.ImmutableList.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static java.util.List.of;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class JavaTypeNameTest {
-
+class JavaTypeNameTest {
     @Test
-    public void testOperations() {
+    void testOperations() {
         final JavaTypeName byteName = JavaTypeName.create(byte.class);
         assertEquals("", byteName.packageName());
         assertEquals("byte", byteName.simpleName());
         assertEquals("byte", byteName.toString());
-        assertEquals(Optional.empty(), byteName.immediatelyEnclosingClass());
+        assertNull(byteName.immediatelyEnclosingClass());
         assertSame(byteName, byteName.topLevelClass());
         assertEquals(of("byte"), byteName.localNameComponents());
         assertEquals("byte", byteName.localName());
@@ -33,7 +34,7 @@ public class JavaTypeNameTest {
         assertEquals("", charName.packageName());
         assertEquals("char", charName.simpleName());
         assertEquals("char", charName.toString());
-        assertEquals(Optional.empty(), charName.immediatelyEnclosingClass());
+        assertNull(charName.immediatelyEnclosingClass());
         assertSame(charName, charName.topLevelClass());
         assertEquals(of("char"), charName.localNameComponents());
         assertEquals("char", charName.localName());
@@ -90,23 +91,25 @@ public class JavaTypeNameTest {
         assertFalse(threadName.equals("foo"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateEmptyPackage() {
-        JavaTypeName.create("", "Foo");
+    @Test
+    void testCreateEmptyPackage() {
+        assertThrows(IllegalArgumentException.class, () -> JavaTypeName.create("", "Foo"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateEmptyName() {
-        JavaTypeName.create("foo", "");
+        assertThrows(IllegalArgumentException.class, () -> JavaTypeName.create("foo", ""));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testCanCreateEnclosedPrimitive() {
-        JavaTypeName.create(byte.class).canCreateEnclosed("foo");
+    @Test
+    void testCanCreateEnclosedPrimitive() {
+        assertThrows(UnsupportedOperationException.class,
+            () -> JavaTypeName.create(byte.class).canCreateEnclosed("foo"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testCreateEnclosedPrimitive() {
-        JavaTypeName.create(byte.class).createEnclosed("foo");
+    @Test
+    void testCreateEnclosedPrimitive() {
+        assertThrows(UnsupportedOperationException.class,
+            () -> JavaTypeName.create(byte.class).createEnclosed("foo"));
     }
 }
