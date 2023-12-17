@@ -12,11 +12,9 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Identifier;
@@ -28,14 +26,12 @@ import org.slf4j.LoggerFactory;
  * A type name. This class encloses Java type naming rules laid down in
  * <a href="https://docs.oracle.com/javase/specs/jls/se9/html/index.html">The Java Language Specification</a>, notably
  * sections 4 and 8. It deals with primitive, array and reference types.
- *
- * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
-public abstract sealed class JavaTypeName implements Identifier, Immutable {
+public abstract sealed class JavaTypeName implements Comparable<JavaTypeName>, Identifier, Immutable {
     private static final class Primitive extends JavaTypeName {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         Primitive(final String simpleName) {
@@ -45,11 +41,6 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
         @Override
         public String packageName() {
             return "";
-        }
-
-        @Override
-        public Optional<JavaTypeName> immediatelyEnclosingClass() {
-            return Optional.empty();
         }
 
         @Override
@@ -65,11 +56,6 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
-        public String localName() {
-            return simpleName();
-        }
-
-        @Override
         public List<String> localNameComponents() {
             return ImmutableList.of(simpleName());
         }
@@ -80,18 +66,13 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
-        public JavaTypeName topLevelClass() {
-            return this;
-        }
-
-        @Override
         public String toString() {
             return simpleName();
         }
     }
 
     private abstract static sealed class Reference extends JavaTypeName {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         Reference(final String simpleName) {
@@ -123,7 +104,7 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
     }
 
     private static final class TopLevel extends Reference {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         private final String packageName;
@@ -145,25 +126,10 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
-        public Optional<JavaTypeName> immediatelyEnclosingClass() {
-            return Optional.empty();
-        }
-
-        @Override
-        public String localName() {
-            return simpleName();
-        }
-
-        @Override
         public List<String> localNameComponents() {
             final var ret = new ArrayList<String>();
             ret.add(simpleName());
             return ret;
-        }
-
-        @Override
-        public JavaTypeName topLevelClass() {
-            return this;
         }
 
         @Override
@@ -173,7 +139,7 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
     }
 
     private static final class Nested extends Reference {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
 
         private final Reference immediatelyEnclosingClass;
@@ -194,13 +160,8 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
-        public Optional<JavaTypeName> immediatelyEnclosingClass() {
-            return Optional.of(immediatelyEnclosingClass);
-        }
-
-        @Override
-        StringBuilder appendClass(final StringBuilder sb) {
-            return immediatelyEnclosingClass.appendClass(sb).append('.').append(simpleName());
+        public @Nullable JavaTypeName immediatelyEnclosingClass() {
+            return immediatelyEnclosingClass;
         }
 
         @Override
@@ -215,7 +176,7 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
 
         @Override
         public List<String> localNameComponents() {
-            final List<String> ret = immediatelyEnclosingClass.localNameComponents();
+            final var ret = immediatelyEnclosingClass.localNameComponents();
             ret.add(simpleName());
             return ret;
         }
@@ -224,10 +185,26 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
         public JavaTypeName topLevelClass() {
             return immediatelyEnclosingClass.topLevelClass();
         }
+
+        @Override
+        int comparePlacement(final JavaTypeName other) {
+            final var otherEnclosing = other.immediatelyEnclosingClass();
+            return otherEnclosing == null ? 1 : immediatelyEnclosingClass.compareTo(otherEnclosing);
+        }
+
+        @Override
+        boolean equalPlacement(final JavaTypeName other) {
+            return immediatelyEnclosingClass.equals(other.immediatelyEnclosingClass());
+        }
+
+        @Override
+        StringBuilder appendClass(final StringBuilder sb) {
+            return immediatelyEnclosingClass.appendClass(sb).append('.').append(simpleName());
+        }
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaTypeName.class);
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     private final String simpleName;
@@ -343,24 +320,29 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
     /**
      * Return the enclosing class JavaTypeName, if present.
      *
-     * @return Enclosing class JavaTypeName.
+     * @return Enclosing class JavaTypeName, or {@code null}
      */
-    public abstract Optional<JavaTypeName> immediatelyEnclosingClass();
+    public @Nullable JavaTypeName immediatelyEnclosingClass() {
+        return null;
+    }
 
     /**
-     * Return the top-level class JavaTypeName which is containing this type, or self if this type is a top-level
-     * one.
+     * Return the top-level class JavaTypeName which is containing this type, or self if this type is a top-level one.
      *
      * @return Top-level JavaTypeName
      */
-    public abstract JavaTypeName topLevelClass();
+    public JavaTypeName topLevelClass() {
+        return this;
+    }
 
     /**
      * Return the package-local name by which this type can be referenced by classes living in the same package.
      *
      * @return Local name.
      */
-    public abstract String localName();
+    public String localName() {
+        return simpleName;
+    }
 
     /**
      * Return broken-down package-local name components.
@@ -370,15 +352,33 @@ public abstract sealed class JavaTypeName implements Identifier, Immutable {
     public abstract List<String> localNameComponents();
 
     @Override
+    @SuppressWarnings("checkstyle:parameterName")
+    public final int compareTo(final JavaTypeName o) {
+        if (this == o) {
+            return 0;
+        }
+        final var cmp = simpleName.compareTo(o.simpleName);
+        return cmp != 0 ? cmp : comparePlacement(o);
+    }
+
+    int comparePlacement(final JavaTypeName other) {
+        final var otherEnclosing = other.immediatelyEnclosingClass();
+        return otherEnclosing != null ? -1 : packageName().compareTo(other.packageName());
+    }
+
+    @Override
     public final int hashCode() {
         return Objects.hash(simpleName, packageName(), immediatelyEnclosingClass());
     }
 
     @Override
     public final boolean equals(final @Nullable Object obj) {
-        return this == obj || obj instanceof JavaTypeName other
-            && simpleName.equals(other.simpleName) && packageName().equals(other.packageName())
-            && immediatelyEnclosingClass().equals(other.immediatelyEnclosingClass());
+        return this == obj || obj instanceof JavaTypeName other && simpleName.equals(other.simpleName)
+            && equalPlacement(other);
+    }
+
+    boolean equalPlacement(final JavaTypeName other) {
+        return other.immediatelyEnclosingClass() == null && packageName().equals(other.packageName());
     }
 
     /**
