@@ -250,8 +250,8 @@ class JavaFileTemplate {
 
     // Exposed for BuilderTemplate
     boolean isLocalInnerClass(final JavaTypeName name) {
-        final var optEnc = name.immediatelyEnclosingClass();
-        return optEnc.isPresent() && type.getIdentifier().equals(optEnc.orElseThrow());
+        final var enclosing = name.immediatelyEnclosingClass();
+        return enclosing != null && enclosing.equals(type.getIdentifier());
     }
 
     final CharSequence generateInnerClass(final GeneratedType innerClass) {
@@ -259,7 +259,7 @@ class JavaFileTemplate {
             return "";
         }
 
-        final NestedJavaGeneratedType innerJavaType = javaType.getEnclosedType(innerClass.getIdentifier());
+        final var innerJavaType = javaType.getEnclosedType(innerClass.getIdentifier());
         return gto.isUnionType() ? new UnionTemplate(innerJavaType, gto).generateAsInnerClass()
                 : new ClassTemplate(innerJavaType, gto).generateAsInnerClass();
     }
@@ -295,12 +295,11 @@ class JavaFileTemplate {
      * to the type, expressed as properties.
      */
     static Map.Entry<Type, Set<BuilderGeneratedProperty>> analyzeTypeHierarchy(final GeneratedType type) {
-        final Set<MethodSignature> methods = new LinkedHashSet<>();
-        final Type augmentType = createMethods(type, methods);
-        final Set<MethodSignature> sortedMethods = ImmutableSortedSet.orderedBy(METHOD_COMPARATOR).addAll(methods)
-                .build();
+        final var methods = new LinkedHashSet<MethodSignature>();
+        final var augmentType = createMethods(type, methods);
 
-        return new AbstractMap.SimpleImmutableEntry<>(augmentType, propertiesFromMethods(sortedMethods));
+        return new AbstractMap.SimpleImmutableEntry<>(augmentType,
+            propertiesFromMethods(ImmutableSortedSet.orderedBy(METHOD_COMPARATOR).addAll(methods).build()));
     }
 
     static final Restrictions restrictionsForSetter(final Type actualType) {
@@ -308,11 +307,11 @@ class JavaFileTemplate {
     }
 
     static final Restrictions getRestrictions(final Type type) {
-        if (type instanceof ConcreteType) {
-            return ((ConcreteType) type).getRestrictions();
+        if (type instanceof ConcreteType concreteType) {
+            return concreteType.getRestrictions();
         }
-        if (type instanceof GeneratedTransferObject) {
-            return ((GeneratedTransferObject) type).getRestrictions();
+        if (type instanceof GeneratedTransferObject gto) {
+            return gto.getRestrictions();
         }
         return null;
     }

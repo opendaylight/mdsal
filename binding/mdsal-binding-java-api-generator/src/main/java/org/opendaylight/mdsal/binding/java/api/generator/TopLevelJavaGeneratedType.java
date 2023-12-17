@@ -62,14 +62,14 @@ final class TopLevelJavaGeneratedType extends AbstractJavaGeneratedType {
     }
 
     private boolean needsExplicitImport(final Entry<JavaTypeName, String> entry) {
-        final JavaTypeName name = entry.getKey();
+        final var name = entry.getKey();
 
         if (!getName().packageName().equals(name.packageName())) {
             // Different package: need to import it
             return true;
         }
 
-        if (!name.immediatelyEnclosingClass().isPresent()) {
+        if (name.immediatelyEnclosingClass() == null) {
             // This a top-level class import, we can skip it
             return false;
         }
