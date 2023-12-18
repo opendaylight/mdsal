@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46e47814_e94db12c",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 707,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-18T09:17:58Z",
+      "side": 1,
+      "message": "how do you know returned array is not empty?\nalso this local variable be should looked up if valueType \u003d\u003d Object.class, right?",
+      "range": {
+        "startLine": 707,
+        "startChar": 84,
+        "endLine": 707,
+        "endChar": 87
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1a1e4f1_086badae",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-18T09:17:58Z",
+      "side": 1,
+      "message": "almost duplicate of above. since this has absolutely no comments ... what is this doing?",
+      "range": {
+        "startLine": 728,
+        "startChar": 24,
+        "endLine": 728,
+        "endChar": 93
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5497064b_d1ed1ac1",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 797,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-18T09:17:58Z",
+      "side": 1,
+      "message": "this is not \u0027javaTypeNames\u0027 ... but what?",
+      "range": {
+        "startLine": 797,
+        "startChar": 32,
+        "endLine": 797,
+        "endChar": 45
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b6ed189_77011b68",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 800,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-18T09:17:58Z",
+      "side": 1,
+      "message": "can this be empty?\nwhat happens if there are multiple types?",
+      "range": {
+        "startLine": 800,
+        "startChar": 52,
+        "endLine": 800,
+        "endChar": 58
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
