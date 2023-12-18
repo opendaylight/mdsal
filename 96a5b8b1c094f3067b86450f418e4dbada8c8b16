@@ -26,6 +26,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "40177232_346b4cf7",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 777,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-18T08:08:21Z",
+      "side": 1,
+      "message": "this method needs documentation about intent",
+      "range": {
+        "startLine": 777,
+        "startChar": 39,
+        "endLine": 777,
+        "endChar": 55
+      },
+      "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "61ed9eed_3ec18ca7",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
         "patchSetId": 12
@@ -88,6 +111,29 @@
         "startChar": 45,
         "endLine": 789,
         "endChar": 67
+      },
+      "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "819b4ace_2232a795",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 797,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-12-18T08:08:21Z",
+      "side": 1,
+      "message": "ugh.. all this only to the do a \u0027.get(0)\u0027 ?!?!\never heard of iterator().next()?",
+      "range": {
+        "startLine": 797,
+        "startChar": 12,
+        "endLine": 797,
+        "endChar": 30
       },
       "revId": "96a5b8b1c094f3067b86450f418e4dbada8c8b16",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
