@@ -30,8 +30,9 @@ import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -88,17 +89,29 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
+        final var type = getRuntimeContext().getTypes().findSchema(JavaTypeName.create(spec.type()))
+            .orElseThrow(() -> new IllegalArgumentException("Action " + spec + " is not known"));
+        if (!(type instanceof ActionRuntimeType actionType)) {
+            throw new IllegalArgumentException("Action " + spec + " resolved to unexpected " + type);
+        }
+
         final var entry = resolvePath(spec.path());
         final var stack = entry.getKey();
-        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(entry.getValue()));
+        final var stmt = stack.enterSchemaTree(actionType.statement().argument().bindTo(entry.getValue()));
         verify(stmt instanceof ActionEffectiveStatement, "Action %s resolved to unexpected statement %s", spec, stmt);
         return stack.toSchemaNodeIdentifier();
     }
 
     @NonNull Absolute getNotificationPath(final @NonNull InstanceNotificationSpec<?, ?> spec) {
+        final var type = getRuntimeContext().getTypes().findSchema(JavaTypeName.create(spec.type()))
+            .orElseThrow(() -> new IllegalArgumentException("Notification " + spec + " is not known"));
+        if (!(type instanceof NotificationRuntimeType notifType)) {
+            throw new IllegalArgumentException("Notification " + spec + " resolved to unexpected " + type);
+        }
+
         final var entry = resolvePath(spec.path());
         final var stack = entry.getKey();
-        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(entry.getValue()));
+        final var stmt = stack.enterSchemaTree(notifType.statement().argument().bindTo(entry.getValue()));
         verify(stmt instanceof NotificationEffectiveStatement, "Notification %s resolved to unexpected statement %s",
             spec, stmt);
         return stack.toSchemaNodeIdentifier();
