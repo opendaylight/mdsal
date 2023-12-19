@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.VerifyException;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -33,7 +34,9 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.yangtools.yang.binding.BindingContract;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -43,6 +46,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,32 +93,36 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
-        final var type = getRuntimeContext().getTypes().findSchema(JavaTypeName.create(spec.type()))
-            .orElseThrow(() -> new IllegalArgumentException("Action " + spec + " is not known"));
-        if (!(type instanceof ActionRuntimeType actionType)) {
-            throw new IllegalArgumentException("Action " + spec + " resolved to unexpected " + type);
-        }
-
-        final var entry = resolvePath(spec.path());
-        final var stack = entry.getKey();
-        final var stmt = stack.enterSchemaTree(actionType.statement().argument().bindTo(entry.getValue()));
-        verify(stmt instanceof ActionEffectiveStatement, "Action %s resolved to unexpected statement %s", spec, stmt);
-        return stack.toSchemaNodeIdentifier();
+        return getSchemaNodeIdentifier(spec.path(), spec.type(), ActionRuntimeType.class,
+            ActionEffectiveStatement.class);
     }
 
     @NonNull Absolute getNotificationPath(final @NonNull InstanceNotificationSpec<?, ?> spec) {
-        final var type = getRuntimeContext().getTypes().findSchema(JavaTypeName.create(spec.type()))
-            .orElseThrow(() -> new IllegalArgumentException("Notification " + spec + " is not known"));
-        if (!(type instanceof NotificationRuntimeType notifType)) {
-            throw new IllegalArgumentException("Notification " + spec + " resolved to unexpected " + type);
-        }
+        return getSchemaNodeIdentifier(spec.path(), spec.type(), NotificationRuntimeType.class,
+            NotificationEffectiveStatement.class);
+    }
 
-        final var entry = resolvePath(spec.path());
+    private <T extends RuntimeType> @NonNull Absolute getSchemaNodeIdentifier(final @NonNull InstanceIdentifier<?> path,
+            final @NonNull Class<? extends BindingContract<?>> type, final @NonNull Class<T> expectedRuntime,
+            final @NonNull Class<? extends SchemaTreeEffectiveStatement<?>> expectedStatement) {
+        final var typeName = JavaTypeName.create(type);
+        final var runtimeType = getRuntimeContext().getTypes().findSchema(typeName)
+            .orElseThrow(() -> new IllegalArgumentException(typeName + " is not known"));
+        final T casted;
+        try {
+            casted = expectedRuntime.cast(runtimeType);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(typeName + " resolved to unexpected " + runtimeType, e);
+        }
+        final var qname = expectedStatement.cast(casted.statement()).argument();
+
+        final var entry = resolvePath(path);
         final var stack = entry.getKey();
-        final var stmt = stack.enterSchemaTree(notifType.statement().argument().bindTo(entry.getValue()));
-        verify(stmt instanceof NotificationEffectiveStatement, "Notification %s resolved to unexpected statement %s",
-            spec, stmt);
-        return stack.toSchemaNodeIdentifier();
+        final var stmt = stack.enterSchemaTree(qname.bindTo(entry.getValue()));
+        if (expectedStatement.isInstance(stmt)) {
+            return stack.toSchemaNodeIdentifier();
+        }
+        throw new VerifyException(path + " child " + typeName + " resolved to unexpected statement" + stmt);
     }
 
     @Nullable ContextReferenceExtractor findExtractor(final @NonNull InputRuntimeType inputType) {
