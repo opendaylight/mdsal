@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d9ba590_2d54bf2e",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ContainerGenerator.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79048ac6_647ad0e6",
+      "range": {
+        "startLine": 69,
+        "startChar": 41,
+        "endLine": 69,
+        "endChar": 91
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "48055a3f_fb730287",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-12-16T16:41:38Z",
       "side": 1,
       "message": "Parent",
+      "range": {
+        "startLine": 75,
+        "startChar": 27,
+        "endLine": 75,
+        "endChar": 33
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06a2505a_e15577e4",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ContainerGenerator.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48055a3f_fb730287",
       "range": {
         "startLine": 75,
         "startChar": 27,
@@ -70,6 +118,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec3e66ea_e3a2aa0c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 19
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "03c89628_e9f80def",
+      "range": {
+        "startLine": 112,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 38
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9ecb7c17_b2fa21b6",
@@ -83,6 +155,30 @@
       "writtenOn": "2023-12-16T16:41:38Z",
       "side": 1,
       "message": "missing space",
+      "range": {
+        "startLine": 355,
+        "startChar": 10,
+        "endLine": 355,
+        "endChar": 11
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc79e332_e2d8644d",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 19
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ecb7c17_b2fa21b6",
       "range": {
         "startLine": 355,
         "startChar": 10,
@@ -116,6 +212,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "97385af8_e09da3c2",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal44/mdsal-44.yang",
+        "patchSetId": 19
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "28d7812b_17960a43",
+      "range": {
+        "startLine": 6,
+        "startChar": 8,
+        "endLine": 6,
+        "endChar": 21
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0c86f36c_99d48471",
@@ -129,6 +249,30 @@
       "writtenOn": "2023-12-16T16:41:38Z",
       "side": 1,
       "message": "this property should not exist -- see the comment about relationship with GeneratedType",
+      "range": {
+        "startLine": 26,
+        "startChar": 20,
+        "endLine": 26,
+        "endChar": 43
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddc0f908_69d2c91a",
+        "filename": "binding/mdsal-binding-model-api/src/main/java/org/opendaylight/mdsal/binding/model/api/BoxableType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c86f36c_99d48471",
       "range": {
         "startLine": 26,
         "startChar": 20,
@@ -162,6 +306,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db920826_ca9756e3",
+        "filename": "binding/mdsal-binding-model-api/src/main/java/org/opendaylight/mdsal/binding/model/api/GeneratedType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2109adc1_110b947a",
+      "range": {
+        "startLine": 32,
+        "startChar": 61,
+        "endLine": 32,
+        "endChar": 72
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "191c317c_7b203664",
@@ -185,6 +353,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "18cd9e78_badff12a",
+        "filename": "binding/mdsal-binding-model-api/src/main/java/org/opendaylight/mdsal/binding/model/api/type/builder/GeneratedTypeBuilder.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "191c317c_7b203664",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 32
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "12f1699e_359d4259",
@@ -198,6 +390,30 @@
       "writtenOn": "2023-12-16T16:41:38Z",
       "side": 1,
       "message": "these should be in a dedicated subclass",
+      "range": {
+        "startLine": 69,
+        "startChar": 8,
+        "endLine": 69,
+        "endChar": 46
+      },
+      "revId": "842fa2f21646fabb21bde064a7af278e5371662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc942829_37ec5f7f",
+        "filename": "binding/mdsal-binding-model-ri/src/main/java/org/opendaylight/mdsal/binding/model/ri/generated/type/builder/CodegenGeneratedTypeBuilder.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-12-19T13:37:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12f1699e_359d4259",
       "range": {
         "startLine": 69,
         "startChar": 8,
