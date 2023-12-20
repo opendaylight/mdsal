@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
-import org.opendaylight.mdsal.binding.model.api.Archetype;
+import org.opendaylight.mdsal.binding.model.api.InputArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputStatement;
 
@@ -16,5 +16,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.InputStatement;
  */
 public interface InputRuntimeType extends ContainerLikeRuntimeType<InputStatement, InputEffectiveStatement> {
     @Override
-    Archetype.DataObject.Input archetype();
+    InputArchetype javaType();
+
+    @Override
+    default InputEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }
