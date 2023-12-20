@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultActionRuntimeType;
+import org.opendaylight.mdsal.binding.model.api.ActionArchetype;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -17,6 +18,8 @@ import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.binding.contract.StatementNamespace;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 
 /**
  * Generator corresponding to a {@code action} statement.
@@ -40,18 +43,39 @@ final class ActionGenerator extends AbstractInvokableGenerator<ActionEffectiveSt
     }
 
     @Override
-    ParameterizedType implementedType(final TypeBuilderFactory builderFactory, final GeneratedType input,
-            final GeneratedType output) {
+    ParameterizedType implementedType(final GeneratedType input, final GeneratedType output) {
         final var parent = getParent();
         final var parentType = Type.of(parent.typeName());
         if (parent instanceof ListGenerator list) {
             final var keyGen = list.keyGenerator();
             if (keyGen != null) {
-                return BindingTypes.keyedListAction(parentType, keyGen.getGeneratedType(builderFactory), input, output);
+                return BindingTypes.keyedListAction(parentType, keyGen.getGeneratedType(), input, output);
             }
         }
         return BindingTypes.action(parentType, input, output);
     }
+
+    @Override ActionArchetype createTypeImpl() {
+//        final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
+//        builder.addImplementsType(implementedType(builderFactory,
+//            getChild(this, InputEffectiveStatement.class).getOriginal().getGeneratedType(builderFactory),
+//            getChild(this, OutputEffectiveStatement.class).getOriginal().getGeneratedType(builderFactory)));
+//        builder.addAnnotation(FUNCTIONAL_INTERFACE_ANNOTATION);
+//        defaultImplementedInterace(builder);
+//
+//        final var module = currentModule();
+//        module.addQNameConstant(builder, statement().argument());
+//
+//        annotateDeprecatedIfNecessary(builder);
+//        builderFactory.addCodegenInformation(module, statement(), builder);
+//
+//        return builder.build();
+        return new ActionArchetype(typeName(), statement(),
+            getChild(this, InputEffectiveStatement.class).getOriginal().getGeneratedType().typeName(),
+            getChild(this, OutputEffectiveStatement.class).getOriginal().getGeneratedType().typeName(),
+            getParent().typeName());
+    }
+
 
     @Override
     CompositeRuntimeTypeBuilder<ActionEffectiveStatement, ActionRuntimeType> createBuilder(

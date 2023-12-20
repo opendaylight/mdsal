@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Archetype.WithStatement;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentableRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
@@ -19,13 +19,13 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 /**
  * Abstract base class for {@link AbstractCompositeRuntimeType}s which support augmentations.
  */
-abstract class AbstractAugmentableRuntimeType<S extends EffectiveStatement<?, ?>>
-        extends AbstractCompositeRuntimeType<S> implements AugmentableRuntimeType {
+abstract class AbstractAugmentableRuntimeType<S extends EffectiveStatement<?, ?>, A extends WithStatement>
+        extends AbstractCompositeRuntimeType<S, A> implements AugmentableRuntimeType {
     private final @NonNull ImmutableList<AugmentRuntimeType> augments;
 
-    AbstractAugmentableRuntimeType(final GeneratedType bindingType, final S statement, final List<RuntimeType> children,
+    AbstractAugmentableRuntimeType(final A archetype, final List<RuntimeType> children,
             final List<AugmentRuntimeType> augments) {
-        super(bindingType, statement, children);
+        super(archetype, children);
         this.augments = ImmutableList.copyOf(augments);
     }
 

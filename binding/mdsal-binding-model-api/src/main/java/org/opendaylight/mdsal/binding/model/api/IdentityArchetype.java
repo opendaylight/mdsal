@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.ImmutableList;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
 
@@ -16,10 +17,13 @@ import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement
  * The archetype of an interface generated for a particular {@link IdentityEffectiveStatement}.
  */
 @NonNullByDefault
-public record IdentityArchetype(JavaTypeName typeName, IdentityEffectiveStatement statement)
-        implements Archetype.WithStatement, Archetype.WithInterface {
+public record IdentityArchetype(
+        JavaTypeName typeName,
+        IdentityEffectiveStatement statement,
+        ImmutableList<JavaTypeName> baseIdentities) implements Archetype.WithStatement, Archetype.WithInterface {
     public IdentityArchetype {
         requireNonNull(typeName);
         requireNonNull(statement);
+        requireNonNull(baseIdentities);
     }
 }
