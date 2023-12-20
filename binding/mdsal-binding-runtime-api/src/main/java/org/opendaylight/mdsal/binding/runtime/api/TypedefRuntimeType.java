@@ -15,8 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
  */
 public interface TypedefRuntimeType extends GeneratedRuntimeType {
     @Override
-    TypedefEffectiveStatement statement();
+    TypeObjectArchetype javaType();
 
     @Override
-    TypeObjectArchetype javaType();
+    default TypedefEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

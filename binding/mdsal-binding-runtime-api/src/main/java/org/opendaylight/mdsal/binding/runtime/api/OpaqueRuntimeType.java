@@ -15,8 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement
  */
 public interface OpaqueRuntimeType extends GeneratedRuntimeType, DataRuntimeType {
     @Override
-    DataTreeEffectiveStatement<?> statement();
+    OpaqueObjectArchetype<?> javaType();
 
     @Override
-    OpaqueObjectArchetype<?> javaType();
+    default DataTreeEffectiveStatement<?> statement() {
+        return javaType().statement();
+    }
 }
