@@ -9,21 +9,21 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InvokableRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.OutputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
-abstract sealed class AbstractInvokableRuntimeType<S extends EffectiveStatement<?, ?>>
-        extends AbstractCompositeRuntimeType<S> implements InvokableRuntimeType
+abstract sealed class AbstractInvokableRuntimeType<S extends EffectiveStatement<?, ?>, A extends Archetype<S>>
+        extends AbstractCompositeRuntimeType<S, A> implements InvokableRuntimeType
         permits DefaultActionRuntimeType, DefaultRpcRuntimeType {
     private final @NonNull InputRuntimeType input;
     private final @NonNull OutputRuntimeType output;
 
-    AbstractInvokableRuntimeType(final GeneratedType bindingType, final S statement, final List<RuntimeType> children) {
-        super(bindingType, statement, children);
+    AbstractInvokableRuntimeType(final A archetype, final List<RuntimeType> children) {
+        super(archetype, children);
         input = child(children, InputRuntimeType.class);
         output = child(children, OutputRuntimeType.class);
     }

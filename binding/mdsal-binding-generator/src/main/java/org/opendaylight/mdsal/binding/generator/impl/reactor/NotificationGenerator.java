@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultNotificationRuntimeType;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.NotificationArchetype;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
@@ -42,7 +42,7 @@ final class NotificationGenerator
     }
 
     @Override
-    GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
+    NotificationArchetype createTypeImpl() {
         final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
 
         builder.addImplementsType(BindingTypes.DATA_OBJECT);
@@ -60,12 +60,13 @@ final class NotificationGenerator
         builderFactory.addCodegenInformation(module, statement(), builder);
         annotateDeprecatedIfNecessary(builder);
 
-        return builder.build();
+        return new NotificationArchetype(typeName(), statement(), null, null);
     }
 
     @Override
-    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
+    DataObjectField<?> generateDataObjectField() {
         // Notifications are a distinct concept
+        return null;
     }
 
     @Override
@@ -80,8 +81,8 @@ final class NotificationGenerator
         };
     }
 
-    private Type notificationType(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
-        final AbstractCompositeGenerator<?, ?> parent = getParent();
+    private Type notificationType() {
+        final var parent = getParent();
         if (parent instanceof ModuleGenerator) {
             return BindingTypes.notification(builder);
         }

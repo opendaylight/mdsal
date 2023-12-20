@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
-abstract class AbstractObjectRuntimeType<S extends EffectiveStatement<?, ?>>
-        extends AbstractRuntimeType<S, GeneratedTransferObject> {
-    AbstractObjectRuntimeType(final GeneratedTransferObject bindingType, final S statement) {
-        super(bindingType, statement);
+@NonNullByDefault
+abstract class AbstractObjectRuntimeType<S extends EffectiveStatement<?, ?>, A extends Archetype<S>>
+        extends AbstractRuntimeType<S, A> {
+    AbstractObjectRuntimeType(final A bindingType) {
+        super(bindingType);
     }
 }

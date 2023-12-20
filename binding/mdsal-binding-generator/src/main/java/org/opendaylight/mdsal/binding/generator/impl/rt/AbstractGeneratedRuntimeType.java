@@ -7,12 +7,19 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
-abstract class AbstractGeneratedRuntimeType<S extends EffectiveStatement<?, ?>>
-        extends AbstractRuntimeType<S, GeneratedType> {
-    AbstractGeneratedRuntimeType(final GeneratedType bindingType, final S statement) {
-        super(bindingType, statement);
+@NonNullByDefault
+abstract class AbstractGeneratedRuntimeType<S extends EffectiveStatement<?, ?>, A extends Archetype<S>>
+        extends AbstractRuntimeType<S, A> {
+    AbstractGeneratedRuntimeType(final A archetype) {
+        super(archetype);
+    }
+
+    @Override
+    public final S statement() {
+        return javaType().statement();
     }
 }

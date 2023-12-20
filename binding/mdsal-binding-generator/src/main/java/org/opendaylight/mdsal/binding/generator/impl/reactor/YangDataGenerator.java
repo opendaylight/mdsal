@@ -14,9 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultYangDataRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.model.api.YangDataArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.YangDataRuntimeType;
@@ -94,22 +92,22 @@ abstract sealed class YangDataGenerator
     }
 
     @Override
-    final GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
-
-        builder.addImplementsType(BindingTypes.yangData(builder));
-        addUsesInterfaces(builder, builderFactory);
-        addConcreteInterfaceMethods(builder);
-
-        addGetterMethods(builder, builderFactory);
-
-        final var module = currentModule();
-        module.addNameConstant(builder, statement().argument());
-
-        builder.setModuleName(module.statement().argument().getLocalName());
-        builderFactory.addCodegenInformation(module, statement(), builder);
-
-        return builder.build();
+    final YangDataArchetype createTypeImpl() {
+//        final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
+//
+//        builder.addImplementsType(BindingTypes.yangData(builder));
+//        addUsesInterfaces(builder, builderFactory);
+//        addConcreteInterfaceMethods(builder);
+//
+//        addGetterMethods(builder, builderFactory);
+//
+//        final var module = currentModule();
+//        module.addNameConstant(builder, statement().argument());
+//
+//        builder.setModuleName(module.statement().argument().getLocalName());
+//        builderFactory.addCodegenInformation(module, statement(), builder);
+        return new YangDataArchetype(typeName(), statement(), generateDataObjectFields(), groupingNames(),
+            getParent().typeName());
     }
 
     @Override

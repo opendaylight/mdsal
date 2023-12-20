@@ -7,13 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.model.api.AnydataArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.AnydataRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.AnydataEffectiveStatement;
 
-public final class DefaultAnydataRuntimeType extends AbstractGeneratedRuntimeType<AnydataEffectiveStatement>
+@NonNullByDefault
+public final class DefaultAnydataRuntimeType
+        extends AbstractGeneratedRuntimeType<AnydataEffectiveStatement, AnydataArchetype>
         implements AnydataRuntimeType {
-    public DefaultAnydataRuntimeType(final GeneratedType bindingType, final AnydataEffectiveStatement statement) {
-        super(bindingType, statement);
+    public DefaultAnydataRuntimeType(final AnydataArchetype archetype) {
+        super(archetype);
     }
 }
