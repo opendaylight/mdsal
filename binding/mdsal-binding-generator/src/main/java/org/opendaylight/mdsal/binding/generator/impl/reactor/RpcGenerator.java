@@ -11,10 +11,13 @@ import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultRpcRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.RpcArchetype;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.binding.contract.StatementNamespace;
+import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
 /**
@@ -36,9 +39,15 @@ final class RpcGenerator extends AbstractInvokableGenerator<RpcEffectiveStatemen
     }
 
     @Override
-    ParameterizedType implementedType(final TypeBuilderFactory builderFactory, final GeneratedType input,
-            final GeneratedType output) {
+    ParameterizedType implementedType(final GeneratedType input, final GeneratedType output) {
         return BindingTypes.rpc(input, output);
+    }
+
+    @Override
+    RpcArchetype createTypeImpl() {
+        return new RpcArchetype(typeName(), statement(),
+            getChild(this, InputEffectiveStatement.class).getOriginal().getGeneratedType().typeName(),
+            getChild(this, OutputEffectiveStatement.class).getOriginal().getGeneratedType().typeName());
     }
 
     @Override

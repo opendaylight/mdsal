@@ -12,7 +12,6 @@ import static com.google.common.base.Verify.verify;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultCaseRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;

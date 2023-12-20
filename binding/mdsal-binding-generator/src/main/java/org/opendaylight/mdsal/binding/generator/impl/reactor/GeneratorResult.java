@@ -11,50 +11,50 @@ import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.yangtools.concepts.Immutable;
 
-class GeneratorResult implements Immutable {
+sealed class GeneratorResult implements Immutable {
     private static final class Nested extends GeneratorResult {
-        Nested(final GeneratedType generatedType) {
-            super(generatedType);
+        Nested(final Archetype<?> archetype) {
+            super(archetype);
         }
 
         @Override
-        GeneratedType enclosedType() {
-            return generatedType();
+        Archetype<?> enclosedType() {
+            return archetype();
         }
     }
 
     private static final @NonNull GeneratorResult EMPTY = new GeneratorResult();
 
-    private final @Nullable GeneratedType generatedType;
+    private final @Nullable Archetype<?> archetype;
 
     private GeneratorResult() {
-        this.generatedType = null;
+        archetype = null;
     }
 
-    private GeneratorResult(final GeneratedType generatedType) {
-        this.generatedType = requireNonNull(generatedType);
+    private GeneratorResult(final Archetype<?> archetype) {
+        this.archetype = requireNonNull(archetype);
     }
 
     static @NonNull GeneratorResult empty() {
         return EMPTY;
     }
 
-    static @NonNull GeneratorResult member(final GeneratedType generatedType) {
-        return new Nested(generatedType);
+    static @NonNull GeneratorResult member(final Archetype<?> archetype) {
+        return new Nested(archetype);
     }
 
-    static @NonNull GeneratorResult toplevel(final GeneratedType generatedType) {
-        return new GeneratorResult(generatedType);
+    static @NonNull GeneratorResult toplevel(final Archetype<?> archetype) {
+        return new GeneratorResult(archetype);
     }
 
-    final @Nullable GeneratedType generatedType() {
-        return generatedType;
+    final @Nullable Archetype<?> archetype() {
+        return archetype;
     }
 
-    @Nullable GeneratedType enclosedType() {
+    @Nullable Archetype<?> enclosedType() {
         return null;
     }
 }

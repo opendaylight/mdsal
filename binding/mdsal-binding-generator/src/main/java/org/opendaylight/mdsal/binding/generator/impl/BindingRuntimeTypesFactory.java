@@ -20,7 +20,6 @@ import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.IdentityGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultBindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -53,7 +52,7 @@ final class BindingRuntimeTypesFactory implements Mutable {
     }
 
     static @NonNull BindingRuntimeTypes createTypes(final @NonNull EffectiveModelContext context) {
-        final var moduleGens = new GeneratorReactor(context).execute(TypeBuilderFactory.runtime());
+        final var moduleGens = new GeneratorReactor(context).execute();
 
         final var sw = Stopwatch.createStarted();
         final var factory = new BindingRuntimeTypesFactory();

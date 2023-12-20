@@ -8,16 +8,17 @@
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import java.util.List;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.InputArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 
-public final class DefaultInputRuntimeType extends AbstractAugmentableRuntimeType<InputEffectiveStatement>
+public final class DefaultInputRuntimeType
+        extends AbstractAugmentableRuntimeType<InputEffectiveStatement, InputArchetype>
         implements InputRuntimeType {
-    public DefaultInputRuntimeType(final GeneratedType bindingType, final InputEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        super(bindingType, statement, children, augments);
+    public DefaultInputRuntimeType(final InputArchetype archetype, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments) {
+        super(archetype, children, augments);
     }
 }

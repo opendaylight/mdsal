@@ -25,13 +25,12 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.model.ri.Types;
@@ -42,7 +41,6 @@ import org.opendaylight.yangtools.yang.binding.contract.StatementNamespace;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.ri.type.TypeBuilder;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
@@ -76,8 +74,8 @@ public abstract class Generator implements Iterable<Generator> {
         this.parent = requireNonNull(parent);
     }
 
-    public final @Nullable GeneratedType generatedType() {
-        return result.generatedType();
+    public final @Nullable Archetype<?> archetype() {
+        return result.archetype();
     }
 
     public @NonNull List<GeneratedType> auxiliaryGeneratedTypes() {
@@ -147,47 +145,42 @@ public abstract class Generator implements Iterable<Generator> {
 
     /**
      * Create the type associated with this builder. This method idempotent.
-     *
-     * @param builderFactory Factory for {@link TypeBuilder}s
-     * @throws NullPointerException if {@code builderFactory} is {@code null}
      */
-    final void ensureType(final TypeBuilderFactory builderFactory) {
+    final void ensureType() {
         if (result != null) {
             return;
         }
 
         result = switch (classPlacement()) {
             case NONE, PHANTOM -> GeneratorResult.empty();
-            case MEMBER -> GeneratorResult.member(createTypeImpl(requireNonNull(builderFactory)));
-            case TOP_LEVEL -> GeneratorResult.toplevel(createTypeImpl(requireNonNull(builderFactory)));
+            case MEMBER -> GeneratorResult.member(createTypeImpl());
+            case TOP_LEVEL -> GeneratorResult.toplevel(createTypeImpl());
         };
 
-        for (Generator child : this) {
-            child.ensureType(builderFactory);
+        for (var child : this) {
+            child.ensureType();
         }
     }
 
-    @NonNull GeneratedType getGeneratedType(final TypeBuilderFactory builderFactory) {
-        return verifyNotNull(tryGeneratedType(builderFactory), "No type generated for %s", this);
+    @NonNull Archetype<?> getGeneratedType() {
+        return verifyNotNull(tryGeneratedType(), "No type generated for %s", this);
     }
 
-    final @Nullable GeneratedType tryGeneratedType(final TypeBuilderFactory builderFactory) {
-        ensureType(builderFactory);
-        return result.generatedType();
+    final @Nullable Archetype<?> tryGeneratedType() {
+        ensureType();
+        return result.archetype();
     }
 
-    final @Nullable GeneratedType enclosedType(final TypeBuilderFactory builderFactory) {
-        ensureType(builderFactory);
+    final @Nullable Archetype<?> enclosedType() {
+        ensureType();
         return result.enclosedType();
     }
 
     /**
-     * Create the type associated with this builder, as per {@link #ensureType(TypeBuilderFactory)} contract. This
-     * method is guaranteed to be called at most once.
-     *
-     * @param builderFactory Factory for {@link TypeBuilder}s
+     * Create the type associated with this builder, as per {@link #ensureType()} contract. This * method is guaranteed
+     * to be called at most once.
      */
-    abstract @NonNull GeneratedType createTypeImpl(@NonNull TypeBuilderFactory builderFactory);
+    abstract @NonNull Archetype<?> createTypeImpl();
 
     final @NonNull String assignedName() {
         return getMember().currentClass();

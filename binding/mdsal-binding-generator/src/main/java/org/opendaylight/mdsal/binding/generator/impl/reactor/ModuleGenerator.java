@@ -18,7 +18,6 @@ import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Mem
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultModuleRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
