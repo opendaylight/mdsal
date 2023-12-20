@@ -7,16 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import static com.google.common.base.Verify.verify;
-
+import com.google.common.base.VerifyException;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultFeatureRuntimeType;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
+import org.opendaylight.mdsal.binding.model.api.FeatureArchetype;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.FeatureRuntimeType;
-import org.opendaylight.yangtools.yang.binding.YangFeature;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.binding.contract.StatementNamespace;
 import org.opendaylight.yangtools.yang.model.api.stmt.FeatureEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -38,8 +34,10 @@ final class FeatureGenerator extends AbstractExplicitGenerator<FeatureEffectiveS
 
     @Override
     FeatureRuntimeType createExternalRuntimeType(final Type type) {
-        verify(type instanceof GeneratedTransferObject, "Unexpected type %s", type);
-        return new DefaultFeatureRuntimeType((GeneratedTransferObject) type, statement());
+        if (type instanceof FeatureArchetype feature) {
+            return new DefaultFeatureRuntimeType(feature);
+        }
+        throw new VerifyException("Unexpected type " + type);
     }
 
     @Override
@@ -50,26 +48,27 @@ final class FeatureGenerator extends AbstractExplicitGenerator<FeatureEffectiveS
     }
 
     @Override
-    GeneratedTransferObject createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final var builder = builderFactory.newGeneratedTOBuilder(typeName());
-        builder.addImplementsType(BindingTypes.yangFeature(builder, Type.of(getParent().typeName())));
+    FeatureArchetype createTypeImpl() {
+//        final var builder = builderFactory.newGeneratedTOBuilder(typeName());
+//        builder.addImplementsType(BindingTypes.yangFeature(builder, Type.of(getParent().typeName())));
+//
+//        annotateDeprecatedIfNecessary(statement(), builder);
+//
+//        final var module = currentModule();
+//        module.addQNameConstant(builder, localName());
+//
+//        // Constant implementation
+//        builder.addConstant(Type.of(builder), Naming.VALUE_STATIC_FIELD_NAME, YangFeature.class);
+//
+//        builderFactory.addCodegenInformation(module, statement(), builder);
+//        builder.setModuleName(module.statement().argument().getLocalName());
 
-        annotateDeprecatedIfNecessary(statement(), builder);
-
-        final var module = currentModule();
-        module.addQNameConstant(builder, localName());
-
-        // Constant implementation
-        builder.addConstant(Type.of(builder), Naming.VALUE_STATIC_FIELD_NAME, YangFeature.class);
-
-        builderFactory.addCodegenInformation(module, statement(), builder);
-        builder.setModuleName(module.statement().argument().getLocalName());
-
-        return builder.build();
+        return new FeatureArchetype(typeName(), statement());
     }
 
     @Override
-    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
+    DataObjectField<?> generateDataObjectField() {
         // features are a separate concept
+        return null;
     }
 }

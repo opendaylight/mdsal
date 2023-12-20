@@ -17,11 +17,9 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
 abstract class AbstractRuntimeType<S extends EffectiveStatement<?, ?>, T extends Type> implements RuntimeType {
     private final @NonNull T javaType;
-    private final @NonNull S statement;
 
-    AbstractRuntimeType(final T bindingType, final S statement) {
-        this.javaType = requireNonNull(bindingType);
-        this.statement = requireNonNull(statement);
+    AbstractRuntimeType(final T bindingType) {
+        javaType = requireNonNull(bindingType);
     }
 
     @Override
@@ -30,15 +28,10 @@ abstract class AbstractRuntimeType<S extends EffectiveStatement<?, ?>, T extends
     }
 
     @Override
-    public final S statement() {
-        return statement;
-    }
-
-    @Override
     public final String toString() {
         return MoreObjects.toStringHelper(this)
             .add("javaType", javaType.getIdentifier())
-            .add("statement", statement)
+            .add("statement", statement())
             .toString();
     }
 }
