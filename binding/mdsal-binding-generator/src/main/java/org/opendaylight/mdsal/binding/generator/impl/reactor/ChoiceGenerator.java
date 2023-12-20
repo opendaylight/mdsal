@@ -12,10 +12,8 @@ import static com.google.common.base.Verify.verify;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.model.api.ChoiceArchetype;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
@@ -75,19 +73,19 @@ final class ChoiceGenerator extends CompositeSchemaTreeGenerator<ChoiceEffective
     }
 
     @Override
-    GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
-        builder.addImplementsType(BindingTypes.choiceIn(Type.of(getParent().typeName())));
+    ChoiceArchetype createTypeImpl() {
+//        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
+//        builder.addImplementsType(BindingTypes.choiceIn(Type.of(getParent().typeName())));
+//
+//        final ModuleGenerator module = currentModule();
+//        module.addQNameConstant(builder, localName());
+//
+//        annotateDeprecatedIfNecessary(builder);
+//        builderFactory.addCodegenInformation(module, statement(), builder);
+////      newType.setSchemaPath(schemaNode.getPath());
+//        builder.setModuleName(module.statement().argument().getLocalName());
 
-        final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName());
-
-        annotateDeprecatedIfNecessary(builder);
-        builderFactory.addCodegenInformation(module, statement(), builder);
-//      newType.setSchemaPath(schemaNode.getPath());
-        builder.setModuleName(module.statement().argument().getLocalName());
-
-        return builder.build();
+        return new ChoiceArchetype(typeName(), statement(), getParent().typeName());
     }
 
     @Override

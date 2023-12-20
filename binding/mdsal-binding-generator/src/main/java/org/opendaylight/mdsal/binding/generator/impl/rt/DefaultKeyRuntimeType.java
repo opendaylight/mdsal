@@ -7,13 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.model.api.KeyArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.KeyRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.KeyEffectiveStatement;
 
-public final class DefaultKeyRuntimeType extends AbstractObjectRuntimeType<KeyEffectiveStatement>
+@NonNullByDefault
+public final class DefaultKeyRuntimeType extends AbstractObjectRuntimeType<KeyEffectiveStatement, KeyArchetype>
         implements KeyRuntimeType {
-    public DefaultKeyRuntimeType(final GeneratedTransferObject bindingType, final KeyEffectiveStatement statement) {
-        super(bindingType, statement);
+    public DefaultKeyRuntimeType(final KeyArchetype archetype) {
+        super(archetype);
+    }
+
+    @Override
+    public KeyEffectiveStatement statement() {
+        return javaType().statement();
     }
 }
