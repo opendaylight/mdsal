@@ -7,16 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.VerifyException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultKeyRuntimeType;
-import org.opendaylight.mdsal.binding.model.api.Archetype.Key;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
+import org.opendaylight.mdsal.binding.model.api.KeyArchetype;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.KeyRuntimeType;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
@@ -104,8 +103,10 @@ final class KeyGenerator extends AbstractExplicitGenerator<KeyEffectiveStatement
 
     @Override
     KeyRuntimeType createExternalRuntimeType(final Type type) {
-        verify(type instanceof GeneratedTransferObject, "Unexpected type %s", type);
-        return new DefaultKeyRuntimeType((GeneratedTransferObject) type, statement());
+        if (type instanceof KeyArchetype archetype) {
+            return new DefaultKeyRuntimeType(archetype);
+        }
+        throw new VerifyException("Unexpected type %s" + type);
     }
 
     @Override
@@ -116,7 +117,8 @@ final class KeyGenerator extends AbstractExplicitGenerator<KeyEffectiveStatement
     }
 
     @Override
-    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
+    DataObjectField<?> generateDataObjectField() {
         // Keys are explicitly handled by their corresponding list
+        return null;
     }
 }

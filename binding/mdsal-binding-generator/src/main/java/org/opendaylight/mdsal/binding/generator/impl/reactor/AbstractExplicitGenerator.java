@@ -16,21 +16,16 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.tree.StatementRepresentation;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.DescriptionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +81,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
      * @return Associated run-time type, or {@code null}
      */
     public final @Nullable R generatedRuntimeType() {
-        final var type = generatedType();
+        final var type = archetype();
         return type == null ? null : runtimeType();
     }
 
@@ -133,7 +128,7 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     // FIXME: this should be a generic class argument
     // FIXME: this needs a better name, but 'runtimeType' is already taken.
     @Nullable Type runtimeJavaType() {
-        return generatedType();
+        return archetype();
     }
 
     /**
@@ -314,59 +309,58 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
         return domain.addPrimary(this, new CamelCaseNamingStrategy(namespace(), localName()));
     }
 
-    void addAsGetterMethod(final @NonNull GeneratedTypeBuilderBase<?> builder,
-            final @NonNull TypeBuilderFactory builderFactory) {
+    @Nullable DataObjectField<?> generateDataObjectField() {
         if (isAugmenting()) {
             // Do not process augmented nodes: they will be taken care of in their home augmentation
-            return;
+            return null;
         }
         if (isAddedByUses()) {
             // If this generator has been added by a uses node, it is already taken care of by the corresponding
             // grouping. There is one exception to this rule: 'type leafref' can use a relative path to point
             // outside of its home grouping. In this case we need to examine the instantiation until we succeed in
             // resolving the reference.
-            addAsGetterMethodOverride(builder, builderFactory);
-            return;
+            return generateDataObjectFieldOverride();
         }
 
-        final var returnType = methodReturnType(builderFactory);
-        constructGetter(builder, returnType);
-        constructRequire(builder, returnType);
+//        final var returnType = methodReturnType();
+//        constructGetter(builder, returnType);
+//        constructRequire(builder, returnType);
+        throw new DataObjectField<>(statement(), null, methodReturnType(), null);
     }
 
-    MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        return constructGetter(builder, returnType, Naming.getGetterMethodName(localName().getLocalName()));
-    }
-
-    final MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder,
-            final Type returnType, final String methodName) {
-        final var getMethod = builder.addMethod(methodName).setReturnType(returnType);
-
-        annotateDeprecatedIfNecessary(getMethod);
-
-        statement.findFirstEffectiveSubstatementArgument(DescriptionEffectiveStatement.class)
-            .map(TypeMemberComment::referenceOf).ifPresent(getMethod::setComment);
-
-        return getMethod;
-    }
-
-    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        // No-op in most cases
-    }
-
-    final void constructRequireImpl(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        constructGetter(builder, returnType, Naming.getRequireMethodName(localName().getLocalName()))
-            .setDefault(true)
-            .setMechanics(ValueMechanics.NONNULL);
-    }
-
-    void addAsGetterMethodOverride(final @NonNull GeneratedTypeBuilderBase<?> builder,
-            final @NonNull TypeBuilderFactory builderFactory) {
+    @Nullable DataObjectField<?> generateDataObjectFieldOverride() {
         // No-op for most cases
+        return null;
     }
 
-    @NonNull Type methodReturnType(final @NonNull TypeBuilderFactory builderFactory) {
-        return getGeneratedType(builderFactory);
+//    MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+//        return constructGetter(builder, returnType, Naming.getGetterMethodName(localName().getLocalName()));
+//    }
+//
+//    final MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder,
+//            final Type returnType, final String methodName) {
+//        final var getMethod = builder.addMethod(methodName).setReturnType(returnType);
+//
+//        annotateDeprecatedIfNecessary(getMethod);
+//
+//        statement.findFirstEffectiveSubstatementArgument(DescriptionEffectiveStatement.class)
+//            .map(TypeMemberComment::referenceOf).ifPresent(getMethod::setComment);
+//
+//        return getMethod;
+//    }
+
+//    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+//        // No-op in most cases
+//    }
+//
+//    final void constructRequireImpl(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+//        constructGetter(builder, returnType, Naming.getRequireMethodName(localName().getLocalName()))
+//            .setDefault(true)
+//            .setMechanics(ValueMechanics.NONNULL);
+//    }
+
+    @NonNull Type methodReturnType() {
+        return getGeneratedType();
     }
 
     final void annotateDeprecatedIfNecessary(final AnnotableTypeBuilder builder) {

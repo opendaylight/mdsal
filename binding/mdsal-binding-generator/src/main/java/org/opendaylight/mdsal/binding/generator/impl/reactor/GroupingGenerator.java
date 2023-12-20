@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultGroupingRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.api.GroupingArchetype;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.GroupingRuntimeType;
@@ -66,7 +66,7 @@ final class GroupingGenerator extends AbstractCompositeGenerator<GroupingEffecti
     }
 
     @Override
-    GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
+    GroupingArchetype createTypeImpl() {
         final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
         builder.addImplementsType(BindingTypes.DATA_OBJECT);
         narrowImplementedInterface(builder);
@@ -79,7 +79,8 @@ final class GroupingGenerator extends AbstractCompositeGenerator<GroupingEffecti
         annotateDeprecatedIfNecessary(builder);
         builderFactory.addCodegenInformation(module, statement(), builder);
 
-        return builder.build();
+
+        return new GroupingArchetype(typeName(), null, generateFields());
     }
 
     @Override
