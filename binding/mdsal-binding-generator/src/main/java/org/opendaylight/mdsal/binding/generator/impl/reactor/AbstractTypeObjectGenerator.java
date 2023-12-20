@@ -24,25 +24,17 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeReference.ResolvedLeafref;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants;
 import org.opendaylight.mdsal.binding.model.ri.Types;
-import org.opendaylight.mdsal.binding.model.ri.generated.type.builder.AbstractEnumerationBuilder;
-import org.opendaylight.mdsal.binding.model.ri.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.RegexPatterns;
@@ -447,10 +439,9 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
     }
 
     @Override
-    final GeneratedType getGeneratedType(final TypeBuilderFactory builderFactory) {
+    final Archetype<S> getGeneratedType() {
         // For derived enumerations defer to base type
-        return isDerivedEnumeration() ? baseGen.getGeneratedType(builderFactory)
-            : super.getGeneratedType(builderFactory);
+        return isDerivedEnumeration() ? baseGen.getGeneratedType() : super.getGeneratedType();
     }
 
     final boolean isEnumeration() {
@@ -462,8 +453,8 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
     }
 
     @Override
-    Type methodReturnType(final TypeBuilderFactory builderFactory) {
-        return methodReturnElementType(builderFactory);
+    Type methodReturnType() {
+        return methodReturnElementType();
     }
 
     @Override
@@ -471,7 +462,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
         if (methodReturnTypeElement != null) {
             return methodReturnTypeElement;
         }
-        final var genType = generatedType();
+        final var genType = archetype();
         if (genType != null) {
             return genType;
         }
@@ -479,16 +470,16 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
         return prev.runtimeJavaType();
     }
 
-    final @NonNull Type methodReturnElementType(final @NonNull TypeBuilderFactory builderFactory) {
+    final @NonNull Type methodReturnElementType() {
         var local = methodReturnTypeElement;
         if (local == null) {
-            methodReturnTypeElement = local = createMethodReturnElementType(builderFactory);
+            methodReturnTypeElement = local = createMethodReturnElementType();
         }
         return local;
     }
 
-    private @NonNull Type createMethodReturnElementType(final @NonNull TypeBuilderFactory builderFactory) {
-        final GeneratedType generatedType = tryGeneratedType(builderFactory);
+    private @NonNull Type createMethodReturnElementType() {
+        final var generatedType = tryGeneratedType();
         if (generatedType != null) {
             // We have generated a type here, so return it. This covers 'bits', 'enumeration' and 'union'.
             return generatedType;
@@ -496,13 +487,13 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
 
         if (refType != null) {
             // This is a reference type of some kind. Defer to its judgement as to what the return type is.
-            return refType.methodReturnType(builderFactory);
+            return refType.methodReturnType();
         }
 
         final AbstractExplicitGenerator<?, ?> prev = previous();
         if (prev != null) {
             // We have been added through augment/uses, defer to the original definition
-            return prev.methodReturnType(builderFactory);
+            return prev.methodReturnType();
         }
 
         final Type baseType;
@@ -511,14 +502,13 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             baseType = verifyNotNull(SIMPLE_TYPES.get(qname), "Cannot resolve type %s in %s", qname, this);
         } else {
             // We are derived from a base generator. Defer to its type for return.
-            baseType = baseGen.getGeneratedType(builderFactory);
+            baseType = baseGen.getGeneratedType();
         }
 
-        return restrictType(baseType, computeRestrictions(), builderFactory);
+        return restrictType(baseType, computeRestrictions());
     }
 
-    private static @NonNull Type restrictType(final @NonNull Type baseType, final Restrictions restrictions,
-            final TypeBuilderFactory builderFactory) {
+    private static @NonNull Type restrictType(final @NonNull Type baseType, final Restrictions restrictions) {
         if (restrictions == null || restrictions.isEmpty()) {
             // No additional restrictions, return base type
             return baseType;

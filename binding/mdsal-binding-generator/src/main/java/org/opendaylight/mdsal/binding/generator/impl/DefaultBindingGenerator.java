@@ -17,9 +17,7 @@ import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.generator.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
-import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
@@ -56,12 +54,12 @@ public final class DefaultBindingGenerator implements BindingGenerator {
      *                              element
      */
     @VisibleForTesting
-    static @NonNull List<GeneratedType> generateFor(final EffectiveModelContext context,
+    static @NonNull List<Archetype<?>> generateFor(final EffectiveModelContext context,
             final Collection<? extends Module> modules) {
         final var filter = modules.stream().map(Module::asEffectiveStatement)
             .collect(Collectors.toUnmodifiableSet());
 
-        final var result = new ArrayList<GeneratedType>();
+        final var result = new ArrayList<Archetype<?>>();
         for (var gen : new GeneratorReactor(context).execute(TypeBuilderFactory.codegen()).values()) {
             if (filter.contains(gen.statement())) {
                 addTypes(result, gen);

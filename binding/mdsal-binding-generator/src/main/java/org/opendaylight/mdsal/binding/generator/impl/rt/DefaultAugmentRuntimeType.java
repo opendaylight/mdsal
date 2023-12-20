@@ -8,15 +8,15 @@
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import java.util.List;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.AugmentationArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 
-public final class DefaultAugmentRuntimeType extends AbstractCompositeRuntimeType<AugmentEffectiveStatement>
+public final class DefaultAugmentRuntimeType
+        extends AbstractCompositeRuntimeType<AugmentEffectiveStatement, AugmentationArchetype>
         implements AugmentRuntimeType {
-    public DefaultAugmentRuntimeType(final GeneratedType bindingType, final AugmentEffectiveStatement statement,
-            final List<RuntimeType> children) {
-        super(bindingType, statement, children);
+    public DefaultAugmentRuntimeType(final AugmentationArchetype archetype, final List<RuntimeType> children) {
+        super(archetype, children);
     }
 }

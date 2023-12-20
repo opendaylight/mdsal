@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import java.util.List;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ContainerRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;

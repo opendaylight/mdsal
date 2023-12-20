@@ -11,20 +11,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.GroupingArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.GroupingRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.GroupingEffectiveStatement;
 
-public final class DefaultGroupingRuntimeType extends AbstractCompositeRuntimeType<GroupingEffectiveStatement>
+@NonNullByDefault
+public final class DefaultGroupingRuntimeType
+        extends AbstractCompositeRuntimeType<GroupingEffectiveStatement, GroupingArchetype>
         implements GroupingRuntimeType {
     private final @Nullable Object directUsers;
 
-    public DefaultGroupingRuntimeType(final GeneratedType bindingType, final GroupingEffectiveStatement statement,
-            final List<RuntimeType> children, final List<? extends CompositeRuntimeType> directUsers) {
-        super(bindingType, statement, children);
+    public DefaultGroupingRuntimeType(final GroupingArchetype archetype, final List<RuntimeType> children,
+            final List<? extends CompositeRuntimeType> directUsers) {
+        super(archetype, children);
         this.directUsers = switch (directUsers.size()) {
             case 0 -> null;
             case 1 -> Objects.requireNonNull(directUsers.get(0));

@@ -19,11 +19,8 @@ import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAugmentRuntimeType;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.model.api.AugmentationArchetype;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
@@ -144,18 +141,18 @@ abstract class AbstractAugmentGenerator
     }
 
     @Override
-    final GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
+    final AugmentationArchetype createTypeImpl() {
+//        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
+//
+//        YangSourceDefinition.of(currentModule().statement(), statement()).ifPresent(builder::setYangSourceDefinition);
+//        builder.addImplementsType(BindingTypes.augmentation(targetGenerator().getGeneratedType()));
+//        addUsesInterfaces(builder, builderFactory);
+//        addConcreteInterfaceMethods(builder);
+//
+//        addGetterMethods(builder, builderFactory);
+//        annotateDeprecatedIfNecessary(builder);
 
-        YangSourceDefinition.of(currentModule().statement(), statement()).ifPresent(builder::setYangSourceDefinition);
-        builder.addImplementsType(BindingTypes.augmentation(targetGenerator().getGeneratedType(builderFactory)));
-        addUsesInterfaces(builder, builderFactory);
-        addConcreteInterfaceMethods(builder);
-
-        addGetterMethods(builder, builderFactory);
-        annotateDeprecatedIfNecessary(builder);
-
-        return builder.build();
+        return new AugmentationArchetype(typeName(), statement(), generateDataObjectFields(), groupingNames());
     }
 
     boolean matchesInstantiated(final AugmentEffectiveStatement statement) {
@@ -194,8 +191,9 @@ abstract class AbstractAugmentGenerator
     }
 
     @Override
-    final void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
+    final DataObjectField<?> generateDataObjectField() {
         // Augments are never added as getters, as they are handled via Augmentable mechanics
+        return null;
     }
 
     @Override

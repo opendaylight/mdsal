@@ -36,7 +36,6 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.PathExpression;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.ri.type.TypeBuilder;
 import org.opendaylight.yangtools.yang.model.spi.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
@@ -100,12 +99,11 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
      *   <li>create {@link Type} instances</li>
      * </ol>
      *
-     * @param builderFactory factory for creating {@link TypeBuilder}s for resulting types
      * @return Resolved generators
      * @throws IllegalStateException if the reactor has failed execution
      * @throws NullPointerException if {@code builderFactory} is {@code null}
      */
-    public @NonNull Map<QNameModule, ModuleGenerator> execute(final TypeBuilderFactory builderFactory) {
+    public @NonNull Map<QNameModule, ModuleGenerator> execute() {
         switch (state) {
             case INITIALIZED:
                 state = State.EXECUTING;
