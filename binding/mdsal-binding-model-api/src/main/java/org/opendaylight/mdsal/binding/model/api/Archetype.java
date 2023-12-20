@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
 
 /**
- * Transitional interface to for expressing proper {@link GeneratedType} archetype.
+ * Transitional interface to for expressing proper {@link Type} archetype.
  */
 // FIXME: Remove this interface when we eliminate GeneratedTransferObject and direct GeneratedType builders
 @Beta

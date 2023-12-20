@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -53,7 +53,7 @@ public interface BindingRuntimeTypes extends EffectiveModelContextProvider, Runt
      *
      * <p>
      * As an example, consider {@link ChoiceRuntimeType} and {@link CaseRuntimeType} relationship to
-     * {@link GeneratedType}s in the following model:
+     * {@link Archetype}s in the following model:
      * <pre>
      *   <code>
      *     grouping grp {

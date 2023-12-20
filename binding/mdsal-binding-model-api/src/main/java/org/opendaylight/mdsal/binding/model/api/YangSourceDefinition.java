@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 
 /**
- * DTO capturing the YANG source definition which lead to a {@link GeneratedType} being emitted.
+ * DTO capturing the YANG source definition which lead to an {@link Archetype} being emitted.
  */
 @Beta
 @NonNullByDefault
