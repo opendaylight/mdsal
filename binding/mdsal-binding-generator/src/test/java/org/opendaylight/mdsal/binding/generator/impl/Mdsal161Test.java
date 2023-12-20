@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Optional;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 

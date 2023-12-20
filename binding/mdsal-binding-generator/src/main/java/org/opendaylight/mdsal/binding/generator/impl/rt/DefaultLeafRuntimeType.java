@@ -7,13 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.LeafRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.LeafEffectiveStatement;
 
+@NonNullByDefault
 public final class DefaultLeafRuntimeType extends AbstractRuntimeType<LeafEffectiveStatement, Type>
         implements LeafRuntimeType {
+    private final LeafEffectiveStatement statement;
+
     public DefaultLeafRuntimeType(final Type bindingType, final LeafEffectiveStatement statement) {
-        super(bindingType, statement);
+        super(bindingType);
+        this.statement = requireNonNull(statement);
+    }
+
+    @Override
+    public LeafEffectiveStatement statement() {
+        return statement;
     }
 }

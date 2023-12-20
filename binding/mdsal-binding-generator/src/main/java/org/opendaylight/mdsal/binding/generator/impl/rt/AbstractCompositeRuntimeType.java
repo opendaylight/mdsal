@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.GeneratedRuntimeType;
@@ -26,15 +28,16 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
-abstract class AbstractCompositeRuntimeType<S extends EffectiveStatement<?, ?>>
-        extends AbstractGeneratedRuntimeType<S> implements CompositeRuntimeType {
+@NonNullByDefault
+abstract class AbstractCompositeRuntimeType<S extends EffectiveStatement<?, ?>, A extends Archetype<S>>
+        extends AbstractGeneratedRuntimeType<S, A> implements CompositeRuntimeType {
     private static final RuntimeType[] EMPTY = new RuntimeType[0];
 
     private final ImmutableMap<JavaTypeName, GeneratedRuntimeType> byClass;
     private final Object bySchemaTree;
 
-    AbstractCompositeRuntimeType(final GeneratedType bindingType, final S statement, final List<RuntimeType> children) {
-        super(bindingType, statement);
+    AbstractCompositeRuntimeType(final A archetype, final List<RuntimeType> children) {
+        super(archetype);
 
         byClass = children.stream()
             .filter(GeneratedRuntimeType.class::isInstance)
@@ -78,7 +81,7 @@ abstract class AbstractCompositeRuntimeType<S extends EffectiveStatement<?, ?>>
     }
 
     @Override
-    public final GeneratedRuntimeType bindingChild(final JavaTypeName typeName) {
+    public final @Nullable GeneratedRuntimeType bindingChild(final JavaTypeName typeName) {
         return byClass.get(requireNonNull(typeName));
     }
 

@@ -7,10 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.TypedefRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 
+@NonNullByDefault
 public final class DefaultTypedefRuntimeType extends AbstractGeneratedRuntimeType<TypedefEffectiveStatement>
         implements TypedefRuntimeType {
     public DefaultTypedefRuntimeType(final GeneratedType bindingType, final TypedefEffectiveStatement statement) {

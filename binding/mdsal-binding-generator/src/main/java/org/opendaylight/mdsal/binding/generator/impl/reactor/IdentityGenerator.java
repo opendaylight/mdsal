@@ -7,17 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BASE_IDENTITY;
-
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultIdentityRuntimeType;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
+import org.opendaylight.mdsal.binding.model.api.IdentityArchetype;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
-import org.opendaylight.yangtools.yang.binding.BaseIdentity;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.binding.contract.StatementNamespace;
 import org.opendaylight.yangtools.yang.model.api.stmt.BaseEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
@@ -53,31 +50,34 @@ public final class IdentityGenerator
     }
 
     @Override
-    GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
-        if (!baseIdentities.isEmpty()) {
-            for (var baseIdentity : baseIdentities) {
-                builder.addImplementsType(baseIdentity.getGeneratedType(builderFactory));
-            }
-        } else {
-            builder.addImplementsType(BASE_IDENTITY);
-        }
+    IdentityArchetype createTypeImpl() {
+//        final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
+//        if (!baseIdentities.isEmpty()) {
+//            for (var baseIdentity : baseIdentities) {
+//                builder.addImplementsType(baseIdentity.getGeneratedType());
+//            }
+//        } else {
+//            builder.addImplementsType(BASE_IDENTITY);
+//        }
 
-        annotateDeprecatedIfNecessary(statement(), builder);
+//        annotateDeprecatedIfNecessary(statement(), builder);
+//
+//        narrowImplementedInterface(builder);
+//
+//        final var module = currentModule();
+//        module.addQNameConstant(builder, localName());
+//
+//        // Constant implementation
+//        builder.addConstant(Type.of(builder), Naming.VALUE_STATIC_FIELD_NAME, BaseIdentity.class);
+//
+//        builderFactory.addCodegenInformation(module, statement(), builder);
+//        builder.setModuleName(module.statement().argument().getLocalName());
+////        builder.setSchemaPath(identity.getPath());
 
-        narrowImplementedInterface(builder);
-
-        final var module = currentModule();
-        module.addQNameConstant(builder, localName());
-
-        // Constant implementation
-        builder.addConstant(Type.of(builder), Naming.VALUE_STATIC_FIELD_NAME, BaseIdentity.class);
-
-        builderFactory.addCodegenInformation(module, statement(), builder);
-        builder.setModuleName(module.statement().argument().getLocalName());
-//        builder.setSchemaPath(identity.getPath());
-
-        return builder.build();
+        return new IdentityArchetype(typeName(), statement(), baseIdentities.stream()
+            .map(base -> base.getGeneratedType().typeName())
+            .distinct()
+            .collect(ImmutableList.toImmutableList()));
     }
 
     @Override
@@ -93,7 +93,8 @@ public final class IdentityGenerator
     }
 
     @Override
-    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
+    DataObjectField<?> generateDataObjectField() {
         // identities are a separate concept
+        return null;
     }
 }

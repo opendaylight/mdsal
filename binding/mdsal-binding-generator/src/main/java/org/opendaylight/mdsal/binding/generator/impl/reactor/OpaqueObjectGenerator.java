@@ -10,9 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAnydataRuntimeType;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAnyxmlRuntimeType;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AnydataRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.AnyxmlRuntimeType;
@@ -82,7 +80,7 @@ abstract class OpaqueObjectGenerator<S extends DataTreeEffectiveStatement<?>, R 
     }
 
     @Override
-    GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
+    GeneratedType createTypeImpl() {
         final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
         builder.addImplementsType(BindingTypes.opaqueObject(builder));
         addImplementsChildOf(builder);
