@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.runtime.api;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.model.api.ChoiceArchetype;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
@@ -20,7 +21,12 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
  */
 public interface ChoiceRuntimeType extends CompositeRuntimeType, DataRuntimeType {
     @Override
-    ChoiceEffectiveStatement statement();
+    ChoiceArchetype javaType();
+
+    @Override
+    default ChoiceEffectiveStatement statement() {
+        return javaType().statement();
+    }
 
     /**
      * Returns resolved {@link CaseRuntimeType} for specified binding class name.

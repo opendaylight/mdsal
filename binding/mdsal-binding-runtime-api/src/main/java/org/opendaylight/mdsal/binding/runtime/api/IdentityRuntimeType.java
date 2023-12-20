@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
-import org.opendaylight.mdsal.binding.model.api.Archetype;
+import org.opendaylight.mdsal.binding.model.api.IdentityArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
 
 /**
@@ -15,8 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement
  */
 public interface IdentityRuntimeType extends GeneratedRuntimeType {
     @Override
-    IdentityEffectiveStatement statement();
+    IdentityArchetype javaType();
 
     @Override
-    Archetype.Identity archetype();
+    default IdentityEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

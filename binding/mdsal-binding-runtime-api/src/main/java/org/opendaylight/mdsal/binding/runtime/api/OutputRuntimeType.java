@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
-import org.opendaylight.mdsal.binding.model.api.Archetype;
+import org.opendaylight.mdsal.binding.model.api.OutputArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputStatement;
 
@@ -16,5 +16,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.OutputStatement;
  */
 public interface OutputRuntimeType extends ContainerLikeRuntimeType<OutputStatement, OutputEffectiveStatement> {
     @Override
-    Archetype.DataObject.Output archetype();
+    OutputArchetype javaType();
+
+    @Override
+    default OutputEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

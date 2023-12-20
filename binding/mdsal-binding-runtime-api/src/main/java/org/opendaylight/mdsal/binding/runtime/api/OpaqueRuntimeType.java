@@ -7,8 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
-import org.opendaylight.mdsal.binding.model.api.Archetype;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.OpaqueObjectArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 
 /**
@@ -16,11 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement
  */
 public interface OpaqueRuntimeType extends GeneratedRuntimeType, DataRuntimeType {
     @Override
-    DataTreeEffectiveStatement<?> statement();
+    OpaqueObjectArchetype javaType();
 
     @Override
-    GeneratedType javaType();
-
-    @Override
-    Archetype.OpaqueObject archetype();
+    default DataTreeEffectiveStatement<?> statement() {
+        return javaType().statement();
+    }
 }
