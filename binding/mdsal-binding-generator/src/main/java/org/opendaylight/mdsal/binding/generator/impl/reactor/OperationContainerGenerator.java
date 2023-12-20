@@ -12,8 +12,7 @@ import static java.util.Objects.requireNonNull;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.DataObjectArchetype;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -55,20 +54,18 @@ abstract sealed class OperationContainerGenerator<S extends DataTreeEffectiveSta
     }
 
     @Override
-    final GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final AbstractCompositeGenerator<?, ?> parent = getParent();
-        if (parent instanceof ActionGenerator actionParent && actionParent.isAddedByUses()) {
+    final DataObjectArchetype<?> createTypeImpl() {
+        if (getParent() instanceof ActionGenerator actionParent && actionParent.isAddedByUses()) {
             //        final ActionDefinition orig = findOrigAction(parentSchema, action).get();
             //        // Original definition may live in a different module, make sure we account for that
             //        final ModuleContext origContext = moduleContext(
             //            orig.getPath().getPathFromRoot().iterator().next().getModule());
             //        input = context.addAliasType(origContext, orig.getInput(), action.getInput());
             //        output = context.addAliasType(origContext, orig.getOutput(), action.getOutput());
-
             throw new UnsupportedOperationException("Lookup in original");
         }
 
-        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
+        final var builder = builderFactory.newGeneratedTypeBuilder(typeName());
         builder.addImplementsType(baseInterface);
         addAugmentable(builder);
 

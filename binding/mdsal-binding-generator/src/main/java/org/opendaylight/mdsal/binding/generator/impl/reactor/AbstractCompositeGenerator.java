@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,11 +18,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.model.api.Enumeration;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.DataObjectField;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
@@ -50,7 +48,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.UsesEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.ri.type.TypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,6 +165,10 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
     final @NonNull List<GroupingGenerator> groupings() {
         return verifyNotNull(groupings, "Groupings not initialized in %s", this);
+    }
+
+    final @NonNull ImmutableList<JavaTypeName> groupingNames() {
+        return groupings().stream().map(GroupingGenerator::typeName).collect(ImmutableList.toImmutableList());
     }
 
     @Override
@@ -449,41 +450,50 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return null;
     }
 
-    /**
-     * Update the specified builder to implement interfaces generated for the {@code grouping} statements this generator
-     * is using.
-     *
-     * @param builder Target builder
-     * @param builderFactory factory for creating {@link TypeBuilder}s
-     * @return The number of groupings this type uses.
-     */
-    final int addUsesInterfaces(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
-        for (var grp : groupings) {
-            builder.addImplementsType(grp.getGeneratedType(builderFactory));
-        }
-        return groupings.size();
-    }
+//    /**
+//     * Update the specified builder to implement interfaces generated for the {@code grouping} statements this
+//    generator
+//     * is using.
+//     *
+//     * @param builder Target builder
+//     * @param builderFactory factory for creating {@link TypeBuilder}s
+//     * @return The number of groupings this type uses.
+//     */
+//    final int addUsesInterfaces(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
+//        for (var grp : groupings) {
+//            builder.addImplementsType(grp.getGeneratedType(builderFactory));
+//        }
+//        return groupings.size();
+//    }
 
-    static final void addAugmentable(final GeneratedTypeBuilder builder) {
-        builder.addImplementsType(BindingTypes.augmentable(builder));
-    }
+//    static final void addAugmentable(final GeneratedTypeBuilder builder) {
+//        builder.addImplementsType(BindingTypes.augmentable(builder));
+//    }
 
-    final void addGetterMethods(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
+    final @NonNull ImmutableList<DataObjectField<?>> generateDataObjectFields() {
+        final var builder = ImmutableList.<DataObjectField<?>>builder();
+
         for (var child : this) {
             // Only process explicit generators here
             if (child instanceof AbstractExplicitGenerator<?, ?> explicit) {
-                explicit.addAsGetterMethod(builder, builderFactory);
+                final var field = explicit.generateDataObjectField();
+                if (field != null) {
+                    builder.add(field);
+                }
+
+//                explicit.addAsGetterMethod(builder, builderFactory);
             }
 
-            final var enclosedType = child.enclosedType(builderFactory);
-            if (enclosedType instanceof GeneratedTransferObject gto) {
-                builder.addEnclosingTransferObject(gto);
-            } else if (enclosedType instanceof Enumeration enumeration) {
-                builder.addEnumeration(enumeration);
-            } else {
-                verify(enclosedType == null, "Unhandled enclosed type %s in %s", enclosedType, child);
-            }
+//            final var enclosedType = child.enclosedType(builderFactory);
+//            if (enclosedType instanceof GeneratedTransferObject gto) {
+//                builder.addEnclosingTransferObject(gto);
+//            } else if (enclosedType instanceof Enumeration enumeration) {
+//                builder.addEnumeration(enumeration);
+//            } else {
+//                verify(enclosedType == null, "Unhandled enclosed type %s in %s", enclosedType, child);
+//            }
         }
+        return builder.build();
     }
 
     private @NonNull List<Generator> createChildren(final EffectiveStatement<?, ?> statement) {
