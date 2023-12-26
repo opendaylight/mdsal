@@ -26,7 +26,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, configurationPid = "org.opendaylight.mdsal.replicate.netty.sink")
+@Component(service = { }, configurationPid = "org.opendaylight.mdsal.replicate.netty.sink")
 @Designate(ocd = NettyReplicationSink.Config.class)
 public final class NettyReplicationSink {
     private static final Logger LOG = LoggerFactory.getLogger(NettyReplicationSink.class);
@@ -52,29 +52,17 @@ public final class NettyReplicationSink {
         int maxMissedKeepalives() default 5;
     }
 
-    @Reference
-    private BootstrapSupport bootstrapSupport;
-
-    @Reference
-    private DOMDataBroker dataBroker;
-
-    @Reference
-    private ClusterSingletonServiceProvider singletonService;
-
     private Registration reg;
 
-    public NettyReplicationSink() {
-        // Visible for DI
-    }
-
     @Activate
-    void activate(final Config config) throws UnknownHostException {
-        final InetAddress sourceAddress = InetAddress.getByName(config.sourceHost());
-        final Duration reconnectDelay = Duration.ofMillis(config.reconnectDelayMillis());
-        final Duration keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
-
-        reg = createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(), sourceAddress,
-                config.sourcePort(), reconnectDelay, keepaliveInterval, config.maxMissedKeepalives());
+    public NettyReplicationSink(@Reference final BootstrapSupport bootstrapSupport,
+            @Reference final DOMDataBroker dataBroker,
+            @Reference final ClusterSingletonServiceProvider singletonService, final Config config)
+                throws UnknownHostException {
+        reg = createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(),
+            InetAddress.getByName(config.sourceHost()),
+            config.sourcePort(), Duration.ofMillis(config.reconnectDelayMillis()),
+            Duration.ofSeconds(config.keepAliveIntervalSeconds()), config.maxMissedKeepalives());
     }
 
     @Deactivate
@@ -84,9 +72,9 @@ public final class NettyReplicationSink {
     }
 
     static Registration createSink(final BootstrapSupport bootstrap, final DOMDataBroker broker,
-                                  final ClusterSingletonServiceProvider singleton, final boolean enabled,
-                                  final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay,
-                                  final Duration keepaliveInterval, final int maxMissedKeepalives) {
+            final ClusterSingletonServiceProvider singleton, final boolean enabled,
+            final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay,
+            final Duration keepaliveInterval, final int maxMissedKeepalives) {
         LOG.debug("Sink {}", enabled ? "enabled" : "disabled");
         checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
         return enabled ? singleton.registerClusterSingletonService(new SinkSingletonService(bootstrap,
