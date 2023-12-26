@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.replicate.netty;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.time.Duration;
@@ -26,7 +26,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, configurationPid = "org.opendaylight.mdsal.replicate.netty.source")
+@Component(service = { }, configurationPid = "org.opendaylight.mdsal.replicate.netty.source")
 @Designate(ocd = NettyReplicationSource.Config.class)
 public final class NettyReplicationSource {
     private static final Logger LOG = LoggerFactory.getLogger(NettyReplicationSource.class);
@@ -46,15 +46,6 @@ public final class NettyReplicationSource {
         int maxMissedKeepalives() default 5;
     }
 
-    @Reference
-    private BootstrapSupport bootstrapSupport;
-
-    @Reference
-    private DOMDataBroker dataBroker;
-
-    @Reference
-    private ClusterSingletonServiceProvider singletonService;
-
     private Registration reg;
 
     public NettyReplicationSource() {
@@ -62,11 +53,11 @@ public final class NettyReplicationSource {
     }
 
     @Activate
-    void activate(final Config config) {
-        final Duration keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
-
+    public NettyReplicationSource(@Reference final BootstrapSupport bootstrapSupport,
+            @Reference final DOMDataBroker dataBroker,
+            @Reference final ClusterSingletonServiceProvider singletonService, final Config config) {
         reg = createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listenPort(),
-                keepaliveInterval, config.maxMissedKeepalives());
+            Duration.ofSeconds(config.keepAliveIntervalSeconds()), config.maxMissedKeepalives());
     }
 
     @Deactivate
@@ -77,12 +68,11 @@ public final class NettyReplicationSource {
 
     @VisibleForTesting
     static Registration createSource(final BootstrapSupport bootstrap, final DOMDataBroker broker,
-                                    final ClusterSingletonServiceProvider singleton, final boolean enabled,
-                                    final int listenPort, final Duration keepaliveInterval,
-                                    final int maxMissedKeepalives) {
+            final ClusterSingletonServiceProvider singleton, final boolean enabled, final int listenPort,
+            final Duration keepaliveInterval, final int maxMissedKeepalives) {
         LOG.debug("Source {}", enabled ? "enabled" : "disabled");
-        final var dtcs = broker.extension(DOMDataTreeChangeService.class);
-        verify(dtcs != null, "Missing DOMDataTreeChangeService in broker %s", broker);
+        final var dtcs = verifyNotNull(broker.extension(DOMDataTreeChangeService.class),
+            "Missing DOMDataTreeChangeService in broker %s", broker);
         checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
         return enabled ? singleton.registerClusterSingletonService(new SourceSingletonService(bootstrap,
                 dtcs, listenPort, keepaliveInterval, maxMissedKeepalives)) : new NoOpRegistration();
