@@ -42,42 +42,40 @@ import org.slf4j.LoggerFactory;
 public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYangTextSources {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
-    @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
-    ComponentFactory<EffectiveModelContextImpl> listenerFactory = null;
 
     private final List<EffectiveModelContextListener> listeners = new CopyOnWriteArrayList<>();
     private final AtomicReference<ModuleInfoSnapshot> currentSnapshot = new AtomicReference<>();
+    private final ComponentFactory<EffectiveModelContextImpl> listenerFactory;
 
     private boolean deactivated;
 
-    @Override
-    public @NonNull EffectiveModelContext getGlobalContext() {
-        return currentSnapshot.get().getEffectiveModelContext();
+    @Activate
+    public OSGiDOMSchemaService(
+            @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
+            final ComponentFactory<EffectiveModelContextImpl> listenerFactory) {
+        this.listenerFactory = requireNonNull(listenerFactory);
+        LOG.info("DOM Schema services activated");
     }
 
-    @Override
-    public Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
-        return registerListener(requireNonNull(listener));
-    }
-
-    @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
-        return currentSnapshot.get().getSource(sourceIdentifier);
+    @Deactivate
+    void deactivate() {
+        LOG.info("DOM Schema services deactivated");
+        deactivated = true;
     }
 
     @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     void bindSnapshot(final OSGiModuleInfoSnapshot newContext) {
         LOG.info("Updating context to generation {}", newContext.getGeneration());
-        final ModuleInfoSnapshot snapshot = newContext.getService();
-        final EffectiveModelContext ctx = snapshot.getEffectiveModelContext();
-        final ModuleInfoSnapshot previous = currentSnapshot.getAndSet(snapshot);
+        final var snapshot = newContext.getService();
+        final var modelContext = snapshot.getEffectiveModelContext();
+        final var previous = currentSnapshot.getAndSet(snapshot);
         LOG.debug("Snapshot updated from {} to {}", previous, snapshot);
 
-        listeners.forEach(listener -> notifyListener(ctx, listener));
+        listeners.forEach(listener -> notifyListener(modelContext, listener));
     }
 
     void unbindSnapshot(final OSGiModuleInfoSnapshot oldContext) {
-        final ModuleInfoSnapshot snapshot = oldContext.getService();
+        final var snapshot = oldContext.getService();
         if (currentSnapshot.compareAndSet(snapshot, null) && !deactivated) {
             LOG.info("Lost final generation {}", oldContext.getGeneration());
         }
@@ -96,19 +94,13 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
         listeners.remove(listener);
     }
 
-    @Activate
-    @SuppressWarnings("static-method")
-    void activate() {
-        LOG.info("DOM Schema services activated");
+    @Override
+    public @NonNull EffectiveModelContext getGlobalContext() {
+        return currentSnapshot.get().getEffectiveModelContext();
     }
 
-    @Deactivate
-    void deactivate() {
-        LOG.info("DOM Schema services deactivated");
-        deactivated = true;
-    }
-
-    private @NonNull Registration registerListener(final @NonNull EffectiveModelContextListener listener) {
+    @Override
+    public Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
         final var reg = listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
         return new AbstractRegistration() {
             @Override
@@ -118,11 +110,16 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
         };
     }
 
+    @Override
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+        return currentSnapshot.get().getSource(sourceIdentifier);
+    }
+
     @SuppressWarnings("checkstyle:illegalCatch")
-    private static void notifyListener(final @NonNull EffectiveModelContext context,
+    private static void notifyListener(final @NonNull EffectiveModelContext modelContext,
             final EffectiveModelContextListener listener) {
         try {
-            listener.onModelContextUpdated(context);
+            listener.onModelContextUpdated(modelContext);
         } catch (RuntimeException e) {
             LOG.warn("Failed to notify listener {}", listener, e);
         }
