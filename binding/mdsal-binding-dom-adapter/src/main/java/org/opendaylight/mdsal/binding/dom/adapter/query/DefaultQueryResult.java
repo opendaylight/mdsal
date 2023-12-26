@@ -52,7 +52,9 @@ final class DefaultQueryResult<T extends DataObject>
     private final BindingCodecTree codec;
 
     @SuppressWarnings("unused")
-    @SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "Ungrokked type annotation")
+    @SuppressFBWarnings(
+        value = { "NP_STORE_INTO_NONNULL_FIELD", "URF_UNREAD_FIELD" },
+        justification = "Ungrokked type annotation. https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile @Nullable BindingDataObjectCodecTreeNode<T> itemCodec = null;
 
     DefaultQueryResult(final BindingCodecTree codec, final DOMQueryResult domResult) {

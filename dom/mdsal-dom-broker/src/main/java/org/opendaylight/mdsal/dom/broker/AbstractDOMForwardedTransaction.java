@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.broker;
 
 import static java.util.Objects.requireNonNull;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.Map;
@@ -47,6 +48,8 @@ abstract class AbstractDOMForwardedTransaction<T extends DOMStoreTransaction>
     private final @NonNull Object identifier;
     private final Function<LogicalDatastoreType, T> backingTxFactory;
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+        justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Entry<LogicalDatastoreType, T> backingTx;
 
     /**
