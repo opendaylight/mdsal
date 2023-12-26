@@ -45,6 +45,7 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires static org.osgi.util.tracker;
 
     // Annotations
+    requires static com.github.spotbugs.annotations;
     requires static javax.inject;
     requires static org.kohsuke.metainf_services;
     requires static org.eclipse.jdt.annotation;
