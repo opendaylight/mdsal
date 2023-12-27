@@ -458,7 +458,7 @@ public final class CodeHelpers {
      * @throws NullPointerException if {@code requiredClass} or {@code fieldName} is {@code null}
      */
     @SuppressWarnings("unchecked")
-    public static <T> @Nullable List<T> checkListFieldCast(final @NonNull Class<?> requiredClass,
+    public static <T> @Nullable List<T> checkListFieldCast(final @NonNull Class<T> requiredClass,
             final @NonNull String fieldName, final @Nullable List<?> list) {
         checkCollectionField(requiredClass, fieldName, list);
         return (List<T>) list;
@@ -475,7 +475,7 @@ public final class CodeHelpers {
      * @throws NullPointerException if {@code requiredClass} or {@code fieldName} is {@code null}
      */
     @SuppressWarnings("unchecked")
-    public static <T> @Nullable Set<T> checkSetFieldCast(final @NonNull Class<?> requiredClass,
+    public static <T> @Nullable Set<T> checkSetFieldCast(final @NonNull Class<T> requiredClass,
             final @NonNull String fieldName, final @Nullable Set<?> set) {
         checkCollectionField(requiredClass, fieldName, set);
         return (Set<T>) set;
