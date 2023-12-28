@@ -19,7 +19,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-binding-test-utils</artifactId>
-    <version>12.0.4</version>
+    <version>12.0.5-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
