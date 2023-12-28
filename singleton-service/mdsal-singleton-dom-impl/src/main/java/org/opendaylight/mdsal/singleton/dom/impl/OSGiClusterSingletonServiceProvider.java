@@ -24,23 +24,10 @@ import org.slf4j.LoggerFactory;
 public final class OSGiClusterSingletonServiceProvider implements ClusterSingletonServiceProvider {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiClusterSingletonServiceProvider.class);
 
-    @Reference
-    DOMEntityOwnershipService entityOwnershipService = null;
-
     private DOMClusterSingletonServiceProviderImpl delegate;
 
-    @Override
-    public ClusterSingletonServiceRegistration registerClusterSingletonService(final ClusterSingletonService service) {
-        return delegate.registerClusterSingletonService(service);
-    }
-
-    @Override
-    public void close() {
-        // Ignored on purpose
-    }
-
     @Activate
-    void activate() {
+    public OSGiClusterSingletonServiceProvider(@Reference final DOMEntityOwnershipService entityOwnershipService) {
         LOG.info("Cluster Singleton Service starting");
         delegate = new DOMClusterSingletonServiceProviderImpl(entityOwnershipService);
         delegate.initializeProvider();
@@ -53,5 +40,15 @@ public final class OSGiClusterSingletonServiceProvider implements ClusterSinglet
         delegate.close();
         delegate = null;
         LOG.info("Cluster Singleton Service stopped");
+    }
+
+    @Override
+    public ClusterSingletonServiceRegistration registerClusterSingletonService(final ClusterSingletonService service) {
+        return delegate.registerClusterSingletonService(service);
+    }
+
+    @Override
+    public void close() {
+        // Ignored on purpose
     }
 }
