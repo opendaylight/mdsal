@@ -15,7 +15,6 @@ module org.opendaylight.mdsal.eos.binding.dom.adapter {
     requires org.slf4j;
 
     // Annotations
-    requires static com.github.spotbugs.annotations;
     requires static javax.inject;
     requires static org.osgi.service.component.annotations;
 }
