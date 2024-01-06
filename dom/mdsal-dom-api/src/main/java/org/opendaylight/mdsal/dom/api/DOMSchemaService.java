@@ -7,10 +7,14 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import com.google.common.io.CharSource;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.source.YangSourceRepresentation;
 
 @NonNullByDefault
 public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchemaService.Extension> {
@@ -36,4 +40,17 @@ public interface DOMSchemaService extends DOMService<DOMSchemaService, DOMSchema
      * @throws NullPointerException if {@code listener} is {@code null}
      */
     Registration registerSchemaContextListener(Consumer<EffectiveModelContext> listener);
+
+    /**
+     * An {@link Extension} exposing access to {@link CharSource} or a {@link YangSourceRepresentation}.
+     */
+    public interface YangTextSourceExtension extends Extension {
+        /**
+         * Return a future producing a {@link CharSource} containing the YANG text of specified source.
+         *
+         * @param sourceId A {@link SourceIdentifier}
+         * @return A future
+         */
+        ListenableFuture<CharSource> getYangTexttSource(SourceIdentifier sourceId);
+    }
 }
