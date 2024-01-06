@@ -75,30 +75,30 @@ public enum BindingStructuralType {
         return dataBased != null ? from(dataBased) : from(domChildNode.name());
     }
 
-    private static BindingStructuralType from(final PathArgument identifier) {
-        if (identifier instanceof NodeIdentifierWithPredicates) {
+    private static BindingStructuralType from(final PathArgument arg) {
+        if (arg instanceof NodeIdentifierWithPredicates) {
             return VISIBLE_CONTAINER;
-        }
-        if (identifier instanceof NodeWithValue) {
+        } else if (arg instanceof NodeWithValue) {
             return NOT_ADDRESSABLE;
+        } else {
+            return UNKNOWN;
         }
-        return UNKNOWN;
     }
 
     static BindingStructuralType from(final NormalizedNode data) {
-        if (isNotAddressable(data)) {
+        if (data instanceof LeafNode || data instanceof AnyxmlNode || data instanceof AnydataNode
+            || data instanceof LeafSetNode || data instanceof LeafSetEntryNode
+            || data instanceof UnkeyedListNode || data instanceof UnkeyedListEntryNode) {
             return NOT_ADDRESSABLE;
-        }
-        if (data instanceof MapNode) {
-            return INVISIBLE_LIST;
-        }
-        if (data instanceof ChoiceNode) {
-            return INVISIBLE_CONTAINER;
-        }
-        if (isVisibleContainer(data)) {
+        } else if (data instanceof ContainerNode || data instanceof MapEntryNode) {
             return VISIBLE_CONTAINER;
+        } else if (data instanceof MapNode) {
+            return INVISIBLE_LIST;
+        } else if (data instanceof ChoiceNode) {
+            return INVISIBLE_CONTAINER;
+        } else {
+            return UNKNOWN;
         }
-        return UNKNOWN;
     }
 
     public static BindingStructuralType recursiveFrom(final DataTreeCandidateNode node) {
@@ -120,19 +120,5 @@ public enum BindingStructuralType {
             }
             default -> type;
         };
-    }
-
-    private static boolean isVisibleContainer(final NormalizedNode data) {
-        return data instanceof MapEntryNode || data instanceof ContainerNode;
-    }
-
-    private static boolean isNotAddressable(final NormalizedNode normalizedNode) {
-        return normalizedNode instanceof LeafNode
-                || normalizedNode instanceof AnyxmlNode
-                || normalizedNode instanceof AnydataNode
-                || normalizedNode instanceof LeafSetNode
-                || normalizedNode instanceof LeafSetEntryNode
-                || normalizedNode instanceof UnkeyedListNode
-                || normalizedNode instanceof UnkeyedListEntryNode;
     }
 }
