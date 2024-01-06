@@ -10,67 +10,44 @@ package org.opendaylight.mdsal.dom.spi;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
-import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
- * {@link DOMSchemaService} (and {@link DOMYangTextSourceProvider}) implementations backed by a
- * {@code Supplier<EffectiveModelContext>} (and {@link SchemaSourceProvider}) which are known to be fixed and never
- * change schemas.
+ * {@link DOMSchemaService} backed by a {@code Supplier<EffectiveModelContext>}
+ * (and potentially a {@link YangTextSourceExtension}) which are known to be fixed
+ * and never change schemas.
  *
  * @author Michael Vorburger.ch
  */
 @Beta
 @NonNullByDefault
-public sealed class FixedDOMSchemaService implements DOMSchemaService {
-    private static final class WithYangTextSources extends FixedDOMSchemaService implements DOMYangTextSourceProvider {
-        private final SchemaSourceProvider<YangTextSource> schemaSourceProvider;
-
-        WithYangTextSources(final Supplier<EffectiveModelContext> modelContextSupplier,
-                final SchemaSourceProvider<YangTextSource> schemaSourceProvider) {
-            super(modelContextSupplier);
-            this.schemaSourceProvider = requireNonNull(schemaSourceProvider);
-        }
-
-        @Override
-        public List<Extension> supportedExtensions() {
-            return List.of(this);
-        }
-
-        @Override
-        public ListenableFuture<? extends YangTextSource> getSource(final SourceIdentifier sourceIdentifier) {
-            return schemaSourceProvider.getSource(sourceIdentifier);
-        }
+public record FixedDOMSchemaService(
+        Supplier<EffectiveModelContext> modelContextSupplier,
+        @Nullable YangTextSourceExtension extension) implements DOMSchemaService {
+    public FixedDOMSchemaService {
+        requireNonNull(modelContextSupplier);
     }
 
-    private final Supplier<EffectiveModelContext> modelContextSupplier;
-
-    private FixedDOMSchemaService(final Supplier<EffectiveModelContext> modelContextSupplier) {
-        this.modelContextSupplier = requireNonNull(modelContextSupplier);
+    public FixedDOMSchemaService(final Supplier<EffectiveModelContext> modelContextSupplier) {
+        this(modelContextSupplier, null);
     }
 
-    public static DOMSchemaService of(final EffectiveModelContext effectiveModel) {
-        final var checked = requireNonNull(effectiveModel);
-        return new FixedDOMSchemaService(() -> checked);
+    public FixedDOMSchemaService(final EffectiveModelContext effectiveModel) {
+        this(() -> effectiveModel, null);
+        requireNonNull(effectiveModel);
     }
 
-    public static DOMSchemaService of(final Supplier<EffectiveModelContext> modelContextSupplier) {
-        return new FixedDOMSchemaService(modelContextSupplier);
-    }
-
-    public static DOMSchemaService of(final Supplier<EffectiveModelContext> modelContextSupplier,
-            final SchemaSourceProvider<YangTextSource> yangTextSourceProvider) {
-        return new WithYangTextSources(modelContextSupplier, requireNonNull(yangTextSourceProvider));
+    @Override
+    public List<Extension> supportedExtensions() {
+        final var local = extension;
+        return local == null ? List.of() : List.of(local);
     }
 
     @Override

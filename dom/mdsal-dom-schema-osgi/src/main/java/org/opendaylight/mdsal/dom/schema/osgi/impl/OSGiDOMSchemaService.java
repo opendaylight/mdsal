@@ -9,7 +9,9 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,7 +19,6 @@ import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -38,8 +39,8 @@ import org.slf4j.LoggerFactory;
 /**
  * OSGi Service Registry-backed implementation of {@link DOMSchemaService}.
  */
-@Component(service = DOMSchemaService.class, immediate = true)
-public final class OSGiDOMSchemaService implements DOMSchemaService, DOMYangTextSourceProvider {
+@Component(immediate = true)
+public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaService.YangTextSourceExtension {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
     private final List<Consumer<EffectiveModelContext>> listeners = new CopyOnWriteArrayList<>();
@@ -54,6 +55,11 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMYangText
             final ComponentFactory<ModelContextListener> listenerFactory) {
         this.listenerFactory = requireNonNull(listenerFactory);
         LOG.info("DOM Schema services activated");
+    }
+
+    @Override
+    public List<Extension> supportedExtensions() {
+        return List.of(this);
     }
 
     @Deactivate
@@ -110,8 +116,8 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMYangText
     }
 
     @Override
-    public ListenableFuture<? extends YangTextSource> getSource(final SourceIdentifier sourceIdentifier) {
-        return currentSnapshot.get().getSource(sourceIdentifier);
+    public ListenableFuture<YangTextSource> getYangTexttSource(final SourceIdentifier sourceId) {
+        return Futures.transform(currentSnapshot.get().getSource(sourceId), x -> x, MoreExecutors.directExecutor());
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
