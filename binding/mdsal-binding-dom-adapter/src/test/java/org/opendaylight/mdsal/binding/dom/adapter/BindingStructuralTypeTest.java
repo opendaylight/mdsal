@@ -27,6 +27,6 @@ class BindingStructuralTypeTest {
     @Test
     void basicTest() {
         doReturn(normalizedNode).when(dataTreeCandidateNode).dataBefore();
-        assertEquals(BindingStructuralType.UNKNOWN, BindingStructuralType.from(dataTreeCandidateNode));
+        assertEquals(BindingStructuralType.NOT_ADDRESSABLE, BindingStructuralType.from(dataTreeCandidateNode));
     }
 }
