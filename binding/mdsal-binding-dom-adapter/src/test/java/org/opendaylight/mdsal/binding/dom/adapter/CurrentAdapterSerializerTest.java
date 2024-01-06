@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,6 +35,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
+import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class CurrentAdapterSerializerTest {
@@ -126,19 +126,25 @@ public class CurrentAdapterSerializerTest {
         }
 
         @Override
-        public EffectiveModelContext modelContext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public ListenableFuture<? extends YangTextSource> getSource(final SourceIdentifier sourceIdentifier) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         @SuppressWarnings("unchecked")
         public <T> Class<T> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
             return (Class<T>) Class.forName(fullyQualifiedName);
         }
+
+        @Override
+        public YangTextSource yangTextSource(final SourceIdentifier arg0) {
+            return null;
+        }
+
+        @Override
+        public YangTextSource getYangTextSource(final SourceIdentifier sourceId) throws MissingSchemaSourceException {
+            throw new MissingSchemaSourceException(sourceId, "no sources");
+        }
+
+        @Override
+        public EffectiveModelContext modelContext() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 }
