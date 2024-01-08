@@ -46,7 +46,7 @@ public class TracingBrokerTest {
         }
         DOMDataTreeReadWriteTransaction anotherTx = tracingBroker.newReadWriteTransaction();
 
-        DOMTransactionChain txChain = tracingBroker.createTransactionChain(null);
+        DOMTransactionChain txChain = tracingBroker.createTransactionChain();
         DOMDataTreeReadWriteTransaction txFromChain = txChain.newReadWriteTransaction();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -12,6 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
@@ -23,10 +24,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.yang.gen.v1.bug8449.rev170516.Top;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -36,6 +37,8 @@ public class BindingDOMAdapterLoaderTest {
     private DOMDataBroker domService;
     @Mock
     private AdapterContext mockContext;
+    @Mock
+    private DOMTransactionChain domChain;
 
     private BindingDOMAdapterLoader bindingDOMAdapterLoader;
 
@@ -59,7 +62,8 @@ public class BindingDOMAdapterLoaderTest {
     @Test
     public void createChainTest() {
         final var adapter = assertDataBrokerAdapter();
-        assertNotNull(adapter.createTransactionChain(mock(TransactionChainListener.class)));
+        doReturn(domChain).when(domService).createTransactionChain();
+        assertNotNull(adapter.createTransactionChain());
     }
 
     @Test
