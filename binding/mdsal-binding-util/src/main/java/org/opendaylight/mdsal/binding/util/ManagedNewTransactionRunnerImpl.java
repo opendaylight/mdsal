@@ -11,16 +11,16 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.FutureCallback;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.Function;
 import javax.inject.Inject;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.Transaction;
-import org.opendaylight.mdsal.binding.api.TransactionChain;
-import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 // Do *NOT* mark this as @Singleton, because users choose their implementation
 public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryImpl<DataBroker>
         implements ManagedNewTransactionRunner {
-
     private static final Logger LOG = LoggerFactory.getLogger(ManagedNewTransactionRunnerImpl.class);
 
     @Inject
@@ -54,18 +53,18 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     @Override
     @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <R> R applyWithNewTransactionChainAndClose(final Function<ManagedTransactionChain, R> chainConsumer) {
-        try (TransactionChain realTxChain = getTransactionFactory().createTransactionChain(
-            new TransactionChainListener() {
+        try (var realTxChain = getTransactionFactory().createTransactionChain()) {
+            realTxChain.addCallback(new FutureCallback<>() {
                 @Override
-                public void onTransactionChainFailed(TransactionChain chain, Transaction transaction, Throwable cause) {
-                    LOG.error("Error handling a transaction chain", cause);
+                public void onSuccess(final @Nullable Empty result) {
+                    // Nothing to do
                 }
 
                 @Override
-                public void onTransactionChainSuccessful(TransactionChain chain) {
-                    // Nothing to do
+                public void onFailure(final @Nullable Throwable cause) {
+                    LOG.error("Error handling a transaction chain", cause);
                 }
-            })) {
+            });
             return chainConsumer.apply(new ManagedTransactionChainImpl(realTxChain));
         }
     }

@@ -19,7 +19,6 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
-import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -65,14 +64,13 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
     }
 
     @Override
-    public TransactionChain createTransactionChain(final TransactionChainListener listener) {
-        return new BindingDOMTransactionChainAdapter(getDelegate()::createTransactionChain, adapterContext(), listener);
+    public TransactionChain createTransactionChain() {
+        return new BindingDOMTransactionChainAdapter(getDelegate().createTransactionChain(), adapterContext());
     }
 
     @Override
-    public TransactionChain createMergingTransactionChain(final TransactionChainListener listener) {
-        return new BindingDOMTransactionChainAdapter(getDelegate()::createMergingTransactionChain, adapterContext(),
-            listener);
+    public TransactionChain createMergingTransactionChain() {
+        return new BindingDOMTransactionChainAdapter(getDelegate().createMergingTransactionChain(), adapterContext());
     }
 
     @Override

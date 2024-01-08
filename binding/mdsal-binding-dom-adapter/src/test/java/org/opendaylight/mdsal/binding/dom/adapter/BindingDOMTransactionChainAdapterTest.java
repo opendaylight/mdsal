@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import org.mockito.junit.MockitoRule;
 import org.mockito.quality.Strictness;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
-import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
@@ -42,11 +40,11 @@ import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
 
 @RunWith(Parameterized.class)
 public class BindingDOMTransactionChainAdapterTest {
-    public enum TransactionChainType implements BiFunction<DataBroker, TransactionChainListener, TransactionChain> {
+    public enum TransactionChainType implements Function<DataBroker, TransactionChain> {
         NORMAL {
             @Override
-            public TransactionChain apply(final DataBroker broker, final TransactionChainListener listener) {
-                return broker.createTransactionChain(listener);
+            public TransactionChain apply(final DataBroker broker) {
+                return broker.createTransactionChain();
             }
 
             @Override
@@ -62,8 +60,8 @@ public class BindingDOMTransactionChainAdapterTest {
         },
         MERGING {
             @Override
-            public TransactionChain apply(final DataBroker broker, final TransactionChainListener listener) {
-                return broker.createMergingTransactionChain(listener);
+            public TransactionChain apply(final DataBroker broker) {
+                return broker.createMergingTransactionChain();
             }
 
             @Override
@@ -97,8 +95,6 @@ public class BindingDOMTransactionChainAdapterTest {
     @Mock
     private DOMTransactionChain transactionChain;
     @Mock
-    private TransactionChainListener transactionChainListener;
-    @Mock
     private BindingDOMCodecServices mockCodecRegistry;
 
     private BindingDOMTransactionChainAdapter bindingDOMTransactionChainAdapter;
@@ -109,9 +105,9 @@ public class BindingDOMTransactionChainAdapterTest {
 
     @Before
     public void setUp() {
-        doReturn(transactionChain).when(domService).createTransactionChain(any());
+        doReturn(transactionChain).when(domService).createTransactionChain();
         if (type == TransactionChainType.MERGING) {
-            doCallRealMethod().when(domService).createMergingTransactionChain(any());
+            doCallRealMethod().when(domService).createMergingTransactionChain();
         }
 
 
@@ -126,7 +122,7 @@ public class BindingDOMTransactionChainAdapterTest {
         BindingDOMDataBrokerAdapter bindingDOMDataBrokerAdapter =
                 (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).orElseThrow();
         bindingDOMTransactionChainAdapter =
-            (BindingDOMTransactionChainAdapter) type.apply(bindingDOMDataBrokerAdapter, transactionChainListener);
+            (BindingDOMTransactionChainAdapter) type.apply(bindingDOMDataBrokerAdapter);
         assertNotNull(bindingDOMTransactionChainAdapter.getDelegate());
 
     }
@@ -159,5 +155,4 @@ public class BindingDOMTransactionChainAdapterTest {
         mockReadWrite(transactionChain);
         assertNotNull(bindingDOMTransactionChainAdapter.newReadWriteTransaction());
     }
-
 }

@@ -7,7 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.Executor;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * A chain of transactions. Transactions in a chain need to be committed in sequence and each transaction should see
@@ -102,4 +109,32 @@ public interface TransactionChain extends Registration, TransactionFactory {
      */
     @Override
     ReadWriteTransaction newReadWriteTransaction();
+
+    /**
+     * Add a completion callback to execute when {@link #future()} completes. This is a shorthand for
+     * {@code Futures.addCallback(future(), callback, MoreExecutors.directExecutor())}.
+     *
+     * @param callback completion callback
+     */
+    default void addCallback(final FutureCallback<Empty> callback) {
+        addCallback(callback, MoreExecutors.directExecutor());
+    }
+
+    /**
+     * Add a completion callback to execute on specified executor when {@link #future()} completes. This is a shorthand
+     * for {@code Futures.addCallback(future(), callback, executor)}.
+     *
+     * @param callback completion callback
+     * @param executor executor on which to execute the callback
+     */
+    default void addCallback(final FutureCallback<Empty> callback, final Executor executor) {
+        Futures.addCallback(future(), callback, executor);
+    }
+
+    /**
+     * Return a {@link ListenableFuture} which completes when this chain completes.
+     *
+     * @return A {@link ListenableFuture}
+     */
+    @NonNull ListenableFuture<Empty> future();
 }

@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
@@ -61,8 +62,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
 
     @Test
     public void testTransactionChainNoConflict() throws InterruptedException, ExecutionException, TimeoutException {
-        final BlockingTransactionChainListener listener = new BlockingTransactionChainListener();
-        final DOMTransactionChain txChain = domBroker.createTransactionChain(listener);
+        final DOMTransactionChain txChain = domBroker.createTransactionChain();
         assertNotNull(txChain);
 
         /**
@@ -125,14 +125,12 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
          */
         txChain.close();
 
-        listener.getSuccessFuture().get(1000, TimeUnit.MILLISECONDS);
+        txChain.future().get(1000, TimeUnit.MILLISECONDS);
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
-    public void testTransactionChainNotSealed() throws InterruptedException, ExecutionException, TimeoutException {
-        final BlockingTransactionChainListener listener = new BlockingTransactionChainListener();
-        final DOMTransactionChain txChain = domBroker.createTransactionChain(listener);
+    public void testTransactionChainNotSealed() {
+        final var txChain = domBroker.createTransactionChain();
         assertNotNull(txChain);
 
         /**
@@ -145,12 +143,9 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
          * still not committed to datastore, so this allocation should fail with
          * IllegalStateException.
          */
-        try {
-            allocateAndWrite(txChain); // actual backing tx allocation happens on put
-            fail("Allocation of secondReadTx should fail with IllegalStateException");
-        } catch (final Exception e) {
-            assertTrue(e instanceof IllegalStateException);
-        }
+        // actual backing tx allocation happens on put
+        final var ex = assertThrows(IllegalStateException.class, () -> allocateAndWrite(txChain));
+        assertEquals("Previous transaction OPER-0 is not ready yet", ex.getMessage());
     }
 
     private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
@@ -163,9 +158,8 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         return tx;
     }
 
-    private static DOMDataTreeWriteTransaction allocateAndWrite(final DOMTransactionChain txChain)
-            throws InterruptedException, ExecutionException {
-        final DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
+    private static DOMDataTreeWriteTransaction allocateAndWrite(final DOMTransactionChain txChain) {
+        final var tx = txChain.newWriteOnlyTransaction();
         writeTestContainer(tx);
         return tx;
     }
@@ -182,8 +176,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         assertTrue(readedData.isPresent());
     }
 
-    private static void writeTestContainer(final DOMDataTreeWriteTransaction tx) throws InterruptedException,
-            ExecutionException {
+    private static void writeTestContainer(final DOMDataTreeWriteTransaction tx) {
         tx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
     }
 }

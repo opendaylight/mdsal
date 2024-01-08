@@ -10,18 +10,16 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 /**
  * Utility mixin interface for {@link DOMDataBroker}s which realize merging transaction chains via
- * {@link PingPongTransactionChain}. It provides {@link #createMergingTransactionChain(DOMTransactionChainListener)}
- * as a default method combining {@link PingPongTransactionChain} with
- * {@link #createTransactionChain(DOMTransactionChainListener)}.
+ * {@link PingPongTransactionChain}. It provides {@link #createMergingTransactionChain()}
+ * as a default method combining {@link PingPongTransactionChain} with {@link #createTransactionChain()}.
  */
 @Beta
 public interface PingPongMergingDOMDataBroker extends DOMDataBroker {
     @Override
-    default DOMTransactionChain createMergingTransactionChain(final DOMTransactionChainListener listener) {
-        return new PingPongTransactionChain(this::createTransactionChain, listener);
+    default DOMTransactionChain createMergingTransactionChain() {
+        return new PingPongTransactionChain(createTransactionChain());
     }
 }

@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
-import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -49,12 +48,12 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     }
 
     @Override
-    public TransactionChain createTransactionChain(final TransactionChainListener listener) {
-        return delegate().createTransactionChain(listener);
+    public TransactionChain createTransactionChain() {
+        return delegate().createTransactionChain();
     }
 
     @Override
-    public TransactionChain createMergingTransactionChain(final TransactionChainListener listener) {
-        return delegate().createMergingTransactionChain(listener);
+    public TransactionChain createMergingTransactionChain() {
+        return delegate().createMergingTransactionChain();
     }
 }

@@ -91,7 +91,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         doReturn(CommitInfo.emptyFluentFuture()).when(sinkTx).commit();
         doReturn(sinkTx).when(sinkChain).newWriteOnlyTransaction();
         final DOMDataBroker sinkBroker = mock(DOMDataBroker.class);
-        doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain(any());
+        doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain();
 
         // Kick of the sink ...
         final Registration sink = NettyReplicationSink.createSink(support, sinkBroker, css, true,
@@ -99,7 +99,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         // ... and sync on it starting up
 
         // verify the connection was established and MSG_EMPTY_DATA was transferred
-        verify(sinkBroker, timeout(1000)).createMergingTransactionChain(any());
+        verify(sinkBroker, timeout(1000)).createMergingTransactionChain();
         verify(sinkTx, timeout(1000)).put(eq(LogicalDatastoreType.CONFIGURATION), eq(YangInstanceIdentifier.of()),
             any(ContainerNode.class));
 
@@ -137,7 +137,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         doReturn(CommitInfo.emptyFluentFuture()).when(sinkTx).commit();
         doReturn(sinkTx).when(sinkChain).newWriteOnlyTransaction();
         final DOMDataBroker sinkBroker = mock(DOMDataBroker.class);
-        doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain(any());
+        doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain();
 
         // Kick of the sink ...
         final Registration sink = NettyReplicationSink.createSink(support, sinkBroker, css, true,
@@ -145,7 +145,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         // ... and sync on it starting up
 
         // verify the connection was established and MSG_EMPTY_DATA was transferred
-        verify(sinkBroker, timeout(1000)).createMergingTransactionChain(any());
+        verify(sinkBroker, timeout(1000)).createMergingTransactionChain();
         verify(sinkChain, timeout(2000).times(1)).newWriteOnlyTransaction();
 
         // verify that the initial data invoked onDataTreeChanged() and was transferred to sink

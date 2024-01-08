@@ -7,9 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import java.util.function.Function;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 /**
  * An implementation of {@link DOMTransactionChain}, which has a very specific behavior, which some users may find
@@ -27,8 +25,7 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
  * transaction and the user may not allocate multiple read-only transactions at the same time.
  */
 public final class PingPongTransactionChain extends AbstractPingPongTransactionChain {
-    public PingPongTransactionChain(final Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory,
-            final DOMTransactionChainListener listener) {
-        super(delegateFactory, listener);
+    public PingPongTransactionChain(final DOMTransactionChain delegate) {
+        super(delegate);
     }
 }

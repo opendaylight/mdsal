@@ -19,7 +19,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 @ExtendWith(MockitoExtension.class)
 class ForwardingDOMDataBrokerTest {
@@ -29,8 +28,6 @@ class ForwardingDOMDataBrokerTest {
 
     @Mock
     private DOMTransactionChain chain;
-    @Mock
-    private DOMTransactionChainListener chainListener;
     @Mock
     private Extension extension;
     @Mock
@@ -49,8 +46,8 @@ class ForwardingDOMDataBrokerTest {
             }
         };
 
-        doReturn(chain).when(domDataBroker).createTransactionChain(chainListener);
-        assertSame(chain, impl.createTransactionChain(chainListener));
+        doReturn(chain).when(domDataBroker).createTransactionChain();
+        assertSame(chain, impl.createTransactionChain());
 
         doReturn(List.of(extension)).when(domDataBroker).supportedExtensions();
         assertSame(extension, impl.extension(Extension.class));

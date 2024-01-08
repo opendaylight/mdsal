@@ -13,7 +13,9 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
@@ -21,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
-import java.util.function.Function;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
@@ -30,10 +31,9 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
 abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPingPongTransactionChain.class);
 
-    private final DOMTransactionChainListener listener;
-    private final DOMTransactionChain delegate;
+    private final @NonNull SettableFuture<Empty> future = SettableFuture.create();
+    private final @NonNull DOMTransactionChain delegate;
 
     @GuardedBy("this")
     private boolean closed;
@@ -97,25 +97,27 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         }
     }
 
-    AbstractPingPongTransactionChain(final Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory,
-            final DOMTransactionChainListener listener) {
-        this.listener = requireNonNull(listener);
-        delegate = delegateFactory.apply(new DOMTransactionChainListener() {
+    AbstractPingPongTransactionChain(final DOMTransactionChain delegate) {
+        this.delegate = requireNonNull(delegate);
+        delegate.addCallback(new FutureCallback<>() {
             @Override
-            public void onTransactionChainFailed(final DOMTransactionChain chain,
-                    final DOMDataTreeTransaction transaction, final Throwable cause) {
-                LOG.debug("Transaction chain {} reported failure in {}", chain, transaction, cause);
-                delegateFailed(chain, cause);
+            public void onSuccess(final Empty result) {
+                delegateSuccessful();
             }
 
             @Override
-            public void onTransactionChainSuccessful(final DOMTransactionChain chain) {
-                delegateSuccessful(chain);
+            public void onFailure(final Throwable cause) {
+                delegateFailed(cause);
             }
         });
     }
 
-    private void delegateSuccessful(final DOMTransactionChain chain) {
+    @Override
+    public final ListenableFuture<Empty> future() {
+        return future;
+    }
+
+    private void delegateSuccessful() {
         final Entry<PingPongTransaction, Throwable> canceled;
         synchronized (this) {
             // This looks weird, but we need not hold the lock while invoking callbacks
@@ -123,31 +125,28 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         }
 
         if (canceled == null) {
-            listener.onTransactionChainSuccessful(this);
+            future.set(Empty.value());
             return;
         }
 
         // Backend shutdown successful, but we have a batch of transactions we have to report as dead due to the
         // user calling cancel().
-        final PingPongTransaction tx = canceled.getKey();
-        final Throwable cause = canceled.getValue();
-        LOG.debug("Transaction chain {} successful, failing cancelled transaction {}", chain, tx, cause);
+        final var tx = canceled.getKey();
+        final var cause = canceled.getValue();
+        LOG.debug("Transaction chain {} successful, failing cancelled transaction {}", delegate, tx, cause);
 
-        listener.onTransactionChainFailed(this, tx.getFrontendTransaction(), cause);
+        future.setException(cause);
         tx.onFailure(cause);
     }
 
-    private void delegateFailed(final DOMTransactionChain chain, final Throwable cause) {
-        final DOMDataTreeReadWriteTransaction frontend;
-        final PingPongTransaction tx = inflightTx;
-        if (tx == null) {
-            LOG.warn("Transaction chain {} failed with no pending transactions", chain);
-            frontend = null;
-        } else {
-            frontend = tx.getFrontendTransaction();
-        }
+    private void delegateFailed(final Throwable cause) {
+        LOG.debug("Transaction chain {} reported failure", delegate, cause);
 
-        listener.onTransactionChainFailed(this, frontend, cause);
+        final var tx = inflightTx;
+        if (tx == null) {
+            LOG.warn("Transaction chain {} failed with no pending transactions", delegate);
+        }
+        future.setException(cause);
 
         synchronized (this) {
             failed = true;

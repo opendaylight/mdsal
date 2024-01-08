@@ -12,7 +12,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 /**
  * Utility {@link DOMDataBroker} implementation which forwards all interface method invocation to a delegate instance.
@@ -35,12 +34,12 @@ public abstract class ForwardingDOMDataBroker extends ForwardingDOMService<DOMDa
     }
 
     @Override
-    public DOMTransactionChain createTransactionChain(final DOMTransactionChainListener listener) {
-        return delegate().createTransactionChain(listener);
+    public DOMTransactionChain createTransactionChain() {
+        return delegate().createTransactionChain();
     }
 
     @Override
-    public DOMTransactionChain createMergingTransactionChain(final DOMTransactionChainListener listener) {
-        return delegate().createMergingTransactionChain(listener);
+    public DOMTransactionChain createMergingTransactionChain() {
+        return delegate().createMergingTransactionChain();
     }
 }
