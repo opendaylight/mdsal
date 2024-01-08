@@ -25,15 +25,15 @@ public class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionC
     @Test
     public void basicTest() throws Exception {
         doReturn(null).when(domTransactionChain).newWriteOnlyTransaction();
-        this.newWriteOnlyTransaction();
+        newWriteOnlyTransaction();
         verify(domTransactionChain).newWriteOnlyTransaction();
 
         doReturn(null).when(domTransactionChain).newReadOnlyTransaction();
-        this.newReadOnlyTransaction();
+        newReadOnlyTransaction();
         verify(domTransactionChain).newReadOnlyTransaction();
 
         doNothing().when(domTransactionChain).close();
-        this.close();
+        close();
         verify(domTransactionChain).close();
     }
 

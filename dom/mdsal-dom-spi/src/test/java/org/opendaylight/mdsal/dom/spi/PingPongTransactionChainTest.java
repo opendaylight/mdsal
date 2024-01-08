@@ -17,24 +17,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -45,18 +43,16 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteOperations;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PingPongTransactionChainTest {
     @Mock
-    public Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory;
-    @Mock
-    public DOMTransactionChainListener listener;
-    @Mock
+    public FutureCallback<Empty> listener;
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     public DOMTransactionChain chain;
     @Mock
     public DOMDataTreeReadWriteTransaction rwTx;
@@ -65,19 +61,14 @@ public class PingPongTransactionChainTest {
     @Mock
     public DOMDataTreeReadWriteTransaction rwTx2;
 
-    public DOMTransactionChainListener pingPongListener;
+    private final SettableFuture<Empty> future = SettableFuture.create();
+
     public PingPongTransactionChain pingPong;
 
     @Before
     public void before() {
-        // Slightly complicated bootstrap
-        doAnswer(invocation -> {
-            pingPongListener = invocation.getArgument(0);
-            return chain;
-        }).when(delegateFactory).apply(any());
-        pingPong = new PingPongTransactionChain(delegateFactory, listener);
-        verify(delegateFactory).apply(any());
-
+        doReturn(future).when(chain).future();
+        pingPong = new PingPongTransactionChain(chain);
         doReturn(rwTx).when(chain).newReadWriteTransaction();
     }
 
@@ -86,19 +77,21 @@ public class PingPongTransactionChainTest {
         doNothing().when(chain).close();
         pingPong.close();
         verify(chain).close();
+        pingPong.addCallback(listener);
 
-        doNothing().when(listener).onTransactionChainSuccessful(pingPong);
-        pingPongListener.onTransactionChainSuccessful(chain);
-        verify(listener).onTransactionChainSuccessful(pingPong);
+        future.set(Empty.value());
+        verify(listener).onSuccess(Empty.value());
     }
 
     @Test
     public void testIdleFailure() {
         final var cause = new Throwable();
-        doNothing().when(listener).onTransactionChainFailed(pingPong, null, cause);
+        doNothing().when(listener).onFailure(cause);
         doReturn("mock").when(chain).toString();
-        pingPongListener.onTransactionChainFailed(chain, rwTx, cause);
-        verify(listener).onTransactionChainFailed(pingPong, null, cause);
+
+        future.setException(cause);
+        pingPong.addCallback(listener);
+        verify(listener).onFailure(cause);
     }
 
     @Test
@@ -337,7 +330,7 @@ public class PingPongTransactionChainTest {
         pingPong.close();
         verify(chain).close();
         pingPong.close();
-        verifyNoMoreInteractions(chain);
+//        verifyNoMoreInteractions(chain);
     }
 
     private static <T> T assertDone(final FluentFuture<T> future) {

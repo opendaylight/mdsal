@@ -12,18 +12,21 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,9 +50,10 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     private static final AtomicReferenceFieldUpdater<DOMDataBrokerTransactionChainImpl, State> STATE_UPDATER =
             AtomicReferenceFieldUpdater.newUpdater(DOMDataBrokerTransactionChainImpl.class, State.class, "state");
     private static final Logger LOG = LoggerFactory.getLogger(DOMDataBrokerTransactionChainImpl.class);
+
+    private final @NonNull SettableFuture<Empty> future = SettableFuture.create();
     private final AtomicLong txNum = new AtomicLong();
     private final AbstractDOMDataBroker broker;
-    private final DOMTransactionChainListener listener;
     private final long chainId;
 
     private volatile State state = State.RUNNING;
@@ -72,16 +76,19 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
      *             If any of arguments is null.
      */
     DOMDataBrokerTransactionChainImpl(final long chainId,
-            final Map<LogicalDatastoreType, DOMStoreTransactionChain> chains,
-            final AbstractDOMDataBroker broker, final DOMTransactionChainListener listener) {
+            final Map<LogicalDatastoreType, DOMStoreTransactionChain> chains, final AbstractDOMDataBroker broker) {
         super(chains);
         this.chainId = chainId;
         this.broker = requireNonNull(broker);
-        this.listener = requireNonNull(listener);
     }
 
     private void checkNotFailed() {
         Preconditions.checkState(state != State.FAILED, "Transaction chain has failed");
+    }
+
+    @Override
+    public ListenableFuture<Empty> future() {
+        return future;
     }
 
     @Override
@@ -95,9 +102,9 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         checkNotFailed();
         checkNotClosed();
 
-        final FluentFuture<? extends CommitInfo> ret = broker.commit(transaction, cohort);
-
+        final var ret = broker.commit(transaction, cohort);
         COUNTER_UPDATER.incrementAndGet(this);
+
         ret.addCallback(new FutureCallback<CommitInfo>() {
             @Override
             public void onSuccess(final CommitInfo result) {
@@ -133,7 +140,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
 
     private void finishClose() {
         state = State.CLOSED;
-        listener.onTransactionChainSuccessful(this);
+        future.set(Empty.value());
     }
 
     private void transactionCompleted() {
@@ -145,6 +152,6 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     private void transactionFailed(final DOMDataTreeWriteTransaction tx, final Throwable cause) {
         state = State.FAILED;
         LOG.debug("Transaction chain {} failed.", this, cause);
-        listener.onTransactionChainFailed(this, tx, cause);
+        future.setException(cause);
     }
 }

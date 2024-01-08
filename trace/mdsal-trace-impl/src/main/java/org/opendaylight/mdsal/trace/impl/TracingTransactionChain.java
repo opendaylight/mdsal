@@ -9,10 +9,12 @@ package org.opendaylight.mdsal.trace.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 class TracingTransactionChain extends AbstractCloseTracked<TracingTransactionChain> implements DOMTransactionChain {
 
@@ -22,36 +24,39 @@ class TracingTransactionChain extends AbstractCloseTracked<TracingTransactionCha
     private final CloseTrackedRegistry<TracingWriteTransaction> writeTransactionsRegistry;
     private final CloseTrackedRegistry<TracingReadWriteTransaction> readWriteTransactionsRegistry;
 
-    TracingTransactionChain(DOMTransactionChain delegate, TracingBroker tracingBroker,
-            CloseTrackedRegistry<TracingTransactionChain> transactionChainsRegistry) {
+    TracingTransactionChain(final DOMTransactionChain delegate, final TracingBroker tracingBroker,
+            final CloseTrackedRegistry<TracingTransactionChain> transactionChainsRegistry) {
         super(transactionChainsRegistry);
         this.delegate = requireNonNull(delegate);
         this.tracingBroker = requireNonNull(tracingBroker);
 
         final boolean isDebug = transactionChainsRegistry.isDebugContextEnabled();
         String anchor = "TransactionChain@" + Integer.toHexString(hashCode());
-        this.readOnlyTransactionsRegistry  = new CloseTrackedRegistry<>(anchor, "newReadOnlyTransaction()", isDebug);
-        this.writeTransactionsRegistry     = new CloseTrackedRegistry<>(anchor, "newWriteOnlyTransaction()", isDebug);
-        this.readWriteTransactionsRegistry = new CloseTrackedRegistry<>(anchor, "newReadWriteTransaction()", isDebug);
+        readOnlyTransactionsRegistry  = new CloseTrackedRegistry<>(anchor, "newReadOnlyTransaction()", isDebug);
+        writeTransactionsRegistry     = new CloseTrackedRegistry<>(anchor, "newWriteOnlyTransaction()", isDebug);
+        readWriteTransactionsRegistry = new CloseTrackedRegistry<>(anchor, "newReadWriteTransaction()", isDebug);
     }
 
     @Override
-    @SuppressWarnings("resource")
+    public ListenableFuture<Empty> future() {
+        return delegate.future();
+    }
+
+    @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {
-        final DOMDataTreeReadTransaction tx = delegate.newReadOnlyTransaction();
-        return new TracingReadOnlyTransaction(tx, readOnlyTransactionsRegistry);
+        return new TracingReadOnlyTransaction(delegate.newReadOnlyTransaction(), readOnlyTransactionsRegistry);
     }
 
     @Override
     public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         return new TracingReadWriteTransaction(delegate.newReadWriteTransaction(), tracingBroker,
-                readWriteTransactionsRegistry);
+            readWriteTransactionsRegistry);
     }
 
     @Override
     public DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
-        final DOMDataTreeWriteTransaction tx = delegate.newWriteOnlyTransaction();
-        return new TracingWriteTransaction(tx, tracingBroker, writeTransactionsRegistry);
+        return new TracingWriteTransaction(delegate.newWriteOnlyTransaction(), tracingBroker,
+            writeTransactionsRegistry);
     }
 
     @Override
@@ -75,7 +80,7 @@ class TracingTransactionChain extends AbstractCloseTracked<TracingTransactionCha
     // https://jira.opendaylight.org/browse/CONTROLLER-1792
 
     @Override
-    public final boolean equals(Object object) {
+    public final boolean equals(final Object object) {
         return object == this || delegate.equals(object);
     }
 

@@ -8,19 +8,22 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
-import org.eclipse.jdt.annotation.NonNull;
+import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Utility {@link DOMTransactionChain} implementation which forwards all interface
  * method invocation to a delegate instance.
  */
+@NonNullByDefault
 public abstract class ForwardingDOMTransactionChain extends ForwardingObject implements DOMTransactionChain {
     @Override
-    protected abstract @NonNull DOMTransactionChain delegate();
+    protected abstract DOMTransactionChain delegate();
 
     @Override
     public void close() {
@@ -40,5 +43,10 @@ public abstract class ForwardingDOMTransactionChain extends ForwardingObject imp
     @Override
     public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         return delegate().newReadWriteTransaction();
+    }
+
+    @Override
+    public ListenableFuture<Empty> future() {
+        return delegate().future();
     }
 }
