@@ -23,7 +23,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.trace.api.TracingDOMDataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace.rev160908.Config;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -285,16 +284,13 @@ public class TracingBroker implements TracingDOMDataBroker {
     }
 
     @Override
-    public DOMTransactionChain createTransactionChain(final DOMTransactionChainListener transactionChainListener) {
-        return new TracingTransactionChain(delegate.createTransactionChain(transactionChainListener), this,
-            transactionChainsRegistry);
+    public DOMTransactionChain createTransactionChain() {
+        return new TracingTransactionChain(delegate.createTransactionChain(), this, transactionChainsRegistry);
     }
 
     @Override
-    public DOMTransactionChain createMergingTransactionChain(
-            final DOMTransactionChainListener transactionChainListener) {
-        return new TracingTransactionChain(delegate.createMergingTransactionChain(transactionChainListener), this,
-            transactionChainsRegistry);
+    public DOMTransactionChain createMergingTransactionChain() {
+        return new TracingTransactionChain(delegate.createMergingTransactionChain(), this, transactionChainsRegistry);
     }
 
     @Override
