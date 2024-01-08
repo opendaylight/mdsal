@@ -40,10 +40,10 @@ import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -80,7 +80,7 @@ public class InMemoryDataStoreTest {
         /**
          * Writes /test in writeTx.
          */
-        NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        final var testNode = testContainer();
         writeTx.write(TestModel.TEST_PATH, testNode);
 
         /**
@@ -94,6 +94,12 @@ public class InMemoryDataStoreTest {
         assertEquals(Optional.empty(), Futures.getDone(readTx.read(TestModel.TEST_PATH)));
     }
 
+    private static ContainerNode testContainer() {
+        return ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build();
+    }
+
     @Test
     public void testTransactionCommit() throws Exception {
 
@@ -103,7 +109,7 @@ public class InMemoryDataStoreTest {
         /**
          * Writes /test in writeTx.
          */
-        NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        var testNode = testContainer();
         writeTx.write(TestModel.TEST_PATH, testNode);
 
         /**
@@ -127,7 +133,7 @@ public class InMemoryDataStoreTest {
 
         // Write /test and commit
 
-        writeTx.write(TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.write(TestModel.TEST_PATH, testContainer());
 
         assertThreePhaseCommit(writeTx.ready());
 
@@ -150,11 +156,17 @@ public class InMemoryDataStoreTest {
         DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
         assertNotNull(writeTx);
 
-        ContainerNode containerNode = Builders.containerBuilder()
-                .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
-                .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-                        .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
-                                                            TestModel.ID_QNAME, 1)).build()).build();
+        ContainerNode containerNode = ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .addChild(ImmutableNodes.newSystemMapBuilder()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+                .addChild(ImmutableNodes.newMapEntryBuilder()
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME,
+                        TestModel.ID_QNAME, 1))
+                    .withChild(ImmutableNodes.leafNode(TestModel.ID_QNAME, 1))
+                    .build())
+                .build())
+            .build();
 
         writeTx.merge(TestModel.TEST_PATH, containerNode);
 
@@ -168,11 +180,20 @@ public class InMemoryDataStoreTest {
         writeTx = domStore.newWriteOnlyTransaction();
         assertNotNull(writeTx);
 
-        containerNode = Builders.containerBuilder()
+        containerNode = ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
-            .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-                .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
-                .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2))
+            .addChild(ImmutableNodes.newSystemMapBuilder()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+                .addChild(ImmutableNodes.newMapEntryBuilder()
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME,
+                        TestModel.ID_QNAME, 1))
+                    .withChild(ImmutableNodes.leafNode(TestModel.ID_QNAME, 1))
+                    .build())
+                .addChild(ImmutableNodes.newMapEntryBuilder()
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME,
+                        TestModel.ID_QNAME, 2))
+                    .withChild(ImmutableNodes.leafNode(TestModel.ID_QNAME, 2))
+                    .build())
                 .build())
             .build();
 
@@ -190,11 +211,17 @@ public class InMemoryDataStoreTest {
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
-        ContainerNode containerNode = Builders.containerBuilder()
+        ContainerNode containerNode = ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
-            .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-                .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
-                    TestModel.ID_QNAME, 1)).build()).build();
+            .addChild(ImmutableNodes.newSystemMapBuilder()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+                .addChild(ImmutableNodes.newMapEntryBuilder()
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME,
+                        TestModel.ID_QNAME, 1))
+                    .withChild(ImmutableNodes.leafNode(TestModel.ID_QNAME, 1))
+                    .build())
+                .build())
+            .build();
 
         writeTx.merge(TestModel.TEST_PATH, containerNode);
 
@@ -303,8 +330,7 @@ public class InMemoryDataStoreTest {
         writeTx.ready();
 
         // Should throw ex
-        assertThrows(IllegalStateException.class,
-            () -> writeTx.write(TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME)));
+        assertThrows(IllegalStateException.class, () -> writeTx.write(TestModel.TEST_PATH, testContainer()));
     }
 
     @Test
@@ -320,7 +346,7 @@ public class InMemoryDataStoreTest {
     @Test
     public void testReadyWithMissingMandatoryData() throws Exception {
         DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
-        NormalizedNode testNode = Builders.containerBuilder()
+        var testNode = ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.MANDATORY_DATA_TEST_QNAME))
                 .addChild(ImmutableNodes.leafNode(TestModel.OPTIONAL_QNAME, "data"))
                 .build();
@@ -453,7 +479,7 @@ public class InMemoryDataStoreTest {
          * Writes /test in writeTx
          *
          */
-        writeTx.write(TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.write(TestModel.TEST_PATH, testContainer());
 
         return assertTestContainerExists(writeTx);
     }
