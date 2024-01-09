@@ -36,11 +36,12 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
+import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
+import org.opendaylight.yangtools.yang.binding.KeyStep;
+import org.opendaylight.yangtools.yang.binding.NodeStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -85,7 +86,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     final @NonNull DataTreeCandidateNode domData;
-    final @NonNull PathArgument identifier;
+    final @NonNull DataObjectStep<?> identifier;
     final @NonNull N codec;
 
     @SuppressWarnings("unused")
@@ -101,9 +102,9 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataAfter;
 
-    AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec, final PathArgument identifier) {
+    AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec, final DataObjectStep<?> step) {
         this.domData = requireNonNull(domData);
-        this.identifier = requireNonNull(identifier);
+        identifier = requireNonNull(step);
         this.codec = requireNonNull(codec);
     }
 
@@ -124,7 +125,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final PathArgument getIdentifier() {
+    public final DataObjectStep<?> getIdentifier() {
         return identifier;
     }
 
@@ -189,7 +190,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     abstract @Nullable T deserialize(@NonNull NormalizedNode normalized);
 
     @Override
-    public final DataObjectModification<?> getModifiedChild(final PathArgument arg) {
+    public final DataObjectModification<?> getModifiedChild(final ExactDataObjectStep<?> arg) {
         final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
         final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final var toEnter = domArgumentList.iterator();
@@ -225,7 +226,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             List<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType, final Class<C> childType) {
         return streamModifiedChildren(childType)
-            .filter(child -> caseType.equals(child.identifier.getCaseType().orElse(null)))
+            .filter(child -> caseType.equals(child.identifier.caseType()))
             .collect(Collectors.toList());
     }
 
@@ -251,7 +252,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     @SuppressWarnings("unchecked")
     public final <C extends KeyAware<K> & ChildOf<? super T>, K extends Key<C>> DataObjectModification<C>
             getModifiedChildListItem(final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(listItem, listKey));
+        return (DataObjectModification<C>) getModifiedChild(new KeyStep<>(listItem, listKey));
     }
 
     @Override
@@ -259,28 +260,28 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     public final <H extends ChoiceIn<? super T> & DataObject, C extends KeyAware<K> & ChildOf<? super H>,
             K extends Key<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
                     final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(caseType, listItem, listKey));
+        return (DataObjectModification<C>) getModifiedChild(new KeyStep<>(listItem, caseType, listKey));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(
             final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(child));
+        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(child));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
             getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(caseType, child));
+        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(caseType, child));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
             final Class<C> augmentation) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(augmentation));
+        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(augmentation));
     }
 
     @Override
