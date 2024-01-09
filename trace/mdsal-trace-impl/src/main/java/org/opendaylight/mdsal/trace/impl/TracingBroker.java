@@ -233,8 +233,8 @@ public class TracingBroker implements TracingDOMDataBroker {
     }
 
     static void toPathString(final InstanceIdentifier<? extends DataObject> iid, final StringBuilder builder) {
-        for (InstanceIdentifier.PathArgument pathArg : iid.getPathArguments()) {
-            builder.append('/').append(pathArg.getType().getSimpleName());
+        for (var pathArg : iid.getPathArguments()) {
+            builder.append('/').append(pathArg.type().getSimpleName());
         }
     }
 
