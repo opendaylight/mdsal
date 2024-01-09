@@ -41,11 +41,12 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
@@ -144,28 +145,27 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
 //    }
 
     @Override
-    public final CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
+    public final CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final DataObjectStep<?> step,
             final List<YangInstanceIdentifier.PathArgument> builder) {
-        final var argType = arg.getType();
+        final var argType = step.type();
         final var context = childNonNull(pathChildPrototype(argType), argType,
             "Class %s is not valid child of %s", argType, getBindingClass())
             .getCodecContext();
-        context.addYangPathArgument(arg, builder);
+        context.addYangPathArgument(step, builder);
         if (context instanceof CommonDataObjectCodecContext<?, ?> dataObject) {
             return dataObject;
         } else if (context instanceof ChoiceCodecContext<?> choice) {
-            final var caseType = arg.getCaseType();
-            final var type = arg.getType();
+            final var caseType = step.caseType();
             final DataContainerCodecContext<?, ?, ?> caze;
-            if (caseType.isPresent()) {
+            if (caseType != null) {
                 // Non-ambiguous addressing this should not pose any problems
-                caze = choice.getStreamChild(caseType.orElseThrow());
+                caze = choice.getStreamChild(caseType);
             } else {
-                caze = choice.getCaseByChildClass(type);
+                caze = choice.getCaseByChildClass(argType);
             }
 
-            caze.addYangPathArgument(arg, builder);
-            return caze.bindingPathArgumentChild(arg, builder);
+            caze.addYangPathArgument(step, builder);
+            return caze.bindingPathArgumentChild(step, builder);
         } else {
             throw new IllegalStateException();
         }
@@ -176,16 +176,16 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
     /**
      * Serializes supplied Binding Path Argument and adds all necessary YANG instance identifiers to supplied list.
      *
-     * @param arg Binding Path Argument
+     * @param step Binding Path Argument
      * @param builder DOM Path argument.
      */
-    final void addYangPathArgument(final PathArgument arg, final List<YangInstanceIdentifier.PathArgument> builder) {
+    final void addYangPathArgument(final DataObjectStep<?> step, final List<PathArgument> builder) {
         if (builder != null) {
-            addYangPathArgument(builder, arg);
+            addYangPathArgument(builder, step);
         }
     }
 
-    void addYangPathArgument(final @NonNull List<YangInstanceIdentifier.PathArgument> builder, final PathArgument arg) {
+    void addYangPathArgument(final @NonNull List<PathArgument> builder, final DataObjectStep<?> step) {
         final var yangArg = getDomPathArgument();
         if (yangArg != null) {
             builder.add(yangArg);
