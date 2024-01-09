@@ -71,7 +71,7 @@ class DataTreeIdentifierTest {
         }
 
         final var bytes = bos.toByteArray();
-        assertEquals(450, bytes.length);
+        assertEquals(342, bytes.length);
 
         try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             assertEquals(TEST_IDENTIFIER1, ois.readObject());
