@@ -8,15 +8,16 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 /**
  * A prototype for {@link ChoiceCodecContext}.
  */
 final class ChoiceCodecPrototype extends DataObjectCodecPrototype<ChoiceRuntimeType> {
-    ChoiceCodecPrototype(final Item<?> item, final ChoiceRuntimeType type, final CodecContextFactory factory) {
-        super(item, NodeIdentifier.create(type.statement().argument()), type, factory);
+    ChoiceCodecPrototype(final DataObjectStep<?> step, final ChoiceRuntimeType type,
+            final CodecContextFactory factory) {
+        super(step, NodeIdentifier.create(type.statement().argument()), type, factory);
     }
 
     @Override

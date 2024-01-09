@@ -14,7 +14,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 abstract sealed class CommonDataObjectCodecPrototype<T extends CompositeRuntimeType> implements CodecContextSupplier
@@ -32,15 +32,15 @@ abstract sealed class CommonDataObjectCodecPrototype<T extends CompositeRuntimeT
 
     private final @NonNull T type;
     private final @NonNull CodecContextFactory factory;
-    private final @NonNull Item<?> bindingArg;
+    private final @NonNull DataObjectStep<?> step;
 
     // Accessed via INSTANCE
     @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile CommonDataObjectCodecContext<?, T> instance;
 
-    CommonDataObjectCodecPrototype(final Item<?> bindingArg, final T type, final CodecContextFactory factory) {
-        this.bindingArg = requireNonNull(bindingArg);
+    CommonDataObjectCodecPrototype(final DataObjectStep<?> step, final T type, final CodecContextFactory factory) {
+        this.step = requireNonNull(step);
         this.type = requireNonNull(type);
         this.factory = requireNonNull(factory);
     }
@@ -54,11 +54,11 @@ abstract sealed class CommonDataObjectCodecPrototype<T extends CompositeRuntimeT
     }
 
     final @NonNull Class<?> getBindingClass() {
-        return bindingArg.getType();
+        return step.type();
     }
 
-    final @NonNull Item<?> getBindingArg() {
-        return bindingArg;
+    final @NonNull DataObjectStep<?> getBindingArg() {
+        return step;
     }
 
     abstract @NonNull NodeIdentifier getYangArg();
