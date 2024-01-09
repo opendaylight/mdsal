@@ -706,11 +706,11 @@ public sealed class InstanceIdentifier<T extends DataObject>
             if (cmp != 0) {
                 return cmp;
             }
-            final Optional<? extends Class<?>> caseType = getCaseType();
+            final var caseType = getCaseType();
+            final var argCaseType = arg.getCaseType();
             if (!caseType.isPresent()) {
-                return arg.getCaseType().isPresent() ? -1 : 1;
+                return argCaseType.isPresent() ? -1 : 1;
             }
-            final Optional<? extends Class<?>> argCaseType = getCaseType();
             return argCaseType.isPresent() ? compareClasses(caseType.orElseThrow(), argCaseType.orElseThrow()) : 1;
         }
 
