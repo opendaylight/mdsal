@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
@@ -69,29 +69,24 @@ public abstract sealed class AbstractDataObjectCodecContext<D extends DataObject
     }
 
     @Override
-    public final CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
+    public final CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final DataObjectStep<?> step,
             final List<PathArgument> builder) {
-        final var argType = arg.getType();
-        final var context = childNonNull(pathChildPrototype(argType), argType,
-            "Class %s is not valid child of %s", argType, getBindingClass())
+        final var type = step.type();
+        final var context = childNonNull(pathChildPrototype(type), type,
+            "Class %s is not valid child of %s", type, getBindingClass())
             .get();
         if (context instanceof ChoiceCodecContext<?> choice) {
-            choice.addYangPathArgument(arg, builder);
+            choice.addYangPathArgument(step, builder);
 
-            final var caseType = arg.getCaseType();
-            final var type = arg.getType();
-            final DataContainerCodecContext<?, ?> caze;
-            if (caseType.isPresent()) {
+            final var caseType = step.caseType();
+            final var caze = caseType == null ? choice.getCaseByChildClass(type)
                 // Non-ambiguous addressing this should not pose any problems
-                caze = choice.getStreamChild(caseType.orElseThrow());
-            } else {
-                caze = choice.getCaseByChildClass(type);
-            }
+                : choice.getStreamChild(caseType);
 
-            caze.addYangPathArgument(arg, builder);
-            return caze.bindingPathArgumentChild(arg, builder);
+            caze.addYangPathArgument(step, builder);
+            return caze.bindingPathArgumentChild(step, builder);
         }
-        context.addYangPathArgument(arg, builder);
+        context.addYangPathArgument(step, builder);
         return context;
     }
 

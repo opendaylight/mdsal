@@ -10,11 +10,13 @@ package org.opendaylight.mdsal.binding.api;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
+import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
 
@@ -24,9 +26,7 @@ import org.opendaylight.yangtools.yang.binding.KeyAware;
  *
  * @param <T> Type of modified object
  */
-public interface DataObjectModification<T extends DataObject> extends
-        org.opendaylight.yangtools.concepts.Identifiable<PathArgument> {
-
+public interface DataObjectModification<T extends DataObject> extends Identifiable<DataObjectStep<?>> {
     /**
      * Represents type of modification which has occurred.
      */
@@ -46,7 +46,7 @@ public interface DataObjectModification<T extends DataObject> extends
     }
 
     @Override
-    PathArgument getIdentifier();
+    DataObjectStep<?> getIdentifier();
 
     /**
      * Returns type of modified object.
@@ -182,11 +182,10 @@ public interface DataObjectModification<T extends DataObject> extends
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
      *
-     * @param childArgument Path Argument of child node
-     * @return Modification of child identified by {@code childArgument} if {@code childArgument}
-     *         was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied path argument is not valid child according to
-     *         generated model.
+     * @param childArgument {@link ExactDataObjectStep} of child node
+     * @return Modification of child identified by {@code childArgument} if {@code childArgument} was modified,
+     *         {@code null} otherwise
+     * @throws IllegalArgumentException If supplied step is not valid child according to generated model
      */
-    @Nullable DataObjectModification<? extends DataObject> getModifiedChild(PathArgument childArgument);
+    @Nullable DataObjectModification<? extends DataObject> getModifiedChild(ExactDataObjectStep<?> childArgument);
 }
