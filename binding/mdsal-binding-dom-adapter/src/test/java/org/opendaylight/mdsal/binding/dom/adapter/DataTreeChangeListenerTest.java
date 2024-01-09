@@ -40,19 +40,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
-    private static final PathArgument TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
+    private static final DataObjectStep<?> TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
     private static final InstanceIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
-    private static final PathArgument FOO_ARGUMENT = Iterables.getLast(FOO_PATH.getPathArguments());
+    private static final DataObjectStep<?> FOO_ARGUMENT = Iterables.getLast(FOO_PATH.getPathArguments());
     private static final TopLevelList FOO_DATA = topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY));
     private static final InstanceIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
-    private static final PathArgument BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
+    private static final DataObjectStep<?> BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
     private static final DataTreeIdentifier<Top> TOP_IDENTIFIER
             = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
@@ -167,8 +167,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     }
 
     private static void verifyModification(final DataObjectModification<? extends DataObject> barWrite,
-            final PathArgument pathArg, final ModificationType eventType) {
-        assertEquals(pathArg.getType(), barWrite.getDataType());
+            final DataObjectStep<?> pathArg, final ModificationType eventType) {
+        assertEquals(pathArg.type(), barWrite.getDataType());
         assertEquals(eventType,barWrite.getModificationType());
         assertEquals(pathArg, barWrite.getIdentifier());
     }
