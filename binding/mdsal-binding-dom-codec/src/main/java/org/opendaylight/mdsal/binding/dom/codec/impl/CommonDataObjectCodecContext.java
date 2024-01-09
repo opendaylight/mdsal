@@ -13,9 +13,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 /**
  * Base implementation of {@link CommonDataObjectCodecTreeNode}.
@@ -54,11 +54,11 @@ abstract sealed class CommonDataObjectCodecContext<D extends DataObject, T exten
     /**
      * Returns deserialized Binding Path Argument from YANG instance identifier.
      */
-    protected PathArgument getBindingPathArgument(final YangInstanceIdentifier.PathArgument domArg) {
+    protected DataObjectStep<?> getBindingPathArgument(final PathArgument domArg) {
         return bindingArg();
     }
 
-    protected final PathArgument bindingArg() {
+    protected final DataObjectStep<?> bindingArg() {
         return prototype.getBindingArg();
     }
 }

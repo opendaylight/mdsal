@@ -41,11 +41,12 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
@@ -114,26 +115,26 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
     abstract @Nullable CodecContextSupplier yangChildSupplier(@NonNull NodeIdentifier arg);
 
     @Override
-    public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
+    public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final DataObjectStep<?> step,
             final List<YangInstanceIdentifier.PathArgument> builder) {
-        final var child = getStreamChild(arg.getType());
-        child.addYangPathArgument(arg, builder);
+        final var child = getStreamChild(step.type());
+        child.addYangPathArgument(step, builder);
         return child;
     }
 
     /**
      * Serializes supplied Binding Path Argument and adds all necessary YANG instance identifiers to supplied list.
      *
-     * @param arg Binding Path Argument
+     * @param step Binding Path Argument
      * @param builder DOM Path argument.
      */
-    final void addYangPathArgument(final PathArgument arg, final List<YangInstanceIdentifier.PathArgument> builder) {
+    final void addYangPathArgument(final DataObjectStep<?> step, final List<PathArgument> builder) {
         if (builder != null) {
-            addYangPathArgument(builder, arg);
+            addYangPathArgument(builder, step);
         }
     }
 
-    void addYangPathArgument(final @NonNull List<YangInstanceIdentifier.PathArgument> builder, final PathArgument arg) {
+    void addYangPathArgument(final @NonNull List<PathArgument> builder, final DataObjectStep<?> step) {
         final var yangArg = getDomPathArgument();
         if (yangArg != null) {
             builder.add(yangArg);

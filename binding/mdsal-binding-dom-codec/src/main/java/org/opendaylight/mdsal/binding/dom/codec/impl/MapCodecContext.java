@@ -15,15 +15,14 @@ import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
+import org.opendaylight.yangtools.yang.binding.KeyStep;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.Ordering;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 
 abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & KeyAware<I>>
@@ -78,8 +77,7 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
     }
 
     @Override
-    void addYangPathArgument(final List<YangInstanceIdentifier.PathArgument> builder,
-            final InstanceIdentifier.PathArgument arg) {
+    void addYangPathArgument(final List<PathArgument> builder, final DataObjectStep<?> step) {
         /*
          * DOM Instance Identifier for list is always represent by two entries one for map and one for children. This
          * is also true for wildcarded instance identifiers
@@ -87,8 +85,8 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
         final var yangArg = getDomPathArgument();
         builder.add(yangArg);
 
-        if (arg instanceof IdentifiableItem<?, ?> identifiable) {
-            builder.add(codec.bindingToDom(identifiable));
+        if (step instanceof KeyStep<?, ?> keyStep) {
+            builder.add(codec.bindingToDom(keyStep));
         } else {
             // Adding wildcarded
             builder.add(yangArg);
@@ -96,15 +94,14 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
     }
 
     @Override
-    protected final InstanceIdentifier.PathArgument getBindingPathArgument(
-            final YangInstanceIdentifier.PathArgument domArg) {
+    protected final DataObjectStep<?> getBindingPathArgument(final PathArgument domArg) {
         return domArg instanceof NodeIdentifierWithPredicates nip ? codec.domToBinding(nip)
             : super.getBindingPathArgument(domArg);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     final NodeIdentifierWithPredicates serialize(final Key<?> key) {
-        return codec.bindingToDom(IdentifiableItem.of((Class)getBindingClass(), (Key)key));
+        return codec.bindingToDom(new KeyStep(getBindingClass(), key));
     }
 
     final @NonNull Key<?> deserialize(final @NonNull NodeIdentifierWithPredicates arg) {
@@ -112,14 +109,12 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
     }
 
     @Override
-    public final YangInstanceIdentifier.PathArgument serializePathArgument(final InstanceIdentifier.PathArgument arg) {
-        return arg instanceof IdentifiableItem<?, ?> identifiable ? codec.bindingToDom(identifiable)
-            : super.serializePathArgument(arg);
+    public final PathArgument serializePathArgument(final DataObjectStep<?> step) {
+        return step instanceof KeyStep<?, ?> keyStep ? codec.bindingToDom(keyStep) : super.serializePathArgument(step);
     }
 
     @Override
-    public final InstanceIdentifier.PathArgument deserializePathArgument(
-        final YangInstanceIdentifier.PathArgument arg) {
+    public final DataObjectStep<?> deserializePathArgument(final PathArgument arg) {
         return arg instanceof NodeIdentifierWithPredicates nip ? codec.domToBinding(nip)
             : super.deserializePathArgument(arg);
     }

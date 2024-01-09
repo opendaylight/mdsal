@@ -35,11 +35,11 @@ import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -252,13 +252,13 @@ final class ChoiceCodecContext<D extends DataObject> extends CommonDataObjectCod
     }
 
     @Override
-    public PathArgument deserializePathArgument(final YangInstanceIdentifier.PathArgument arg) {
+    public DataObjectStep<?> deserializePathArgument(final PathArgument arg) {
         checkArgument(getDomPathArgument().equals(arg));
         return null;
     }
 
     @Override
-    public YangInstanceIdentifier.PathArgument serializePathArgument(final PathArgument arg) {
+    public PathArgument serializePathArgument(final DataObjectStep<?> step) {
         // FIXME: check for null, since binding container is null.
         return getDomPathArgument();
     }
