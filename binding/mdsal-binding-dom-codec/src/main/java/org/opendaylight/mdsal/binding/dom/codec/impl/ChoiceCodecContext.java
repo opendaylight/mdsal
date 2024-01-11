@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -17,7 +16,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder.SetMultimapBuilder;
 import com.google.common.collect.Multimaps;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,17 +24,14 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingChoiceCodecTreeNode;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
-import org.opendaylight.yangtools.yang.binding.BindingObject;
+import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -94,8 +89,9 @@ import org.slf4j.LoggerFactory;
  * ambiguous reference and issue warn once when they are encountered -- tracking warning information in
  * {@link #ambiguousByCaseChildWarnings}.
  */
-final class ChoiceCodecContext<D extends DataObject> extends CommonDataObjectCodecContext<D, ChoiceRuntimeType>
-        implements BindingDataObjectCodecTreeNode<D> {
+final class ChoiceCodecContext<T extends ChoiceIn<?>>
+        extends DataContainerCodecContext<T, ChoiceRuntimeType, ChoiceCodecPrototype<T>>
+        implements BindingChoiceCodecTreeNode<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceCodecContext.class);
 
     private final ImmutableListMultimap<Class<?>, CommonDataObjectCodecPrototype<?>> ambiguousByCaseChildClass;
@@ -104,11 +100,12 @@ final class ChoiceCodecContext<D extends DataObject> extends CommonDataObjectCod
     private final ImmutableMap<Class<?>, CommonDataObjectCodecPrototype<?>> byClass;
     private final Set<Class<?>> ambiguousByCaseChildWarnings;
 
-    ChoiceCodecContext(final Class<D> cls, final ChoiceRuntimeType type, final CodecContextFactory factory) {
-        this(new ChoiceCodecPrototype(Item.of(cls), type, factory));
+    ChoiceCodecContext(final Class<T> javaClass, final ChoiceRuntimeType runtimeType,
+            final CodecContextFactory contextFactory) {
+        this(new ChoiceCodecPrototype<>(contextFactory, runtimeType, javaClass));
     }
 
-    ChoiceCodecContext(final ChoiceCodecPrototype prototype) {
+    ChoiceCodecContext(final ChoiceCodecPrototype<T> prototype) {
         super(prototype);
         final var byYangCaseChildBuilder = new HashMap<NodeIdentifier, CaseCodecPrototype>();
         final var byClassBuilder = new HashMap<Class<?>, CommonDataObjectCodecPrototype<?>>();
@@ -222,51 +219,27 @@ final class ChoiceCodecContext<D extends DataObject> extends CommonDataObjectCod
     }
 
     @Override
-    CaseCodecPrototype yangChildSupplier(final NodeIdentifier arg) {
+    CodecContextSupplier yangChildSupplier(final NodeIdentifier arg) {
         return byYangCaseChild.get(arg);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "See FIXME below")
-    public D deserialize(final NormalizedNode data) {
-        final var casted = checkDataArgument(ChoiceNode.class, data);
-        final var first = Iterables.getFirst(casted.body(), null);
-
-        if (first == null) {
-            // FIXME: this needs to be sorted out
-            return null;
+    protected T deserializeObject(final NormalizedNode normalizedNode) {
+        final var casted = checkDataArgument(ChoiceNode.class, normalizedNode);
+        final var it = casted.body().iterator();
+        if (!it.hasNext()) {
+            throw new IllegalArgumentException("Input must not be empty");
         }
-        final var caze = byYangCaseChild.get(first.name());
-        return ((CaseCodecContext<D>) caze.getCodecContext()).deserialize(data);
+
+        final var childName = it.next().name();
+        final var caze = childNonNull(byYangCaseChild.get(childName), childName, "%s is not a valid case child of %s",
+            childName, this);
+        return (T) caze.getCodecContext().deserializeObject(casted);
     }
 
     @Override
-    public NormalizedNode serialize(final D data) {
-        return serializeImpl(data);
-    }
-
-    @Override
-    protected Object deserializeObject(final NormalizedNode normalizedNode) {
-        return deserialize(normalizedNode);
-    }
-
-    @Override
-    public PathArgument deserializePathArgument(final YangInstanceIdentifier.PathArgument arg) {
-        checkArgument(getDomPathArgument().equals(arg));
-        return null;
-    }
-
-    @Override
-    public YangInstanceIdentifier.PathArgument serializePathArgument(final PathArgument arg) {
-        // FIXME: check for null, since binding container is null.
-        return getDomPathArgument();
-    }
-
-    @Override
-    public BindingNormalizedNodeCachingCodec<D> createCachingCodec(
-            final ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier) {
-        return createCachingCodec(this, cacheSpecifier);
+    DataContainerPrototype<?, ?> pathChildPrototype(final Class<? extends DataObject> argType) {
+        return byClass.get(argType);
     }
 
     DataContainerCodecContext<?, ?, ?> getCaseByChildClass(final @NonNull Class<? extends DataObject> type) {
@@ -282,13 +255,13 @@ final class ChoiceCodecContext<D extends DataObject> extends CommonDataObjectCod
                         Ambiguous reference {} to child of {} resolved to {}, the first case in {} This mapping is \
                         not guaranteed to be stable and is subject to variations based on runtime circumstances. \
                         Please see the stack trace for hints about the source of ambiguity.""",
-                        type, bindingArg(), result.javaClass(),
+                        type, getBindingClass(), result.javaClass(),
                         Lists.transform(inexact, CommonDataObjectCodecPrototype::javaClass), new Throwable());
                 }
             }
         }
 
-        return childNonNull(result, type, "Class %s is not child of any cases for %s", type, bindingArg())
+        return childNonNull(result, type, "Class %s is not child of any cases for %s", type, getBindingClass())
             .getCodecContext();
     }
 

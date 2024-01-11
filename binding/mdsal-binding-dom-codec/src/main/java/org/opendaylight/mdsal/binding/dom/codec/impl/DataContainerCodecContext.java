@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 abstract sealed class DataContainerCodecContext<D extends DataContainer, R extends CompositeRuntimeType,
         P extends DataContainerPrototype<?, R>>
         extends CodecContext implements BindingDataContainerCodecTreeNode<D>
-        permits CommonDataObjectCodecContext {
+        permits ChoiceCodecContext, CommonDataObjectCodecContext {
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecContext.class);
     private static final VarHandle EVENT_STREAM_SERIALIZER;
 
@@ -96,6 +96,18 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public final Class<D> getBindingClass() {
+        return (Class<D>) prototype().javaClass();
+    }
+
+    // overridden in AugmentationCodecContext
+    @Override
+    protected NodeIdentifier getDomPathArgument() {
+        return prototype.yangArg();
+    }
+
+    @Override
     public final ChildAddressabilitySummary getChildAddressabilitySummary() {
         return childAddressabilitySummary;
     }
@@ -117,12 +129,34 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
     abstract @Nullable CodecContextSupplier yangChildSupplier(@NonNull NodeIdentifier arg);
 
     @Override
-    public CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
+    public final CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
-        final var child = getStreamChild(arg.getType());
-        child.addYangPathArgument(arg, builder);
-        return child;
+        final var argType = arg.getType();
+        final var context = childNonNull(pathChildPrototype(argType), argType,
+            "Class %s is not valid child of %s", argType, getBindingClass())
+            .getCodecContext();
+        context.addYangPathArgument(arg, builder);
+        if (context instanceof CommonDataObjectCodecContext<?, ?> dataObject) {
+            return dataObject;
+        } else if (context instanceof ChoiceCodecContext<?> choice) {
+            final var caseType = arg.getCaseType();
+            final var type = arg.getType();
+            final DataContainerCodecContext<?, ?, ?> caze;
+            if (caseType.isPresent()) {
+                // Non-ambiguous addressing this should not pose any problems
+                caze = choice.getStreamChild(caseType.orElseThrow());
+            } else {
+                caze = choice.getCaseByChildClass(type);
+            }
+
+            caze.addYangPathArgument(arg, builder);
+            return caze.bindingPathArgumentChild(arg, builder);
+        } else {
+            throw new IllegalStateException();
+        }
     }
+
+    abstract @Nullable DataContainerPrototype<?, ?> pathChildPrototype(@NonNull Class<? extends DataObject> argType);
 
     /**
      * Serializes supplied Binding Path Argument and adds all necessary YANG instance identifiers to supplied list.
@@ -144,19 +178,19 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
     }
 
     @Override
-    public final <C extends DataObject> CommonDataObjectCodecContext<C, ?> getStreamChild(final Class<C> childClass) {
+    public final <C extends DataObject> DataContainerCodecContext<C, ?, ?> getStreamChild(final Class<C> childClass) {
         return childNonNull(streamChild(childClass), childClass,
             "Child %s is not valid child of %s", getBindingClass(), childClass);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public final <C extends DataObject> CommonDataObjectCodecContext<C, ?> streamChild(final Class<C> childClass) {
+    public final <C extends DataObject> DataContainerCodecContext<C, ?, ?> streamChild(final Class<C> childClass) {
         final var childProto = streamChildPrototype(requireNonNull(childClass));
-        return childProto == null ? null : (CommonDataObjectCodecContext<C, ?>) childProto.getCodecContext();
+        return childProto == null ? null : (DataContainerCodecContext<C, ?, ?>) childProto.getCodecContext();
     }
 
-    abstract @Nullable CommonDataObjectCodecPrototype<?> streamChildPrototype(@NonNull Class<?> childClass);
+    abstract @Nullable DataContainerPrototype<?, ?> streamChildPrototype(@NonNull Class<?> childClass);
 
     @Override
     public String toString() {
