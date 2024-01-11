@@ -64,7 +64,7 @@ abstract sealed class CommonDataObjectCodecPrototype<T extends CompositeRuntimeT
     abstract @NonNull NodeIdentifier getYangArg();
 
     @Override
-    public final CommonDataObjectCodecContext<?, T> get() {
+    public final CommonDataObjectCodecContext<?, T> getCodecContext() {
         final var existing = (CommonDataObjectCodecContext<?, T>) INSTANCE.getAcquire(this);
         return existing != null ? existing : loadInstance();
     }
