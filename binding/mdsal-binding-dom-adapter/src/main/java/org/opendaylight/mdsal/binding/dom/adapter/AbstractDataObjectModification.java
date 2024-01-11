@@ -28,6 +28,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingChoiceCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataContainerCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -321,7 +323,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     private static void populateList(final ImmutableList.Builder<AbstractDataObjectModification<?, ?>> result,
-            final CommonDataObjectCodecTreeNode<?> parentCodec, final DataTreeCandidateNode parent,
+            final BindingDataContainerCodecTreeNode<?> parentCodec, final DataTreeCandidateNode parent,
             final Collection<DataTreeCandidateNode> children) {
         final var augmentChildren =
             ArrayListMultimap.<BindingAugmentationCodecTreeNode<?>, DataTreeCandidateNode>create();
@@ -341,6 +343,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                         } else if (childCodec instanceof BindingAugmentationCodecTreeNode<?> childAugmentationCodec) {
                             // Defer creation once we have collected all modified children
                             augmentChildren.put(childAugmentationCodec, domChildNode);
+                        } else if (childCodec instanceof BindingChoiceCodecTreeNode<?> childChoiceCodec) {
+                            populateList(result, childChoiceCodec, domChildNode, domChildNode.childNodes());
                         } else {
                             throw new VerifyException("Unhandled codec %s for type %s".formatted(childCodec, type));
                         }
