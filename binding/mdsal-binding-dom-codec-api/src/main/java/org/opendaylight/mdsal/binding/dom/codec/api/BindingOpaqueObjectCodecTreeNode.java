@@ -11,7 +11,14 @@ import com.google.common.annotations.Beta;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 
 @Beta
-public interface BindingOpaqueObjectCodecTreeNode<T extends OpaqueObject<T>> extends BindingObjectCodecTreeNode<T>,
-        BindingNormalizedNodeCodec<T> {
-
+public non-sealed interface BindingOpaqueObjectCodecTreeNode<T extends OpaqueObject<T>>
+        extends BindingObjectCodecTreeNode, BindingNormalizedNodeCodec<T> {
+    /**
+     * Returns binding class of interface which represents API of current schema node. The result is same as invoking
+     * {@link OpaqueObject#implementedInterface()} on instance of data.
+     *
+     * @return interface which defines API of binding representation of data.
+     */
+    @Override
+    Class<T> getBindingClass();
 }
