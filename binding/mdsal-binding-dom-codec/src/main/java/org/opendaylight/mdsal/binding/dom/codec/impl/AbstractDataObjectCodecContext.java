@@ -9,17 +9,13 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 
@@ -43,8 +39,8 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 public abstract sealed class AbstractDataObjectCodecContext<D extends DataObject, T extends CompositeRuntimeType>
         extends CommonDataObjectCodecContext<D, T>
         permits AugmentationCodecContext, DataObjectCodecContext {
-    private final ImmutableMap<Class<?>, CommonDataObjectCodecPrototype<?>> byBindingArgClass;
-    private final ImmutableMap<Class<?>, CommonDataObjectCodecPrototype<?>> byStreamClass;
+    private final ImmutableMap<Class<?>, DataContainerPrototype<?, ?>> byBindingArgClass;
+    private final ImmutableMap<Class<?>, DataContainerPrototype<?, ?>> byStreamClass;
     private final ImmutableMap<NodeIdentifier, CodecContextSupplier> byYang;
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
 
@@ -64,38 +60,12 @@ public abstract sealed class AbstractDataObjectCodecContext<D extends DataObject
     }
 
     @Override
-    CommonDataObjectCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
+    DataContainerPrototype<?, ?> streamChildPrototype(final Class<?> childClass) {
         return byStreamClass.get(childClass);
     }
 
     @Override
-    public final CommonDataObjectCodecContext<?, ?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
-            final List<PathArgument> builder) {
-        final var argType = arg.getType();
-        final var context = childNonNull(pathChildPrototype(argType), argType,
-            "Class %s is not valid child of %s", argType, getBindingClass())
-            .getCodecContext();
-        if (context instanceof ChoiceCodecContext<?> choice) {
-            choice.addYangPathArgument(arg, builder);
-
-            final var caseType = arg.getCaseType();
-            final var type = arg.getType();
-            final DataContainerCodecContext<?, ?, ?> caze;
-            if (caseType.isPresent()) {
-                // Non-ambiguous addressing this should not pose any problems
-                caze = choice.getStreamChild(caseType.orElseThrow());
-            } else {
-                caze = choice.getCaseByChildClass(type);
-            }
-
-            caze.addYangPathArgument(arg, builder);
-            return caze.bindingPathArgumentChild(arg, builder);
-        }
-        context.addYangPathArgument(arg, builder);
-        return context;
-    }
-
-    @Nullable CommonDataObjectCodecPrototype<?> pathChildPrototype(final @NonNull Class<? extends DataObject> argType) {
+    DataContainerPrototype<?, ?> pathChildPrototype(final @NonNull Class<? extends DataObject> argType) {
         return byBindingArgClass.get(argType);
     }
 
