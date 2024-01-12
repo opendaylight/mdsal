@@ -59,11 +59,11 @@ final class DataContainerAnalysis<R extends CompositeRuntimeType> {
     final @NonNull ImmutableMap<Method, ValueNodeCodecContext> leafContexts;
     final @NonNull ImmutableMap<Class<?>, PropertyInfo> daoProperties;
 
-    DataContainerAnalysis(final CommonDataObjectCodecPrototype<R> prototype) {
+    DataContainerAnalysis(final CommonDataObjectPrototype<R> prototype) {
         this(prototype.javaClass(), prototype.runtimeType(), prototype.contextFactory(), null);
     }
 
-    DataContainerAnalysis(final CommonDataObjectCodecPrototype<R> prototype,
+    DataContainerAnalysis(final CommonDataObjectPrototype<R> prototype,
             final Class<? extends DataObject> caseClass) {
         this(prototype.javaClass(), prototype.runtimeType(), prototype.contextFactory(), requireNonNull(caseClass));
     }
@@ -106,7 +106,7 @@ final class DataContainerAnalysis<R extends CompositeRuntimeType> {
             byStreamClassBuilder.put(childProto.javaClass(), childProto);
             byYangBuilder.put(childProto.yangArg(), childProto);
 
-            if (childProto instanceof ChoiceCodecPrototype<?> choiceProto) {
+            if (childProto instanceof ChoicePrototype<?> choiceProto) {
                 for (var cazeChild : choiceProto.getCodecContext().getCaseChildrenClasses()) {
                     byBindingArgClassBuilder.put(cazeChild, choiceProto);
                 }
@@ -147,19 +147,19 @@ final class DataContainerAnalysis<R extends CompositeRuntimeType> {
         }
 
         if (child instanceof ChoiceRuntimeType choice) {
-            return new ChoiceCodecPrototype<>(factory, choice, childClass.asSubclass(ChoiceIn.class));
+            return new ChoicePrototype<>(factory, choice, childClass.asSubclass(ChoiceIn.class));
         }
 
         final var item = createItem(caseClass, childClass, child.statement());
         if (child instanceof ContainerLikeRuntimeType containerLike) {
             if (child instanceof ContainerRuntimeType container
                 && container.statement().findFirstEffectiveSubstatement(PresenceEffectiveStatement.class).isEmpty()) {
-                return new StructuralContainerCodecPrototype(item, container, factory);
+                return new StructuralContainerPrototype(item, container, factory);
             }
-            return new ContainerLikeCodecPrototype(item, containerLike, factory);
+            return new ContainerLikePrototype(item, containerLike, factory);
         } else if (child instanceof ListRuntimeType list) {
-            return list.keyType() != null ? new MapCodecPrototype(item, list, factory)
-                : new ListCodecPrototype(item, list, factory);
+            return list.keyType() != null ? new MapPrototype(item, list, factory)
+                : new ListPrototype(item, list, factory);
         } else {
             throw new UnsupportedOperationException("Unhandled type " + child);
         }

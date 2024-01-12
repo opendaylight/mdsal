@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 final class CaseCodecContext<C extends ChoiceIn<?> & DataObject> extends DataObjectCodecContext<C, CaseRuntimeType> {
-    CaseCodecContext(final CaseCodecPrototype<C> prototype) {
+    CaseCodecContext(final CasePrototype<C> prototype) {
         super(prototype, prototype.javaClass());
     }
 

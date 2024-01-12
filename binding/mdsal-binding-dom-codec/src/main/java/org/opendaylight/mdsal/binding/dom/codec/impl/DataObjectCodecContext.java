@@ -73,7 +73,7 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
         }
     }
 
-    private final ImmutableMap<Class<?>, AugmentationCodecPrototype<?>> augmentToPrototype;
+    private final ImmutableMap<Class<?>, AugmentationPrototype<?>> augmentToPrototype;
     private final ImmutableMap<NodeIdentifier, Class<?>> yangToAugmentClass;
     private final @NonNull Class<? extends CodecDataObject<?>> generatedClass;
     private final MethodHandle proxyConstructor;
@@ -82,22 +82,22 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
     // BindingRuntimeContext. It is only accessed via MISMATCHED_AUGMENTED above.
     @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
-    private volatile ImmutableMap<Class<?>, CommonDataObjectCodecPrototype<?>> mismatchedAugmented = ImmutableMap.of();
+    private volatile ImmutableMap<Class<?>, CommonDataObjectPrototype<?>> mismatchedAugmented = ImmutableMap.of();
 
-    DataObjectCodecContext(final CommonDataObjectCodecPrototype<T> prototype) {
+    DataObjectCodecContext(final CommonDataObjectPrototype<T> prototype) {
         this(prototype, new DataContainerAnalysis<>(prototype), null);
     }
 
-    DataObjectCodecContext(final CommonDataObjectCodecPrototype<T> prototype,
+    DataObjectCodecContext(final CommonDataObjectPrototype<T> prototype,
             final Class<? extends DataObject> caseClass) {
         this(prototype, new DataContainerAnalysis<>(prototype, caseClass), null);
     }
 
-    DataObjectCodecContext(final CommonDataObjectCodecPrototype<T> prototype, final Method keyMethod) {
+    DataObjectCodecContext(final CommonDataObjectPrototype<T> prototype, final Method keyMethod) {
         this(prototype, new DataContainerAnalysis<>(prototype), keyMethod);
     }
 
-    private DataObjectCodecContext(final CommonDataObjectCodecPrototype<T> prototype,
+    private DataObjectCodecContext(final CommonDataObjectPrototype<T> prototype,
             final DataContainerAnalysis<T> analysis, final Method keyMethod) {
         super(prototype, analysis);
 
@@ -135,7 +135,7 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
 
         // Deal with augmentations, which are not something we analysis provides
         final var augPathToBinding = new HashMap<NodeIdentifier, Class<?>>();
-        final var augClassToProto = new HashMap<Class<?>, AugmentationCodecPrototype<?>>();
+        final var augClassToProto = new HashMap<Class<?>, AugmentationPrototype<?>>();
         for (var augment : possibleAugmentations) {
             final var augProto = loadAugmentPrototype(augment);
             if (augProto != null) {
@@ -177,24 +177,24 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
         return child;
     }
 
-    private @Nullable AugmentationCodecPrototype getAugmentationProtoByClass(final @NonNull Class<?> augmClass) {
+    private @Nullable AugmentationPrototype getAugmentationProtoByClass(final @NonNull Class<?> augmClass) {
         final var childProto = augmentToPrototype.get(augmClass);
         return childProto != null ? childProto : mismatchedAugmentationByClass(augmClass);
     }
 
-    private @Nullable AugmentationCodecPrototype mismatchedAugmentationByClass(final @NonNull Class<?> childClass) {
+    private @Nullable AugmentationPrototype mismatchedAugmentationByClass(final @NonNull Class<?> childClass) {
         /*
          * It is potentially mismatched valid augmentation - we look up equivalent augmentation using reflection
          * and walk all stream child and compare augmentations classes if they are equivalent. When we find a match
          * we'll cache it so we do not need to perform reflection operations again.
          */
-        final var local = (ImmutableMap<Class<?>, AugmentationCodecPrototype<?>>) MISMATCHED_AUGMENTED.getAcquire(this);
+        final var local = (ImmutableMap<Class<?>, AugmentationPrototype<?>>) MISMATCHED_AUGMENTED.getAcquire(this);
         final var mismatched = local.get(childClass);
         return mismatched != null ? mismatched : loadMismatchedAugmentation(local, childClass);
     }
 
-    private @Nullable AugmentationCodecPrototype<?> loadMismatchedAugmentation(
-            final ImmutableMap<Class<?>, AugmentationCodecPrototype<?>> oldMismatched,
+    private @Nullable AugmentationPrototype<?> loadMismatchedAugmentation(
+            final ImmutableMap<Class<?>, AugmentationPrototype<?>> oldMismatched,
             final @NonNull Class<?> childClass) {
         @SuppressWarnings("rawtypes")
         final Class<?> augTarget = findAugmentationTarget((Class) childClass);
@@ -212,18 +212,18 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
         return null;
     }
 
-    private @NonNull AugmentationCodecPrototype<?> cacheMismatched(
-            final @NonNull ImmutableMap<Class<?>, AugmentationCodecPrototype<?>> oldMismatched,
-            final @NonNull Class<?> childClass, final @NonNull AugmentationCodecPrototype<?> prototype) {
+    private @NonNull AugmentationPrototype<?> cacheMismatched(
+            final @NonNull ImmutableMap<Class<?>, AugmentationPrototype<?>> oldMismatched,
+            final @NonNull Class<?> childClass, final @NonNull AugmentationPrototype<?> prototype) {
         var expected = oldMismatched;
         while (true) {
             final var newMismatched =
-                ImmutableMap.<Class<?>, CommonDataObjectCodecPrototype<?>>builderWithExpectedSize(expected.size() + 1)
+                ImmutableMap.<Class<?>, CommonDataObjectPrototype<?>>builderWithExpectedSize(expected.size() + 1)
                     .putAll(expected)
                     .put(childClass, prototype)
                     .build();
 
-            final var witness = (ImmutableMap<Class<?>, AugmentationCodecPrototype<?>>)
+            final var witness = (ImmutableMap<Class<?>, AugmentationPrototype<?>>)
                 MISMATCHED_AUGMENTED.compareAndExchangeRelease(this, expected, newMismatched);
             if (witness == expected) {
                 LOG.trace("Cached mismatched augmentation {} -> {} in {}", childClass, prototype, this);
@@ -251,7 +251,7 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
         return cls.equals(loaded);
     }
 
-    private @Nullable AugmentationCodecPrototype<?> loadAugmentPrototype(final AugmentRuntimeType augment) {
+    private @Nullable AugmentationPrototype<?> loadAugmentPrototype(final AugmentRuntimeType augment) {
         // FIXME: in face of deviations this code should be looking at declared view, i.e. all possibilities at augment
         //        declaration site
         final var childPaths = augment.statement()
@@ -272,7 +272,7 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
             throw new IllegalStateException(
                 "RuntimeContext references type " + javaType + " but failed to load its class", e);
         }
-        return new AugmentationCodecPrototype<>(augClass, augment, factory, childPaths);
+        return new AugmentationPrototype<>(augClass, augment, factory, childPaths);
     }
 
     @Override

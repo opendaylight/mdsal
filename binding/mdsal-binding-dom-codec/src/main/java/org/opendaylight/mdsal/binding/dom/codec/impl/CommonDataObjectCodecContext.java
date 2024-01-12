@@ -17,10 +17,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * Base implementation of {@link CommonDataObjectCodecTreeNode}.
  */
 abstract sealed class CommonDataObjectCodecContext<D extends DataObject, T extends CompositeRuntimeType>
-        extends DataContainerCodecContext<D, T, CommonDataObjectCodecPrototype<T>>
+        extends DataContainerCodecContext<D, T, CommonDataObjectPrototype<T>>
         implements CommonDataObjectCodecTreeNode<D>
         permits AbstractDataObjectCodecContext {
-    CommonDataObjectCodecContext(final CommonDataObjectCodecPrototype<T> prototype) {
+    CommonDataObjectCodecContext(final CommonDataObjectPrototype<T> prototype) {
         super(prototype);
     }
 

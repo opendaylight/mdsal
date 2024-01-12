@@ -30,14 +30,14 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
         extends ListCodecContext<D> {
     private static final class Ordered<I extends Key<D>, D extends DataObject & KeyAware<I>>
             extends MapCodecContext<I, D> {
-        Ordered(final MapCodecPrototype prototype, final Method keyMethod, final IdentifiableItemCodec codec) {
+        Ordered(final MapPrototype prototype, final Method keyMethod, final IdentifiableItemCodec codec) {
             super(prototype, keyMethod, codec);
         }
     }
 
     static final class Unordered<I extends Key<D>, D extends DataObject & KeyAware<I>>
             extends MapCodecContext<I, D> {
-        private Unordered(final MapCodecPrototype prototype, final Method keyMethod,
+        private Unordered(final MapPrototype prototype, final Method keyMethod,
                 final IdentifiableItemCodec codec) {
             super(prototype, keyMethod, codec);
         }
@@ -50,7 +50,7 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
 
     private final IdentifiableItemCodec codec;
 
-    private MapCodecContext(final MapCodecPrototype prototype, final Method keyMethod,
+    private MapCodecContext(final MapPrototype prototype, final Method keyMethod,
             final IdentifiableItemCodec codec) {
         super(prototype, keyMethod);
         this.codec = requireNonNull(codec);
@@ -58,10 +58,10 @@ abstract sealed class MapCodecContext<I extends Key<D>, D extends DataObject & K
 
     static @NonNull MapCodecContext<?, ?> of(final Class<? extends DataObject> cls, final ListRuntimeType type,
             final CodecContextFactory factory) {
-        return of(new MapCodecPrototype(new KeylessStep(cls), type, factory));
+        return of(new MapPrototype(new KeylessStep(cls), type, factory));
     }
 
-    static @NonNull MapCodecContext<?, ?> of(final MapCodecPrototype prototype) {
+    static @NonNull MapCodecContext<?, ?> of(final MapPrototype prototype) {
         final var bindingClass = prototype.javaClass();
         final Method keyMethod;
         try {

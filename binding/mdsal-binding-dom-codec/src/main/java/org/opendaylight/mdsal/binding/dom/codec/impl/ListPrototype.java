@@ -7,22 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import org.opendaylight.mdsal.binding.runtime.api.ContainerLikeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 /**
- * A prototype for a {@link ContainerLikeCodecContext}.
+ * A prototype for {@link ListCodecContext}.
  */
-sealed class ContainerLikeCodecPrototype extends DataObjectCodecPrototype<ContainerLikeRuntimeType<?, ?>>
-        permits StructuralContainerCodecPrototype {
-    ContainerLikeCodecPrototype(final DataObjectStep<?> step, final ContainerLikeRuntimeType<?, ?> type,
-            final CodecContextFactory factory) {
+sealed class ListPrototype extends DataObjectPrototype<ListRuntimeType> permits MapPrototype {
+    ListPrototype(final DataObjectStep<?> step, final ListRuntimeType type, final CodecContextFactory factory) {
         super(step, NodeIdentifier.create(type.statement().argument()), type, factory);
     }
 
     @Override
-    ContainerLikeCodecContext<?> createInstance() {
-        return new ContainerLikeCodecContext<>(this);
+    ListCodecContext<?> createInstance() {
+        return new ListCodecContext<>(this);
     }
 }

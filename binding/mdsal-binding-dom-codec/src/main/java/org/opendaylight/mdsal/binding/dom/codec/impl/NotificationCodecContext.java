@@ -122,7 +122,7 @@ final class NotificationCodecContext<D extends DataObject & BaseNotification>
      * prototype.
      */
     static final class Prototype<D extends DataObject & BaseNotification>
-            extends DataObjectCodecPrototype<NotificationRuntimeType> {
+            extends DataObjectPrototype<NotificationRuntimeType> {
         private Prototype(final Class<?> cls, final NotificationRuntimeType type, final CodecContextFactory factory) {
             super(cls, NodeIdentifier.create(type.statement().argument()), type, factory);
         }

@@ -37,10 +37,10 @@ final class StructuralContainerCodecContext<D extends DataObject> extends Contai
 
     StructuralContainerCodecContext(final Class<D> cls, final ContainerRuntimeType type,
             final CodecContextFactory factory) {
-        this(new StructuralContainerCodecPrototype(new NodeStep<>(cls), type, factory));
+        this(new StructuralContainerPrototype(new NodeStep<>(cls), type, factory));
     }
 
-    StructuralContainerCodecContext(final StructuralContainerCodecPrototype prototype) {
+    StructuralContainerCodecContext(final StructuralContainerPrototype prototype) {
         super(prototype);
     }
 

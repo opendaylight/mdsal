@@ -48,7 +48,7 @@ public abstract sealed class AbstractDataObjectCodecContext<D extends DataObject
     private final ImmutableMap<NodeIdentifier, CodecContextSupplier> byYang;
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
 
-    AbstractDataObjectCodecContext(final CommonDataObjectCodecPrototype<T> prototype,
+    AbstractDataObjectCodecContext(final CommonDataObjectPrototype<T> prototype,
             final DataContainerAnalysis<T> analysis) {
         super(prototype);
         byBindingArgClass = analysis.byBindingArgClass;

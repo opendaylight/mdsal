@@ -7,20 +7,24 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObjectStep;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.binding.KeyAware;
 
 /**
- * A prototype for {@link ListCodecContext}.
+ * A prototype for a {@link MapCodecContext}.
  */
-sealed class ListCodecPrototype extends DataObjectCodecPrototype<ListRuntimeType> permits MapCodecPrototype {
-    ListCodecPrototype(final DataObjectStep<?> step, final ListRuntimeType type, final CodecContextFactory factory) {
-        super(step, NodeIdentifier.create(type.statement().argument()), type, factory);
+final class MapPrototype extends ListPrototype {
+    MapPrototype(final DataObjectStep<?> step, final ListRuntimeType type, final CodecContextFactory factory) {
+        super(step, type, factory);
+        final var clazz = javaClass();
+        checkArgument(KeyAware.class.isAssignableFrom(clazz), "%s is not KeyAware", clazz);
     }
 
     @Override
     ListCodecContext<?> createInstance() {
-        return new ListCodecContext<>(this);
+        return MapCodecContext.of(this);
     }
 }
