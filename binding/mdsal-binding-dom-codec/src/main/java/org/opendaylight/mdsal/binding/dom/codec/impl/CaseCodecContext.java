@@ -32,11 +32,6 @@ final class CaseCodecContext<C extends ChoiceIn<?> & DataObject> extends DataObj
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode normalizedNode) {
-        return deserialize(normalizedNode);
-    }
-
-    @Override
     public PathArgument serializePathArgument(final DataObjectStep<?> step) {
         if (step != null) {
             throw new IllegalArgumentException("Unexpected argument " + step);

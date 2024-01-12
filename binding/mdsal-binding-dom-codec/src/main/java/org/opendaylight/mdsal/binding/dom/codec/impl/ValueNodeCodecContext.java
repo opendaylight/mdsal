@@ -41,14 +41,14 @@ abstract sealed class ValueNodeCodecContext extends CodecContext implements Code
     private final Object defaultObject;
 
     ValueNodeCodecContext(final DataSchemaNode dataSchema, final String getterName, final Object defaultObject) {
-        yangIdentifier = NodeIdentifier.create(dataSchema.getQName());
         this.getterName = requireNonNull(getterName);
         this.dataSchema = requireNonNull(dataSchema);
+        yangIdentifier = NodeIdentifier.create(dataSchema.getQName());
         this.defaultObject = defaultObject;
     }
 
     @Override
-    protected final NodeIdentifier getDomPathArgument() {
+    final NodeIdentifier getDomPathArgument() {
         return yangIdentifier;
     }
 
