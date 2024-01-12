@@ -47,6 +47,54 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4c9eb2a_c5b90505",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/KeylessStep.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-12T20:04:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a5fefc1_eb3599d2",
+      "range": {
+        "startLine": 37,
+        "startChar": 39,
+        "endLine": 37,
+        "endChar": 55
+      },
+      "revId": "b190ca3f2a5d33eee5cf6de20cd01fb877033d1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a693098_7b1a7daf",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/KeylessStep.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-12T20:04:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "16bbfa18_0bad3346",
+      "range": {
+        "startLine": 37,
+        "startChar": 100,
+        "endLine": 37,
+        "endChar": 118
+      },
+      "revId": "b190ca3f2a5d33eee5cf6de20cd01fb877033d1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae55c2b2_8af1108b",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-01-12T19:53:24Z",
       "side": 1,
       "message": "typo",
+      "range": {
+        "startLine": 38,
+        "startChar": 52,
+        "endLine": 38,
+        "endChar": 54
+      },
+      "revId": "b190ca3f2a5d33eee5cf6de20cd01fb877033d1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9ceb872_bb18339b",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/KeylessStep.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-12T20:04:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae55c2b2_8af1108b",
       "range": {
         "startLine": 38,
         "startChar": 52,
