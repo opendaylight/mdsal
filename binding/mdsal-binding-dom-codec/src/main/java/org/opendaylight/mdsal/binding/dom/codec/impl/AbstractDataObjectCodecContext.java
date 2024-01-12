@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
-import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 
 /**
  * Abstract base for {@link DataObjectCodecContext} and {@link AugmentationCodecContext}. They share most of their
@@ -55,12 +54,6 @@ public abstract sealed class AbstractDataObjectCodecContext<D extends DataObject
         byStreamClass = analysis.byStreamClass;
         byYang = analysis.byYang;
         leafChild = analysis.leafNodes;
-    }
-
-    @Override
-    public final WithStatus getSchema() {
-        // FIXME: Bad cast, we should be returning an EffectiveStatement perhaps?
-        return (WithStatus) prototype().runtimeType().statement();
     }
 
     @Override

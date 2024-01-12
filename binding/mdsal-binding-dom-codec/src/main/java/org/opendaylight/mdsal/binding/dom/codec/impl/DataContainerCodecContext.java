@@ -123,7 +123,7 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
         } else {
             supplier = null;
         }
-        return childNonNull(supplier, arg, "Argument %s is not valid child of %s", arg, getSchema()).getCodecContext();
+        return childNonNull(supplier, arg, "Argument %s is not valid child of %s", arg, dataSchema()).getCodecContext();
     }
 
     abstract @Nullable CodecContextSupplier yangChildSupplier(@NonNull NodeIdentifier arg);
@@ -165,6 +165,12 @@ abstract sealed class DataContainerCodecContext<D extends DataContainer, R exten
     }
 
     abstract @Nullable DataContainerPrototype<?, ?> streamChildPrototype(@NonNull Class<?> childClass);
+
+    @Override
+    final DataSchemaNode dataSchema() {
+        // FIXME: Bad cast, we should be returning an EffectiveStatement perhaps?
+        return (DataSchemaNode) prototype().runtimeType().statement();
+    }
 
     @Override
     public String toString() {

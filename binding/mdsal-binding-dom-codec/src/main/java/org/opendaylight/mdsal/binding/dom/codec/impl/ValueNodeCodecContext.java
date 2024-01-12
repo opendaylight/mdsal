@@ -37,7 +37,7 @@ abstract sealed class ValueNodeCodecContext extends CodecContext implements Code
 
     private final @NonNull NodeIdentifier yangIdentifier;
     private final @NonNull String getterName;
-    private final @NonNull DataSchemaNode schema;
+    private final @NonNull DataSchemaNode dataSchema;
     private final Object defaultObject;
 
     ValueNodeCodecContext(final DataSchemaNode dataSchema, final String getterName, final Object defaultObject) {
@@ -64,12 +64,12 @@ abstract sealed class ValueNodeCodecContext extends CodecContext implements Code
     abstract ValueCodec<Object, Object> getValueCodec();
 
     @Override
-    public final DataSchemaNode getSchema() {
-        return schema;
+    final Object defaultObject() {
+        return defaultObject;
     }
 
     @Override
-    final Object defaultObject() {
-        return defaultObject;
+    final DataSchemaNode dataSchema() {
+        return dataSchema;
     }
 }
