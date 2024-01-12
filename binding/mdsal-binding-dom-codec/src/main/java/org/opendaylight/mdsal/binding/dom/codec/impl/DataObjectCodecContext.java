@@ -343,4 +343,9 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
             throw new IllegalStateException(e);
         }
     }
+
+    @Override
+    Object deserializeObject(final NormalizedNode normalizedNode) {
+        return deserialize(normalizedNode);
+    }
 }
