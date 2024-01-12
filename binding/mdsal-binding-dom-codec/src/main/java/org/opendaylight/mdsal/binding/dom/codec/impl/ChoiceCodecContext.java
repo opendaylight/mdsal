@@ -40,7 +40,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,12 +197,6 @@ final class ChoiceCodecContext<T extends ChoiceIn<?>>
         } catch (ClassNotFoundException e) {
             throw new LinkageError("Failed to load class for " + className, e);
         }
-    }
-
-    @Override
-    public WithStatus getSchema() {
-        // FIXME: Bad cast, we should be returning an EffectiveStatement perhaps?
-        return (WithStatus) prototype().runtimeType().statement();
     }
 
     @Override

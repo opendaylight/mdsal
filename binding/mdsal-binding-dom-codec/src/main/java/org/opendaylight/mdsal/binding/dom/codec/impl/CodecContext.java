@@ -7,10 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
 /**
  * Location specific context for schema nodes, which contains codec specific information to properly serialize
@@ -44,4 +46,6 @@ abstract sealed class CodecContext implements BindingCodecTreeNode
     }
 
     protected abstract Object deserializeObject(NormalizedNode normalizedNode);
+
+    abstract @NonNull DataSchemaNode dataSchema();
 }
