@@ -13,8 +13,8 @@ import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 /**
  * A prototype for a {@link StructuralContainerCodecContext}.
  */
-final class StructuralContainerCodecPrototype extends ContainerLikeCodecPrototype {
-    StructuralContainerCodecPrototype(final DataObjectStep<?> step, final ContainerRuntimeType container,
+final class StructuralContainerPrototype extends ContainerLikePrototype {
+    StructuralContainerPrototype(final DataObjectStep<?> step, final ContainerRuntimeType container,
             final CodecContextFactory factory) {
         super(step, container, factory);
     }

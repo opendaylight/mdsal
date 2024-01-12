@@ -24,14 +24,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 sealed class ListCodecContext<D extends DataObject> extends DataObjectCodecContext<D, ListRuntimeType>
         permits MapCodecContext {
     ListCodecContext(final Class<D> cls, final ListRuntimeType list, final CodecContextFactory factory) {
-        this(new ListCodecPrototype(new NodeStep<>(cls), list, factory));
+        this(new ListPrototype(new NodeStep<>(cls), list, factory));
     }
 
-    ListCodecContext(final ListCodecPrototype prototype) {
+    ListCodecContext(final ListPrototype prototype) {
         super(prototype);
     }
 
-    ListCodecContext(final ListCodecPrototype prototype, final Method keyMethod) {
+    ListCodecContext(final ListPrototype prototype, final Method keyMethod) {
         super(prototype, keyMethod);
     }
 

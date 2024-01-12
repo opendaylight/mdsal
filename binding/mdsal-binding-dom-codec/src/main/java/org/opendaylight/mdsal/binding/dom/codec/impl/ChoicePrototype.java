@@ -17,12 +17,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 /**
  * A prototype for {@link ChoiceCodecContext}.
  */
-final class ChoiceCodecPrototype<T extends ChoiceIn<?>>
+final class ChoicePrototype<T extends ChoiceIn<?>>
         extends DataContainerPrototype<ChoiceCodecContext<T>, ChoiceRuntimeType> {
     private final @NonNull NodeIdentifier yangArg;
     private final @NonNull Class<T> javaClass;
 
-    ChoiceCodecPrototype(final CodecContextFactory contextFactory, final ChoiceRuntimeType runtimeType,
+    ChoicePrototype(final CodecContextFactory contextFactory, final ChoiceRuntimeType runtimeType,
             final Class<T> javaClass) {
         super(contextFactory, runtimeType);
         this.javaClass = requireNonNull(javaClass);

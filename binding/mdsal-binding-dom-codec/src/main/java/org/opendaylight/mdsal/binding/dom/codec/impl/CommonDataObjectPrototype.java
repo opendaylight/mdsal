@@ -15,16 +15,16 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 
 /**
- * Common superclass for {@link DataObjectCodecPrototype} and {@link AugmentationCodecPrototype}.
+ * Common superclass for {@link DataObjectPrototype} and {@link AugmentationPrototype}.
  *
  * @param <R> {@link CompositeRuntimeType} type
  */
-abstract sealed class CommonDataObjectCodecPrototype<R extends CompositeRuntimeType>
+abstract sealed class CommonDataObjectPrototype<R extends CompositeRuntimeType>
         extends DataContainerPrototype<CommonDataObjectCodecContext<?, R>, R>
-        permits AugmentationCodecPrototype, DataObjectCodecPrototype {
+        permits AugmentationPrototype, DataObjectPrototype {
     private final @NonNull DataObjectStep<?> step;
 
-    CommonDataObjectCodecPrototype(final DataObjectStep<?> step, final R runtimeType,
+    CommonDataObjectPrototype(final DataObjectStep<?> step, final R runtimeType,
             final CodecContextFactory factory) {
         super(factory, runtimeType);
         this.step = requireNonNull(step);

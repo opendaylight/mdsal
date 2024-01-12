@@ -16,12 +16,11 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.NodeStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
-final class AugmentationCodecPrototype<T extends Augmentation<?>>
-        extends CommonDataObjectCodecPrototype<AugmentRuntimeType> {
+final class AugmentationPrototype<T extends Augmentation<?>> extends CommonDataObjectPrototype<AugmentRuntimeType> {
     private final @NonNull ImmutableSet<NodeIdentifier> childArgs;
 
-    AugmentationCodecPrototype(final @NonNull Class<T> cls, final AugmentRuntimeType type,
-            final CodecContextFactory factory, final ImmutableSet<NodeIdentifier> childArgs) {
+    AugmentationPrototype(final @NonNull Class<T> cls, final AugmentRuntimeType type, final CodecContextFactory factory,
+            final ImmutableSet<NodeIdentifier> childArgs) {
         super(new NodeStep<>(cls), type, factory);
         this.childArgs = requireNonNull(childArgs);
     }

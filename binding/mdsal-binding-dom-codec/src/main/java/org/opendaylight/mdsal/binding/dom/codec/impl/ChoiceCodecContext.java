@@ -92,27 +92,27 @@ import org.slf4j.LoggerFactory;
  * {@link #ambiguousByCaseChildWarnings}.
  */
 final class ChoiceCodecContext<T extends ChoiceIn<?>>
-        extends DataContainerCodecContext<T, ChoiceRuntimeType, ChoiceCodecPrototype<T>>
+        extends DataContainerCodecContext<T, ChoiceRuntimeType, ChoicePrototype<T>>
         implements BindingChoiceCodecTreeNode<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceCodecContext.class);
 
-    private final ImmutableListMultimap<Class<?>, CommonDataObjectCodecPrototype<?>> ambiguousByCaseChildClass;
-    private final ImmutableMap<Class<?>, CommonDataObjectCodecPrototype<?>> byCaseChildClass;
-    private final ImmutableMap<NodeIdentifier, CaseCodecPrototype> byYangCaseChild;
-    private final ImmutableMap<Class<?>, CommonDataObjectCodecPrototype<?>> byClass;
+    private final ImmutableListMultimap<Class<?>, CommonDataObjectPrototype<?>> ambiguousByCaseChildClass;
+    private final ImmutableMap<Class<?>, CommonDataObjectPrototype<?>> byCaseChildClass;
+    private final ImmutableMap<NodeIdentifier, CasePrototype> byYangCaseChild;
+    private final ImmutableMap<Class<?>, CommonDataObjectPrototype<?>> byClass;
     private final Set<Class<?>> ambiguousByCaseChildWarnings;
 
     ChoiceCodecContext(final Class<T> javaClass, final ChoiceRuntimeType runtimeType,
             final CodecContextFactory contextFactory) {
-        this(new ChoiceCodecPrototype<>(contextFactory, runtimeType, javaClass));
+        this(new ChoicePrototype<>(contextFactory, runtimeType, javaClass));
     }
 
-    ChoiceCodecContext(final ChoiceCodecPrototype<T> prototype) {
+    ChoiceCodecContext(final ChoicePrototype<T> prototype) {
         super(prototype);
-        final var byYangCaseChildBuilder = new HashMap<NodeIdentifier, CaseCodecPrototype>();
-        final var byClassBuilder = new HashMap<Class<?>, CommonDataObjectCodecPrototype<?>>();
+        final var byYangCaseChildBuilder = new HashMap<NodeIdentifier, CasePrototype>();
+        final var byClassBuilder = new HashMap<Class<?>, CommonDataObjectPrototype<?>>();
         final var childToCase = SetMultimapBuilder.hashKeys().hashSetValues()
-            .<Class<?>, CommonDataObjectCodecPrototype<?>>build();
+            .<Class<?>, CommonDataObjectPrototype<?>>build();
 
         // Load case statements valid in this choice and keep track of their names
         final var choiceType = prototype.runtimeType();
@@ -121,7 +121,7 @@ final class ChoiceCodecContext<T extends ChoiceIn<?>>
         for (var caseType : choiceType.validCaseChildren()) {
             @SuppressWarnings("unchecked")
             final var caseClass = (Class<? extends DataObject>) loadCase(factory.getRuntimeContext(), caseType);
-            final var caseProto = new CaseCodecPrototype(caseClass, caseType, factory);
+            final var caseProto = new CasePrototype(caseClass, caseType, factory);
 
             localCases.add(caseType.getIdentifier());
             byClassBuilder.put(caseClass, caseProto);
@@ -140,8 +140,8 @@ final class ChoiceCodecContext<T extends ChoiceIn<?>>
         byYangCaseChild = ImmutableMap.copyOf(byYangCaseChildBuilder);
 
         // Move unambiguous child->case mappings to byCaseChildClass, removing them from childToCase
-        final var ambiguousByCaseBuilder = ImmutableListMultimap.<Class<?>, CommonDataObjectCodecPrototype<?>>builder();
-        final var unambiguousByCaseBuilder = ImmutableMap.<Class<?>, CommonDataObjectCodecPrototype<?>>builder();
+        final var ambiguousByCaseBuilder = ImmutableListMultimap.<Class<?>, CommonDataObjectPrototype<?>>builder();
+        final var unambiguousByCaseBuilder = ImmutableMap.<Class<?>, CommonDataObjectPrototype<?>>builder();
         for (var entry : Multimaps.asMap(childToCase).entrySet()) {
             final var cases = entry.getValue();
             if (cases.size() != 1) {
@@ -168,7 +168,7 @@ final class ChoiceCodecContext<T extends ChoiceIn<?>>
          * This is required due property of binding specification, that if choice is in grouping schema path location is
          * lost, and users may use incorrect case class using copy builders.
          */
-        final var bySubstitutionBuilder = new HashMap<Class<?>, CommonDataObjectCodecPrototype<?>>();
+        final var bySubstitutionBuilder = new HashMap<Class<?>, CommonDataObjectPrototype<?>>();
         final var context = factory.getRuntimeContext();
         for (var caseType : context.getTypes().allCaseChildren(choiceType)) {
             final var caseName = caseType.getIdentifier();
@@ -207,7 +207,7 @@ final class ChoiceCodecContext<T extends ChoiceIn<?>>
     }
 
     @Override
-    CommonDataObjectCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
+    CommonDataObjectPrototype<?> streamChildPrototype(final Class<?> childClass) {
         return byClass.get(childClass);
     }
 
@@ -265,7 +265,7 @@ final class ChoiceCodecContext<T extends ChoiceIn<?>>
                         not guaranteed to be stable and is subject to variations based on runtime circumstances. \
                         Please see the stack trace for hints about the source of ambiguity.""",
                         type, getBindingClass(), result.javaClass(),
-                        Lists.transform(inexact, CommonDataObjectCodecPrototype::javaClass), new Throwable());
+                        Lists.transform(inexact, CommonDataObjectPrototype::javaClass), new Throwable());
                 }
             }
         }

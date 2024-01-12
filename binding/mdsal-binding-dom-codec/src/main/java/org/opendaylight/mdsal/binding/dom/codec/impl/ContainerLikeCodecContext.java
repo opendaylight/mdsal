@@ -18,10 +18,10 @@ sealed class ContainerLikeCodecContext<D extends DataObject>
         permits StructuralContainerCodecContext {
     ContainerLikeCodecContext(final Class<D> cls, final ContainerLikeRuntimeType<?, ?> type,
             final CodecContextFactory factory) {
-        this(new ContainerLikeCodecPrototype(new NodeStep<>(cls), type, factory));
+        this(new ContainerLikePrototype(new NodeStep<>(cls), type, factory));
     }
 
-    ContainerLikeCodecContext(final ContainerLikeCodecPrototype prototype) {
+    ContainerLikeCodecContext(final ContainerLikePrototype prototype) {
         super(prototype);
     }
 
