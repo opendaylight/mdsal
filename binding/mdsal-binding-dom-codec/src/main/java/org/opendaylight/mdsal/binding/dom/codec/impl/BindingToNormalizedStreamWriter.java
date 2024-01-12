@@ -111,7 +111,7 @@ final class BindingToNormalizedStreamWriter implements AnydataBindingStreamWrite
         ValueNodeCodecContext leafContext = currentCasted.getLeafChild(localName);
         NodeIdentifier domArg = leafContext.getDomPathArgument();
         Object domValue = leafContext.getValueCodec().serialize(value);
-        emitSchema(leafContext.getSchema());
+        emitSchema(leafContext.dataSchema());
         return new AbstractMap.SimpleEntry<>(domArg, domValue);
     }
 
@@ -146,7 +146,7 @@ final class BindingToNormalizedStreamWriter implements AnydataBindingStreamWrite
     public void leafSetEntryNode(final Object value) throws IOException {
         final LeafSetNodeCodecContext ctx = (LeafSetNodeCodecContext) current();
         final Object domValue = ctx.getValueCodec().serialize(value);
-        delegate.startLeafSetEntryNode(new NodeWithValue<>(ctx.getSchema().getQName(), domValue));
+        delegate.startLeafSetEntryNode(new NodeWithValue<>(ctx.dataSchema().getQName(), domValue));
         delegate.scalarValue(domValue);
         delegate.endNode();
     }
@@ -176,7 +176,7 @@ final class BindingToNormalizedStreamWriter implements AnydataBindingStreamWrite
     @Override
     public void startLeafSet(final String localName, final int childSizeHint) throws IOException {
         final NodeIdentifier id = enter(localName, NodeIdentifier.class);
-        emitSchema(current().getSchema());
+        emitSchema(current().dataSchema());
         delegate.startLeafSet(id, childSizeHint);
     }
 

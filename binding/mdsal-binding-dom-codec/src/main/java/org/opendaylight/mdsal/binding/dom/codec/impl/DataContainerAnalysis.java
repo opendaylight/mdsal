@@ -69,7 +69,7 @@ final class DataContainerAnalysis<R extends CompositeRuntimeType> {
         // Step 1: add leaf children
         var leafBuilder = ImmutableMap.<String, ValueNodeCodecContext>builderWithExpectedSize(leafContexts.size());
         for (var leaf : leafContexts.values()) {
-            leafBuilder.put(leaf.getSchema().getQName().getLocalName(), leaf);
+            leafBuilder.put(leaf.dataSchema().getQName().getLocalName(), leaf);
             byYangBuilder.put(leaf.getDomPathArgument(), leaf);
         }
         leafNodes = leafBuilder.build();
