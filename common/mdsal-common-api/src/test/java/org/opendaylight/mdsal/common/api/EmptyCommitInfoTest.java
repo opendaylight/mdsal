@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 class EmptyCommitInfoTest {
     @Test
     void testFuture() throws Exception {
-        final var future = EmptyCommitInfo.FLUENT_INSTANCE;
+        final var future = EmptyCommitInfo.EMPTY_FUTURE;
         assertTrue(future.isDone());
-        assertSame(EmptyCommitInfo.INSTANCE, Futures.getDone(future));
+        assertSame(EmptyCommitInfo.EMPTY, Futures.getDone(future));
     }
 }

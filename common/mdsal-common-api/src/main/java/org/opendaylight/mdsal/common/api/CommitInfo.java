@@ -7,27 +7,32 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Base interface for tagging information about a successful commit. This can include various ways of identifying
  * the resulting changeset, timing information or any other piece of data about the commit itself the implementation
  * deems interesting to the client.
- *
- * @author Robert Varga
  */
-@Beta
 @NonNullByDefault
-public interface CommitInfo {
+public interface CommitInfo extends Serializable {
+
+    @Nullable Instant commitTime();
+
+    @Nullable UUID commitUUID();
+
     /**
      * Return an empty {@link CommitInfo}.
      *
      * @return An empty {@link CommitInfo} instance.
      */
     static CommitInfo empty() {
-        return EmptyCommitInfo.INSTANCE;
+        return EmptyCommitInfo.EMPTY;
     }
 
     /**
@@ -36,6 +41,6 @@ public interface CommitInfo {
      * @return An empty {@link CommitInfo} instance enclosed in a completed future.
      */
     static FluentFuture<CommitInfo> emptyFluentFuture() {
-        return EmptyCommitInfo.FLUENT_INSTANCE;
+        return EmptyCommitInfo.EMPTY_FUTURE;
     }
 }

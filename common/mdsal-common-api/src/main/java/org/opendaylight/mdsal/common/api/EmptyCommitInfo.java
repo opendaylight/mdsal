@@ -8,20 +8,24 @@
 package org.opendaylight.mdsal.common.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
+import com.google.common.util.concurrent.Futures;
+import java.io.ObjectStreamException;
+import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Empty commit info singleton. Useful when {@link AsyncWriteTransaction#commit()} has nothing more to say.
- *
- * @author Robert Varga
  */
-@NonNullByDefault
-final class EmptyCommitInfo implements CommitInfo {
-    static final CommitInfo INSTANCE = new EmptyCommitInfo();
-    static final FluentFuture<CommitInfo> FLUENT_INSTANCE = FluentFutures.immediateFluentFuture(INSTANCE);
+record EmptyCommitInfo(Instant commitTime, UUID commitUUID) implements CommitInfo {
+    @java.io.Serial
+    private static final long serialVersionUID = 0L;
 
-    private EmptyCommitInfo() {
-        // Hidden
+    static final EmptyCommitInfo EMPTY = new EmptyCommitInfo(null, null);
+    static final FluentFuture<CommitInfo> EMPTY_FUTURE = FluentFuture.from(Futures.immediateFuture(EMPTY));
+
+    @java.io.Serial
+    @SuppressWarnings("static-method")
+    Object readResolve() throws ObjectStreamException {
+        return commitTime != null || commitUUID != null ? this : EMPTY;
     }
 }
