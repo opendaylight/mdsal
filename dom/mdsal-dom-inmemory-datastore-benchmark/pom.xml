@@ -21,6 +21,7 @@
 
     <properties>
         <odlparent.spotbugs.skip>true</odlparent.spotbugs.skip>
+        <doclint>all,-missing</doclint>
     </properties>
 
     <dependencies>

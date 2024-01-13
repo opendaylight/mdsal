@@ -18,6 +18,11 @@
     <artifactId>mdsal-eos-dom-api</artifactId>
     <packaging>bundle</packaging>
 
+    <properties>
+        <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
+        <doclint>all,-missing</doclint>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -44,6 +49,7 @@
             <artifactId>yang-data-api</artifactId>
         </dependency>
     </dependencies>
+
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/controller.git</developerConnection>

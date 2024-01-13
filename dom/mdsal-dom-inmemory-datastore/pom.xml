@@ -20,6 +20,11 @@
     <artifactId>mdsal-dom-inmemory-datastore</artifactId>
     <packaging>bundle</packaging>
 
+    <properties>
+        <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
+        <doclint>all,-missing</doclint>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
