@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 class CommitInfoTest {
     @Test
     void testEmpty() {
-        assertSame(EmptyCommitInfo.INSTANCE, CommitInfo.empty());
+        assertSame(DCI.EMPTY, CommitInfo.empty());
     }
 
     @Test
     void testEmptyFluentFuture() {
-        assertSame(EmptyCommitInfo.FLUENT_INSTANCE, CommitInfo.emptyFluentFuture());
+        assertSame(DCI.EMPTY_FUTURE, CommitInfo.emptyFluentFuture());
     }
 }
