@@ -29,6 +29,7 @@
 
     <modules>
         <module>artifacts</module>
+        <module>bundle-parent</module>
         <module>common</module>
         <module>docs</module>
         <module>features</module>

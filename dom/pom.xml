@@ -29,7 +29,6 @@
     </properties>
 
     <modules>
-        <module>dom-parent</module>
         <module>mdsal-dom-api</module>
         <module>mdsal-dom-spi</module>
         <module>mdsal-dom-broker</module>
