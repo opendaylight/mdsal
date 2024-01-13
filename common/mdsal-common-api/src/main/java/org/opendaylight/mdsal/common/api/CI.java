@@ -12,7 +12,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
@@ -20,7 +19,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Default {@link CommitInfo} implementation.
  */
-record CI(UUID uuid, Instant instant) implements CommitInfo, Serializable {
+record CI(UUID uuid, Instant instant) implements CommitInfo {
     @java.io.Serial
     private static final long serialVersionUID = 0L;
 
