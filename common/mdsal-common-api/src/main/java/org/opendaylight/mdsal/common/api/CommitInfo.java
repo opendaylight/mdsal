@@ -15,8 +15,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * Base interface for tagging information about a successful commit. This can include various ways of identifying
  * the resulting changeset, timing information or any other piece of data about the commit itself the implementation
  * deems interesting to the client.
- *
- * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
@@ -27,7 +25,7 @@ public interface CommitInfo {
      * @return An empty {@link CommitInfo} instance.
      */
     static CommitInfo empty() {
-        return EmptyCommitInfo.INSTANCE;
+        return CI.EMPTY;
     }
 
     /**
@@ -36,6 +34,6 @@ public interface CommitInfo {
      * @return An empty {@link CommitInfo} instance enclosed in a completed future.
      */
     static FluentFuture<CommitInfo> emptyFluentFuture() {
-        return EmptyCommitInfo.FLUENT_INSTANCE;
+        return CI.EMPTY_FUTURE;
     }
 }
