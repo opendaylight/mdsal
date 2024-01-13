@@ -12,6 +12,7 @@ import java.util.Collection;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -28,7 +29,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 final class LazyDataObjectModification<T extends DataObject>
         extends AbstractDataObjectModification<T, BindingDataObjectCodecTreeNode<T>> {
     LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec, final DataTreeCandidateNode domData) {
-        super(domData, codec, codec.deserializePathArgument(domData.name()));
+        super(domData, codec, (ExactDataObjectStep<T>) codec.deserializePathArgument(domData.name()));
     }
 
     @Override

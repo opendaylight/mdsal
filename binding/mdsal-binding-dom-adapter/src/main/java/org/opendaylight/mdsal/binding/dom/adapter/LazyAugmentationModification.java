@@ -17,6 +17,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -31,7 +32,7 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
 
     private LazyAugmentationModification(final BindingAugmentationCodecTreeNode<A> codec,
             final DataTreeCandidateNode parent, final ImmutableList<DataTreeCandidateNode> domChildNodes) {
-        super(parent, codec, codec.deserializePathArgument(null));
+        super(parent, codec, (ExactDataObjectStep<A>) codec.deserializePathArgument(null));
         this.domChildNodes = requireNonNull(domChildNodes);
     }
 
@@ -66,8 +67,8 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
 
     @Override
     org.opendaylight.yangtools.yang.data.tree.api.ModificationType domModificationType() {
-        final var before = getDataBefore();
-        final var after = getDataAfter();
+        final var before = dataBefore();
+        final var after = dataAfter();
         if (before == null) {
             return after == null ? org.opendaylight.yangtools.yang.data.tree.api.ModificationType.UNMODIFIED
                 :  org.opendaylight.yangtools.yang.data.tree.api.ModificationType.APPEARED;

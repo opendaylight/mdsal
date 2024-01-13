@@ -10,13 +10,12 @@ package org.opendaylight.mdsal.binding.api;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
 
@@ -26,7 +25,7 @@ import org.opendaylight.yangtools.yang.binding.KeyAware;
  *
  * @param <T> Type of modified object
  */
-public interface DataObjectModification<T extends DataObject> extends Identifiable<DataObjectStep<?>> {
+public interface DataObjectModification<T extends DataObject> {
     /**
      * Represents type of modification which has occurred.
      */
@@ -45,45 +44,112 @@ public interface DataObjectModification<T extends DataObject> extends Identifiab
         DELETE
     }
 
-    @Override
-    DataObjectStep<?> getIdentifier();
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default @NonNull ExactDataObjectStep<T> getIdentifier() {
+        return step();
+    }
+
+    /**
+     * Return the {@link InstanceIdentifier} step this modification corresponds to.
+     *
+     * @return the {@link InstanceIdentifier} step this modification corresponds to
+     */
+    @NonNull ExactDataObjectStep<T> step();
 
     /**
      * Returns type of modified object.
      *
      * @return type of modified object.
      */
-    @NonNull Class<T> getDataType();
+    default @NonNull Class<T> dataType() {
+        return step().type();
+    }
+
+    /**
+     * Returns type of modified object.
+     *
+     * @return type of modified object.
+     * @deprecated Use {@link #dataType()} instead.
+     */
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default @NonNull Class<T> getDataType() {
+        return dataType();
+    }
+
+    /**
+     * Returns type of modification.
+     *
+     * @return type of performed modification.
+     */
+    @NonNull ModificationType modificationType();
 
     /**
      * Returns type of modification.
      *
      * @return type Type of performed modification.
      */
-    @NonNull ModificationType getModificationType();
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default @NonNull ModificationType getModificationType() {
+        return modificationType();
+    }
 
     /**
-     * Returns before-state of top level container. Implementations are encouraged, but not required
-     * to provide this state.
+     * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
+     *  state.
      *
-     * @return State of object before modification. Null if subtree was not present, or the
-     *         implementation cannot provide the state.
+     * @return State of object before modification. Null if subtree was not present, or the implementation cannot
+     *         provide the state.
      */
-    @Nullable T getDataBefore();
+    @Nullable T dataBefore();
+
+    /**
+     * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
+     *  state.
+     *
+     * @return State of object before modification. Null if subtree was not present, or the implementation cannot
+     *         provide the state.
+     * @deprecated Use {@link #dataBefore()} instead.
+     */
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default @Nullable T getDataBefore() {
+        return dataBefore();
+    }
 
     /**
      * Returns after-state of top level container.
      *
      * @return State of object after modification. Null if subtree is not present.
      */
-    @Nullable T getDataAfter();
+    @Nullable T dataAfter();
+
+    /**
+     * Returns after-state of top level container.
+     *
+     * @return State of object after modification. Null if subtree is not present.
+     * @deprecated Use {@link #dataAfter()} instead.
+     */
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default @Nullable T getDataAfter() {
+        return dataAfter();
+    }
 
     /**
      * Returns unmodifiable collection of modified direct children.
      *
      * @return unmodifiable collection of modified direct children.
      */
-    @NonNull Collection<? extends DataObjectModification<? extends DataObject>> getModifiedChildren();
+    @NonNull Collection<? extends DataObjectModification<? extends DataObject>> modifiedChildren();
+
+    /**
+     * Returns unmodifiable collection of modified direct children.
+     *
+     * @return unmodifiable collection of modified direct children.
+     * @deprecated Use {@link #modifiedChildren()} instead.
+     */
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default @NonNull Collection<? extends DataObjectModification<? extends DataObject>> getModifiedChildren() {
+        return modifiedChildren();
+    }
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.

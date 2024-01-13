@@ -36,7 +36,6 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.yang.binding.Key;
 import org.opendaylight.yangtools.yang.binding.KeyAware;
@@ -86,7 +85,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     final @NonNull DataTreeCandidateNode domData;
-    final @NonNull DataObjectStep<?> identifier;
+    final @NonNull ExactDataObjectStep<T> step;
     final @NonNull N codec;
 
     @SuppressWarnings("unused")
@@ -102,9 +101,10 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataAfter;
 
-    AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec, final DataObjectStep<?> step) {
+    AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec,
+            final ExactDataObjectStep<T> step) {
         this.domData = requireNonNull(domData);
-        identifier = requireNonNull(step);
+        this.step = requireNonNull(step);
         this.codec = requireNonNull(codec);
     }
 
@@ -120,17 +120,12 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final Class<T> getDataType() {
-        return codec.getBindingClass();
+    public final ExactDataObjectStep<T> step() {
+        return step;
     }
 
     @Override
-    public final DataObjectStep<?> getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public final ModificationType getModificationType() {
+    public final ModificationType modificationType() {
         final var local = (ModificationType) MODIFICATION_TYPE.getAcquire(this);
         return local != null ? local : loadModificationType();
     }
@@ -151,7 +146,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final T getDataBefore() {
+    public final T dataBefore() {
         final var local = DATA_BEFORE.getAcquire(this);
         return local != null ? unmask(local) : loadDataBefore();
     }
@@ -163,7 +158,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final T getDataAfter() {
+    public final T dataAfter() {
         final var local = DATA_AFTER.getAcquire(this);
         return local != null ? unmask(local) : loadDataAfter();
     }
@@ -211,7 +206,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     abstract @Nullable DataTreeCandidateNode firstModifiedChild(YangInstanceIdentifier.PathArgument arg);
 
     @Override
-    public final ImmutableList<AbstractDataObjectModification<?, ?>> getModifiedChildren() {
+    public final ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren() {
         final var local = (ImmutableList<AbstractDataObjectModification<?, ?>>) MODIFIED_CHILDREN.getAcquire(this);
         return local != null ? local : loadModifiedChilden();
     }
@@ -226,7 +221,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             List<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType, final Class<C> childType) {
         return streamModifiedChildren(childType)
-            .filter(child -> caseType.equals(child.identifier.caseType()))
+            .filter(child -> caseType.equals(child.step.caseType()))
             .collect(Collectors.toList());
     }
 
@@ -244,7 +239,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     private <C extends DataObject> Stream<LazyDataObjectModification<C>> streamModifiedChildren(
             final Class<C> childType) {
         return getModifiedChildren().stream()
-            .filter(child -> childType.isAssignableFrom(child.getDataType()))
+            .filter(child -> childType.isAssignableFrom(child.dataType()))
             .map(child -> (LazyDataObjectModification<C>) child);
     }
 
@@ -290,7 +285,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-        return helper.add("identifier", identifier).add("domData", domData);
+        return helper.add("step", step).add("domData", domData);
     }
 
     abstract @NonNull Collection<DataTreeCandidateNode> domChildNodes();
