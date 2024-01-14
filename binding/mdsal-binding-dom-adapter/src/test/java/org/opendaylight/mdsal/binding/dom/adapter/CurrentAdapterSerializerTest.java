@@ -31,7 +31,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
@@ -98,20 +98,19 @@ public class CurrentAdapterSerializerTest {
     }
 
     private static ContainerNode prepareData(final EffectiveModelContext schemaCtx, final Object value) {
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(QName.create("urn:test", "2017-01-01", "cont")))
-            .withChild(Builders.leafBuilder()
-                .withNodeIdentifier(new NodeIdentifier(QName.create("urn:test", "2017-01-01", "vlan-id")))
-                .withValue(value).build())
+            .withChild(ImmutableNodes.leafNode(QName.create("urn:test", "2017-01-01", "vlan-id"), value))
             .build();
     }
 
     private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode data,
             final EffectiveModelContext schemaCtx) {
-        final CurrentAdapterSerializer codec = new CurrentAdapterSerializer(
-                ServiceLoader.load(BindingDOMCodecFactory.class).findFirst().orElseThrow().createBindingDOMCodec(
-                        new DefaultBindingRuntimeContext(new DefaultBindingRuntimeGenerator()
-                                .generateTypeMapping(schemaCtx), TestingModuleInfoSnapshot.INSTANCE)));
+        final var codec = new CurrentAdapterSerializer(
+            ServiceLoader.load(BindingDOMCodecFactory.class).findFirst().orElseThrow()
+                .createBindingDOMCodec(new DefaultBindingRuntimeContext(
+                    new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
+                    TestingModuleInfoSnapshot.INSTANCE)));
 
         final YangInstanceIdentifier path = YangInstanceIdentifier.of(NodeIdentifier.create(QName.create(
             "urn:test", "2017-01-01", "cont")));

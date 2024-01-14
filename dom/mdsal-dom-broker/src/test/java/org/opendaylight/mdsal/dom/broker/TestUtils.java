@@ -21,12 +21,15 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 final class TestUtils {
-    private static final MapNode OUTER_LIST = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-        .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
+    private static final MapNode OUTER_LIST = ImmutableNodes.newSystemMapBuilder()
+        .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+        .withChild(ImmutableNodes.newMapEntryBuilder()
+            .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
+            .withChild(ImmutableNodes.leafNode(TestModel.ID_QNAME, 1))
+            .build())
         .build();
 
     private static final String TOP_LEVEL_LIST_FOO_KEY_VALUE = "foo";
@@ -34,23 +37,23 @@ final class TestUtils {
     private static final QName TOP_LEVEL_LIST_QNAME = QName.create(TOP_QNAME, "top-level-list");
     private static final QName TOP_LEVEL_LIST_KEY_QNAME = QName.create(TOP_QNAME, "name");
 
-    private static final MapEntryNode TOP_LEVEL_LIST_NODE = Builders.mapEntryBuilder()
+    private static final MapEntryNode TOP_LEVEL_LIST_NODE = ImmutableNodes.newMapEntryBuilder()
         .withNodeIdentifier(NodeIdentifierWithPredicates.of(
             TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
         .withChild(ImmutableNodes.leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
         .build();
 
-    private static final MapNode CHILD_LIST = ImmutableNodes.mapNodeBuilder(TestModel.TEST_QNAME)
-        .withNodeIdentifier(NodeIdentifier.create(TestModel.TEST_QNAME))
+    private static final MapNode CHILD_LIST = ImmutableNodes.newSystemMapBuilder()
+        .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
         .withChild(TOP_LEVEL_LIST_NODE)
         .build();
 
-    static final ContainerNode TEST_CONTAINER = Builders.containerBuilder()
+    static final ContainerNode TEST_CONTAINER = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
         .withChild(OUTER_LIST)
         .build();
 
-    static final ContainerNode TEST_CHILD = Builders.containerBuilder()
+    static final ContainerNode TEST_CHILD = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
         .withChild(CHILD_LIST)
         .build();
@@ -59,6 +62,13 @@ final class TestUtils {
 
     private TestUtils() {
         // Hidden on purpose
+    }
+
+    static MapEntryNode mapEntry(final QName listName, final QName keyName, final Object keyValue) {
+        return ImmutableNodes.newMapEntryBuilder()
+            .withNodeIdentifier(NodeIdentifierWithPredicates.of(listName, keyName, keyValue))
+            .withChild(ImmutableNodes.leafNode(keyName, keyValue))
+            .build();
     }
 
     static TestRpcImplementation getTestRpcImplementation() {

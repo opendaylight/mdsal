@@ -36,6 +36,7 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires org.opendaylight.mdsal.dom.spi;
     requires org.opendaylight.yangtools.concepts;
     requires org.opendaylight.yangtools.yang.common;
+    requires org.opendaylight.yangtools.yang.data.spi;
     requires org.opendaylight.yangtools.yang.model.api;
     requires org.slf4j;
     requires failureaccess;
