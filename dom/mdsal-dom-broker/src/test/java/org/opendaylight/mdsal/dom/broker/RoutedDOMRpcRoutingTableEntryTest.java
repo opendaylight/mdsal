@@ -34,8 +34,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class RoutedDOMRpcRoutingTableEntryTest {
@@ -46,15 +45,15 @@ public class RoutedDOMRpcRoutingTableEntryTest {
     public static final YangInstanceIdentifier TWO_PATH = YangInstanceIdentifier.of(
         new NodeIdentifier(Rpcs.BAZ), NodeIdentifierWithPredicates.of(Rpcs.BAZ, Rpcs.NAME, "two"));
 
-    public static final ContainerNode ONE_INPUT = Builders.containerBuilder()
+    public static final ContainerNode ONE_INPUT = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
         .withChild(ImmutableNodes.leafNode(Rpcs.CTX, ONE_PATH))
         .build();
-    public static final ContainerNode TWO_INPUT = Builders.containerBuilder()
+    public static final ContainerNode TWO_INPUT =ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
         .withChild(ImmutableNodes.leafNode(Rpcs.CTX, TWO_PATH))
         .build();
-    public static final ContainerNode GLOBAL_INPUT = Builders.containerBuilder()
+    public static final ContainerNode GLOBAL_INPUT = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
         // This not covered by schema
         .withChild(ImmutableNodes.leafNode(Rpcs.NAME, "name"))
@@ -126,7 +125,7 @@ public class RoutedDOMRpcRoutingTableEntryTest {
 
     @Test
     public void testWrongContext() {
-        assertRpcUnavailable(Builders.containerBuilder()
+        assertRpcUnavailable(ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
             .withChild(ImmutableNodes.leafNode(Rpcs.CTX, "bad type"))
             .build());

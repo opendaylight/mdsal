@@ -39,8 +39,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
@@ -52,20 +51,22 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     private ExecutorService futureExecutor;
     private CommitExecutorService commitExecutor;
 
-    private static final MapNode OUTER_LIST = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-            .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
-            .build();
+    private static final MapNode OUTER_LIST = ImmutableNodes.newSystemMapBuilder()
+        .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+        .withChild(TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
+        .build();
 
-    private static final MapNode OUTER_LIST_2 = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-            .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2))
-            .build();
+    private static final MapNode OUTER_LIST_2 = ImmutableNodes.newSystemMapBuilder()
+        .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+        .withChild(TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2))
+        .build();
 
-    private static final NormalizedNode TEST_CONTAINER = Builders.containerBuilder()
+    private static final NormalizedNode TEST_CONTAINER = ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST)
             .build();
 
-    private static final NormalizedNode TEST_CONTAINER_2 = Builders.containerBuilder()
+    private static final NormalizedNode TEST_CONTAINER_2 = ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST_2)
             .build();
@@ -319,14 +320,15 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         final var outerListEntryId3 =
                 NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
 
-        final var outerListEntry1 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
-        final var outerListEntry2 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
-        final var outerListEntry3 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
+        final var outerListEntry1 = TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
+        final var outerListEntry2 = TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
+        final var outerListEntry3 = TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
 
-        final var listAfter = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-                .withChild(outerListEntry2)
-                .withChild(outerListEntry3)
-                .build();
+        final var listAfter = ImmutableNodes.newSystemMapBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+            .withChild(outerListEntry2)
+            .withChild(outerListEntry3)
+            .build();
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.delete(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH.node(outerListEntryId1));

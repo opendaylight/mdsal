@@ -9,14 +9,11 @@ package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
-import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
-import org.opendaylight.yangtools.yang.data.api.schema.builder.CollectionNodeBuilder;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractInMemoryWriteTransactionBenchmark {
@@ -41,36 +38,43 @@ public abstract class AbstractInMemoryWriteTransactionBenchmark {
     protected static final int WARMUP_ITERATIONS = 6;
     protected static final int MEASUREMENT_ITERATIONS = 6;
 
-    protected static final MapNode ONE_ITEM_INNER_LIST = initInnerListItems(1);
-    protected static final MapNode TWO_ITEM_INNER_LIST = initInnerListItems(2);
-    protected static final MapNode TEN_ITEM_INNER_LIST = initInnerListItems(10);
+    protected static final SystemMapNode ONE_ITEM_INNER_LIST = initInnerListItems(1);
+    protected static final SystemMapNode TWO_ITEM_INNER_LIST = initInnerListItems(2);
+    protected static final SystemMapNode TEN_ITEM_INNER_LIST = initInnerListItems(10);
 
-    private static MapNode initInnerListItems(final int count) {
-        final CollectionNodeBuilder<MapEntryNode, SystemMapNode> mapEntryBuilder = ImmutableNodes
-                .mapNodeBuilder(BenchmarkModel.INNER_LIST_QNAME);
+    private static SystemMapNode initInnerListItems(final int count) {
+        final var mapBuilder = ImmutableNodes.newSystemMapBuilder()
+            .withNodeIdentifier(new NodeIdentifier(BenchmarkModel.INNER_LIST_QNAME));
 
         for (int i = 1; i <= count; ++i) {
-            mapEntryBuilder
-                    .withChild(ImmutableNodes.mapEntry(BenchmarkModel.INNER_LIST_QNAME, BenchmarkModel.NAME_QNAME, i));
+            Integer key = i;
+            mapBuilder.withChild(ImmutableNodes.newMapEntryBuilder()
+                .withNodeIdentifier(NodeIdentifierWithPredicates.of(BenchmarkModel.INNER_LIST_QNAME,
+                    BenchmarkModel.NAME_QNAME, key))
+                .withChild(ImmutableNodes.leafNode(BenchmarkModel.NAME_QNAME, key))
+                .build());
         }
-        return mapEntryBuilder.build();
+        return mapBuilder.build();
     }
 
-    protected static final NormalizedNode[] OUTER_LIST_ONE_ITEM_INNER_LIST = initOuterListItems(OUTER_LIST_100K,
+    protected static final MapEntryNode[] OUTER_LIST_ONE_ITEM_INNER_LIST = initOuterListItems(OUTER_LIST_100K,
             ONE_ITEM_INNER_LIST);
-    protected static final NormalizedNode[] OUTER_LIST_TWO_ITEM_INNER_LIST = initOuterListItems(OUTER_LIST_50K,
+    protected static final MapEntryNode[] OUTER_LIST_TWO_ITEM_INNER_LIST = initOuterListItems(OUTER_LIST_50K,
             TWO_ITEM_INNER_LIST);
-    protected static final NormalizedNode[] OUTER_LIST_TEN_ITEM_INNER_LIST = initOuterListItems(OUTER_LIST_10K,
+    protected static final MapEntryNode[] OUTER_LIST_TEN_ITEM_INNER_LIST = initOuterListItems(OUTER_LIST_10K,
             TEN_ITEM_INNER_LIST);
 
-    private static NormalizedNode[] initOuterListItems(final int outerListItemsCount, final MapNode innerList) {
-        final NormalizedNode[] outerListItems = new NormalizedNode[outerListItemsCount];
+    private static MapEntryNode[] initOuterListItems(final int outerListItemsCount, final SystemMapNode innerList) {
+        final var outerListItems = new MapEntryNode[outerListItemsCount];
 
         for (int i = 0; i < outerListItemsCount; ++i) {
-            int outerListKey = i;
-            outerListItems[i] = ImmutableNodes
-                    .mapEntryBuilder(BenchmarkModel.OUTER_LIST_QNAME, BenchmarkModel.ID_QNAME, outerListKey)
-                    .withChild(innerList).build();
+            Integer key = i;
+            outerListItems[i] = ImmutableNodes.newMapEntryBuilder()
+                .withNodeIdentifier(
+                    NodeIdentifierWithPredicates.of(BenchmarkModel.OUTER_LIST_QNAME, BenchmarkModel.ID_QNAME, key))
+                .withChild(ImmutableNodes.leafNode(BenchmarkModel.ID_QNAME, key))
+                .withChild(innerList)
+                .build();
         }
         return outerListItems;
     }
@@ -81,9 +85,12 @@ public abstract class AbstractInMemoryWriteTransactionBenchmark {
 
     public abstract void tearDown();
 
-    protected static DataContainerChild provideOuterListNode() {
-        return Builders.containerBuilder()
+    protected static ContainerNode provideOuterListNode() {
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(new NodeIdentifier(BenchmarkModel.TEST_QNAME))
-                .withChild(ImmutableNodes.mapNodeBuilder(BenchmarkModel.OUTER_LIST_QNAME).build()).build();
+                .withChild(ImmutableNodes.newSystemMapBuilder()
+                    .withNodeIdentifier(new NodeIdentifier(BenchmarkModel.OUTER_LIST_QNAME))
+                    .build())
+                .build();
     }
 }

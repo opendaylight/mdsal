@@ -28,12 +28,13 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.replicate.common.DataTreeCandidateUtils;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.ReusableStreamReceiver;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.DataTreeCandidateInputOutput;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataInput;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.ReusableImmutableNormalizedNodeStreamWriter;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.Logger;
@@ -41,7 +42,9 @@ import org.slf4j.LoggerFactory;
 
 final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger LOG = LoggerFactory.getLogger(SinkRequestHandler.class);
-    private static final ContainerNode EMPTY_ROOT = ImmutableNodes.containerNode(SchemaContext.NAME);
+    private static final ContainerNode EMPTY_ROOT = ImmutableNodes.newContainerBuilder()
+        .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME))
+        .build();
 
     private final ReusableStreamReceiver receiver = ReusableImmutableNormalizedNodeStreamWriter.create();
     private final List<ByteBuf> chunks = new ArrayList<>();
@@ -73,12 +76,12 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     private void handleEmptyData() {
-        final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
+        final var tx = chain.newWriteOnlyTransaction();
 
-        if (tree.getRootIdentifier().isEmpty()) {
-            tx.put(tree.getDatastoreType(), YangInstanceIdentifier.of(), EMPTY_ROOT);
+        if (tree.path().isEmpty()) {
+            tx.put(tree.datastore(), YangInstanceIdentifier.of(), EMPTY_ROOT);
         } else {
-            tx.delete(tree.getDatastoreType(), tree.getRootIdentifier());
+            tx.delete(tree.datastore(), tree.path());
         }
         commit(tx);
     }
@@ -96,7 +99,7 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
 
         final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
-        DataTreeCandidateUtils.applyToTransaction(tx, tree.getDatastoreType(), candidate);
+        DataTreeCandidateUtils.applyToTransaction(tx, tree.datastore(), candidate);
         commit(tx);
     }
 
