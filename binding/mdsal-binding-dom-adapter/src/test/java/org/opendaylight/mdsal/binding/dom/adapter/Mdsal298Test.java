@@ -55,8 +55,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class Mdsal298Test extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<Container> CONTAINER = InstanceIdentifier.create(Container.class);
@@ -93,17 +92,17 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CONTAINER_NID).node(Keyed.QNAME),
-            Builders.orderedMapBuilder()
-            .withNodeIdentifier(new NodeIdentifier(Keyed.QNAME))
-            .addChild(Builders.mapEntryBuilder()
-                .withNodeIdentifier(NodeIdentifierWithPredicates.of(Keyed.QNAME, FOO_QNAME, "foo"))
-                .addChild(ImmutableNodes.leafNode(FOO_QNAME, "foo"))
-                .build())
-            .addChild(Builders.mapEntryBuilder()
-                .withNodeIdentifier(NodeIdentifierWithPredicates.of(Keyed.QNAME, FOO_QNAME, "bar"))
-                .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
-                .build())
-            .build());
+            ImmutableNodes.newUserMapBuilder()
+                .withNodeIdentifier(new NodeIdentifier(Keyed.QNAME))
+                .addChild(ImmutableNodes.newMapEntryBuilder()
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(Keyed.QNAME, FOO_QNAME, "foo"))
+                    .addChild(ImmutableNodes.leafNode(FOO_QNAME, "foo"))
+                    .build())
+                .addChild(ImmutableNodes.newMapEntryBuilder()
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(Keyed.QNAME, FOO_QNAME, "bar"))
+                    .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
+                    .build())
+                .build());
         domTx.commit().get();
 
         final var captor = ArgumentCaptor.forClass(Collection.class);
@@ -148,17 +147,17 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CONTAINER_NID).node(Unkeyed.QNAME),
-            Builders.unkeyedListBuilder()
-            .withNodeIdentifier(new NodeIdentifier(Unkeyed.QNAME))
-            .withChild(Builders.unkeyedListEntryBuilder()
+            ImmutableNodes.newUnkeyedListBuilder()
                 .withNodeIdentifier(new NodeIdentifier(Unkeyed.QNAME))
-                .addChild(ImmutableNodes.leafNode(FOO_QNAME, "foo"))
-                .build())
-            .withChild(Builders.unkeyedListEntryBuilder()
-                .withNodeIdentifier(new NodeIdentifier(Unkeyed.QNAME))
-                .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
-                .build())
-            .build());
+                .withChild(ImmutableNodes.newUnkeyedListEntryBuilder()
+                    .withNodeIdentifier(new NodeIdentifier(Unkeyed.QNAME))
+                    .addChild(ImmutableNodes.leafNode(FOO_QNAME, "foo"))
+                    .build())
+                .withChild(ImmutableNodes.newUnkeyedListEntryBuilder()
+                    .withNodeIdentifier(new NodeIdentifier(Unkeyed.QNAME))
+                    .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
+                    .build())
+                .build());
         domTx.commit().get();
 
         final var captor = ArgumentCaptor.forClass(Collection.class);
@@ -283,13 +282,13 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID).node(Foo.QNAME),
-            Builders.choiceBuilder()
-            .withNodeIdentifier(new NodeIdentifier(Foo.QNAME))
-            .withChild(Builders.leafSetBuilder()
-                .withNodeIdentifier(new NodeIdentifier(QName.create(Foo.QNAME, "unaddressable")))
-                .withChildValue("foo")
-                .build())
-            .build());
+            ImmutableNodes.newChoiceBuilder()
+                .withNodeIdentifier(new NodeIdentifier(Foo.QNAME))
+                .withChild(ImmutableNodes.newSystemLeafSetBuilder()
+                    .withNodeIdentifier(new NodeIdentifier(QName.create(Foo.QNAME, "unaddressable")))
+                    .withChildValue("foo")
+                    .build())
+                .build());
         domTx.commit().get();
 
         final var captor = ArgumentCaptor.forClass(Collection.class);
@@ -320,7 +319,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(new NodeIdentifier(qname)),
-            ImmutableNodes.containerNode(qname));
+            ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(qname)).build());
         domTx.commit().get();
 
         final var captor = ArgumentCaptor.forClass(Collection.class);
@@ -352,10 +351,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         getDataBroker().registerDataTreeChangeListener(CHOICE_CONTAINER_TID, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
-        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID),
-            Builders.containerBuilder()
+        domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID), ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(CHOICE_CONTAINER_NID)
-            .withChild(Builders.choiceBuilder().withNodeIdentifier(CHOICE_NID).build())
+            .withChild(ImmutableNodes.newChoiceBuilder().withNodeIdentifier(CHOICE_NID).build())
             .build());
         domTx.commit().get();
 

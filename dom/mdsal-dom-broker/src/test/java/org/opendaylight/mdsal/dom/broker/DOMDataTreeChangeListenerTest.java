@@ -27,10 +27,9 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
@@ -55,14 +54,16 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     @Test
     public void receiveOnDataInitialEventForNonExistingData() throws Exception {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
-        final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
+        final var candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onInitialData();
         doNothing().when(listener).onDataTreeChanged(any());
 
         domStore.registerTreeChangeListener(TestModel.TEST_PATH, listener);
         verify(listener, times(1)).onInitialData();
 
-        final NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        final var testNode = ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build();
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
         writeTx.write(TestModel.TEST_PATH, testNode);
@@ -81,7 +82,9 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
         final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onDataTreeChanged(any());
 
-        final NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        final var testNode = ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build();
 
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
@@ -103,11 +106,13 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
         final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onDataTreeChanged(any());
 
-        final ContainerNode testNode = Builders.containerBuilder()
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
-                .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-                        .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
-                                TestModel.ID_QNAME, 1)).build()).build();
+        final ContainerNode testNode = ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .addChild(ImmutableNodes.newSystemMapBuilder()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+                .addChild(TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
+                .build())
+            .build();
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
         writeTx.write(TestModel.TEST_PATH, testNode);

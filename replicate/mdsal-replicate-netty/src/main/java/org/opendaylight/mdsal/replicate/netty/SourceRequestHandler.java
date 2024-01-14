@@ -80,7 +80,7 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         try (var input = new ByteBufInputStream(msg)) {
             final var normalizedInput = NormalizedNodeDataInput.newDataInput(input);
 
-            dataTree = new DOMDataTreeIdentifier(LogicalDatastoreType.readFrom(normalizedInput),
+            dataTree = DOMDataTreeIdentifier.of(LogicalDatastoreType.readFrom(normalizedInput),
                 normalizedInput.readYangInstanceIdentifier());
         }
 
