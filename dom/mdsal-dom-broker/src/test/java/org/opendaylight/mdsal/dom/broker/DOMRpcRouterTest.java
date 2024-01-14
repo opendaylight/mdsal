@@ -51,7 +51,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMRpcRouterTest {
@@ -62,7 +62,7 @@ public class DOMRpcRouterTest {
 
     private static final DOMActionImplementation IMPL =
         (type, path, input) -> Futures.immediateFuture(new SimpleDOMActionResult(
-            Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
+            ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
 
     @Test
     public void registerRpcImplementation() {
@@ -259,6 +259,6 @@ public class DOMRpcRouterTest {
             final YangInstanceIdentifier path) {
         return actionService.invokeAction(Actions.BAZ_TYPE,
             DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path),
-            Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.INPUT)).build());
+            ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.INPUT)).build());
     }
 }

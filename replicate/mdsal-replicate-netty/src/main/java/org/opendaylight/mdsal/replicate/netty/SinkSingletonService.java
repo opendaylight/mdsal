@@ -46,7 +46,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     private static final Logger LOG = LoggerFactory.getLogger(SinkSingletonService.class);
     private static final ServiceGroupIdentifier SGID = new ServiceGroupIdentifier(SinkSingletonService.class.getName());
     // TODO: allow different trees?
-    private static final DOMDataTreeIdentifier TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
+    private static final DOMDataTreeIdentifier TREE = DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION,
         YangInstanceIdentifier.of());
     private static long CHANNEL_CLOSE_TIMEOUT_S = 10;
     private static final ByteBuf TREE_REQUEST;
@@ -198,8 +198,8 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
         try (ByteBufOutputStream stream = new ByteBufOutputStream(ret)) {
             stream.writeByte(Constants.MSG_SUBSCRIBE_REQ);
             try (NormalizedNodeDataOutput output = NormalizedNodeStreamVersion.current().newDataOutput(stream)) {
-                tree.getDatastoreType().writeTo(output);
-                output.writeYangInstanceIdentifier(tree.getRootIdentifier());
+                tree.datastore().writeTo(output);
+                output.writeYangInstanceIdentifier(tree.path());
             }
         }
 

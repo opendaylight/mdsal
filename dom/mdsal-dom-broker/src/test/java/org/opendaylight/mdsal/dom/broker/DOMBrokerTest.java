@@ -16,7 +16,6 @@ import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collections;
@@ -41,11 +40,10 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class DOMBrokerTest extends AbstractDatastoreTest {
 
@@ -102,15 +100,16 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
          * Writes /test in writeTx.
          *
          */
-        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build());
 
         /**
          * Reads /test from readTx Read should return Absent.
          *
          */
-        final ListenableFuture<Optional<NormalizedNode>> readTxContainer = readTx.read(OPERATIONAL,
-            TestModel.TEST_PATH);
-        assertFalse(readTxContainer.get().isPresent());
+        final var readTxContainer = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
+        assertEquals(Optional.empty(), readTxContainer.get());
     }
 
     @Test(timeout = 10000)
@@ -121,12 +120,13 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
          * Writes /test in writeTx
          *
          */
-        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build());
 
         writeTx.commit().get();
 
-        final Optional<NormalizedNode> afterCommitRead = domBroker.newReadOnlyTransaction()
-                .read(OPERATIONAL, TestModel.TEST_PATH).get();
+        final var afterCommitRead = domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get();
         assertTrue(afterCommitRead.isPresent());
     }
 
@@ -143,7 +143,9 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
             .awaitTermination(Mockito.anyLong(), Mockito.any(TimeUnit.class));
 
         final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
-        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build());
 
         try {
             writeTx.commit().get(5, TimeUnit.SECONDS);
@@ -169,11 +171,12 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
     @Test(expected = ReadFailedException.class)
     @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
     public void basicTests() throws Throwable {
-        final DataContainerChild outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
-                .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
-                .build();
-        final NormalizedNode testContainer = Builders.containerBuilder()
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
+        final DataContainerChild outerList = ImmutableNodes.newSystemMapBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
+            .withChild(TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
+            .build();
+        final ContainerNode testContainer = ImmutableNodes.newContainerBuilder()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
                 .withChild(outerList)
                 .build();
 
@@ -183,27 +186,33 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         assertNotNull(readRx);
         assertNotNull(((SerializedDOMDataBroker) domBroker).getCommitStatsTracker());
 
-        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build());
         writeTx.commit().get();
         assertFalse(writeTx.cancel());
 
-        assertEquals(false, domBroker.newReadOnlyTransaction().exists(CONFIGURATION, TestModel.TEST_PATH).get());
-        assertEquals(true, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
-        assertEquals(false, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST2_PATH).get());
+        assertFalse(domBroker.newReadOnlyTransaction().exists(CONFIGURATION, TestModel.TEST_PATH).get());
+        assertTrue(domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertFalse(domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST2_PATH).get());
 
         writeTx = domBroker.newWriteOnlyTransaction();
-        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build());
         writeTx.delete(OPERATIONAL, TestModel.TEST_PATH);
         writeTx.commit().get();
-        assertEquals(false, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertFalse(domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
         assertTrue(domBroker.newWriteOnlyTransaction().cancel());
 
         writeTx = domBroker.newWriteOnlyTransaction();
-        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .build());
         writeTx.merge(OPERATIONAL, TestModel.TEST_PATH, testContainer);
         writeTx.commit().get();
-        assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
-        assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
+        assertTrue(domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertTrue(domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
                  .orElseThrow().toString().contains(testContainer.toString()));
 
         readRx.read(OPERATIONAL, TestModel.TEST_PATH).get(); // init backing tx before close
