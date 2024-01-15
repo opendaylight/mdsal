@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker;
+package org.opendaylight.mdsal.dom.spi;
 
 import static java.util.Objects.requireNonNull;
 
@@ -59,22 +59,6 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     private volatile State state = State.RUNNING;
     private volatile int counter = 0;
 
-    /**
-     *Constructor with args.
-     *
-     * @param chainId
-     *            ID of transaction chain
-     * @param chains
-     *            Backing {@link DOMStoreTransactionChain}s.
-     * @param coordinator
-     *            Commit Coordinator which should be used to coordinate commits
-     *            of transaction
-     *            produced by this chain.
-     * @param listener
-     *            Listener, which listens on transaction chain events.
-     * @throws NullPointerException
-     *             If any of arguments is null.
-     */
     DOMDataBrokerTransactionChainImpl(final long chainId,
             final Map<LogicalDatastoreType, DOMStoreTransactionChain> chains, final AbstractDOMDataBroker broker) {
         super(chains);
