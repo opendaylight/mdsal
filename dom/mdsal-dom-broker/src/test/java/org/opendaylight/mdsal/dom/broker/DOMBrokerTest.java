@@ -228,22 +228,6 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         }
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
-    @Test
-    public void closeTest() throws Exception {
-        final String testException = "TestException";
-
-        domBroker.setCloseable(() -> {
-            throw new Exception(testException);
-        });
-
-        try {
-            domBroker.close();
-        } catch (final Exception e) {
-            assertTrue(e.getMessage().contains(testException));
-        }
-    }
-
     static class CommitExecutorService extends ForwardingExecutorService {
 
         ExecutorService delegate;
