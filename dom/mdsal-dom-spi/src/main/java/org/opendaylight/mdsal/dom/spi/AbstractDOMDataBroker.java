@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import com.google.common.collect.ImmutableList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
@@ -29,60 +31,36 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     private final AtomicLong chainNum = new AtomicLong();
     private final @NonNull List<Extension> supportedExtensions;
 
-    private volatile AutoCloseable closeable;
-
     protected AbstractDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores) {
         super(datastores);
 
-        boolean treeChange = true;
-        for (var ds : datastores.values()) {
-            if (!(ds instanceof DOMStoreTreeChangePublisher)) {
-                treeChange = false;
-                break;
-            }
-        }
-
-        if (treeChange) {
-            supportedExtensions = List.of((DOMDataTreeChangeService) (treeId, listener) -> {
+        final var builder = ImmutableList.<Extension>builder();
+        if (isSupported(datastores, DOMStoreTreeChangePublisher.class)) {
+            builder.add((DOMDataTreeChangeService) (treeId, listener) -> {
                 final var dsType = treeId.datastore();
                 if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
                     return publisher.registerTreeChangeListener(treeId.path(), listener);
                 }
                 throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
             });
-        } else {
-            supportedExtensions = List.of();
         }
-    }
-
-    public void setCloseable(final AutoCloseable closeable) {
-        this.closeable = closeable;
-    }
-
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    @Override
-    public void close() {
-        super.close();
-
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (Exception e) {
-                LOG.debug("Error closing instance", e);
-            }
+        if (isSupported(datastores, DOMDataTreeCommitCohortRegistry.class)) {
+            builder.add((DOMDataTreeCommitCohortRegistry) (path, cohort) -> {
+               final var dsType = path.datastore();
+               if (getTxFactories().get(dsType) instanceof DOMDataTreeCommitCohortRegistry registry) {
+                   return registry.registerCommitCohort(path, cohort);
+               }
+               throw new IllegalStateException("Cohort registry for " + dsType + " data store is not available");
+            });
         }
-    }
 
-    @Override
-    protected Object newTransactionIdentifier() {
-        return "DOM-" + txNum.getAndIncrement();
+        supportedExtensions = builder.build();
     }
 
     @Override
     public final List<Extension> supportedExtensions() {
         return supportedExtensions;
     }
-
 
     @Override
     public DOMTransactionChain createTransactionChain() {
@@ -96,5 +74,15 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         final long chainId = chainNum.getAndIncrement();
         LOG.debug("Transactoin chain {} created, backing store chains {}", chainId, delegates);
         return new DOMDataBrokerTransactionChainImpl(chainId, delegates, this);
+    }
+
+    @Override
+    protected final Object newTransactionIdentifier() {
+        return "DOM-" + txNum.getAndIncrement();
+    }
+
+    private static boolean isSupported(final Map<LogicalDatastoreType, DOMStore> datastores,
+            final Class<?> expDOMStoreInterface) {
+        return datastores.values().stream().allMatch(expDOMStoreInterface::isInstance);
     }
 }
