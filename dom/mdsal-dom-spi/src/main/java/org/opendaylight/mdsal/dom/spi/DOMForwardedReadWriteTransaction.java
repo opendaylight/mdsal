@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker;
+package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
