@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaService.YangTextSourceExtension {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
-    private final List<Consumer<EffectiveModelContext>> listeners = new CopyOnWriteArrayList<>();
+    private final List<ModelContextListener> listeners = new CopyOnWriteArrayList<>();
     private final AtomicReference<ModuleInfoSnapshot> currentSnapshot = new AtomicReference<>();
     private final ComponentFactory<ModelContextListener> listenerFactory;
 
@@ -88,13 +88,13 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY)
-    void addListener(final Consumer<EffectiveModelContext> listener) {
+    void addListener(final ModelContextListener listener) {
         LOG.trace("Adding listener {}", listener);
         listeners.add(listener);
-        listener.accept(getGlobalContext());
+        listener.onModelContextUpdated(getGlobalContext());
     }
 
-    void removeListener(final Consumer<EffectiveModelContext> listener) {
+    void removeListener(final ModelContextListener listener) {
         LOG.trace("Removing listener {}", listener);
         listeners.remove(listener);
     }
@@ -126,9 +126,9 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
 
     @SuppressWarnings("checkstyle:illegalCatch")
     private static void notifyListener(final @NonNull EffectiveModelContext modelContext,
-            final Consumer<EffectiveModelContext> listener) {
+            final ModelContextListener listener) {
         try {
-            listener.accept(modelContext);
+            listener.onModelContextUpdated(modelContext);
         } catch (RuntimeException e) {
             LOG.warn("Failed to notify listener {}", listener, e);
         }
