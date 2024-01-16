@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "818b6ef5_85396152",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 28
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-16T18:14:12Z",
+      "side": 1,
+      "message": "So this processing depends only on BindingRuntimeContext plus the class being loaded (which is first checked).\n\nThis logic needs to be inlined into constructor, taking cacheMismatched() with it and making mismatchedAugmented a final field.\n\nThe question we should be asking the BindingRuntimeContext is: given this augmentation class, what are its possible substitutions?\n\nAnd we then directly populate mismatchedAugmented.",
+      "range": {
+        "startLine": 204,
+        "startChar": 12,
+        "endLine": 204,
+        "endChar": 80
+      },
+      "revId": "2e58ed8845c9c803746cf5f3911fd80c36ed5c4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
