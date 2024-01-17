@@ -22,6 +22,30 @@
       },
       "revId": "4df1ce70b5a967da0a4085a7ccaeb78d63e2076a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "098b1c00_d3ed5379",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-17T13:38:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eafb31a0_1a449c9a",
+      "range": {
+        "startLine": 86,
+        "startChar": 80,
+        "endLine": 86,
+        "endChar": 88
+      },
+      "revId": "4df1ce70b5a967da0a4085a7ccaeb78d63e2076a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
