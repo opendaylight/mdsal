@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3dc11cf_a3797d9d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-17T13:40:58Z",
+      "side": 1,
+      "message": "I think we should improve this more -- i.e. use module name as the prefix for ModuleInfo -- for example org.opendaylight.yang.svc.v1.mdsal600.norev.Mdsal600YangModuleInfo.",
+      "revId": "27ed581970ace79027bb4a694075d9c90b164c07",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
