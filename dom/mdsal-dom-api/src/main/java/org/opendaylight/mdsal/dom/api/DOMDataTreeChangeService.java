@@ -44,7 +44,7 @@ public interface DOMDataTreeChangeService extends DOMDataBroker.Extension {
      * @param listener Listener instance which is being registered
      * @return A {@link Registration} object, which may be used to unregister your listener using
      *         {@link Registration#close()} to stop delivery of change events.
-     * @throws NullPointerException if any of the arguments is null
+     * @throws NullPointerException if any of the arguments is {@code null}
      */
     Registration registerDataTreeChangeListener(DOMDataTreeIdentifier treeId, DOMDataTreeChangeListener listener);
 }
