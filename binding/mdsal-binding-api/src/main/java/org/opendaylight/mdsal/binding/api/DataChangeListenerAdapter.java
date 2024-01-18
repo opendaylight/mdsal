@@ -24,8 +24,8 @@ final class DataChangeListenerAdapter<T extends DataObject> extends ForwardingOb
 
     @Override
     public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
-        delegate.dataChanged(changes.iterator().next().getRootNode().getDataBefore(),
-            Iterables.getLast(changes).getRootNode().getDataAfter());
+        delegate.dataChanged(changes.iterator().next().getRootNode().dataBefore(),
+            Iterables.getLast(changes).getRootNode().dataAfter());
     }
 
     @Override
