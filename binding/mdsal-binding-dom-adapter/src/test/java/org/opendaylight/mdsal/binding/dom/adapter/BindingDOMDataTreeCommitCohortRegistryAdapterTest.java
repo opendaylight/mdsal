@@ -20,7 +20,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistry;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.CommitCohortExtension;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @ExtendWith(MockitoExtension.class)
 public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
     @Mock
-    private DOMDataTreeCommitCohortRegistry cohortRegistry;
+    private CommitCohortExtension cohortExtension;
     @Mock
     private Registration cohortRegistration;
     @Mock
@@ -41,10 +41,10 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
         final var bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
-        doReturn(cohortRegistration).when(cohortRegistry).registerCommitCohort(any(), any());
+        doReturn(cohortRegistration).when(cohortExtension).registerCommitCohort(any(), any());
         doNothing().when(cohortRegistration).close();
         final var registryAdapter = new BindingDOMDataTreeCommitCohortRegistryAdapter(bindingTestContext.getCodec(),
-            cohortRegistry);
+            cohortExtension);
 
         final var dataTreeIdentifier = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(Top.class));

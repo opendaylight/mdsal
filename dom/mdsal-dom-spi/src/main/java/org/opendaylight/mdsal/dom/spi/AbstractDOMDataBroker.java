@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
@@ -44,11 +43,11 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
                 throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
             });
         }
-        if (isSupported(datastores, DOMDataTreeCommitCohortRegistry.class)) {
-            builder.add((DOMDataTreeCommitCohortRegistry) (path, cohort) -> {
+        if (isSupported(datastores, CommitCohortExtension.class)) {
+            builder.add((CommitCohortExtension) (path, cohort) -> {
                 final var dsType = path.datastore();
-                if (getTxFactories().get(dsType) instanceof DOMDataTreeCommitCohortRegistry registry) {
-                    return registry.registerCommitCohort(path, cohort);
+                if (getTxFactories().get(dsType) instanceof CommitCohortExtension extension) {
+                    return extension.registerCommitCohort(path, cohort);
                 }
                 throw new IllegalStateException("Cohort registry for " + dsType + " data store is not available");
             });
