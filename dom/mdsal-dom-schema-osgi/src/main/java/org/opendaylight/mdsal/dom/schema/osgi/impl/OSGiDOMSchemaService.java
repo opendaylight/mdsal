@@ -76,7 +76,7 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
         final var previous = currentSnapshot.getAndSet(snapshot);
         LOG.debug("Snapshot updated from {} to {}", previous, snapshot);
 
-        listeners.forEach(listener -> notifyListener(modelContext, listener));
+        listeners.forEach(listener -> listener.onModelContextUpdated(modelContext));
     }
 
     void unbindSnapshot(final OSGiModuleInfoSnapshot oldContext) {
@@ -124,13 +124,4 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
         }
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
-    private static void notifyListener(final @NonNull EffectiveModelContext modelContext,
-            final ModelContextListener listener) {
-        try {
-            listener.onModelContextUpdated(modelContext);
-        } catch (RuntimeException e) {
-            LOG.warn("Failed to notify listener {}", listener, e);
-        }
-    }
 }
