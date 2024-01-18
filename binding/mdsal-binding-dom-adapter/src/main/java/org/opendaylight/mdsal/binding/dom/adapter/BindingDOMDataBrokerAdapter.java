@@ -74,12 +74,24 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
     }
 
     @Override
-    public <T extends DataObject> Registration registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
+    public <T extends DataObject> Registration registerTreeChangeListener(final DataTreeIdentifier<T> treeId,
             final DataTreeChangeListener<T> listener) {
-        if (treeChangeService == null) {
+        return getTreeChangeService().registerTreeChangeListener(treeId, listener);
+    }
+
+    @Override
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final DataTreeIdentifier<T> treeId,
+            final DataTreeChangeListener<T> listener) {
+        return getTreeChangeService().registerLegacyTreeChangeListener(treeId, listener);
+    }
+
+    private @NonNull DataTreeChangeService getTreeChangeService() {
+        final var local = treeChangeService;
+        if (local == null) {
             throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
         }
-        return treeChangeService.registerDataTreeChangeListener(treeId, listener);
+        return local;
     }
 
     private static class Builder extends BindingDOMAdapterBuilder<DataBroker> {
@@ -97,5 +109,4 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
             return new BindingDOMDataBrokerAdapter(adapterContext(), delegates.getInstance(DOMDataBroker.class));
         }
     }
-
 }

@@ -7,30 +7,24 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.eclipse.jdt.annotation.NonNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -42,8 +36,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  *
  * @author Thomas Pantelis
  */
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class BindingDOMDataTreeChangeServiceAdapterTest {
+@ExtendWith(MockitoExtension.class)
+class BindingDOMDataTreeChangeServiceAdapterTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
     private static final YangInstanceIdentifier TOP_YIID = YangInstanceIdentifier.of(Top.QNAME);
 
@@ -56,41 +50,31 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
     @Mock
     private Registration mockDOMReg;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         doReturn(TOP_YIID).when(services).toYangInstanceIdentifier(TOP_PATH);
     }
 
     @Test
-    public void testRegisterDataTreeChangeListener() {
-        final AdapterContext codec = new ConstantAdapterContext(services);
+    void testRegisterDataTreeChangeListener() {
+        final var codec = new ConstantAdapterContext(services);
 
-        final DataTreeChangeService service = new BindingDOMDataTreeChangeServiceAdapter(codec, mockDOMService);
+        final var service = new BindingDOMDataTreeChangeServiceAdapter(codec, mockDOMService);
 
-        doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
-                domDataTreeIdentifier(TOP_YIID),
-                any(DOMDataTreeChangeListener.class));
-        final DataTreeIdentifier<Top> treeId = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
-        final TestClusteredDataTreeChangeListener mockClusteredListener = new TestClusteredDataTreeChangeListener();
-        service.registerDataTreeChangeListener(treeId , mockClusteredListener);
+        doReturn(mockDOMReg).when(mockDOMService).registerTreeChangeListener(domDataTreeIdentifier(TOP_YIID), any());
+        final var treeId = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
+        service.registerDataTreeChangeListener(treeId, new TestClusteredDataTreeChangeListener());
 
-        verify(mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(TOP_YIID),
-                isA(ClusteredDOMDataTreeChangeListener.class));
-
-        reset(mockDOMService);
-        doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
-                domDataTreeIdentifier(TOP_YIID), any(DOMDataTreeChangeListener.class));
-        final TestDataTreeChangeListener mockNonClusteredListener = new TestDataTreeChangeListener();
-        service.registerDataTreeChangeListener(treeId , mockNonClusteredListener);
-
-        verify(mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(TOP_YIID),
-                not(isA(ClusteredDOMDataTreeChangeListener.class)));
+        doReturn(mockDOMReg).when(mockDOMService).registerLegacyTreeChangeListener(domDataTreeIdentifier(TOP_YIID),
+            any());
+        service.registerDataTreeChangeListener(treeId, new TestDataTreeChangeListener());
     }
 
-    static DOMDataTreeIdentifier domDataTreeIdentifier(final YangInstanceIdentifier yangID) {
+    private static @NonNull DOMDataTreeIdentifier domDataTreeIdentifier(final YangInstanceIdentifier yangID) {
         return argThat(arg -> arg.datastore() == LogicalDatastoreType.CONFIGURATION && yangID.equals(arg.path()));
     }
 
+    @Deprecated(since = "13.0.0", forRemoval = true)
     private static final class TestClusteredDataTreeChangeListener implements ClusteredDataTreeChangeListener<Top> {
         @Override
         public void onDataTreeChanged(final List<DataTreeModification<Top>> changes) {

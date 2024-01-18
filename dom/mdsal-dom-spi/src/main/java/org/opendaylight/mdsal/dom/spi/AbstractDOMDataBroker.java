@@ -14,10 +14,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +37,26 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
 
         final var builder = ImmutableList.<Extension>builder();
         if (isSupported(datastores, DOMStoreTreeChangePublisher.class)) {
-            builder.add((DataTreeChangeExtension) (treeId, listener) -> {
-                final var dsType = treeId.datastore();
-                if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
-                    return publisher.registerTreeChangeListener(treeId.path(), listener);
+            builder.add(new DataTreeChangeExtension() {
+                @Override
+                public Registration registerTreeChangeListener(final DOMDataTreeIdentifier treeId,
+                        final DOMDataTreeChangeListener listener) {
+                    return getPublisher(treeId.datastore()).registerTreeChangeListener(treeId.path(), listener);
                 }
-                throw new IllegalStateException("Publisher for " + dsType + " data store is not available");
+
+                @Override
+                @Deprecated(since = "13.0.0", forRemoval = true)
+                public Registration registerLegacyTreeChangeListener(final DOMDataTreeIdentifier treeId,
+                        final DOMDataTreeChangeListener listener) {
+                    return getPublisher(treeId.datastore()).registerLegacyTreeChangeListener(treeId.path(), listener);
+                }
+
+                private DOMStoreTreeChangePublisher getPublisher(final LogicalDatastoreType datastore) {
+                    if (getTxFactories().get(datastore) instanceof DOMStoreTreeChangePublisher publisher) {
+                        return publisher;
+                    }
+                    throw new IllegalStateException("Publisher for " + datastore + " data store is not available");
+                }
             });
         }
         if (isSupported(datastores, CommitCohortExtension.class)) {
