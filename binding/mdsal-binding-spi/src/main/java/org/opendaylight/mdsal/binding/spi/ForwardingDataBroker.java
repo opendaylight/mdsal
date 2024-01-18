@@ -42,12 +42,6 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     }
 
     @Override
-    public <T extends DataObject> Registration registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
-        return delegate().registerDataTreeChangeListener(treeId, listener);
-    }
-
-    @Override
     public TransactionChain createTransactionChain() {
         return delegate().createTransactionChain();
     }
@@ -55,5 +49,18 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     @Override
     public TransactionChain createMergingTransactionChain() {
         return delegate().createMergingTransactionChain();
+    }
+
+    @Override
+    public <T extends DataObject> Registration registerTreeChangeListener(final DataTreeIdentifier<T> treeId,
+            final DataTreeChangeListener<T> listener) {
+        return delegate().registerTreeChangeListener(treeId, listener);
+    }
+
+    @Override
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final DataTreeIdentifier<T> treeId,
+        final DataTreeChangeListener<T> listener) {
+        return delegate().registerLegacyTreeChangeListener(treeId, listener);
     }
 }
