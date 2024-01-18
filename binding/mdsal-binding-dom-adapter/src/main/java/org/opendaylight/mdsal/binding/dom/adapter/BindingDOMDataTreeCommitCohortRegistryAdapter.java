@@ -10,16 +10,15 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohortRegistry;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.CommitCohortExtension;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 final class BindingDOMDataTreeCommitCohortRegistryAdapter
-        extends AbstractBindingAdapter<DOMDataTreeCommitCohortRegistry> implements DataTreeCommitCohortRegistry {
-    BindingDOMDataTreeCommitCohortRegistryAdapter(final AdapterContext codec,
-            final DOMDataTreeCommitCohortRegistry registry) {
-        super(codec, registry);
+        extends AbstractBindingAdapter<CommitCohortExtension> implements DataTreeCommitCohortRegistry {
+    BindingDOMDataTreeCommitCohortRegistryAdapter(final AdapterContext codec, final CommitCohortExtension extension) {
+        super(codec, extension);
     }
 
     @Override
