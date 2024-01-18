@@ -139,6 +139,20 @@ public abstract class AbstractDOMStoreTreeChangePublisher
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * This implementation calls {@link #registerTreeChangeListener(YangInstanceIdentifier, DOMDataTreeChangeListener)},
+     * override if necessary.
+     */
+    @Override
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    public Registration registerLegacyTreeChangeListener(final YangInstanceIdentifier treeId,
+            final DOMDataTreeChangeListener listener) {
+        return registerTreeChangeListener(treeId, listener);
+    }
+
     private void lookupAndNotify(final List<PathArgument> args, final int offset, final Node<RegImpl> node,
             final DataTreeCandidate candidate, final Map<Reg, List<DataTreeCandidate>> listenerChanges) {
         if (args.size() == offset) {
