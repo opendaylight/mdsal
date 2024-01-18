@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a191535_3f3479a8",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "just inline this check into the caller",
+      "range": {
+        "startLine": 234,
+        "startChar": 15,
+        "endLine": 234,
+        "endChar": 39
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e0b1827_b0358b67",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "so all bits?",
+      "range": {
+        "startLine": 464,
+        "startChar": 31,
+        "endLine": 464,
+        "endChar": 55
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03577792_757d7197",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "misplaced empty line above and missing empty line here",
+      "range": {
+        "startLine": 468,
+        "startChar": 5,
+        "endLine": 468,
+        "endChar": 8
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72c59215_65677ce1",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "duplicate check",
+      "range": {
+        "startLine": 471,
+        "startChar": 9,
+        "endLine": 471,
+        "endChar": 71
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aecc02e7_fe0ace7c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "use new ArrayList instead",
+      "range": {
+        "startLine": 474,
+        "startChar": 76,
+        "endLine": 474,
+        "endChar": 109
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e1c5077_e88b844b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "\u0027final var\u0027, also \u0027possibleBits\u0027 is probably better",
+      "range": {
+        "startLine": 474,
+        "startChar": 17,
+        "endLine": 474,
+        "endChar": 62
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2421507_a6305fe6",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 20
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-01-18T17:55:33Z",
+      "side": 1,
+      "message": "this is slow -- use \u0027for (int i \u003d 0; i \u003c properties.size(); ++i), giving you the index and use properties.get(i) to get the actual property\n\nalso naming us",
+      "range": {
+        "startLine": 482,
+        "startChar": 39,
+        "endLine": 482,
+        "endChar": 67
+      },
+      "revId": "6920c1ff323d4248fc1f71370c0f58742da16fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
