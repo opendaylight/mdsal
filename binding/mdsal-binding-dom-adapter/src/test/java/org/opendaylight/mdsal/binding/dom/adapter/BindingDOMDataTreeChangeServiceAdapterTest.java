@@ -15,7 +15,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collection;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
@@ -53,9 +53,8 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
     @Mock
     private BindingDOMCodecServices services;
 
-    @SuppressWarnings("rawtypes")
     @Mock
-    private ListenerRegistration mockDOMReg;
+    private Registration mockDOMReg;
 
     @Before
     public void setUp() {
@@ -94,14 +93,14 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
 
     private static final class TestClusteredDataTreeChangeListener implements ClusteredDataTreeChangeListener<Top> {
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<Top>> changes) {
+        public void onDataTreeChanged(final List<DataTreeModification<Top>> changes) {
             // No-op
         }
     }
 
     private static final class TestDataTreeChangeListener implements DataTreeChangeListener<Top> {
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<Top>> changes) {
+        public void onDataTreeChanged(final List<DataTreeModification<Top>> changes) {
             // No-op
         }
     }

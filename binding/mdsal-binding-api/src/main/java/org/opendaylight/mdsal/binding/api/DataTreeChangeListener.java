@@ -7,53 +7,49 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- * Interface implemented by classes interested in receiving notifications about
- * data tree changes. It provides a cursor-based view of the change, which has potentially
- * lower overhead and allow more flexible consumption of change event.
+ * Interface implemented by classes interested in receiving notifications about changes to a data tree. It provides
+ * a cursor-based view of the change, which has potentially lower overhead and allow more flexible consumption of change
+ * events.
  */
 public interface DataTreeChangeListener<T extends DataObject> {
     /**
-     * Invoked when there was data change for the supplied path, which was used
-     * to register this listener.
+     * Invoked when there was data change for the supplied path, which was used to register this listener.
      *
      * <p>
-     * This method may be also invoked during registration of the listener if
-     * there is any pre-existing data in the conceptual data tree for supplied
-     * path. This initial event will contain all pre-existing data as created.
+     * This method may be also invoked during registration of the listener if there is any pre-existing data in the
+     * conceptual data tree for supplied path. This initial event will contain all pre-existing data as created.
      *
      * <p>
      * Note: If there is no pre-existing data, the method {@link #onInitialData} will be invoked.
      *
      * <p>
-     * A data change event may be triggered spuriously, e.g. such that data before
-     * and after compare as equal. Implementations of this interface are expected
-     * to recover from such events. Event producers are expected to exert reasonable
-     * effort to suppress such events.
+     * A data change event may be triggered spuriously, e.g. such that data before and after compare as equal.
+     * Implementations of this interface are expected to recover from such events. Event producers are expected to exert
+     * reasonable effort to suppress such events.
      *
      *<p>
-     * In other words, it is completely acceptable to observe
-     * a {@link DataObjectModification}, while the state observed before and
-     * after- data items compare as equal.
+     * In other words, it is completely acceptable to observe a {@link DataObjectModification}, while the state observed
+     * before and after- data items compare as equal.
      *
-     * @param changes Collection of change events, may not be null or empty.
+     * @param changes List of change events, may not be null or empty.
      */
-    void onDataTreeChanged(@NonNull Collection<DataTreeModification<T>> changes);
+    void onDataTreeChanged(@NonNull List<DataTreeModification<T>> changes);
 
     /**
-     * Invoked only once during registration of the listener if there was no data in the conceptual data tree
-     * for the supplied path, which was used to register this listener, and after this
-     * {@link #onDataTreeChanged(Collection)} would always be invoked for data changes.
+     * Invoked only once during registration of the listener if there was no data in the conceptual data tree for the
+     * supplied path, which was used to register this listener, and after this {@link #onDataTreeChanged(List)} would
+     * always be invoked for data changes.
      *
      * <p>
-     * Default implementation does nothing and is appropriate for users who do not care about ascertaining
-     * initial state.
+     * Default implementation does nothing and is appropriate for users who do not care about ascertaining initial
+     * state.
      */
-    // FIXME: 8.0.0: this method should be non-default
+    // FIXME: 14.0.0: this method should be non-default
     default void onInitialData() {
         //no-op
     }

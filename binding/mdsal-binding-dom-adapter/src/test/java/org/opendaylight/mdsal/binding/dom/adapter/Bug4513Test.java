@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collection;
+import java.util.List;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -40,23 +40,23 @@ class Bug4513Test extends AbstractDataBrokerTest {
     @Mock
     private DataTreeChangeListener<ListItem> listener;
     @Captor
-    private ArgumentCaptor<Collection<DataTreeModification<ListItem>>> captor;
+    private ArgumentCaptor<List<DataTreeModification<ListItem>>> captor;
 
     @Test
     void testDataTreeChangeListener() {
         final var dataBroker = getDataBroker();
 
         final var wildCard = InstanceIdentifier.builder(ListenerTest.class).child(ListItem.class).build();
-        final var reg = dataBroker.registerDataTreeChangeListener(
-                DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, wildCard), listener);
+        try (var reg = dataBroker.registerDataTreeChangeListener(
+                DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, wildCard), listener)) {
+            final var item = writeListItem();
 
-        final var item = writeListItem();
+            verify(listener, timeout(100)).onDataTreeChanged(captor.capture());
 
-        verify(listener, timeout(100)).onDataTreeChanged(captor.capture());
-
-        final var mods = captor.getValue();
-        assertEquals(1, mods.size());
-        assertEquals(item, mods.iterator().next().getRootNode().getDataAfter());
+            final var mods = captor.getValue();
+            assertEquals(1, mods.size());
+            assertEquals(item, mods.get(0).getRootNode().dataAfter());
+        }
     }
 
     private ListItem writeListItem() {
