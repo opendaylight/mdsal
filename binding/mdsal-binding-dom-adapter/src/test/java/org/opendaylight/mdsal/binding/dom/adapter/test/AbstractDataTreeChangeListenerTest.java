@@ -14,8 +14,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Deque;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
@@ -90,7 +90,7 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         private boolean synced;
 
         @Override
-        public synchronized void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
+        public synchronized void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
             accumulatedChanges.addAll(changes);
             synced = true;
         }

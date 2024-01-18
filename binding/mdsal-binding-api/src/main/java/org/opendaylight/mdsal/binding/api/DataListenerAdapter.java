@@ -10,8 +10,7 @@ package org.opendaylight.mdsal.binding.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ForwardingObject;
-import com.google.common.collect.Iterables;
-import java.util.Collection;
+import java.util.List;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 final class DataListenerAdapter<T extends DataObject> extends ForwardingObject
@@ -23,8 +22,8 @@ final class DataListenerAdapter<T extends DataObject> extends ForwardingObject
     }
 
     @Override
-    public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
-        delegate.dataChangedTo(Iterables.getLast(changes).getRootNode().dataAfter());
+    public void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
+        delegate.dataChangedTo(changes.get(changes.size() - 1).getRootNode().dataAfter());
     }
 
     @Override

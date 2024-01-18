@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -62,17 +63,15 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     private BindingDOMDataBrokerAdapter dataBrokerImpl;
 
     private static final class EventCapturingListener<T extends DataObject> implements DataTreeChangeListener<T> {
-
-        private SettableFuture<Collection<DataTreeModification<T>>> futureChanges = SettableFuture.create();
+        private SettableFuture<List<DataTreeModification<T>>> futureChanges = SettableFuture.create();
 
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
+        public void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
             futureChanges.set(changes);
-
         }
 
         Collection<DataTreeModification<T>> nextEvent() throws Exception {
-            final Collection<DataTreeModification<T>> result = futureChanges.get(200,TimeUnit.MILLISECONDS);
+            final var result = futureChanges.get(200,TimeUnit.MILLISECONDS);
             futureChanges = SettableFuture.create();
             return result;
         }
