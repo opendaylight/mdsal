@@ -29,8 +29,8 @@ import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -48,7 +48,7 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
     private static final YangInstanceIdentifier TOP_YIID = YangInstanceIdentifier.of(Top.QNAME);
 
     @Mock
-    private DOMDataTreeChangeService mockDOMService;
+    private DataTreeChangeExtension mockDOMService;
 
     @Mock
     private BindingDOMCodecServices services;

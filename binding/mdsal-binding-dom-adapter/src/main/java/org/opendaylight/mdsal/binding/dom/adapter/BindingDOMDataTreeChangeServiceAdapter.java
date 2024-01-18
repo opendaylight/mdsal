@@ -14,24 +14,24 @@ import org.opendaylight.mdsal.binding.api.DataListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- * Adapter exposing Binding {@link DataTreeChangeService} and wrapping a {@link DOMDataTreeChangeService} and is
+ * Adapter exposing Binding {@link DataTreeChangeService} and wrapping a {@link DataTreeChangeExtension} and is
  * responsible for translation and instantiation of {@link BindingDOMDataTreeChangeListenerAdapter} adapters.
  *
  * <p>
  * Each registered {@link DataTreeChangeListener} is wrapped using adapter and registered directly to DOM service.
  */
-final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeChangeService>
+final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapter<DataTreeChangeExtension>
         implements DataTreeChangeService {
     BindingDOMDataTreeChangeServiceAdapter(final AdapterContext adapterContext,
-            final DOMDataTreeChangeService dataTreeChangeService) {
-        super(adapterContext, dataTreeChangeService);
+            final DataTreeChangeExtension dataTreeChangeExtension) {
+        super(adapterContext, dataTreeChangeExtension);
     }
 
     @Override

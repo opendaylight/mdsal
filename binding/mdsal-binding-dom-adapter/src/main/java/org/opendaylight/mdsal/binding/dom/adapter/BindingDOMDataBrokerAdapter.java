@@ -22,7 +22,7 @@ import org.opendaylight.mdsal.binding.api.TransactionChain;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -43,7 +43,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
 
     public BindingDOMDataBrokerAdapter(final AdapterContext adapterContext, final DOMDataBroker domDataBroker) {
         super(adapterContext, domDataBroker);
-        final var domTreeChange = domDataBroker.extension(DOMDataTreeChangeService.class);
+        final var domTreeChange = domDataBroker.extension(DataTreeChangeExtension.class);
         treeChangeService = domTreeChange == null ? null
                 : new BindingDOMDataTreeChangeServiceAdapter(adapterContext, domTreeChange);
     }
