@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataChangeListener;
 import org.opendaylight.mdsal.binding.api.DataListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
@@ -17,7 +16,6 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -35,32 +33,31 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     }
 
     @Override
-    public <T extends DataObject> Registration registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
+    public <T extends DataObject> Registration registerTreeChangeListener(final DataTreeIdentifier<T> treeId,
             final DataTreeChangeListener<T> listener) {
-        final var domIdentifier = toDomTreeIdentifier(treeId);
-        final var storeType = treeId.datastore();
-        final var target = treeId.path().getTargetType();
-        final var augment = Augmentation.class.isAssignableFrom(target) ? target : null;
+        return getDelegate().registerDataTreeListener(toDomTreeIdentifier(treeId),
+            new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), treeId, listener));
+    }
 
-        final var domListener = listener instanceof ClusteredDataTreeChangeListener
-            ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(adapterContext(),
-                (ClusteredDataTreeChangeListener<T>) listener, storeType, augment)
-                : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, storeType, augment);
-
-        return getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
+    @Override
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final DataTreeIdentifier<T> treeId,
+            final DataTreeChangeListener<T> listener) {
+        return getDelegate().registerLegacyDataTreeListener(toDomTreeIdentifier(treeId),
+            new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), treeId, listener));
     }
 
     @Override
     public <T extends DataObject> Registration registerDataListener(final DataTreeIdentifier<T> treeId,
             final DataListener<T> listener) {
-        return getDelegate().registerDataTreeChangeListener(toDomTreeInstance(treeId),
+        return getDelegate().registerDataTreeListener(toDomTreeInstance(treeId),
             new BindingDOMDataListenerAdapter<>(adapterContext(), listener));
     }
 
     @Override
     public <T extends DataObject> Registration registerDataChangeListener(final DataTreeIdentifier<T> treeId,
             final DataChangeListener<T> listener) {
-        return getDelegate().registerDataTreeChangeListener(toDomTreeInstance(treeId),
+        return getDelegate().registerDataTreeListener(toDomTreeInstance(treeId),
             new BindingDOMDataChangeListenerAdapter<>(adapterContext(), listener));
     }
 

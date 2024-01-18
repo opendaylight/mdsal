@@ -154,6 +154,13 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     }
 
     @Override
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    public Registration registerLegacyTreeChangeListener(final YangInstanceIdentifier treeId,
+            final DOMDataTreeChangeListener listener) {
+        return registerTreeChangeListener(treeId, listener);
+    }
+
+    @Override
     protected void transactionAborted(final SnapshotBackedWriteTransaction<String> tx) {
         LOG.debug("Tx: {} is closed.", tx.getIdentifier());
     }

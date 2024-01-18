@@ -16,14 +16,16 @@ import java.util.List;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.trace.api.TracingDOMDataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace.rev160908.Config;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -301,14 +303,30 @@ public class TracingBroker implements TracingDOMDataBroker {
     public <T extends Extension> T extension(final Class<T> type) {
         final var ext = delegate.extension(type);
         if (DataTreeChangeExtension.class.equals(type) && ext instanceof DataTreeChangeExtension treeChange) {
-            return type.cast((DataTreeChangeExtension) (domDataTreeIdentifier, listener) -> {
-                final var rootId = domDataTreeIdentifier.path();
-                if (isRegistrationWatched(rootId, domDataTreeIdentifier.datastore())) {
-                    LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
-                        listener instanceof ClusteredDOMDataTreeChangeListener ? "Clustered" : "Non-clustered",
-                            toPathString(rootId), getStackSummary());
+            return type.cast(new DataTreeChangeExtension() {
+                @Override
+                public Registration registerDataTreeListener(final DOMDataTreeIdentifier treeId,
+                        final DOMDataTreeChangeListener listener) {
+                    notifyIfWatched("Non-clustered", treeId, listener);
+                    return treeChange.registerDataTreeListener(treeId, listener);
                 }
-                return treeChange.registerDataTreeChangeListener(domDataTreeIdentifier, listener);
+
+                @Override
+                @Deprecated(since = "13.0.0", forRemoval = true)
+                public Registration registerLegacyDataTreeListener(final DOMDataTreeIdentifier treeId,
+                        final DOMDataTreeChangeListener listener) {
+                    notifyIfWatched("Non-clustered", treeId, listener);
+                    return treeChange.registerLegacyDataTreeListener(treeId, listener);
+                }
+
+                private void notifyIfWatched(final String kind, final DOMDataTreeIdentifier treeId,
+                        final DOMDataTreeChangeListener listener) {
+                    final var rootId = treeId.path();
+                    if (isRegistrationWatched(rootId, treeId.datastore()) && LOG.isWarnEnabled()) {
+                        LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.", kind,
+                            toPathString(rootId), getStackSummary());
+                    }
+                }
             });
         }
         return ext;

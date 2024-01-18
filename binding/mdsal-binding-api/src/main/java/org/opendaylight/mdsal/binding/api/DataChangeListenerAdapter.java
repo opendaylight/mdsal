@@ -14,7 +14,7 @@ import java.util.List;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 final class DataChangeListenerAdapter<T extends DataObject> extends ForwardingObject
-        implements ClusteredDataTreeChangeListener<T> {
+        implements DataTreeChangeListener<T> {
     private final DataChangeListener<T> delegate;
 
     DataChangeListenerAdapter(final DataChangeListener<T> delegate) {
