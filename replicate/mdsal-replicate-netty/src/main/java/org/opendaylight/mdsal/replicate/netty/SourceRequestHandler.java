@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataInput;
@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
 final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger LOG = LoggerFactory.getLogger(SourceRequestHandler.class);
 
-    private final DOMDataTreeChangeService dtcs;
+    private final DataTreeChangeExtension dtcs;
 
     private Registration reg;
 
-    SourceRequestHandler(final DOMDataTreeChangeService dtcs) {
+    SourceRequestHandler(final DataTreeChangeExtension dtcs) {
         this.dtcs = requireNonNull(dtcs);
     }
 
