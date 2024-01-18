@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
@@ -41,6 +42,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
  */
+@NonNullByDefault
 public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.Extension>, DOMTransactionFactory {
     /**
      * Type capture of a {@link DOMService.Extension} applicable to {@link DOMDataBroker} implementations.
@@ -55,7 +57,7 @@ public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.E
      *
      * @return A new transaction chain.
      */
-    @NonNull DOMTransactionChain createTransactionChain();
+    DOMTransactionChain createTransactionChain();
 
     /**
      * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
@@ -73,5 +75,22 @@ public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.E
      *
      * @return A new transaction chain.
      */
-    @NonNull DOMTransactionChain createMergingTransactionChain();
+    DOMTransactionChain createMergingTransactionChain();
+
+    /**
+     * Optional support for allowing a {@link DOMDataTreeCommitCohort} to participate in the process of committing
+     * {@link DOMDataTreeWriteTransaction}s.
+     */
+    interface CommitCohortExtension extends Extension {
+        /**
+         * Register commit cohort which will participate in three-phase commit protocols of
+         * {@link DOMDataTreeWriteTransaction} in data broker associated with this instance of extension.
+         *
+         * @param path Subtree path on which commit cohort operates.
+         * @param cohort A {@link DOMDataTreeCommitCohort}
+         * @return A {@link Registration}
+         * @throws NullPointerException if any argument is {@code null}
+         */
+        Registration registerCommitCohort(DOMDataTreeIdentifier path, DOMDataTreeCommitCohort cohort);
+    }
 }

@@ -15,52 +15,50 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
+import org.opendaylight.mdsal.common.api.PostPreCommitStep;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.CommitCohortExtension;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
- * Commit cohort participating in commit of data modification, which can validate data tree
- * modifications, with option to reject supplied modification, and with callbacks describing state
- * of commit.
+ * Commit cohort participating in commit of data modification, which can validate data tree modifications, with option
+ * to reject supplied modification, and with callbacks describing state of commit.
  *
  * <h2>Performance implications</h2>
- * {@link DOMDataTreeCommitCohort}s are hooked up into commit of data tree changes and MAY
- * negatively affect performance of data broker / store.
- * Implementations of this interface are discouraged, unless you really need ability to veto data
- * tree changes, or to provide external state change in sync with visibility of committed data.
+ * {@link DOMDataTreeCommitCohort}s are hooked up into commit of data tree changes and MAY negatively affect performance
+ * of data broker / store. Implementations of this interface are discouraged, unless you really need ability to veto
+ * data tree changes, or to provide external state change in sync with visibility of committed data.
  *
  * <h2>Implementation requirements</h2>
- * <h3>Correctness assumptions</h3> Implementation SHOULD use only the {@link DOMDataTreeCandidate} instances and
- * provided {@link EffectiveModelContext} for validation purposes.
- * Use of any other external mutable state is discouraged, implementation MUST NOT use any
- * transaction related APIs on same data broker / data store instance during invocation of
- * callbacks, except ones provided as argument. Note that this MAY BE enforced by some
- * implementations of {@link DOMDataBroker} or DOMDataCommitCoordinator
- * Note that this may be enforced by some implementations of {@link DOMDataTreeCommitCohortRegistry}
- * and such calls may fail.
- * <h3>Correct model usage</h3> If implementation is performing YANG-model driven validation
- * implementation SHOULD use provided schema context.
- * Any other instance of {@link EffectiveModelContext} obtained by other means, may not be valid for the
- * associated DOMDataTreeCandidates and it may lead to incorrect validation or processing of provided
- * data.
- * <h3>DataTreeCandidate assumptions</h3> Implementation SHOULD NOT make any assumptions on a
- * {@link DOMDataTreeCandidate} being successfully committed until associated
- * {@link PostCanCommitStep#preCommit()} and
- * {@link org.opendaylight.mdsal.common.api.PostPreCommitStep#commit()} callback was invoked.
+ * <h3>Correctness assumptions</h3>
+ * Implementation SHOULD use only the {@link DOMDataTreeCandidate} instances and provided {@link EffectiveModelContext}
+ * for validation purposes.
+ *
+ * <p>
+ * Use of any other external mutable state is discouraged, implementation MUST NOT use any transaction related APIs on
+ * the same data broker / data store instance during invocation of callbacks, except ones provided as argument. Note
+ * that this MAY BE enforced by some implementations of {@link DOMDataBroker} or {@link CommitCohortExtension},
+ * potentially enforced through the extension and such calls may fail.
+ *
+ * <h3>Correct model usage</h3>
+ * If implementation is performing YANG-model driven validation implementation SHOULD use provided schema context. Any
+ * other instance of {@link EffectiveModelContext} obtained by other means, may not be valid for the associated
+ * {@link DOMDataTreeCandidate}s and it may lead to incorrect validation or processing of provided data.
+ *
+ * <h3>DataTreeCandidate assumptions</h3>
+ * Implementation SHOULD NOT make any assumptions on a {@link DOMDataTreeCandidate} being successfully committed until
+ * the associated {@link PostCanCommitStep#preCommit()} and {@link PostPreCommitStep#commit()} callback was invoked.
+ *
  * <h2>Usage patterns</h2>
  * <h3>Data Tree Validator</h3>
- * Validator is implementation, which only validates {@link DOMDataTreeCandidate} instances and does not
- * retain any state derived from edited data - does not care if a {@link DOMDataTreeCandidate} was
- * rejected afterwards or transaction was cancelled.
- * Implementation may opt-out from receiving {@code preCommit()}, {@code commit()}, {@code abort()}
- * callbacks by returning {@link PostCanCommitStep#NOOP}.
- *
- * @author Tony Tkacik
+ * Validator is implementation, which only validates {@link DOMDataTreeCandidate} instances and does not retain any
+ * state derived from edited data - does not care if a {@link DOMDataTreeCandidate} was rejected afterwards or
+ * the transaction was cancelled. Implementation may opt-out from receiving {@code preCommit()}, {@code commit()},
+ * {@code abort()} callbacks by returning {@link PostCanCommitStep#NOOP}.
  */
 // TODO: Provide example and describe more usage patterns
 @Beta
 public interface DOMDataTreeCommitCohort {
-
     /**
      * Validates the supplied data tree modifications and associates the cohort-specific steps with data broker
      * transaction.
