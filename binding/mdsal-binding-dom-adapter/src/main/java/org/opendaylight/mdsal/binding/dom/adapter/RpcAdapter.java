@@ -26,7 +26,6 @@ final class RpcAdapter implements InvocationHandler {
     private final @NonNull DOMRpcService delegate;
     private final RpcInvocationStrategy strategy;
     private final @NonNull Rpc<?, ?> facade;
-    private final Method invokeMethod;
     private final String name;
 
     <T extends Rpc<?, ?>> RpcAdapter(final AdapterContext adapterContext, final DOMRpcService delegate,
@@ -38,12 +37,6 @@ final class RpcAdapter implements InvocationHandler {
         final var rpcType = serializer.getRuntimeContext().getRpcDefinition(type);
         if (rpcType == null) {
             throw new IllegalStateException("Failed to find runtime type for " + type);
-        }
-
-        try {
-            invokeMethod = type.getMethod(Naming.RPC_INVOKE_NAME, RpcInput.class);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("Failed to find invoke method in " + type, e);
         }
 
         facade = type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, this));
@@ -67,11 +60,12 @@ final class RpcAdapter implements InvocationHandler {
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        if (invokeMethod.equals(method)) {
-            return strategy.invoke((RpcInput) requireNonNull(args[0]));
-        }
-
         switch (method.getName()) {
+            case Naming.RPC_INVOKE_NAME:
+                if (method.getParameterCount() == 1) {
+                    return strategy.invoke((RpcInput) requireNonNull(args[0]));
+                }
+                break;
             case "toString":
                 if (method.getReturnType().equals(String.class) && method.getParameterCount() == 0) {
                     return name + "$Adapter{delegate=" + delegate + "}";
