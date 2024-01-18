@@ -18,7 +18,6 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -301,8 +300,8 @@ public class TracingBroker implements TracingDOMDataBroker {
     @Override
     public <T extends Extension> T extension(final Class<T> type) {
         final var ext = delegate.extension(type);
-        if (DOMDataTreeChangeService.class.equals(type) && ext instanceof DOMDataTreeChangeService treeChange) {
-            return type.cast((DOMDataTreeChangeService) (domDataTreeIdentifier, listener) -> {
+        if (DataTreeChangeExtension.class.equals(type) && ext instanceof DataTreeChangeExtension treeChange) {
+            return type.cast((DataTreeChangeExtension) (domDataTreeIdentifier, listener) -> {
                 final var rootId = domDataTreeIdentifier.path();
                 if (isRegistrationWatched(rootId, domDataTreeIdentifier.datastore())) {
                     LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
