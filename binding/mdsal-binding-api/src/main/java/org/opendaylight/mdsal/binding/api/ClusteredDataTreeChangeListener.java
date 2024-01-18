@@ -18,9 +18,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * if they want to listen for data tree change notifications on any node of a clustered data store.
  * {@link DataTreeChangeListener} enables notifications only at the leader of the data store.
  *
- * @author Thomas Pantelis
- *
  * @param <T> the DataObject type
+ * @author Thomas Pantelis
+ * @deprecated Use plain {@link DataTreeChangeListener} and use
+ *             {@link DataTreeChangeService#registerDataChangeListener(DataTreeIdentifier, DataChangeListener)}
+ *             instead.
  */
+@Deprecated(since = "13.0.0", forRemoval = true)
 public interface ClusteredDataTreeChangeListener<T extends DataObject> extends DataTreeChangeListener<T> {
+    // Just a marker interface
 }
