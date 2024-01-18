@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultRpcRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
@@ -36,9 +36,9 @@ public final class RpcGenerator extends AbstractInvokableGenerator<RpcEffectiveS
     }
 
     @Override
-    ParameterizedType implementedType(final TypeBuilderFactory builderFactory, final GeneratedType input,
-            final GeneratedType output) {
-        return BindingTypes.rpc(input, output);
+    void addImplementedType(final TypeBuilderFactory builderFactory, final GeneratedTypeBuilder builder,
+            final GeneratedType input, final GeneratedType output) {
+        builder.addImplementsType(BindingTypes.rpc(input, output));
     }
 
     @Override
