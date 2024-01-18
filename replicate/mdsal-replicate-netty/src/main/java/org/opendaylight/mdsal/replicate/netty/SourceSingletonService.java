@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeStreamVersion;
@@ -43,7 +43,7 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
         new ServiceGroupIdentifier(SourceSingletonService.class.getName());
 
     private final BootstrapSupport bootstrapSupport;
-    private final DOMDataTreeChangeService dtcs;
+    private final DataTreeChangeExtension dtcs;
     private final int listenPort;
 
     @GuardedBy("this")
@@ -53,7 +53,7 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
     @GuardedBy("this")
     private Channel serverChannel;
 
-    SourceSingletonService(final BootstrapSupport bootstrapSupport, final DOMDataTreeChangeService dtcs,
+    SourceSingletonService(final BootstrapSupport bootstrapSupport, final DataTreeChangeExtension dtcs,
             final int listenPort, final Duration keepaliveInterval, final int maxMissedKeepalives) {
         this.bootstrapSupport = requireNonNull(bootstrapSupport);
         this.dtcs = requireNonNull(dtcs);

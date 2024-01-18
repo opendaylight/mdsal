@@ -28,8 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
@@ -117,7 +117,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     public void writeContainerEmptyTreeTest() throws InterruptedException {
         final var latch = new CountDownLatch(1);
 
-        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDataTreeChangeExtension();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -145,7 +145,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     public void replaceContainerContainerInTreeTest() throws ExecutionException, InterruptedException {
         final var latch = new CountDownLatch(2);
 
-        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDataTreeChangeExtension();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -184,7 +184,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     public void deleteContainerContainerInTreeTest() throws ExecutionException, InterruptedException {
         final var latch = new CountDownLatch(2);
 
-        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDataTreeChangeExtension();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!", dataTreeChangeService);
 
         var writeTx = domBroker.newWriteOnlyTransaction();
@@ -223,7 +223,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     public void replaceChildListContainerInTreeTest() throws ExecutionException, InterruptedException {
         final var latch = new CountDownLatch(2);
 
-        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDataTreeChangeExtension();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!", dataTreeChangeService);
 
         var writeTx = domBroker.newWriteOnlyTransaction();
@@ -264,7 +264,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     public void rootModificationChildListenerTest() throws ExecutionException, InterruptedException {
         final var latch = new CountDownLatch(2);
 
-        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDataTreeChangeExtension();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -304,7 +304,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     public void listEntryChangeNonRootRegistrationTest() throws ExecutionException, InterruptedException {
         final var latch = new CountDownLatch(2);
 
-        final var dataTreeChangeService = getDOMDataTreeChangeService();
+        final var dataTreeChangeService = getDataTreeChangeExtension();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!", dataTreeChangeService);
 
         var writeTx = domBroker.newWriteOnlyTransaction();
@@ -373,8 +373,8 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         assertEquals(expectedMod, candidateNode.modificationType());
     }
 
-    private DOMDataTreeChangeService getDOMDataTreeChangeService() {
-        return domBroker.extension(DOMDataTreeChangeService.class);
+    private DataTreeChangeExtension getDataTreeChangeExtension() {
+        return domBroker.extension(DataTreeChangeExtension.class);
     }
 
     static class CommitExecutorService extends ForwardingExecutorService {

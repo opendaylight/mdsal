@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
@@ -35,7 +34,7 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
 
         final var builder = ImmutableList.<Extension>builder();
         if (isSupported(datastores, DOMStoreTreeChangePublisher.class)) {
-            builder.add((DOMDataTreeChangeService) (treeId, listener) -> {
+            builder.add((DataTreeChangeExtension) (treeId, listener) -> {
                 final var dsType = treeId.datastore();
                 if (getTxFactories().get(dsType) instanceof DOMStoreTreeChangePublisher publisher) {
                     return publisher.registerTreeChangeListener(treeId.path(), listener);

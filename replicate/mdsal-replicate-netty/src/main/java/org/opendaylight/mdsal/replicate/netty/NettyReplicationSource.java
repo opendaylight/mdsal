@@ -13,7 +13,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import java.time.Duration;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.osgi.service.component.annotations.Activate;
@@ -67,7 +67,7 @@ public final class NettyReplicationSource {
             final ClusterSingletonServiceProvider singleton, final boolean enabled, final int listenPort,
             final Duration keepaliveInterval, final int maxMissedKeepalives) {
         LOG.debug("Source {}", enabled ? "enabled" : "disabled");
-        final var dtcs = verifyNotNull(broker.extension(DOMDataTreeChangeService.class),
+        final var dtcs = verifyNotNull(broker.extension(DataTreeChangeExtension.class),
             "Missing DOMDataTreeChangeService in broker %s", broker);
         checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
         return enabled ? singleton.registerClusterSingletonService(new SourceSingletonService(bootstrap,
