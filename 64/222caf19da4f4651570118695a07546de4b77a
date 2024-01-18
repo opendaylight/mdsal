@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng ODL
+Verified+1: ODL Required.GHA <releng+odl.required.gha@linuxfoundation.org>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Thu, 18 Jan 2024 12:24:14 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/c/mdsal/+/109832
+Project: mdsal
+Branch: refs/heads/master
