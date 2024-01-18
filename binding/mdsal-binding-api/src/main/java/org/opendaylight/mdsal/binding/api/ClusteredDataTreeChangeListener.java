@@ -22,5 +22,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  *
  * @param <T> the DataObject type
  */
+@Deprecated(since = "13.0.0", forRemoval = true)
 public interface ClusteredDataTreeChangeListener<T extends DataObject> extends DataTreeChangeListener<T> {
+    // Just a marker interface
 }

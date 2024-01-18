@@ -45,8 +45,25 @@ public interface DataTreeChangeService extends BindingService {
      * @return a Registration object, which may be used to unregister your listener using {@link Registration#close()}
      *         to stop delivery of change events.
      */
-    <T extends DataObject> @NonNull Registration registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId,
-        @NonNull DataTreeChangeListener<T> listener);
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default <T extends DataObject> @NonNull Registration registerDataTreeChangeListener(
+            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataTreeChangeListener<T> listener) {
+        return listener instanceof ClusteredDataTreeChangeListener ? registerTreeChangeListener(treeId, listener)
+            : registerLegacyTreeChangeListener(treeId, listener);
+    }
+
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    default <T extends DataObject> @NonNull Registration registerDataTreeChangeListener(
+            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull ClusteredDataTreeChangeListener<T> listener) {
+        return registerTreeChangeListener(treeId, listener);
+    }
+
+    <T extends DataObject> @NonNull Registration registerTreeChangeListener(
+        @NonNull DataTreeIdentifier<T> treeId, @NonNull DataTreeChangeListener<T> listener);
+
+    @Deprecated(since = "13.0.0", forRemoval = true)
+    <T extends DataObject> @NonNull Registration registerLegacyTreeChangeListener(
+        @NonNull DataTreeIdentifier<T> treeId, @NonNull DataTreeChangeListener<T> listener);
 
     /**
      * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
@@ -76,7 +93,7 @@ public interface DataTreeChangeService extends BindingService {
      */
     default <T extends DataObject> @NonNull Registration registerDataListener(
             final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataListener<T> listener) {
-        return registerDataTreeChangeListener(checkNotWildcard(treeId), new DataListenerAdapter<>(listener));
+        return registerTreeChangeListener(checkNotWildcard(treeId), new DataListenerAdapter<>(listener));
     }
 
     /**
@@ -106,7 +123,7 @@ public interface DataTreeChangeService extends BindingService {
      */
     default <T extends DataObject> @NonNull Registration registerDataChangeListener(
             final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataChangeListener<T> listener) {
-        return registerDataTreeChangeListener(checkNotWildcard(treeId), new DataChangeListenerAdapter<>(listener));
+        return registerTreeChangeListener(checkNotWildcard(treeId), new DataChangeListenerAdapter<>(listener));
     }
 
     private static <T extends DataObject> @NonNull DataTreeIdentifier<T> checkNotWildcard(

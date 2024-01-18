@@ -14,13 +14,13 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataListener;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
-final class BindingDOMDataListenerAdapter<T extends DataObject> implements ClusteredDOMDataTreeChangeListener {
+final class BindingDOMDataListenerAdapter<T extends DataObject> implements DOMDataTreeChangeListener {
     private final AdapterContext adapterContext;
     private final DataListener<T> listener;
 
