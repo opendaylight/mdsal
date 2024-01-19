@@ -311,7 +311,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         doNothing().when(listener).onDataTreeChanged(anyList());
 
         final DataTreeIdentifier<T> dti = DataTreeIdentifier.of(CONFIGURATION, InstanceIdentifier.create(bindingClass));
-        getDataBroker().registerDataTreeChangeListener(dti, listener);
+        getDataBroker().registerTreeChangeListener(dti, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(new NodeIdentifier(qname)),
@@ -344,7 +344,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = mock(DataTreeChangeListener.class);
         doNothing().when(listener).onDataTreeChanged(anyList());
-        getDataBroker().registerDataTreeChangeListener(CHOICE_CONTAINER_TID, listener);
+        getDataBroker().registerTreeChangeListener(CHOICE_CONTAINER_TID, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID), ImmutableNodes.newContainerBuilder()

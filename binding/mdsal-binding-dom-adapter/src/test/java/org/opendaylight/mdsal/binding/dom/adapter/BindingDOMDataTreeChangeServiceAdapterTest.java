@@ -63,11 +63,11 @@ class BindingDOMDataTreeChangeServiceAdapterTest {
 
         doReturn(mockDOMReg).when(mockDOMService).registerTreeChangeListener(domDataTreeIdentifier(TOP_YIID), any());
         final var treeId = DataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
-        service.registerDataTreeChangeListener(treeId, new TestClusteredDataTreeChangeListener());
+        service.registerTreeChangeListener(treeId, new TestClusteredDataTreeChangeListener());
 
         doReturn(mockDOMReg).when(mockDOMService).registerLegacyTreeChangeListener(domDataTreeIdentifier(TOP_YIID),
             any());
-        service.registerDataTreeChangeListener(treeId, new TestDataTreeChangeListener());
+        service.registerTreeChangeListener(treeId, new TestDataTreeChangeListener());
     }
 
     private static @NonNull DOMDataTreeIdentifier domDataTreeIdentifier(final YangInstanceIdentifier yangID) {

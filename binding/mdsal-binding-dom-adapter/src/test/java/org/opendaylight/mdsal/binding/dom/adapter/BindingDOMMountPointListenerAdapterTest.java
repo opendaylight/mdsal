@@ -23,7 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -33,7 +33,7 @@ public class BindingDOMMountPointListenerAdapterTest {
 
     @Mock private MountPointListener listener;
     @Mock private DOMMountPointService mountPointService;
-    @Mock private ListenerRegistration<?> listenerRegistration;
+    @Mock private Registration listenerRegistration;
 
     @Before
     public void setUp() throws Exception {
