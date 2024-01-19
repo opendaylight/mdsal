@@ -238,7 +238,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     @SuppressWarnings("unchecked")
     private <C extends DataObject> Stream<LazyDataObjectModification<C>> streamModifiedChildren(
             final Class<C> childType) {
-        return getModifiedChildren().stream()
+        return modifiedChildren().stream()
             .filter(child -> childType.isAssignableFrom(child.dataType()))
             .map(child -> (LazyDataObjectModification<C>) child);
     }
