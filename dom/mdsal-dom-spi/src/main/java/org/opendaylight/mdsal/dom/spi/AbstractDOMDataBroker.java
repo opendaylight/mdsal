@@ -12,7 +12,9 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -20,6 +22,8 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.dom.spi.rev240120.AbstractDOMDataBrokerConfigurationBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.dom.spi.rev240120.DatabrokerConfig;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +35,14 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     private final AtomicLong txNum = new AtomicLong();
     private final AtomicLong chainNum = new AtomicLong();
     private final @NonNull List<Extension> supportedExtensions;
+    private final Supplier<@Nullable Throwable> allocationContext;
 
     protected AbstractDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores) {
+        this(datastores, new AbstractDOMDataBrokerConfigurationBuilder().build());
+    }
+
+    protected AbstractDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores,
+            final DatabrokerConfig config) {
         super(datastores);
 
         final var builder = ImmutableList.<Extension>builder();
@@ -70,6 +80,13 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         }
 
         supportedExtensions = builder.build();
+
+        final var trackTransaction = config.getTrackTransaction();
+        if (trackTransaction != null) {
+            allocationContext = trackTransaction.requireAllocation() ? Throwable::new : null;
+        } else {
+            allocationContext = () -> null;
+        }
     }
 
     @Override
@@ -94,6 +111,11 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     @Override
     protected final Object newTransactionIdentifier() {
         return "DOM-" + txNum.getAndIncrement();
+    }
+
+    @Override
+    final Throwable allocationContext() {
+        return allocationContext.get();
     }
 
     private static boolean isSupported(final Map<LogicalDatastoreType, DOMStore> datastores,

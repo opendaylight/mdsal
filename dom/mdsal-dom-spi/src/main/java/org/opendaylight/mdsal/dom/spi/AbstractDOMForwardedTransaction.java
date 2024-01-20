@@ -47,6 +47,7 @@ abstract class AbstractDOMForwardedTransaction<T extends DOMStoreTransaction>
 
     private final @NonNull Object identifier;
     private final Function<LogicalDatastoreType, T> backingTxFactory;
+    private final @Nullable Throwable allocationContext;
 
     @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
         justification = "https://github.com/spotbugs/spotbugs/issues/2749")
@@ -55,15 +56,15 @@ abstract class AbstractDOMForwardedTransaction<T extends DOMStoreTransaction>
     /**
      * Creates new composite Transactions.
      *
-     * @param identifier
-     *            Identifier of transaction.
-     * @param backingTxFactory
-     *            Function which supplies transaction depending on store type
+     * @param identifier Identifier of transaction.
+     * @param backingTxFactory Function which supplies transaction depending on store type
+     * @param allocationContext optional allocation context
      */
-    protected AbstractDOMForwardedTransaction(final Object identifier,
-            final Function<LogicalDatastoreType, T> backingTxFactory) {
+    AbstractDOMForwardedTransaction(final Object identifier, final Function<LogicalDatastoreType, T> backingTxFactory,
+            final @Nullable Throwable allocationContext) {
         this.identifier = requireNonNull(identifier, "Identifier should not be null");
         this.backingTxFactory = requireNonNull(backingTxFactory, "Backing transaction factory should not be null");
+        this.allocationContext = allocationContext;
     }
 
     /**

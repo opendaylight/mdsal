@@ -122,6 +122,11 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         }
     }
 
+    @Override
+    Throwable allocationContext() {
+        return broker.allocationContext();
+    }
+
     private void finishClose() {
         state = State.CLOSED;
         future.set(Empty.value());

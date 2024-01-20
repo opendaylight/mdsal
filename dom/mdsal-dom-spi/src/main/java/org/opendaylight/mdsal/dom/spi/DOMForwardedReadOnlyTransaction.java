@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryReadTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -27,8 +28,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 class DOMForwardedReadOnlyTransaction extends AbstractDOMForwardedTransaction<DOMStoreReadTransaction>
         implements DOMDataTreeQueryReadTransaction {
     DOMForwardedReadOnlyTransaction(final Object identifier,
-            final Function<LogicalDatastoreType, DOMStoreReadTransaction> txSupplier) {
-        super(identifier, txSupplier);
+            final Function<LogicalDatastoreType, DOMStoreReadTransaction> txSupplier,
+            final @Nullable Throwable allocationContext) {
+        super(identifier, txSupplier, allocationContext);
     }
 
     @Override
