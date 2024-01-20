@@ -1,0 +1,77 @@
+module odl-mdsal-dom-spi {
+  yang-version 1.1;
+  namespace "urn:opendaylight:params:xml:ns:yang:mdsal:dom:spi";
+  prefix "spi";
+
+  description
+    "Copyright (c) 2024 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+
+     This program and the accompanying materials are made available under the
+     terms of the Eclipse Public License v1.0 which accompanies this distribution,
+     and is available at http://www.eclipse.org/legal/epl-v10.html";
+
+  revision "2024-01-20" {
+      description "Initial revision";
+  }
+
+  import ietf-restconf {
+    prefix rc;
+  }
+
+  grouping stack-trace-element {
+    description "Model of java.lang.StackTraceElement";
+
+    leaf module-name {
+      type string;
+    }
+    leaf module-version {
+      type string;
+    }
+    leaf declaring-class {
+      type string;
+    }
+    leaf method-name {
+      type string;
+    }
+    leaf file-name {
+      type string;
+    }
+    leaf line-number {
+      type string;
+    }
+  }
+
+  grouping databroker-config {
+    container track-transaction {
+      presence "Presence indicates that transaction lifecycle is being tracked.";
+
+      leaf allocation {
+        type boolean;
+        default false;
+      }
+    }
+  }
+
+  grouping databroker-state {
+    list open-transactions {
+      key identifier;
+
+      leaf identifier {
+        type string;
+      }
+
+      list allocated-at {
+        ordered-by user;
+        uses stack-trace-element;
+      }
+    }
+  }
+
+  rc:yang-data AbstractDOMDataBrokerConfiguration {
+    uses databroker-config;
+  }
+  
+  rc:yang-data AbstractDOMDataBrokerState {
+    uses databroker-state;
+  }
+}

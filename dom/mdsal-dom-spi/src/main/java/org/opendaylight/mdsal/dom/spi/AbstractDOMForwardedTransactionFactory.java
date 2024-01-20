@@ -16,6 +16,7 @@ import java.lang.invoke.VarHandle;
 import java.util.EnumMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -62,7 +63,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
 
     protected AbstractDOMForwardedTransactionFactory(final Map<LogicalDatastoreType, ? extends T> txFactories) {
         checkState(!txFactories.isEmpty(), "txFactories should not be empty.");
-        this.storeTxFactories = new EnumMap<>(txFactories);
+        storeTxFactories = new EnumMap<>(txFactories);
     }
 
     /**
@@ -106,7 +107,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     public final DOMDataTreeReadTransaction newReadOnlyTransaction() {
         checkNotClosed();
         return new DOMForwardedReadOnlyTransaction(newTransactionIdentifier(),
-            storeType -> requireTxFactory(storeType).newReadOnlyTransaction());
+            storeType -> requireTxFactory(storeType).newReadOnlyTransaction(), allocationContext());
     }
 
     /**
@@ -145,7 +146,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     public final DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         checkNotClosed();
         return new DOMForwardedWriteTransaction<>(newTransactionIdentifier(),
-            storeType -> requireTxFactory(storeType).newWriteOnlyTransaction(), this);
+            storeType -> requireTxFactory(storeType).newWriteOnlyTransaction(), allocationContext(), this);
     }
 
     /**
@@ -156,7 +157,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     public final DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         checkNotClosed();
         return new DOMForwardedReadWriteTransaction(newTransactionIdentifier(),
-            storeType -> requireTxFactory(storeType).newReadWriteTransaction(), this);
+            storeType -> requireTxFactory(storeType).newReadWriteTransaction(), allocationContext(), this);
     }
 
     /**
@@ -193,4 +194,11 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
             LOG.warn("Transaction factory was already closed", new Throwable());
         }
     }
+
+    /**
+     * Return the current allocation context.
+     *
+     * @return Allocation context, or {@code null}
+     */
+    abstract @Nullable Throwable allocationContext();
 }

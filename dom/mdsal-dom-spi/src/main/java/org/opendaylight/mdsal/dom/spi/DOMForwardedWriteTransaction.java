@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -76,9 +77,9 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
     private volatile FluentFuture<?> commitFuture;
 
     protected DOMForwardedWriteTransaction(final Object identifier,
-            final Function<LogicalDatastoreType, T> backingTxFactory,
+            final Function<LogicalDatastoreType, T> backingTxFactory, final @Nullable Throwable allocationContext,
             final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
-        super(identifier, backingTxFactory);
+        super(identifier, backingTxFactory, allocationContext);
         this.commitImpl = requireNonNull(commitImpl, "commitImpl must not be null.");
     }
 

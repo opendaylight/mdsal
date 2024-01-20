@@ -70,7 +70,7 @@ public class AbstractDOMForwardedTransactionTest {
             extends AbstractDOMForwardedTransaction<DOMStoreTransaction> {
         DOMForwardedTransactionTestImpl(final Object identifier,
                 final Function<LogicalDatastoreType, DOMStoreTransaction> backingTxFactory) {
-            super(identifier, backingTxFactory);
+            super(identifier, backingTxFactory, null);
         }
     }
 }

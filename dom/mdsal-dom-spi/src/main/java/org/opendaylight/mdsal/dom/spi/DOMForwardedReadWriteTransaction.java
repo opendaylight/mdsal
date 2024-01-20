@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -42,8 +43,8 @@ final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransactio
 
     DOMForwardedReadWriteTransaction(final Object identifier,
         final Function<LogicalDatastoreType, DOMStoreReadWriteTransaction> txSupplier,
-            final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
-        super(identifier, txSupplier, commitImpl);
+        final @Nullable Throwable allocationContext, final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
+        super(identifier, txSupplier, allocationContext, commitImpl);
     }
 
     @Override
