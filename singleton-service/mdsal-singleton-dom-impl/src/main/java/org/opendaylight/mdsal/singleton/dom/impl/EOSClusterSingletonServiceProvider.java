@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
@@ -74,34 +75,42 @@ public final class EOSClusterSingletonServiceProvider
     @PreDestroy
     @Deactivate
     @Override
-    public synchronized void close() throws ExecutionException, InterruptedException {
-        if (serviceEntityListenerReg == null) {
-            // Idempotent
-            return;
+    public void close() throws ExecutionException, InterruptedException {
+        final Registration reg;
+        final ListenableFuture<?> future;
+        synchronized (this) {
+            if (serviceEntityListenerReg == null) {
+                // Idempotent
+                return;
+            }
+
+            LOG.info("Cluster Singleton Service stopping");
+            reg = serviceEntityListenerReg;
+            serviceEntityListenerReg = null;
+            future = Futures.allAsList(serviceGroupMap.values().stream()
+                .map(ServiceGroup::closeClusterSingletonGroup)
+                .toList());
         }
 
-        LOG.info("Cluster Singleton Service stopping");
-        serviceEntityListenerReg.close();
-        serviceEntityListenerReg = null;
-
-        final var future = Futures.allAsList(serviceGroupMap.values().stream()
-            .map(ServiceGroup::closeClusterSingletonGroup)
-            .toList());
         try {
             LOG.debug("Waiting for service groups to stop");
             future.get();
         } finally {
+            reg.close();
             asyncCloseEntityListenerReg.close();
             asyncCloseEntityListenerReg = null;
             serviceGroupMap.clear();
+            LOG.info("Cluster Singleton Service stopped");
         }
-
-        LOG.info("Cluster Singleton Service stopped");
     }
 
     @Override
     public synchronized Registration registerClusterSingletonService(final ClusterSingletonService service) {
         final var serviceIdentifier = requireNonNull(service.getIdentifier());
+        if (serviceEntityListenerReg == null) {
+            throw new IllegalStateException(this + "is closed");
+        }
+
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
         final var identifierValue = serviceIdentifier.value();
@@ -140,6 +149,7 @@ public final class EOSClusterSingletonServiceProvider
             services);
     }
 
+    @Holding("this")
     private void initializeOrRemoveGroup(final ServiceGroup group) throws CandidateAlreadyRegisteredException {
         try {
             group.initialize();
