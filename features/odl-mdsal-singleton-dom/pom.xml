@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-singleton-dom-impl</artifactId>
+            <artifactId>mdsal-singleton-impl</artifactId>
         </dependency>
     </dependencies>
 </project>

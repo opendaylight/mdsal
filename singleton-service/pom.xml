@@ -23,13 +23,13 @@
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
 
-    <modules>
-        <module>mdsal-singleton-common-api</module>
-        <module>mdsal-singleton-dom-impl</module>
-    </modules>
-
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.install.skip>true</maven.install.skip>
     </properties>
+
+    <modules>
+        <module>mdsal-singleton-api</module>
+        <module>mdsal-singleton-impl</module>
+    </modules>
 </project>
