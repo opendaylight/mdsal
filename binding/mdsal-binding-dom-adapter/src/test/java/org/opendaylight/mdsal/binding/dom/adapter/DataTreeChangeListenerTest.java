@@ -162,14 +162,14 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         final DataTreeModification<Top> initialWrite = Iterables.getOnlyElement(events);
         final DataObjectModification<? extends DataObject> initialNode = initialWrite.getRootNode();
         verifyModification(initialNode,TOP_PATH.getPathArguments().iterator().next(),ModificationType.WRITE);
-        assertEquals(TOP_INITIAL_DATA, initialNode.getDataAfter());
+        assertEquals(TOP_INITIAL_DATA, initialNode.dataAfter());
     }
 
     private static void verifyModification(final DataObjectModification<? extends DataObject> barWrite,
             final DataObjectStep<?> pathArg, final ModificationType eventType) {
-        assertEquals(pathArg.type(), barWrite.getDataType());
-        assertEquals(eventType,barWrite.getModificationType());
-        assertEquals(pathArg, barWrite.getIdentifier());
+        assertEquals(pathArg.type(), barWrite.dataType());
+        assertEquals(eventType,barWrite.modificationType());
+        assertEquals(pathArg, barWrite.step());
     }
 
     private <T extends DataObject> WriteTransaction putTx(final InstanceIdentifier<T> path, final T data) {

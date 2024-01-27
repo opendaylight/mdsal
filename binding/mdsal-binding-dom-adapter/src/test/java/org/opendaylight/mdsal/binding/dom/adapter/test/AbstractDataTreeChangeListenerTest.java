@@ -66,8 +66,8 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
                 if (!matcher.apply(mod)) {
                     final var rootNode = mod.getRootNode();
                     fail("Received unexpected notification: type: %s, path: %s, before: %s, after: %s".formatted(
-                        rootNode.getModificationType(), mod.getRootPath().path(), rootNode.getDataBefore(),
-                        rootNode.getDataAfter()));
+                        rootNode.modificationType(), mod.getRootPath().path(), rootNode.dataBefore(),
+                        rootNode.dataAfter()));
                     return;
                 }
             }
@@ -163,10 +163,10 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
     public static <T extends DataObject> @NonNull Matcher<T> match(final ModificationType type,
             final InstanceIdentifier<T> path, final DataMatcher<T> checkDataBefore,
             final DataMatcher<T> checkDataAfter) {
-        return modification -> type == modification.getRootNode().getModificationType()
+        return modification -> type == modification.getRootNode().modificationType()
                 && path.equals(modification.getRootPath().path())
-                && checkDataBefore.apply(modification.getRootNode().getDataBefore())
-                && checkDataAfter.apply(modification.getRootNode().getDataAfter());
+                && checkDataBefore.apply(modification.getRootNode().dataBefore())
+                && checkDataAfter.apply(modification.getRootNode().dataAfter());
     }
 
     public static <T extends DataObject> @NonNull Matcher<T> match(final ModificationType type,
