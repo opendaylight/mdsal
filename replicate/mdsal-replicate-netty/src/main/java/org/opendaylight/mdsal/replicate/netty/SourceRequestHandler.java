@@ -18,8 +18,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import java.io.IOException;
 import java.util.List;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataInput;
@@ -85,7 +85,7 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
 
         LOG.info("Channel {} subscribing to {}", channel, dataTree);
-        reg = dtcs.registerDataTreeChangeListener(dataTree, new ClusteredDOMDataTreeChangeListener() {
+        reg = dtcs.registerTreeChangeListener(dataTree, new DOMDataTreeChangeListener() {
             @Override
             public void onInitialData() {
                 LOG.debug("Channel {} tree {} has empty data", channel, dataTree);
