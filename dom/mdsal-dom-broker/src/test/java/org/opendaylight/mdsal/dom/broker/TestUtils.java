@@ -9,12 +9,11 @@ package org.opendaylight.mdsal.dom.broker;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.util.concurrent.FluentFuture;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -76,15 +75,14 @@ final class TestUtils {
     }
 
     private static final class TestRpcImplementation implements DOMRpcImplementation {
-        private final FluentFuture<DOMRpcResult> unknownRpc;
+        private final @NonNull DOMRpcFuture unknownRpc;
 
         TestRpcImplementation() {
-            unknownRpc = FluentFutures.immediateFailedFluentFuture(
-                    new DOMRpcImplementationNotAvailableException(EXCEPTION_TEXT));
+            unknownRpc = DOMRpcFuture.failed(new DOMRpcImplementationNotAvailableException(EXCEPTION_TEXT));
         }
 
         @Override
-        public FluentFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
+        public DOMRpcFuture invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
             requireNonNull(input);
             return unknownRpc;
         }

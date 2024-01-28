@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -39,7 +40,6 @@ import org.opendaylight.yang.gen.v1.rpc.norev.SwitchInputBuilder;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutput;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutputBuilder;
 import org.opendaylight.yang.svc.v1.rpc.norev.YangModuleInfoImpl;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -92,17 +92,16 @@ public class Mdsal500Test {
     @Test
     public void testDOMRegistrationWithBindingInvocation()
             throws InterruptedException, ExecutionException, TimeoutException {
-        SwitchOutput baSwitchOutput = new SwitchOutputBuilder().build();
+        SwitchOutput baOutput = new SwitchOutputBuilder().build();
 
-        biRpcProviderService.registerRpcImplementation((rpc, input) ->
-            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
-                    .toNormalizedNodeRpcData(baSwitchOutput))),
+        biRpcProviderService.registerRpcImplementation((rpc, input) -> DOMRpcFuture.of(
+            new DefaultDOMRpcResult(testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(baOutput))),
             DOMRpcIdentifier.create(SWITCH_QNAME));
 
         final var baSwitchService = baRpcConsumerService.getRpc(Switch.class);
         final var baResult = baSwitchService.invoke(switchBuilder(FOO).build());
         assertNotNull(baResult);
-        assertEquals(baSwitchOutput, baResult.get(5, TimeUnit.SECONDS).getResult());
+        assertEquals(baOutput, baResult.get(5, TimeUnit.SECONDS).getResult());
     }
 
     @Test

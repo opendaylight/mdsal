@@ -11,8 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,17 +23,16 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -110,33 +107,27 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
 
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
-                final DOMDataTreeIdentifier path, final ContainerNode input) {
+        public DOMRpcFuture invokeAction(final Absolute type, final DOMDataTreeIdentifier path,
+                final ContainerNode input) {
             final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
             final InstanceIdentifier<DataObject> instance = codec.fromYangInstanceIdentifier(path.path());
             if (instance == null) {
                 // Not representable: return an error
                 LOG.debug("Path {} is not representable in binding, rejecting invocation", path);
-                return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
+                return DOMRpcFuture.of(new DefaultDOMRpcResult(List.of(RpcResultBuilder.newError(
                     ErrorType.APPLICATION, ErrorTag.INVALID_VALUE, "Supplied path cannot be represented"))));
             }
             if (instance.isWildcarded()) {
                 // A wildcard path: return an error
                 LOG.debug("Path {} maps to a wildcard {}, rejecting invocation", path, instance);
-                return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
+                return DOMRpcFuture.of(new DefaultDOMRpcResult(List.of(RpcResultBuilder.newError(
                     ErrorType.APPLICATION, ErrorTag.INVALID_VALUE,
                     "Supplied path does not identify a concrete instance"))));
             }
 
-            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance,
-                codec.fromNormalizedNodeActionInput(actionInterface, input));
-            if (userFuture instanceof BindingOperationFluentFuture) {
-                // If we are looping back through our future we can skip wrapping. This can happen if application
-                // forwards invocations between multiple instantiations of the same action.
-                return (BindingOperationFluentFuture) userFuture;
-            }
-
-            return new BindingOperationFluentFuture(userFuture, actionInterface, outputName, adapterContext);
+            return DOMRpcFuture.ofFuture(new BindingOperationFluentFuture(
+                implementation.invoke(instance, codec.fromNormalizedNodeActionInput(actionInterface, input)),
+                actionInterface, outputName, adapterContext));
         }
     }
 }

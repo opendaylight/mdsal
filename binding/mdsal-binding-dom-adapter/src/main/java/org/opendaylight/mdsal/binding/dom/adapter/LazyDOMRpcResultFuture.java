@@ -21,22 +21,13 @@ import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implements BindingRpcFutureAware {
-    private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER = new ExceptionMapper<>("rpc",
-            DOMRpcException.class) {
-        @Override
-        protected DOMRpcException newWithCause(final String message, final Throwable cause) {
-            return cause instanceof DOMRpcException ? (DOMRpcException)cause
-                    : new DefaultDOMRpcException("RPC failed", cause);
-        }
-    };
-
     private final ListenableFuture<RpcResult<?>> bindingFuture;
     private final BindingNormalizedNodeSerializer codec;
+
     private volatile DOMRpcResult result;
 
     private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
@@ -74,7 +65,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         try {
             return transformIfNecessary(bindingFuture.get());
         } catch (ExecutionException e) {
-            throw new ExecutionException(e.getMessage(), DOM_RPC_EX_MAPPER.apply(e));
+            throw new ExecutionException(e.getMessage(), mapFailure(e));
         }
     }
 
@@ -88,7 +79,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         try {
             return transformIfNecessary(bindingFuture.get(timeout, unit));
         } catch (ExecutionException e) {
-            throw new ExecutionException(e.getMessage(), DOM_RPC_EX_MAPPER.apply(e));
+            throw new ExecutionException(e.getMessage(), mapFailure(e));
         }
     }
 
@@ -109,12 +100,16 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         return result;
     }
 
-    private DOMRpcResult transform(final RpcResult<?> input) {
+    private @NonNull DOMRpcResult transform(final RpcResult<?> input) {
         if (input.isSuccessful()) {
             final var value = input.getResult() instanceof DataContainer container
                 ? codec.toNormalizedNodeRpcData(container) : null;
             return new DefaultDOMRpcResult(value);
         }
         return new DefaultDOMRpcResult(input.getErrors());
+    }
+
+    private static @NonNull DOMRpcException mapFailure(final Throwable failure) {
+        return failure instanceof DOMRpcException rde ? rde : new DefaultDOMRpcException("RPC failed", failure);
     }
 }

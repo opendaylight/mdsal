@@ -37,15 +37,14 @@ import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
-import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -60,9 +59,8 @@ public class DOMRpcRouterTest {
     private static final YangInstanceIdentifier BAZ_PATH_GOOD = YangInstanceIdentifier.of(
         new NodeIdentifier(Actions.FOO), NodeIdentifierWithPredicates.of(Actions.FOO, Actions.BAR, "good"));
 
-    private static final DOMActionImplementation IMPL =
-        (type, path, input) -> Futures.immediateFuture(new SimpleDOMActionResult(
-            ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
+    private static final DOMActionImplementation IMPL = (type, path, input) -> DOMRpcFuture.of(new DefaultDOMRpcResult(
+        ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
 
     @Test
     public void registerRpcImplementation() {
@@ -245,18 +243,17 @@ public class DOMRpcRouterTest {
 
     private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path)
             throws ExecutionException {
-        final DOMActionResult result = Futures.getDone(invokeBaz(actionService, path));
-        assertEquals(List.of(), result.getErrors());
+        final var result = Futures.getDone(invokeBaz(actionService, path));
+        assertEquals(List.of(), result.errors());
     }
 
     private static void assertUnavailable(final DOMActionService actionService, final YangInstanceIdentifier path) {
-        final ListenableFuture<? extends DOMActionResult> future = invokeBaz(actionService, path);
-        final ExecutionException ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
-        assertThat(ex.getCause(), instanceOf(DOMActionNotAvailableException.class));
+        final var future = invokeBaz(actionService, path);
+        final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        assertThat(ex.getCause(), instanceOf(DOMRpcImplementationNotAvailableException.class));
     }
 
-    private static ListenableFuture<? extends DOMActionResult> invokeBaz(final DOMActionService actionService,
-            final YangInstanceIdentifier path) {
+    private static DOMRpcFuture invokeBaz(final DOMActionService actionService, final YangInstanceIdentifier path) {
         return actionService.invokeAction(Actions.BAZ_TYPE,
             DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path),
             ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.INPUT)).build());

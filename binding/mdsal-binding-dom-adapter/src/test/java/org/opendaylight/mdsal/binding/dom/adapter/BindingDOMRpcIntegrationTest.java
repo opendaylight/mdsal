@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -39,7 +40,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -95,18 +95,17 @@ public class BindingDOMRpcIntegrationTest {
 
     @Test
     public void testDOMRegistrationWithBindingInvocation() throws Exception {
-        final var baKnockKnockOutput = new KnockKnockOutputBuilder().setAnswer("open").build();
+        final var baOutput = new KnockKnockOutputBuilder().setAnswer("open").build();
 
-        biRpcProviderService.registerRpcImplementation((rpc, input) ->
-            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
-                    .currentSerializer().toNormalizedNodeRpcData(baKnockKnockOutput))),
-            DOMRpcIdentifier.create(KNOCK_KNOCK_QNAME, testContext.getCodec().currentSerializer()
-                .toYangInstanceIdentifier(BA_NODE_ID)));
+        biRpcProviderService.registerRpcImplementation((rpc, input) -> DOMRpcFuture.of(
+            new DefaultDOMRpcResult(testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(baOutput))),
+            DOMRpcIdentifier.create(KNOCK_KNOCK_QNAME,
+                testContext.getCodec().currentSerializer().toYangInstanceIdentifier(BA_NODE_ID)));
 
         final var baKnockService = baRpcService.getRpc(KnockKnock.class);
         final var baResult = baKnockService.invoke(knockKnock(BA_NODE_ID).setQuestion("Who's there?").build());
         assertNotNull(baResult);
-        assertEquals(baKnockKnockOutput, Futures.getDone(baResult).getResult());
+        assertEquals(baOutput, Futures.getDone(baResult).getResult());
     }
 
     @Test

@@ -7,14 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
@@ -29,13 +25,13 @@ final class OperationInvocation {
         // hidden on purpose
     }
 
-    static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
-            final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
+    static DOMRpcFuture invoke(final DOMActionRoutingTableEntry entry, final Absolute type,
+            final DOMDataTreeIdentifier path, final ContainerNode input) {
         var impls = entry.getImplementations(path);
         if (impls == null) {
             impls = entry.getImplementations(DOMDataTreeIdentifier.of(path.datastore(), YangInstanceIdentifier.of()));
             if (impls == null) {
-                return Futures.immediateFailedFuture(new DOMActionNotAvailableException(
+                return DOMRpcFuture.failed(new DOMRpcImplementationNotAvailableException(
                     "No implementation of Action %s available for %s", type, path));
             }
         }
@@ -43,10 +39,9 @@ final class OperationInvocation {
         return impls.get(0).invokeAction(type, path, input);
     }
 
-    static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
-            final ContainerNode input) {
+    static DOMRpcFuture invoke(final AbstractDOMRpcRoutingTableEntry entry, final ContainerNode input) {
         if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
-            return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException(
+            return DOMRpcFuture.failed(new DOMRpcImplementationNotAvailableException(
                 "%s is not resolved to an RPC", entry.getType()));
         } else if (entry instanceof RoutedDOMRpcRoutingTableEntry routed) {
             return invokeRoutedRpc(routed, input);
@@ -54,11 +49,10 @@ final class OperationInvocation {
             return invokeGlobalRpc(global, input);
         }
 
-        return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException("Unsupported RPC entry."));
+        return DOMRpcFuture.failed(new DOMRpcImplementationNotAvailableException("Unsupported RPC entry."));
     }
 
-    private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(
-            final RoutedDOMRpcRoutingTableEntry entry, final ContainerNode input) {
+    private static DOMRpcFuture invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry, final ContainerNode input) {
         final var maybeKey = NormalizedNodes.findNode(input, entry.getRpcId().getContextReference());
 
         // Routing key is present, attempt to deliver as a routed RPC
@@ -93,12 +87,11 @@ final class OperationInvocation {
             return impls.get(0).invokeRpc(entry.getRpcId(), input);
         }
 
-        return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException(
+        return DOMRpcFuture.failed(new DOMRpcImplementationNotAvailableException(
             "No implementation of RPC %s available", entry.getType()));
     }
 
-    private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
-            final GlobalDOMRpcRoutingTableEntry entry, final ContainerNode input) {
+    private static DOMRpcFuture invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry, final ContainerNode input) {
         return entry.getImplementations(YangInstanceIdentifier.of()).get(0).invokeRpc(entry.getRpcId(), input);
     }
 }

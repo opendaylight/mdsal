@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -28,15 +27,13 @@ public interface DOMRpcService extends DOMService<DOMRpcService, DOMRpcService.E
     }
 
     /**
-     * Initiate invocation of an RPC. This method is guaranteed to not block on any external
-     * resources.
+     * Initiate invocation of an RPC. This method is guaranteed to not block on any external resources.
      *
      * @param type QName of the RPC to be invoked
-     * @param input Input arguments, null if the RPC does not take any.
-     * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
-     *         of {@link DOMRpcException} reporting a transport error.
+     * @param input Input arguments, null if the RPC does not take any
+     * @return A {@link DOMRpcFuture}
      */
-    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull QName type, @NonNull ContainerNode input);
+    @NonNull DOMRpcFuture invokeRpc(@NonNull QName type, @NonNull ContainerNode input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications

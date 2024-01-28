@@ -69,7 +69,7 @@ sealed class RpcInvocationStrategy {
 
     private ListenableFuture<RpcResult<?>> invoke(final ContainerNode input) {
         final var domFuture = adapter.delegate().invokeRpc(outputPath.firstNodeIdentifier(), input);
-        if (ENABLE_CODEC_SHORTCUT && domFuture instanceof BindingRpcFutureAware bindingAware) {
+        if (ENABLE_CODEC_SHORTCUT && domFuture.sourceFuture() instanceof BindingRpcFutureAware bindingAware) {
             return bindingAware.getBindingFuture();
         }
         return transformFuture(domFuture, adapter.currentSerializer());

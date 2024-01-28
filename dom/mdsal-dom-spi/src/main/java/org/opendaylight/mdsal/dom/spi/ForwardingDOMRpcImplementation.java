@@ -8,11 +8,10 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
@@ -24,7 +23,12 @@ public abstract class ForwardingDOMRpcImplementation extends ForwardingObject im
     protected abstract @NonNull DOMRpcImplementation delegate();
 
     @Override
-    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final DOMRpcIdentifier type, final ContainerNode input) {
+    public DOMRpcFuture invokeRpc(final DOMRpcIdentifier type, final ContainerNode input) {
         return delegate().invokeRpc(type, input);
+    }
+
+    @Override
+    public long invocationCost() {
+        return delegate().invocationCost();
     }
 }

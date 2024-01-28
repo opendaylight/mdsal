@@ -13,9 +13,10 @@ package org.opendaylight.mdsal.dom.api;
  * @author Thomas Pantelis
  */
 public class DefaultDOMRpcException extends DOMRpcException {
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    public DefaultDOMRpcException(String message, Throwable cause) {
+    public DefaultDOMRpcException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

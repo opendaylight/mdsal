@@ -7,11 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.collect.ForwardingObject;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -20,12 +18,13 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 /**
  * Utility {@link DOMRpcService} which forwards all requests to a backing delegate instance.
  */
-public abstract class ForwardingDOMRpcService extends ForwardingObject implements DOMRpcService {
+public abstract class ForwardingDOMRpcService extends ForwardingDOMService<DOMRpcService, DOMRpcService.Extension>
+        implements DOMRpcService {
     @Override
     protected abstract @NonNull DOMRpcService delegate();
 
     @Override
-    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
+    public DOMRpcFuture invokeRpc(final QName type, final ContainerNode input) {
         return delegate().invokeRpc(type, input);
     }
 

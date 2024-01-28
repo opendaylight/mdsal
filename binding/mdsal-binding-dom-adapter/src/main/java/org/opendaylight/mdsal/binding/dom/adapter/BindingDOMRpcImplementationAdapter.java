@@ -11,12 +11,11 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -43,11 +42,11 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
+    public DOMRpcFuture invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
         final var serializer = adapterContext.currentSerializer();
         @SuppressWarnings("unchecked")
         final var future = delegate.invoke(deserialize(serializer, input));
-        return LazyDOMRpcResultFuture.create(serializer, future);
+        return DOMRpcFuture.ofFuture(LazyDOMRpcResultFuture.create(serializer, future));
     }
 
     private @NonNull RpcInput deserialize(final @NonNull CurrentAdapterSerializer serializer,

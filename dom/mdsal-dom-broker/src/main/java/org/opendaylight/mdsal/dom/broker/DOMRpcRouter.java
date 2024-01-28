@@ -20,8 +20,6 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,17 +41,15 @@ import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
-import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMRpcFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
@@ -396,15 +392,15 @@ public final class DOMRpcRouter extends AbstractRegistration {
         }
 
         @Override
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
-                final DOMDataTreeIdentifier path, final ContainerNode input) {
+        public DOMRpcFuture invokeAction(final Absolute type, final DOMDataTreeIdentifier path,
+                final ContainerNode input) {
             final YangInstanceIdentifier pathRoot = path.path();
             checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");
 
             final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
             return entry != null ? OperationInvocation.invoke(entry, type, path, requireNonNull(input))
-                : Futures.immediateFailedFuture(
-                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
+                : DOMRpcFuture.failed(
+                    new DOMRpcImplementationNotAvailableException("No implementation of Action %s available", type));
         }
 
         @Override
@@ -449,10 +445,10 @@ public final class DOMRpcRouter extends AbstractRegistration {
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
+        public DOMRpcFuture invokeRpc(final QName type, final ContainerNode input) {
             final var entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
-                return Futures.immediateFailedFuture(
+                return DOMRpcFuture.failed(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 
