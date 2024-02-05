@@ -9,14 +9,13 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -51,31 +50,43 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     }
 
     @Override
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
+    public Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations) {
         return register(currentSerializer(), implementations, GLOBAL);
     }
 
     @Override
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
+    public Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
             final Set<InstanceIdentifier<?>> paths) {
         final var serializer = currentSerializer();
         return register(serializer, implementations, toYangInstanceIdentifiers(serializer, paths));
     }
 
-    private <T extends Rpc<?, ?>> Registration register(final CurrentAdapterSerializer serializer,
-            final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        @SuppressWarnings("unchecked")
-        final var type = (Class<T>) implementation.implementedInterface();
-        return register(serializer, ImmutableClassToInstanceMap.of(type, implementation), rpcContextPaths);
+    @Override
+    @Deprecated(since = "13.0.1")
+    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
+        return registerRpcImplementations(implementations.values());
     }
 
-    private Registration register(final CurrentAdapterSerializer serializer,
-            final ClassToInstanceMap<Rpc<?, ?>> implementations,
+    @Override
+    @Deprecated(since = "13.0.1")
+    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
+            final Set<InstanceIdentifier<?>> paths) {
+        return registerRpcImplementations(implementations.values(), paths);
+    }
+
+    private <T extends Rpc<?, ?>> @NonNull Registration register(final CurrentAdapterSerializer serializer,
+            final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
+        return register(serializer, List.of(implementation), rpcContextPaths);
+    }
+
+    private @NonNull Registration register(final CurrentAdapterSerializer serializer,
+            final Collection<Rpc<?, ?>> implementations,
             // Note: unique items are implied
             final Collection<YangInstanceIdentifier> rpcContextPaths) {
         final var context = serializer.getRuntimeContext();
 
-        return register(implementations, rpcContextPaths, (type, impl) -> {
+        return register(implementations, rpcContextPaths, impl -> {
+            final var type = impl.implementedInterface();
             final var def = context.getRpcDefinition(type);
             if (def == null) {
                 throw new IllegalArgumentException("Cannot resolve YANG definition of " + type);
@@ -85,12 +96,12 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
         });
     }
 
-    private <K, V> @NonNull Registration register(final Map<K, V> map, final Collection<YangInstanceIdentifier> paths,
-            final BiFunction<K, V, Impl> implFactory) {
-        final var builder = ImmutableMap.<DOMRpcIdentifier, DOMRpcImplementation>builderWithExpectedSize(map.size());
-        for (var entry : map.entrySet()) {
-            final var impl = implFactory.apply(entry.getKey(), entry.getValue());
-            paths.forEach(path -> builder.put(DOMRpcIdentifier.create(impl.qname, path), impl.impl));
+    private <T> @NonNull Registration register(final Collection<T> impls,
+            final Collection<YangInstanceIdentifier> paths, final Function<T, Impl> implFactory) {
+        final var builder = ImmutableMap.<DOMRpcIdentifier, DOMRpcImplementation>builderWithExpectedSize(impls.size());
+        for (var impl : impls) {
+            final var proxyImpl = implFactory.apply(impl);
+            paths.forEach(path -> builder.put(DOMRpcIdentifier.create(proxyImpl.qname, path), proxyImpl.impl));
         }
         return getDelegate().registerRpcImplementations(builder.build());
     }
@@ -98,7 +109,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     private static Collection<YangInstanceIdentifier> toYangInstanceIdentifiers(
             final CurrentAdapterSerializer serializer, final Set<InstanceIdentifier<?>> identifiers) {
         final var ret = new ArrayList<YangInstanceIdentifier>(identifiers.size());
-        for (final InstanceIdentifier<?> binding : identifiers) {
+        for (var binding : identifiers) {
             ret.add(serializer.toCachedYangInstanceIdentifier(binding));
         }
         return ret;

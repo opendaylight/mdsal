@@ -58,11 +58,13 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
     }
 
     @Override
+    @Deprecated(since = "13.0.1")
     public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
         return delegate.registerRpcImplementations(implementations);
     }
 
     @Override
+    @Deprecated(since = "13.0.1")
     public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
             final Set<InstanceIdentifier<?>> paths) {
         return delegate.registerRpcImplementations(implementations, paths);
