@@ -91,7 +91,10 @@ public interface RpcProviderService extends BindingService {
      * @param implementations implementation objects
      * @return A {@link Registration} controlling unregistration
      * @throws NullPointerException if {@code implementations} is {@code null}
+     * @deprecated Use {@link #registerRpcImplementations(Collection)} or {@link #registerRpcImplementations(Rpc...)}
+     *             instead.
      */
+    @Deprecated(since = "13.0.1")
     @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations);
 
     /**
@@ -102,7 +105,9 @@ public interface RpcProviderService extends BindingService {
      * @param implementations implementation objects
      * @return A {@link Registration} controlling unregistration
      * @throws NullPointerException if any argument is {@code null}
+     * @deprecated Use {@link #registerRpcImplementations(Collection, Set)} instead
      */
+    @Deprecated(since = "13.0.1")
     @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations,
         Set<InstanceIdentifier<?>> paths);
 
