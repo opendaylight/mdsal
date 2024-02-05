@@ -8,6 +8,9 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -45,6 +48,46 @@ public interface RpcProviderService extends BindingService {
      *
      * @param implementations implementation objects
      * @return A {@link Registration} controlling unregistration
+     * @throws NullPointerException if {@code implementations} is, or contains, {@code null}
+     */
+    default @NonNull Registration registerRpcImplementations(final Rpc<?, ?>... implementations) {
+        return registerRpcImplementations(List.of(implementations));
+    }
+
+    /**
+     * Register a set of {@link Rpc} implementations. Note that this method does not support registering multiple
+     * implementations of the same {@link Rpc} and hence we require specifying them through a
+     * {@link ClassToInstanceMap}.
+     *
+     * @param implementations implementation objects
+     * @return A {@link Registration} controlling unregistration
+     * @throws NullPointerException if {@code implementations} is, or contains, {@code null}
+     */
+    default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations) {
+        return registerRpcImplementations(indexImplementations(implementations));
+    }
+
+    /**
+     * Register a set of {@link Rpc} implementations on a set of datastore context paths. Note that this method does not
+     * support registering multiple implementations of the same {@link Rpc} and hence we require specifying them through
+     * a {@link ClassToInstanceMap}.
+     *
+     * @param implementations implementation objects
+     * @return A {@link Registration} controlling unregistration
+     * @throws NullPointerException if any argument is, or contains, {@code null}
+     */
+    default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
+            final Set<InstanceIdentifier<?>> paths) {
+        return registerRpcImplementations(indexImplementations(implementations), paths);
+    }
+
+    /**
+     * Register a set of {@link Rpc} implementations. Note that this method does not support registering multiple
+     * implementations of the same {@link Rpc} and hence we require specifying them through a
+     * {@link ClassToInstanceMap}.
+     *
+     * @param implementations implementation objects
+     * @return A {@link Registration} controlling unregistration
      * @throws NullPointerException if {@code implementations} is {@code null}
      */
     @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations);
@@ -60,4 +103,12 @@ public interface RpcProviderService extends BindingService {
      */
     @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations,
         Set<InstanceIdentifier<?>> paths);
+
+    private static @NonNull ClassToInstanceMap<Rpc<?, ?>> indexImplementations(final Collection<Rpc<?, ?>> impls) {
+        final var map = MutableClassToInstanceMap.<Rpc<?, ?>> create();
+        for (var impl : impls) {
+            map.putIfAbsent(impl.implementedInterface(), impl);
+        }
+        return map;
+    }
 }
