@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -63,9 +62,7 @@ public interface RpcProviderService extends BindingService {
      * @throws IllegalArgumentException if there are implementations contains {@link Rpc#implementedInterface()}
      *                                  duplicates
      */
-    default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations) {
-        return registerRpcImplementations(indexImplementations(implementations));
-    }
+    @NonNull Registration registerRpcImplementations(Collection<Rpc<?, ?>> implementations);
 
     /**
      * Register a set of {@link Rpc} implementations on a set of datastore context paths. Note that this method does not
@@ -78,10 +75,8 @@ public interface RpcProviderService extends BindingService {
      * @throws IllegalArgumentException if there are implementations contains {@link Rpc#implementedInterface()}
      *                                  duplicates
      */
-    default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
-        return registerRpcImplementations(indexImplementations(implementations), paths);
-    }
+    @NonNull Registration registerRpcImplementations(Collection<Rpc<?, ?>> implementations,
+            Set<InstanceIdentifier<?>> paths);
 
     /**
      * Register a set of {@link Rpc} implementations. Note that this method does not support registering multiple
@@ -95,7 +90,9 @@ public interface RpcProviderService extends BindingService {
      *             instead.
      */
     @Deprecated(since = "13.0.1")
-    @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations);
+    default @NonNull Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
+        return registerRpcImplementations(implementations.values());
+    }
 
     /**
      * Register a set of {@link Rpc} implementations on a set of datastore context paths. Note that this method does not
@@ -108,16 +105,8 @@ public interface RpcProviderService extends BindingService {
      * @deprecated Use {@link #registerRpcImplementations(Collection, Set)} instead
      */
     @Deprecated(since = "13.0.1")
-    @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations,
-        Set<InstanceIdentifier<?>> paths);
-
-    @SuppressWarnings("unchecked")
-    private static @NonNull ImmutableClassToInstanceMap<Rpc<?, ?>> indexImplementations(
-            final Collection<Rpc<?, ?>> impls) {
-        final var builder = ImmutableClassToInstanceMap.<Rpc<?, ?>>builder();
-        for (var impl : impls) {
-            builder.put((Class<Rpc<?, ?>>) impl.implementedInterface(), impl);
-        }
-        return builder.build();
+    default @NonNull Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
+            final Set<InstanceIdentifier<?>> paths) {
+        return registerRpcImplementations(implementations.values(), paths);
     }
 }
