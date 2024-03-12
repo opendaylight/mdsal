@@ -97,7 +97,7 @@ final class YangLibraryContentBuilderImpl implements YangLibraryContentBuilder {
     private static Module buildModule(final org.opendaylight.yangtools.yang.model.api.Module module) {
         return new ModuleBuilder()
             .setName(new YangIdentifier(module.getName()))
-            .setNamespace(new Uri(module.getQNameModule().getNamespace().toString()))
+            .setNamespace(new Uri(module.getQNameModule().namespace().toString()))
             .setRevision(convertRevision(module.getRevision()))
             .setSubmodule(module.getSubmodules().stream()
                 .map(submodule -> new SubmoduleBuilder()
