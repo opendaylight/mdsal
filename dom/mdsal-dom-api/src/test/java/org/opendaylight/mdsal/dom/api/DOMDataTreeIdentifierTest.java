@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 class DOMDataTreeIdentifierTest {
@@ -29,7 +28,7 @@ class DOMDataTreeIdentifierTest {
     private static final String COMPARE_FIRST_LISTS = "A-test-lists";
     private static final String COMPARE_SECOND_LISTS = "B-test-lists";
     private static final QNameModule TEST_MODULE =
-        QNameModule.create(XMLNamespace.of("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
+        QNameModule.of("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store");
     private static final YangInstanceIdentifier REF_YII_IID =
         YangInstanceIdentifier.of(QName.create(TEST_MODULE, REF_LISTS));
     private static final YangInstanceIdentifier TEST_YII_IID =

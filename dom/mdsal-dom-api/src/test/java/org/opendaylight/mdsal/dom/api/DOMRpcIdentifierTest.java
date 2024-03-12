@@ -14,16 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 class DOMRpcIdentifierTest {
-    private static final QNameModule TEST_MODULE = QNameModule.create(XMLNamespace.of(
-            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
+    private static final QNameModule TEST_MODULE =
+        QNameModule.of("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store");
     private static final QName LOCAL_QNAME = QName.create(TEST_MODULE, "local");
     private static final DOMRpcIdentifier GLOBAL = DOMRpcIdentifier.create(LOCAL_QNAME, null);
     private static final DOMRpcIdentifier LOCAL = DOMRpcIdentifier.create(LOCAL_QNAME,
-            YangInstanceIdentifier.of(LOCAL_QNAME));
+        YangInstanceIdentifier.of(LOCAL_QNAME));
 
     @Test
     void createTest() {
