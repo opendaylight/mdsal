@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -18,7 +17,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
  * A {@link DOMService} which allows clients to invoke Actions. The conceptual model of this service is that
  * of a dynamic router, where the set of available Action services can change dynamically.
  */
-@Beta
 @NonNullByDefault
 public interface DOMActionService extends DOMService<DOMActionService, DOMActionService.Extension> {
     /**
@@ -35,10 +33,10 @@ public interface DOMActionService extends DOMService<DOMActionService, DOMAction
      *             instantiated on top of the conceptual {@link StoreTreeNode}.
      * @param path {@link DOMDataTreeIdentifier} of parent data node which action attached to.
      * @param input Input argument
-     * @return A FluentFuture which completes with the result of invocation
+     * @return A {@link ListenableFuture} which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if {@code path} is empty
      */
-    ListenableFuture<? extends DOMActionResult> invokeAction(Absolute type, DOMDataTreeIdentifier path,
+    ListenableFuture<? extends DOMRpcResult> invokeAction(Absolute type, DOMDataTreeIdentifier path,
             ContainerNode input);
 }

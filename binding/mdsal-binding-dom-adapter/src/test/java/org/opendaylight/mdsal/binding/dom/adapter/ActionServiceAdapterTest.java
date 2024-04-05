@@ -24,16 +24,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.LstioKey;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
@@ -42,7 +41,7 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
 
     private ActionService service;
 
-    private SettableFuture<DOMActionResult> domResult;
+    private SettableFuture<DOMRpcResult> domResult;
 
     @Override
     @Before
@@ -61,7 +60,7 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
         final var future = handle.invoke(InstanceIdentifier.create(Cont.class), BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
-        domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, List.of()));
+        domResult.set(new DefaultDOMRpcResult(DOM_FOO_OUTPUT));
         final var bindingResult = Futures.getDone(future);
 
         assertEquals(List.of(), bindingResult.getErrors());
@@ -71,13 +70,12 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
     @Test
     public void testKeyedInvocation() throws ExecutionException {
         final var handle = service.getActionHandle(ActionSpec.builder(Lstio.class).build(Fooio.class));
-        final var future = handle.invoke((KeyedInstanceIdentifier<Lstio, LstioKey>)
-                InstanceIdentifier.builder(Lstio.class, new LstioKey("test")).build(),
+        final var future = handle.invoke(InstanceIdentifier.builder(Lstio.class, new LstioKey("test")).build(),
                 BINDING_LSTIO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
 
-        domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, List.of()));
+        domResult.set(new DefaultDOMRpcResult(DOM_FOO_OUTPUT));
         final var bindingResult = Futures.getDone(future);
 
         assertEquals(List.of(), bindingResult.getErrors());

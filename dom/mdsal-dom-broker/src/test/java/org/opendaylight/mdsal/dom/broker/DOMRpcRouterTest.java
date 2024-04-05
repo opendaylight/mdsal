@@ -38,14 +38,14 @@ import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.Availabilit
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -61,19 +61,19 @@ public class DOMRpcRouterTest {
         new NodeIdentifier(Actions.FOO), NodeIdentifierWithPredicates.of(Actions.FOO, Actions.BAR, "good"));
 
     private static final DOMActionImplementation IMPL =
-        (type, path, input) -> Futures.immediateFuture(new SimpleDOMActionResult(
+        (type, path, input) -> Futures.immediateFuture(new DefaultDOMRpcResult(
             ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
 
     @Test
     public void registerRpcImplementation() {
-        try (DOMRpcRouter rpcRouter = rpcsRouter()) {
+        try (var rpcRouter = rpcsRouter()) {
             assertOperationKeys(rpcRouter);
 
-            final Registration fooReg = rpcRouter.rpcProviderService().registerRpcImplementation(
+            final var fooReg = rpcRouter.rpcProviderService().registerRpcImplementation(
                 getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
             assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            final Registration barReg = rpcRouter.rpcProviderService().registerRpcImplementation(
+            final var barReg = rpcRouter.rpcProviderService().registerRpcImplementation(
                 getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.BAR, null));
             assertOperationKeys(rpcRouter, Rpcs.FOO, Rpcs.BAR);
 
@@ -86,14 +86,14 @@ public class DOMRpcRouterTest {
 
     @Test
     public void registerRpcImplementations() {
-        try (DOMRpcRouter rpcRouter = rpcsRouter()) {
+        try (var rpcRouter = rpcsRouter()) {
             assertOperationKeys(rpcRouter);
 
-            final Registration fooReg = rpcRouter.rpcProviderService().registerRpcImplementations(
+            final var fooReg = rpcRouter.rpcProviderService().registerRpcImplementations(
                 Map.of(DOMRpcIdentifier.create(Rpcs.FOO, null), getTestRpcImplementation()));
             assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            final Registration barReg = rpcRouter.rpcProviderService().registerRpcImplementations(
+            final var barReg = rpcRouter.rpcProviderService().registerRpcImplementations(
                 Map.of(
                     DOMRpcIdentifier.create(Rpcs.BAR, null), getTestRpcImplementation(),
                     DOMRpcIdentifier.create(Rpcs.BAZ, null), getTestRpcImplementation()));
@@ -179,7 +179,7 @@ public class DOMRpcRouterTest {
     public void testClose() {
         final var reg = mock(Registration.class);
         doNothing().when(reg).close();
-        final DOMSchemaService schema = mock(DOMSchemaService.class);
+        final var schema = mock(DOMSchemaService.class);
         doReturn(reg).when(schema).registerSchemaContextListener(any());
 
         final var rpcRouter = new DOMRpcRouter(schema);
@@ -245,17 +245,17 @@ public class DOMRpcRouterTest {
 
     private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path)
             throws ExecutionException {
-        final DOMActionResult result = Futures.getDone(invokeBaz(actionService, path));
-        assertEquals(List.of(), result.getErrors());
+        final var result = Futures.getDone(invokeBaz(actionService, path));
+        assertEquals(List.of(), result.errors());
     }
 
     private static void assertUnavailable(final DOMActionService actionService, final YangInstanceIdentifier path) {
-        final ListenableFuture<? extends DOMActionResult> future = invokeBaz(actionService, path);
-        final ExecutionException ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var future = invokeBaz(actionService, path);
+        final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
         assertThat(ex.getCause(), instanceOf(DOMActionNotAvailableException.class));
     }
 
-    private static ListenableFuture<? extends DOMActionResult> invokeBaz(final DOMActionService actionService,
+    private static ListenableFuture<? extends DOMRpcResult> invokeBaz(final DOMActionService actionService,
             final YangInstanceIdentifier path) {
         return actionService.invokeAction(Actions.BAZ_TYPE,
             DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path),

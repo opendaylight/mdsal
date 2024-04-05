@@ -13,7 +13,6 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -25,10 +24,10 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -110,22 +109,22 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
 
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
+        public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
             final InstanceIdentifier<DataObject> instance = codec.fromYangInstanceIdentifier(path.path());
             if (instance == null) {
                 // Not representable: return an error
                 LOG.debug("Path {} is not representable in binding, rejecting invocation", path);
-                return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
-                    ErrorType.APPLICATION, ErrorTag.INVALID_VALUE, "Supplied path cannot be represented"))));
+                return Futures.immediateFuture(new DefaultDOMRpcResult(RpcResultBuilder.newError(
+                    ErrorType.APPLICATION, ErrorTag.INVALID_VALUE, "Supplied path cannot be represented")));
             }
             if (instance.isWildcarded()) {
                 // A wildcard path: return an error
                 LOG.debug("Path {} maps to a wildcard {}, rejecting invocation", path, instance);
-                return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
+                return Futures.immediateFuture(new DefaultDOMRpcResult(RpcResultBuilder.newError(
                     ErrorType.APPLICATION, ErrorTag.INVALID_VALUE,
-                    "Supplied path does not identify a concrete instance"))));
+                    "Supplied path does not identify a concrete instance")));
             }
 
             final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance,

@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
  * Interface implemented by an individual RPC implementation. This API allows for dispatch
  * implementations, e.g. an individual object handling a multitude of RPCs.
  */
-public interface DOMRpcImplementation {
+public non-sealed interface DOMRpcImplementation extends DOMOperationImplementation {
     /**
      * Initiate invocation of the RPC. Implementations of this method are
      * expected to not block on external resources.
@@ -29,13 +29,4 @@ public interface DOMRpcImplementation {
      */
     @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull DOMRpcIdentifier rpc,
             @NonNull ContainerNode input);
-
-    /**
-     * Return the relative invocation cost of this implementation. Default implementation return 0.
-     *
-     * @return Non-negative cost of invoking this implementation.
-     */
-    default long invocationCost() {
-        return 0;
-    }
 }

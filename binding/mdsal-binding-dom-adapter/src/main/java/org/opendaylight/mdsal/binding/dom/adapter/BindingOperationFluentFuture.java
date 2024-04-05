@@ -14,14 +14,14 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
-final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFuture<DOMActionResult>
+final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFuture<DOMRpcResult>
         implements BindingRpcFutureAware {
     private final ListenableFuture<RpcResult<O>> userFuture;
     private final Class<? extends Action<?, ?, O>> action;
@@ -47,17 +47,14 @@ final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFu
 
     @SuppressWarnings("checkstyle:illegalCatch")
     private void userFutureCompleted() {
-        final DOMActionResult domResult;
+        final DOMRpcResult domResult;
 
         try {
-            final RpcResult<O> bindingResult = Futures.getDone(userFuture);
-            if (bindingResult.getResult() != null) {
-                domResult = new SimpleDOMActionResult(adapterContext.currentSerializer()
-                    .toLazyNormalizedNodeActionOutput(action, identifier, bindingResult.getResult()),
-                    bindingResult.getErrors());
-            } else {
-                domResult = new SimpleDOMActionResult(bindingResult.getErrors());
-            }
+            final var bindingResult = Futures.getDone(userFuture);
+            final var bindingValue = bindingResult.getResult();
+            domResult = new DefaultDOMRpcResult(bindingValue == null ? null
+                : adapterContext.currentSerializer().toLazyNormalizedNodeActionOutput(action, identifier, bindingValue),
+                bindingResult.getErrors());
         } catch (ExecutionException e) {
             adapterContext = null;
             setException(e.getCause());

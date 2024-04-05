@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.common.ErrorSeverity;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -18,12 +17,12 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 /**
- * Utility methods for converting {@link RpcResult} to/from {@link DOMActionResult} and {@link DOMRpcResult}.
+ * Utility methods for converting {@link RpcResult} to/from {@link DOMRpcResult}.
  */
 @NonNullByDefault
 final class RpcResultUtil {
     private RpcResultUtil() {
-
+        // Hidden on purpose
     }
 
     /**
@@ -32,6 +31,8 @@ final class RpcResultUtil {
      */
     static <T> RpcResult<T> rpcResultFromDOM(final Collection<? extends RpcError> errors, final @Nullable T result) {
         return RpcResultBuilder.<T>status(errors.stream().noneMatch(err -> err.getSeverity() == ErrorSeverity.ERROR))
-                .withResult(result).withRpcErrors(errors).build();
+            .withResult(result)
+            .withRpcErrors(errors)
+            .build();
     }
 }

@@ -45,7 +45,6 @@ import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
@@ -396,7 +395,7 @@ public final class DOMRpcRouter extends AbstractRegistration {
         }
 
         @Override
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
+        public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final YangInstanceIdentifier pathRoot = path.path();
             checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");

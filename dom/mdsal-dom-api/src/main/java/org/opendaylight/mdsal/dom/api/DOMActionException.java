@@ -12,13 +12,14 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Base class for failures that can occur during operation invocation. This covers transport and protocol-level
- * failures, not implementation-reported errors, which are part of {@link DOMActionResult}.
- *
- * @author Robert Varga
+ * failures, not implementation-reported errors, which are part of {@link DOMRpcResult}.
  */
+// FIXME: remove this exception and rename DOMRpcException to DOMOperationException
 @Beta
+@Deprecated
 @NonNullByDefault
 public abstract class DOMActionException extends Exception {
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     /**

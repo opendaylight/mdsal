@@ -13,14 +13,12 @@ import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENA
 import static org.opendaylight.yangtools.yang.common.YangConstants.operationInputQName;
 
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -66,7 +64,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
 
                     final var input = (RpcInput) requireNonNull(args[1]);
                     final var serializer = currentSerializer();
-                    final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(actionPath,
+                    final var future = getDelegate().invokeAction(actionPath,
                         DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
                             serializer.toYangInstanceIdentifier(path)),
                         serializer.toLazyNormalizedNodeActionInput(spec.type(), inputName, input));
@@ -76,11 +74,12 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                         return bindingAware.getBindingFuture();
                     }
 
-                    return Futures.transform(future,
-                        dom -> RpcResultUtil.rpcResultFromDOM(dom.getErrors(), dom.getOutput()
-                            .map(output -> serializer.fromNormalizedNodeActionOutput(spec.type(), output))
-                            .orElse(null)),
-                        MoreExecutors.directExecutor());
+                    final var specType = spec.type();
+                    return Futures.transform(future, dom -> {
+                        final var value = dom.value();
+                        return RpcResultUtil.rpcResultFromDOM(dom.errors(), value == null ? null
+                            : serializer.fromNormalizedNodeActionOutput(specType, value));
+                    }, MoreExecutors.directExecutor());
                 }
                 break;
             default:

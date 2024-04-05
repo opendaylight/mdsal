@@ -16,6 +16,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 /**
  * Interface defining a result of an RPC call.
  */
+// FIXME: rename to DOMOperationResult
 @NonNullByDefault
 public interface DOMRpcResult {
     /**

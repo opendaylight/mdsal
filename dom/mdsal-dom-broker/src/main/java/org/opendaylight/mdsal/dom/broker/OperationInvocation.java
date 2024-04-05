@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
@@ -29,7 +28,7 @@ final class OperationInvocation {
         // hidden on purpose
     }
 
-    static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
+    static ListenableFuture<? extends DOMRpcResult> invoke(final DOMActionRoutingTableEntry entry,
             final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
         var impls = entry.getImplementations(path);
         if (impls == null) {

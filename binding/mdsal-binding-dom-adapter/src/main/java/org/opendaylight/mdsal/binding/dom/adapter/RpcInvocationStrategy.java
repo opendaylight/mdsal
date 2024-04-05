@@ -14,9 +14,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -64,34 +61,25 @@ sealed class RpcInvocationStrategy {
     }
 
     final ListenableFuture<RpcResult<?>> invoke(final RpcInput input) {
-        return invoke(serialize(inputIdentifier, adapter.currentSerializer(), input));
+        final var serializer = adapter.currentSerializer();
+        return invoke(serializer, serialize(inputIdentifier, serializer, input));
     }
 
-    private ListenableFuture<RpcResult<?>> invoke(final ContainerNode input) {
+    private ListenableFuture<RpcResult<?>> invoke(final @NonNull CurrentAdapterSerializer serializer,
+            final ContainerNode input) {
         final var domFuture = adapter.delegate().invokeRpc(outputPath.firstNodeIdentifier(), input);
         if (ENABLE_CODEC_SHORTCUT && domFuture instanceof BindingRpcFutureAware bindingAware) {
             return bindingAware.getBindingFuture();
         }
-        return transformFuture(domFuture, adapter.currentSerializer());
+        return Futures.transform(domFuture, dom -> {
+            final var value = dom.value();
+            return RpcResultUtil.rpcResultFromDOM(dom.errors(), value == null ? null
+                : serializer.fromNormalizedNodeRpcData(outputPath, value));
+        }, MoreExecutors.directExecutor());
     }
 
     ContainerNode serialize(final @NonNull NodeIdentifier identifier,
             final @NonNull CurrentAdapterSerializer serializer, final RpcInput input) {
         return LazySerializedContainerNode.create(inputIdentifier, input, serializer);
-    }
-
-    private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
-            final BindingNormalizedNodeSerializer resultCodec) {
-        return Futures.transform(domFuture, input -> {
-            final ContainerNode domData = input.value();
-            final DataObject bindingResult;
-            if (domData != null) {
-                bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, domData);
-            } else {
-                bindingResult = null;
-            }
-
-            return RpcResultUtil.rpcResultFromDOM(input.errors(), bindingResult);
-        }, MoreExecutors.directExecutor());
     }
 }

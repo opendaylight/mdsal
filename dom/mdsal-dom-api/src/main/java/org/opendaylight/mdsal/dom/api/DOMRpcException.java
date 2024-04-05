@@ -11,7 +11,9 @@ package org.opendaylight.mdsal.dom.api;
  * Base class for failures that can occur during RPC invocation. This covers
  * transport and protocol-level failures.
  */
+// FIXME: remove this exception to DOMOperationException and remove DOMActionException
 public abstract class DOMRpcException extends Exception {
+    @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     /**
