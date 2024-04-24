@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "52f260f9_0628e624",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 707,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2024-04-24T08:16:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46e47814_e94db12c",
+      "range": {
+        "startLine": 707,
+        "startChar": 84,
+        "endLine": 707,
+        "endChar": 87
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a1a1e4f1_086badae",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-12-18T09:17:58Z",
       "side": 1,
       "message": "almost duplicate of above. since this has absolutely no comments ... what is this doing?",
+      "range": {
+        "startLine": 728,
+        "startChar": 24,
+        "endLine": 728,
+        "endChar": 93
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7385b527_cfa5fecd",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2024-04-24T08:16:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1a1e4f1_086badae",
       "range": {
         "startLine": 728,
         "startChar": 24,
@@ -70,6 +118,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0b00626_825d8d66",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 797,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2024-04-24T08:16:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5497064b_d1ed1ac1",
+      "range": {
+        "startLine": 797,
+        "startChar": 32,
+        "endLine": 797,
+        "endChar": 45
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0b6ed189_77011b68",
@@ -83,6 +155,30 @@
       "writtenOn": "2023-12-18T09:17:58Z",
       "side": 1,
       "message": "can this be empty?\nwhat happens if there are multiple types?",
+      "range": {
+        "startLine": 800,
+        "startChar": 52,
+        "endLine": 800,
+        "endChar": 58
+      },
+      "revId": "02fda9950c23ff836eb743eb420c8a0c28eb5181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "119a6e7e_210d0184",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 800,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2024-04-24T08:16:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b6ed189_77011b68",
       "range": {
         "startLine": 800,
         "startChar": 52,
