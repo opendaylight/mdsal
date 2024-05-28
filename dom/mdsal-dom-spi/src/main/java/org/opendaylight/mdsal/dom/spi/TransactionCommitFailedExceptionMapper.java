@@ -33,6 +33,11 @@ public final class TransactionCommitFailedExceptionMapper
     }
 
     @Override
+    public TransactionCommitFailedException apply(final Exception input) {
+        return super.apply(input);
+    }
+
+    @Override
     protected TransactionCommitFailedException newWithCause(final String message, final Throwable cause) {
         return new TransactionCommitFailedException(message, cause);
     }
