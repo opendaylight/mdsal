@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Throwables;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -96,7 +95,6 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
      *
      * @throws TransactionCommitFailedException If cohort fails Commit
      */
-    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void canCommitBlocking() throws TransactionCommitFailedException {
         final var future = cohort.canCommit();
         final Boolean result;
@@ -120,7 +118,6 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
      *
      * @throws TransactionCommitFailedException If cohort fails preCommit
      */
-    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void preCommitBlocking() throws TransactionCommitFailedException {
         try {
             cohort.preCommit().get();
@@ -137,7 +134,6 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
      *
      * @throws TransactionCommitFailedException If cohort fails preCommit
      */
-    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void commitBlocking() throws TransactionCommitFailedException {
         try {
             cohort.commit().get();
