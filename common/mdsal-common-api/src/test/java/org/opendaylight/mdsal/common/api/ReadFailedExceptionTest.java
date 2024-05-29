@@ -37,7 +37,7 @@ class ReadFailedExceptionTest {
     @Test
     void readFailedExceptionWithThrowableTest() throws Exception {
         final var npe = new NullPointerException();
-        final var ex = new ReadFailedException("test", ReadFailedException.MAPPER.apply(npe));
+        final var ex = new ReadFailedException("test", ReadFailedException.ofCaught(npe));
         assertEquals("test", ex.getMessage());
         final var errors = ex.getErrorList();
         assertEquals(1, errors.size());
