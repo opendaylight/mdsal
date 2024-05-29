@@ -14,7 +14,9 @@ import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
  * Utility exception mapper which translates Exception to {@link TransactionCommitFailedException}.
  *
  * @see ExceptionMapper
+ * @deprecated Use {@link TransactionCommitFailedException#ofCaught(Throwable, String)} instead.
  */
+@Deprecated(since = "13.0.4", forRemoval = true)
 public final class TransactionCommitFailedExceptionMapper
                            extends ExceptionMapper<TransactionCommitFailedException> {
 
