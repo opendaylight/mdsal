@@ -20,9 +20,6 @@ import org.eclipse.jdt.annotation.NonNull;
  * Default {@link CommitInfo} implementation.
  */
 record CI(UUID uuid, Instant instant) implements CommitInfo {
-    @java.io.Serial
-    private static final long serialVersionUID = 0L;
-
     static final @NonNull CI EMPTY = new CI(null, null);
     static final @NonNull FluentFuture<@NonNull CommitInfo> EMPTY_FUTURE =
         FluentFuture.from(Futures.immediateFuture(EMPTY));
