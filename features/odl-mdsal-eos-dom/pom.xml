@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>13.0.4</version>
+        <version>13.0.5-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
