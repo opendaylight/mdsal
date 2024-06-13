@@ -30,6 +30,7 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires transitive org.opendaylight.mdsal.binding.dom.codec.spi;
     requires transitive org.opendaylight.mdsal.dom.api;
     requires transitive org.opendaylight.yangtools.yang.data.impl;
+    requires com.google.common.util.concurrent.internal;
     requires org.opendaylight.mdsal.binding.dom.codec.api;
     requires org.opendaylight.mdsal.binding.runtime.api;
     requires org.opendaylight.mdsal.binding.spec.util;
@@ -40,7 +41,6 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires org.opendaylight.yangtools.yang.data.spi;
     requires org.opendaylight.yangtools.yang.model.api;
     requires org.slf4j;
-    requires failureaccess;
 
     // OSGi is optional
     requires static org.osgi.framework;
