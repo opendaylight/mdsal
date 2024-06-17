@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be464a68_e1fda83c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 34
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "ValueCodec and ContainsValueCodec interfaces require to be exposed through codec api. this to be done as separate change, current one to be rebased",
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab95a8a3_1f216fcc",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 34
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "adapter should not depend on codec implementation \nValueCodec require to be exposed via api first",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 53
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "800ce201_9a830f41",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/query/AbstractValueMatchBuilder.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "ValueCodec",
+      "range": {
+        "startLine": 29,
+        "startChar": 18,
+        "endLine": 29,
+        "endChar": 39
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71d690e3_3dc87e5c",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/query/AbstractValueMatchBuilder.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "```\nif (method.valueCodec instanceof ContainsValueCodec cvc) {\n    this.valueCodec \u003d cvc.getValueCodec();\n} esle {\n    throw new IllegalArgumentException(\"BoundMethod is missing ValueCodec\");\n}\n```\n\n`ContainsValueCodec` explained below at ValueNodeCodecContext",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 69
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb8ea7f8_e10a42d6",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/query/AbstractValueMatchBuilder.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "```\n    final ValueCodec getValueCodec() {\n        return this.valueCodec;\n    }\n```",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 5
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51bd8e3e_9ffb91fd",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/query/DefaultContainsMatchBuilder.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "`ValueCodec` is accessible via `builder.getValueCodec()`\nno reason to pass it as separate arg into constructor",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 53
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f20e1a3_4f0b5fd5",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/ValueCodec.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "move this to `mdsal-binding-dom-codec-api`\ntogether with `ContainsValueCodec`",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 35
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "daf7e9ee_e07d349c",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/ValueNodeCodecContext.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "revert public\nadd implements `ContainsValueCodec`",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 6
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ea6ab1b_63fdfca8",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/ValueNodeCodecContext.java",
+        "patchSetId": 34
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2024-06-17T13:39:02Z",
+      "side": 1,
+      "message": "extract into interface `ContainsValueCodec`\nallocated in `mdsal-binding-dom-codec-api`",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 63
+      },
+      "revId": "d6941effb3f0404de0184f9d70ebf26b8329f570",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
