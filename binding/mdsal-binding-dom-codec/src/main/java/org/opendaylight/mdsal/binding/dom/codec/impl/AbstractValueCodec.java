@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.ValueCodec;
 
 abstract class AbstractValueCodec<S, D> implements ValueCodec<S, D> {
     @Override
