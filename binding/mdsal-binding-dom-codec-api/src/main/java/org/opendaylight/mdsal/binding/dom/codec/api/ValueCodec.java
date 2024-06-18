@@ -5,11 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.codec.impl;
+package org.opendaylight.mdsal.binding.dom.codec.api;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-interface ValueCodec<S, D> {
+public interface ValueCodec<S, D> {
     /**
      * Produce an internal object based on an external object.
      *

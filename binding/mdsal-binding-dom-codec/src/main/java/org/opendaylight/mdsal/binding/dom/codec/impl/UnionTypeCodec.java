@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.opendaylight.mdsal.binding.dom.codec.api.ValueCodec;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeGeneratedUnion;

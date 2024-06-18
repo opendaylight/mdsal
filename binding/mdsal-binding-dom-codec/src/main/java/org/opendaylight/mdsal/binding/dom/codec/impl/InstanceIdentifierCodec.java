@@ -13,6 +13,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.ValueCodec;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectStep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -22,7 +23,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 
 final class InstanceIdentifierCodec implements BindingInstanceIdentifierCodec,
         //FIXME: this is not really an IllegalArgumentCodec, as it can legally return null from deserialize()
-        ValueCodec<YangInstanceIdentifier, InstanceIdentifier<?>> {
+    ValueCodec<YangInstanceIdentifier, InstanceIdentifier<?>> {
     private final BindingCodecContext context;
 
     InstanceIdentifierCodec(final BindingCodecContext context) {

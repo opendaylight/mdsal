@@ -20,6 +20,7 @@ import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.jar.asm.Opcodes;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingOpaqueObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.ValueCodec;
 import org.opendaylight.mdsal.binding.loader.BindingClassLoader;
 import org.opendaylight.mdsal.binding.loader.BindingClassLoader.GeneratorResult;
 import org.opendaylight.yangtools.yang.binding.OpaqueData;
@@ -93,7 +94,7 @@ abstract sealed class AbstractOpaqueCodecContext<T extends OpaqueObject<T>> exte
     }
 
     @Override
-    ValueCodec<Object, Object> getValueCodec() {
+    public ValueCodec<Object, Object> getValueCodec() {
         return valueCodec;
     }
 
