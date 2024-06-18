@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 
 final class InstanceIdentifierCodec implements BindingInstanceIdentifierCodec,
         //FIXME: this is not really an IllegalArgumentCodec, as it can legally return null from deserialize()
-    ValueCodec<YangInstanceIdentifier, InstanceIdentifier<?>> {
+        ValueCodec<YangInstanceIdentifier, InstanceIdentifier<?>> {
     private final BindingCodecContext context;
 
     InstanceIdentifierCodec(final BindingCodecContext context) {
