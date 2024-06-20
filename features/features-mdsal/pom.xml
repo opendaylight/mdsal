@@ -68,14 +68,6 @@
             <type>xml</type>
         </dependency>
 
-        <!-- ByteBuddy -->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-bytebuddy</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
-
         <!-- Common -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
