@@ -35,9 +35,6 @@
         <module>odl-mdsal-binding-runtime</module>
         <module>odl-mdsal-binding-runtime-api</module>
 
-        <!-- ByteBuddy -->
-        <module>odl-mdsal-bytebuddy</module>
-
         <!-- Common -->
         <module>odl-mdsal-common</module>
 

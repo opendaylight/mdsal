@@ -32,11 +32,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>net.bytebuddy</groupId>
-                <artifactId>byte-buddy</artifactId>
-                <version>1.14.17</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
