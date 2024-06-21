@@ -1,6 +1,0 @@
-module bar {
-  namespace bar;
-  prefix bar;
-
-  container bar;
-}

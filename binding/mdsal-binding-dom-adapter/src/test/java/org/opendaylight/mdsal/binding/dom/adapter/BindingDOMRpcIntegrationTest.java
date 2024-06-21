@@ -25,7 +25,6 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
-import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -38,6 +37,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.k
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -47,8 +49,9 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 public class BindingDOMRpcIntegrationTest {
-    private static final InstanceIdentifier<TopLevelList> BA_NODE_ID = InstanceIdentifier.create(Top.class)
-            .child(TopLevelList.class, new TopLevelListKey("a"));
+    private static final DataObjectIdentifier<TopLevelList> BA_NODE_ID = InstanceIdentifier.create(Top.class)
+            .child(TopLevelList.class, new TopLevelListKey("a"))
+            .toIdentifier();
 
     private static final QName KNOCK_KNOCK_QNAME = QName.create(KnockKnockOutput.QNAME, "knock-knock");
 
@@ -144,10 +147,8 @@ public class BindingDOMRpcIntegrationTest {
             .buildFuture();
     }
 
-    private static KnockKnockInputBuilder knockKnock(final InstanceIdentifier<TopLevelList> listId) {
-        KnockKnockInputBuilder builder = new KnockKnockInputBuilder();
-        builder.setKnockerId(listId);
-        return builder;
+    private static KnockKnockInputBuilder knockKnock(final DataObjectIdentifier<TopLevelList> listId) {
+        return new KnockKnockInputBuilder().setKnockerId(listId);
     }
 
     private ContainerNode toDOMKnockKnockInput(final KnockKnockInput from) {
@@ -155,7 +156,7 @@ public class BindingDOMRpcIntegrationTest {
     }
 
     private static final class KnockKnockImpl implements KnockKnock {
-        private final Multimap<InstanceIdentifier<?>, KnockKnockInput> receivedKnocks = HashMultimap.create();
+        private final Multimap<BindingInstanceIdentifier, KnockKnockInput> receivedKnocks = HashMultimap.create();
         private ListenableFuture<RpcResult<KnockKnockOutput>> knockKnockResult;
         private Registration registration;
 
@@ -165,7 +166,7 @@ public class BindingDOMRpcIntegrationTest {
             return this;
         }
 
-        Multimap<InstanceIdentifier<?>, KnockKnockInput> getReceivedKnocks() {
+        Multimap<BindingInstanceIdentifier, KnockKnockInput> getReceivedKnocks() {
             return receivedKnocks;
         }
 

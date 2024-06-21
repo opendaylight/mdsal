@@ -28,16 +28,17 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
-import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.BindingContract;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.BindingContract;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.yangtools.binding.data.codec.spi.ForwardingBindingDOMCodecServices;
+import org.opendaylight.yangtools.binding.model.api.JavaTypeName;
+import org.opendaylight.yangtools.binding.runtime.api.ActionRuntimeType;
+import org.opendaylight.yangtools.binding.runtime.api.InputRuntimeType;
+import org.opendaylight.yangtools.binding.runtime.api.NotificationRuntimeType;
+import org.opendaylight.yangtools.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -80,7 +81,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return cache.getUnchecked(path);
     }
 
-    <T extends DataObject> @NonNull InstanceIdentifier<T> coerceInstanceIdentifier(final YangInstanceIdentifier dom) {
+    <T extends DataObject> @NonNull DataObjectReference<T> coerceInstanceIdentifier(final YangInstanceIdentifier dom) {
         return verifyNotNull(fromYangInstanceIdentifier(dom));
     }
 

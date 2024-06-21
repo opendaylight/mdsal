@@ -9,8 +9,13 @@ package org.opendaylight.yangtools.yang.binding;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 /**
  * A {@link KeyAware}-based step with a {@link #key()}. It equates to a {@code node-identifier} with a
@@ -19,17 +24,19 @@ import org.eclipse.jdt.annotation.Nullable;
  * @param <K> Key type
  * @param <T> KeyAware type
  */
-public record KeyStep<K extends Key<T>, T extends KeyAware<K> & DataObject>(
+@Deprecated(since = "14.0.0", forRemoval = true)
+record KeyStep<K extends Key<T>, T extends KeyAware<K> & DataObject>(
         @NonNull Class<T> type,
         @Nullable Class<? extends DataObject> caseType,
-        @NonNull K key) implements ExactDataObjectStep<T>, KeyAware<K> {
-    public KeyStep {
+        @NonNull K key) implements Serializable {
+    KeyStep {
         NodeStep.checkType(type, true);
         NodeStep.checkCaseType(caseType);
         requireNonNull(key);
     }
 
-    public KeyStep(final @NonNull Class<T> type, final @NonNull K key) {
-        this(type, null, key);
+    @java.io.Serial
+    Object readResolve() throws ObjectStreamException {
+        return new org.opendaylight.yangtools.binding.KeyStep<>(type, caseType, key);
     }
 }

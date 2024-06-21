@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * Commit Cohort registry. See {@link DataTreeCommitCohort} for more details.

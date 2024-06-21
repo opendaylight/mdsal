@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ final class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListe
     public void ownershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change,
             final boolean inJeopardy) {
         final var domId = entity.getIdentifier();
-        final InstanceIdentifier<?> bindingId;
+        final DataObjectReference<?> bindingId;
         try {
             bindingId = verifyNotNull(adapterContext.currentSerializer().fromYangInstanceIdentifier(domId));
         } catch (RuntimeException e) {
@@ -50,7 +50,7 @@ final class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListe
             return;
         }
 
-        final var bindingEntity = new Entity(entity.getType(), bindingId);
+        final var bindingEntity = new Entity(entity.getType(), bindingId.toLegacy());
         try {
             bindingListener.ownershipChanged(bindingEntity, change, inJeopardy);
         } catch (Exception e) {

@@ -8,7 +8,7 @@
 package org.opendaylight.yangtools.yang.binding.test.mock;
 
 import java.io.Serial;
-import org.opendaylight.yangtools.yang.binding.Key;
+import org.opendaylight.yangtools.binding.Key;
 
 public class NodeChildKey implements Key<NodeChild> {
     @Serial

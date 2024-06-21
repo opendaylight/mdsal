@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * A {@link BindingService} which allows users to register for changes to a subtree.

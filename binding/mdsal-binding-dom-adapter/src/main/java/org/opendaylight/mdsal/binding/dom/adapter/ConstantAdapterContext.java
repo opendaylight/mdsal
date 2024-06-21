@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 
 /**
  * A simple, constant implementation of the BlockingBindingNormalizer contract. This implementation is appropriate
@@ -32,7 +32,7 @@ public final class ConstantAdapterContext implements AdapterContext {
 
     @Inject
     public ConstantAdapterContext(final BindingDOMCodecServices codec) {
-        this.serializer = new CurrentAdapterSerializer(codec);
+        serializer = new CurrentAdapterSerializer(codec);
     }
 
     @Override

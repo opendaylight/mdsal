@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.api;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.Notification;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.opendaylight.yangtools.yang.binding.Notification;
 
 /**
  * A {@link BindingService} which allows its users to submit YANG-modeled top-level (YANG 1) {@link Notification}s for

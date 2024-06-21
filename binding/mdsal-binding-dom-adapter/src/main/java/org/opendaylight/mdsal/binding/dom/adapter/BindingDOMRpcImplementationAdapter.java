@@ -13,12 +13,12 @@ import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENA
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.yang.binding.Rpc;
-import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.binding.Rpc;
+import org.opendaylight.yangtools.binding.RpcInput;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;

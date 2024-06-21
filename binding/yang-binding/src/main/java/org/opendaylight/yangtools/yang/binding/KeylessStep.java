@@ -7,9 +7,12 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
-import java.util.Objects;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 /**
  * A {@link KeyAware}-based step without the corresponding key. This corresponds to a {@code node-identifier} step,
@@ -17,21 +20,17 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @param <T> KeyAware type
  */
-public record KeylessStep<T extends KeyAware<?> & DataObject>(
+@Deprecated(since = "14.0.0", forRemoval = true)
+record KeylessStep<T extends KeyAware<?> & DataObject>(
         @NonNull Class<T> type,
-        @Nullable Class<? extends DataObject> caseType) implements DataObjectStep<T> {
-    public KeylessStep {
+        @Nullable Class<? extends DataObject> caseType) implements Serializable {
+    KeylessStep {
         NodeStep.checkType(type, true);
         NodeStep.checkCaseType(caseType);
     }
 
-    public KeylessStep(final @NonNull Class<T> type) {
-        this(type, null);
-    }
-
-    boolean matches(final @NonNull DataObjectStep<?> other) {
-        // FIXME: this should be an instanceof check for KeyStep, then a match -- i.e. reject match on plain NodeStep,
-        //        because that is an addressing mismatch
-        return type.equals(other.type()) && Objects.equals(caseType, other.caseType());
+    @java.io.Serial
+    Object readResolve() throws ObjectStreamException {
+        return new org.opendaylight.yangtools.binding.KeylessStep<>(type, caseType);
     }
 }

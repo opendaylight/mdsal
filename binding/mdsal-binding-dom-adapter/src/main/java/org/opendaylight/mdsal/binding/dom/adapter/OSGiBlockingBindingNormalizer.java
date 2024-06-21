@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
