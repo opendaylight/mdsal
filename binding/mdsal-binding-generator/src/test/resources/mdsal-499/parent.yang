@@ -1,6 +1,0 @@
-module parent {
-  namespace "https://foo/bar/parent";
-  prefix par;
-
-  include child;
-}

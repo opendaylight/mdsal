@@ -7,17 +7,19 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.Direct;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
+import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class DirectContextExtractorTest {
-    private static final InstanceIdentifier<?> INSTANCE_IDENTIFIER = InstanceIdentifier.create(BooleanContainer.class);
+    private static final BindingInstanceIdentifier INSTANCE_IDENTIFIER =
+        InstanceIdentifier.create(BooleanContainer.class).toIdentifier();
     private static final String EXCEPTION_TEXT = "testException";
 
     @Test
@@ -30,7 +32,7 @@ public class DirectContextExtractorTest {
             assertThrows(NullPointerException.class, () -> referenceExtractor.extract(null)).getMessage());
     }
 
-    public static InstanceIdentifier<?> testMethod(final BooleanContainer data) {
+    public static BindingInstanceIdentifier testMethod(final BooleanContainer data) {
         if (data == null) {
             throw new NullPointerException(EXCEPTION_TEXT);
         }

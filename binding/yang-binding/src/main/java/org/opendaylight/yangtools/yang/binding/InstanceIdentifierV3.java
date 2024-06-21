@@ -14,49 +14,33 @@ import java.io.NotSerializableException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectStreamException;
-import java.io.Serial;
+import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectStep;
+import org.opendaylight.yangtools.binding.InstanceIdentifier;
 
 class InstanceIdentifierV3<T extends DataObject> implements Externalizable {
-    @Serial
+    @java.io.Serial
     private static final long serialVersionUID = 3L;
 
-    private @Nullable Iterable<DataObjectStep<?>> pathArguments;
-    private @Nullable Class<T> targetType;
-    private boolean wildcarded;
-    private int hash;
+    private @Nullable List<DataObjectStep<?>> pathArguments;
 
     @SuppressWarnings("redundantModifier")
     public InstanceIdentifierV3() {
         // For Externalizable
     }
 
-    final int getHash() {
-        return hash;
-    }
-
-    final Iterable<DataObjectStep<?>> getPathArguments() {
-        return pathArguments;
-    }
-
-    final Class<T> getTargetType() {
-        return targetType;
-    }
-
-    final boolean isWildcarded() {
-        return wildcarded;
-    }
-
     @Override
-    public void writeExternal(final ObjectOutput out) throws IOException {
-        throw new NotSerializableException(InstanceIdentifierV3.class.getName());
+    public final void writeExternal(final ObjectOutput out) throws IOException {
+        throw new NotSerializableException(getClass().getName());
     }
 
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-        targetType = (Class<T>) in.readObject();
-        wildcarded = in.readBoolean();
-        hash = in.readInt();
+        Class.class.cast(in.readObject());
+        in.readBoolean();
+        in.readInt();
 
         final int size = in.readInt();
         final var builder = ImmutableList.<DataObjectStep<?>>builderWithExpectedSize(size);
@@ -67,7 +51,7 @@ class InstanceIdentifierV3<T extends DataObject> implements Externalizable {
     }
 
     @java.io.Serial
-    Object readResolve() throws ObjectStreamException {
-        return new InstanceIdentifier<>(targetType, pathArguments, wildcarded, hash);
+    final Object readResolve() throws ObjectStreamException {
+        return InstanceIdentifier.unsafeOf(pathArguments);
     }
 }

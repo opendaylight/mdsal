@@ -7,7 +7,7 @@
  */
 package org.opendaylight.yangtools.yang.binding.test.mock;
 
-import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.binding.Augmentation;
 
 public interface NodeAugmentation extends Augmentation<Node> {
 

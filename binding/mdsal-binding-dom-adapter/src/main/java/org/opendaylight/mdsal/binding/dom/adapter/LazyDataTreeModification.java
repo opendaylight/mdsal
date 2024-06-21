@@ -19,8 +19,8 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
@@ -85,7 +85,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static @NonNull InstanceIdentifier<?> createBindingPath(final CurrentAdapterSerializer serializer,
             final YangInstanceIdentifier domPath, final @Nullable Class<?> augment) {
-        final var bindingPath = serializer.coerceInstanceIdentifier(domPath);
+        final var bindingPath = serializer.coerceInstanceIdentifier(domPath).toLegacy();
         return augment == null ? bindingPath : bindingPath.augmentation((Class) augment.asSubclass(Augmentation.class));
     }
 

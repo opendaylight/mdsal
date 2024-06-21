@@ -11,19 +11,19 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
@@ -106,13 +106,11 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
         return getDelegate().registerRpcImplementations(builder.build());
     }
 
-    private static Collection<YangInstanceIdentifier> toYangInstanceIdentifiers(
-            final CurrentAdapterSerializer serializer, final Set<InstanceIdentifier<?>> identifiers) {
-        final var ret = new ArrayList<YangInstanceIdentifier>(identifiers.size());
-        for (var binding : identifiers) {
-            ret.add(serializer.toCachedYangInstanceIdentifier(binding));
-        }
-        return ret;
+    private static List<YangInstanceIdentifier> toYangInstanceIdentifiers(final CurrentAdapterSerializer serializer,
+            final Set<InstanceIdentifier<?>> identifiers) {
+        return identifiers.stream()
+            .map(binding -> serializer.toCachedYangInstanceIdentifier(binding.toIdentifier()))
+            .collect(Collectors.toList());
     }
 
     private record Impl(@NonNull QName qname, @NonNull DOMRpcImplementation impl) {

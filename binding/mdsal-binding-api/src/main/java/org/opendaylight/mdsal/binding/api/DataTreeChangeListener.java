@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 
 /**
  * Interface implemented by classes interested in receiving notifications about changes to a data tree. It provides

@@ -11,9 +11,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yangtools.binding.Action;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.Action;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -36,17 +37,17 @@ public interface ActionProviderService extends BindingService {
      * @throws IllegalArgumentException if any of the {@code validNodes} does not match {@code datastore}
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
-    <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+    <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
         @NonNull Registration registerImplementation(@NonNull ActionSpec<A, P> spec, @NonNull A implementation,
             @NonNull LogicalDatastoreType datastore, @NonNull Set<? extends InstanceIdentifier<P>> validNodes);
 
-    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+    default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
         @NonNull Registration registerImplementation(final @NonNull ActionSpec<A, P> spec,
             final @NonNull A implementation, final @NonNull LogicalDatastoreType datastore) {
         return registerImplementation(spec, implementation, datastore, ImmutableSet.of());
     }
 
-    default <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>>
+    default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
             @NonNull Registration registerImplementation(final @NonNull ActionSpec<A, P> spec,
                 final @NonNull A implementation) {
         return registerImplementation(spec, implementation, LogicalDatastoreType.OPERATIONAL);

@@ -19,12 +19,12 @@ import java.lang.reflect.Method;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecFactory;
+import org.opendaylight.yangtools.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.yangtools.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.yangtools.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -51,11 +51,11 @@ public class CurrentAdapterSerializerTest {
      */
     @Test
     public void fromNormalizedNodeTest() throws Exception {
-        final EffectiveModelContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
-        final NormalizedNode data = prepareData(schemaCtx, Uint16.valueOf(42));
-        final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
+        final var schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
+        final var data = prepareData(schemaCtx, Uint16.valueOf(42));
+        final var fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
 
-        final DataObject value = fromNormalizedNode.getValue();
+        final var value = fromNormalizedNode.getValue();
         assertNotNull(value);
         final Class<? extends DataObject> iface = value.implementedInterface();
         assertEquals("Cont", iface.getSimpleName());
@@ -82,11 +82,11 @@ public class CurrentAdapterSerializerTest {
      */
     @Test
     public void fromNormalizedNodeWithAnotherInputDataTest() throws Exception {
-        final EffectiveModelContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
-        final NormalizedNode data = prepareData(schemaCtx, "42");
+        final var schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
+        final var data = prepareData(schemaCtx, "42");
 
-        final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
-        final DataObject value = fromNormalizedNode.getValue();
+        final var fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
+        final var value = fromNormalizedNode.getValue();
         assertNotNull(value);
         final Class<? extends DataObject> iface = value.implementedInterface();
         assertEquals("Cont", iface.getSimpleName());
@@ -104,7 +104,7 @@ public class CurrentAdapterSerializerTest {
             .build();
     }
 
-    private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode data,
+    private static Entry<DataObjectReference<?>, DataObject> fromNormalizedNode(final NormalizedNode data,
             final EffectiveModelContext schemaCtx) {
         final var codec = new CurrentAdapterSerializer(
             ServiceLoader.load(BindingDOMCodecFactory.class).findFirst().orElseThrow()

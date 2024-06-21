@@ -27,20 +27,20 @@ import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingChoiceCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataContainerCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
-import org.opendaylight.yangtools.yang.binding.Key;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
-import org.opendaylight.yangtools.yang.binding.KeyStep;
-import org.opendaylight.yangtools.yang.binding.NodeStep;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.ChoiceIn;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.EntryObject;
+import org.opendaylight.yangtools.binding.ExactDataObjectStep;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyStep;
+import org.opendaylight.yangtools.binding.NodeStep;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingAugmentationCodecTreeNode;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingChoiceCodecTreeNode;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingDataContainerCodecTreeNode;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.yangtools.binding.data.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -245,14 +245,14 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <C extends KeyAware<K> & ChildOf<? super T>, K extends Key<C>> DataObjectModification<C>
+    public final <C extends EntryObject<C, K> & ChildOf<? super T>, K extends Key<C>> DataObjectModification<C>
             getModifiedChildListItem(final Class<C> listItem, final K listKey) {
         return (DataObjectModification<C>) getModifiedChild(new KeyStep<>(listItem, listKey));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends KeyAware<K> & ChildOf<? super H>,
+    public final <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
             K extends Key<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
                     final Class<C> listItem, final K listKey) {
         return (DataObjectModification<C>) getModifiedChild(new KeyStep<>(listItem, caseType, listKey));

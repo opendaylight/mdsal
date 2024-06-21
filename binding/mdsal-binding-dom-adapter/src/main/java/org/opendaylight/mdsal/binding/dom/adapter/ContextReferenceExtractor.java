@@ -14,10 +14,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.annotations.RoutingContext;
+import org.opendaylight.yangtools.binding.contract.Naming;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ abstract sealed class ContextReferenceExtractor {
         private final MethodHandle handle;
 
         private Direct(final MethodHandle rawHandle) {
-            handle = rawHandle.asType(MethodType.methodType(InstanceIdentifier.class, DataObject.class));
+            handle = rawHandle.asType(MethodType.methodType(BindingInstanceIdentifier.class, DataObject.class));
         }
 
         @VisibleForTesting
@@ -36,8 +36,8 @@ abstract sealed class ContextReferenceExtractor {
         }
 
         @Override
-        InstanceIdentifier<?> extractImpl(final DataObject obj) throws Throwable {
-            return (InstanceIdentifier<?>) handle.invokeExact(obj);
+        BindingInstanceIdentifier extractImpl(final DataObject obj) throws Throwable {
+            return (BindingInstanceIdentifier) handle.invokeExact(obj);
         }
     }
 
@@ -48,7 +48,7 @@ abstract sealed class ContextReferenceExtractor {
 
         private GetValue(final MethodHandle rawContextHandle, final MethodHandle rawValueHandle) {
             contextHandle = rawContextHandle.asType(MethodType.methodType(Object.class, DataObject.class));
-            valueHandle = rawValueHandle.asType(MethodType.methodType(InstanceIdentifier.class, Object.class));
+            valueHandle = rawValueHandle.asType(MethodType.methodType(BindingInstanceIdentifier.class, Object.class));
         }
 
         private static ContextReferenceExtractor create(final Method contextGetter, final Method getValueMethod)
@@ -58,9 +58,9 @@ abstract sealed class ContextReferenceExtractor {
         }
 
         @Override
-        InstanceIdentifier<?> extractImpl(final DataObject obj) throws Throwable {
+        BindingInstanceIdentifier extractImpl(final DataObject obj) throws Throwable {
             final var ctx = contextHandle.invokeExact(obj);
-            return ctx == null ? null : (InstanceIdentifier<?>) valueHandle.invokeExact(ctx);
+            return ctx == null ? null : (BindingInstanceIdentifier) valueHandle.invokeExact(ctx);
         }
     }
 
@@ -74,10 +74,10 @@ abstract sealed class ContextReferenceExtractor {
 
         final var returnType = contextGetter.getReturnType();
         try {
-            if (InstanceIdentifier.class.isAssignableFrom(returnType)) {
+            if (BindingInstanceIdentifier.class.isAssignableFrom(returnType)) {
                 return Direct.create(contextGetter);
             }
-            final var getValueMethod = findGetValueMethod(returnType, InstanceIdentifier.class);
+            final var getValueMethod = findGetValueMethod(returnType, BindingInstanceIdentifier.class);
             if (getValueMethod != null) {
                 return GetValue.create(contextGetter, getValueMethod);
             } else {
@@ -99,7 +99,7 @@ abstract sealed class ContextReferenceExtractor {
      *         reference.
      */
     @SuppressWarnings("checkstyle:IllegalCatch")
-    final @Nullable InstanceIdentifier<?> extract(final DataObject obj) {
+    final @Nullable BindingInstanceIdentifier extract(final DataObject obj) {
         try {
             return extractImpl(obj);
         } catch (Throwable e) {
@@ -109,7 +109,7 @@ abstract sealed class ContextReferenceExtractor {
     }
 
     @SuppressWarnings("checkstyle:IllegalThrows")
-    abstract @Nullable InstanceIdentifier<?> extractImpl(DataObject obj) throws Throwable;
+    abstract @Nullable BindingInstanceIdentifier extractImpl(DataObject obj) throws Throwable;
 
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         final Method method;
