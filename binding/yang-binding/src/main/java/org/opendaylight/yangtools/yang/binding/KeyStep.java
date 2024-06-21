@@ -11,6 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 /**
  * A {@link KeyAware}-based step with a {@link #key()}. It equates to a {@code node-identifier} with a

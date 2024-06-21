@@ -9,6 +9,9 @@ package org.opendaylight.yangtools.yang.binding;
 
 import java.io.ObjectStreamException;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 /**
  * An {@link InstanceIdentifier}, which has a list key attached at its last path element.

@@ -15,6 +15,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectStreamException;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
 
 sealed class IIv4<T extends DataObject> implements Externalizable permits KIIv4 {
     @java.io.Serial
