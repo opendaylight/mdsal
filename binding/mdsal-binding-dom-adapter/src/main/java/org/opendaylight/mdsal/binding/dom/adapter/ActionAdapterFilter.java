@@ -15,8 +15,8 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yangtools.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 
 final class ActionAdapterFilter implements InvocationHandler {
     private final Set<DataTreeIdentifier<?>> nodes;

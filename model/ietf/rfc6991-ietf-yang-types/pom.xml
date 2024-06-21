@@ -31,8 +31,8 @@
             <artifactId>ietf-type-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-spec-util</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-reflect</artifactId>
         </dependency>
     </dependencies>
 

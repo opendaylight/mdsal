@@ -14,14 +14,14 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.spi.ForwardingTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 
 abstract class TypedTransaction<D extends Datastore, X extends Transaction> extends ForwardingTransaction {
     private final LogicalDatastoreType datastoreType;
     private final X delegate;
 
     TypedTransaction(final D datastore, final X delegate) {
-        this.datastoreType = datastore.type();
+        datastoreType = datastore.type();
         this.delegate = delegate;
     }
 

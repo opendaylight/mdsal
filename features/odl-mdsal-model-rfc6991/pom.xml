@@ -24,8 +24,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-base</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>odl-yangtools-binding-spec</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>

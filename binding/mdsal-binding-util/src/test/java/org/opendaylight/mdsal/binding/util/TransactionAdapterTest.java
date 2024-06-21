@@ -30,7 +30,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -38,7 +38,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 @Deprecated
 public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
-
     private static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
 
     private ManagedNewTransactionRunner managedNewTransactionRunner;
