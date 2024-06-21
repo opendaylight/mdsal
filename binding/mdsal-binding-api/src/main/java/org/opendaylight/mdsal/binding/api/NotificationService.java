@@ -15,9 +15,9 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.Notification;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Notification;
 
 /**
  * Notification broker which allows clients to subscribe for and publish YANG 1.0 notifications, which is to say

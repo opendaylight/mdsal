@@ -30,13 +30,13 @@ import org.mockito.junit.MockitoRule;
 import org.mockito.quality.Strictness;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 
 @RunWith(Parameterized.class)
 public class BindingDOMTransactionChainAdapterTest {

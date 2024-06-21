@@ -18,13 +18,13 @@ import static org.mockito.Mockito.mock;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.trace.impl.TracingBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace.rev160908.Config;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace.rev160908.ConfigBuilder;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 
 /**
  * Test of {@link TracingBroker}. This test resides outside of org.opendaylight.mdsal.trace.impl package on purpose,

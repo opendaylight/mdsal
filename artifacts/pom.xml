@@ -78,42 +78,7 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- Binding MD-SAL & Java Binding -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-loader</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-model-api</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-model-ri</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-generator</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-java-api-generator</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>yang-binding</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-spec-util</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
+            <!-- Binding MD-SAL -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-model</artifactId>
@@ -140,41 +105,6 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-dom-codec-api</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-dom-codec-spi</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-dom-codec</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-dom-codec-osgi</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-runtime-api</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-runtime-spi</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-binding-runtime-osgi</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-spi</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
             </dependency>
@@ -190,11 +120,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>yang-ext</artifactId>
-                <version>2013.09.07.26.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>general-entity</artifactId>
@@ -258,13 +183,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>odl-mdsal-binding-base</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

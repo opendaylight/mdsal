@@ -12,7 +12,7 @@ import org.opendaylight.mdsal.binding.api.query.StringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 final class DefaultStringMatchBuilder<T extends DataObject> extends AbstractValueMatchBuilder<T, String>

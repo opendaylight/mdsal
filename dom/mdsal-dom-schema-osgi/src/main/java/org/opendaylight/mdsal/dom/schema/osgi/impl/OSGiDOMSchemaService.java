@@ -16,9 +16,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
+import org.opendaylight.yangtools.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.yangtools.binding.runtime.osgi.OSGiModuleInfoSnapshot;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -70,8 +70,8 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
 
     @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     void bindSnapshot(final OSGiModuleInfoSnapshot newContext) {
-        LOG.info("Updating context to generation {}", newContext.getGeneration());
-        final var snapshot = newContext.getService();
+        LOG.info("Updating context to generation {}", newContext.generation());
+        final var snapshot = newContext.service();
         final var modelContext = snapshot.modelContext();
         final var previous = currentSnapshot.getAndSet(snapshot);
         LOG.debug("Snapshot updated from {} to {}", previous, snapshot);
@@ -80,9 +80,9 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
     }
 
     void unbindSnapshot(final OSGiModuleInfoSnapshot oldContext) {
-        final var snapshot = oldContext.getService();
+        final var snapshot = oldContext.service();
         if (currentSnapshot.compareAndSet(snapshot, null) && !deactivated) {
-            LOG.info("Lost final generation {}", oldContext.getGeneration());
+            LOG.info("Lost final generation {}", oldContext.generation());
         }
     }
 
@@ -123,5 +123,4 @@ public final class OSGiDOMSchemaService implements DOMSchemaService, DOMSchemaSe
             return Futures.immediateFailedFuture(e);
         }
     }
-
 }

@@ -13,12 +13,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;

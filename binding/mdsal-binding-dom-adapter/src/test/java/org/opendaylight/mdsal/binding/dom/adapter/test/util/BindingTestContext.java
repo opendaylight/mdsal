@@ -27,7 +27,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishS
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
-import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -41,7 +40,8 @@ import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 @Beta
