@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * An opaque query expression. A query execution results in a {@link QueryResult}, which is composed of zero or more

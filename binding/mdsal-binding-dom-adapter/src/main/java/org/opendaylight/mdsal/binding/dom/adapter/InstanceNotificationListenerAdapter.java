@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationService.Listener;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceNotification;
 
 final class InstanceNotificationListenerAdapter<P extends DataObject, N extends InstanceNotification<N, P>>
         extends AbstractInstanceNotificationListenerAdapter<P, N, Listener<P, N>> {

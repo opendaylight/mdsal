@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
+import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 
 public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
     private AdapterContext bindingToNormalizedNodeCodec;
