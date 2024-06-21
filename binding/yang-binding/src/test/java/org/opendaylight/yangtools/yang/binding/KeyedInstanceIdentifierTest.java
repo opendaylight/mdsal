@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
+import org.opendaylight.yangtools.binding.KeyStep;
 import org.opendaylight.yangtools.yang.binding.test.mock.Node;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeKey;
 

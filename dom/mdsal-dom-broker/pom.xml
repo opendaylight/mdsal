@@ -121,7 +121,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
+            <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-ext</artifactId>
             <scope>test</scope>
         </dependency>
