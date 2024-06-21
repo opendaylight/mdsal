@@ -10,7 +10,7 @@ module org.opendaylight.mdsal.binding.api {
     exports org.opendaylight.mdsal.binding.api.query;
 
     requires transitive org.opendaylight.yangtools.concepts;
-    requires transitive org.opendaylight.yangtools.yang.binding;
+    requires transitive org.opendaylight.yangtools.binding.spec;
     requires transitive org.opendaylight.mdsal.common.api;
     requires org.opendaylight.yangtools.util;
 

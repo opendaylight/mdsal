@@ -18,7 +18,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -26,6 +25,7 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 
 public abstract class AbstractDataBrokerTestCustomizer {
     private final DOMNotificationRouter domNotificationRouter = new DOMNotificationRouter(16);

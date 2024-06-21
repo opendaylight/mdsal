@@ -22,14 +22,14 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.InstanceNotification;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyAware;
+import org.opendaylight.yangtools.binding.KeyedListNotification;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceNotification;
-import org.opendaylight.yangtools.yang.binding.Key;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 
 final class InstanceNotificationServiceAdapter implements InstanceNotificationService {
     private static final class Builder extends BindingDOMAdapterBuilder<InstanceNotificationService> {

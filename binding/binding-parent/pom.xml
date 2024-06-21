@@ -10,15 +10,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>bundle-parent</artifactId>
+        <groupId>org.opendaylight.yangtools</groupId>
+        <artifactId>binding-parent</artifactId>
         <version>14.0.0-SNAPSHOT</version>
-        <relativePath>../../bundle-parent</relativePath>
+        <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
     <packaging>pom</packaging>
+    <version>14.0.0-SNAPSHOT</version>
 
     <properties>
         <spotbugs.onlyAnalyze>!org.opendaylight.yang.gen.-,!org.opendaylight.yang.svc.-</spotbugs.onlyAnalyze>
@@ -26,85 +28,22 @@
         <doclint>all,-missing</doclint>
     </properties>
 
-    <build>
-        <!-- https://bugs.opendaylight.org/show_bug.cgi?id=6252 -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-sources/spi</directory>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-sources/yang</directory>
-            </resource>
-        </resources>
-    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>bnd-parent</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-    <profiles>
-        <profile>
-            <activation>
-                <file>
-                    <exists>src/main/yang</exists>
-                </file>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.jdt</groupId>
-                    <artifactId>org.eclipse.jdt.annotation</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.opendaylight.mdsal</groupId>
-                    <artifactId>yang-binding</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.opendaylight.yangtools</groupId>
-                    <artifactId>yang-common</artifactId>
-                </dependency>
-            </dependencies>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.opendaylight.yangtools</groupId>
-                            <artifactId>yang-maven-plugin</artifactId>
-                            <version>14.0.0-SNAPSHOT</version>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>org.opendaylight.mdsal</groupId>
-                                    <artifactId>mdsal-binding-java-api-generator</artifactId>
-                                    <version>14.0.0-SNAPSHOT</version>
-                                </dependency>
-                            </dependencies>
-                            <executions>
-                                <execution>
-                                    <id>binding</id>
-                                    <goals>
-                                        <goal>generate-sources</goal>
-                                    </goals>
-                                    <configuration>
-                                        <inspectDependencies>true</inspectDependencies>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>org.opendaylight.yangtools</groupId>
-                        <artifactId>yang-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <scm>
+        <connection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</connection>
+        <developerConnection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://wiki.opendaylight.org/display/ODL/MD-SAL</url>
+    </scm>
 </project>

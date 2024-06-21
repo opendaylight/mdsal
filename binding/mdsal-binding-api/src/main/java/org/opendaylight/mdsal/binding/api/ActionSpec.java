@@ -13,14 +13,14 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.Action;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.ChoiceIn;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Mutable;
-import org.opendaylight.yangtools.yang.binding.Action;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
