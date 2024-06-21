@@ -24,12 +24,12 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeNode;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -93,7 +93,7 @@ final class DefaultQueryResult<T extends DataObject>
         return (local != null ? local : loadItemCodec(domItem.getKey())).deserialize(domItem.getValue());
     }
 
-    InstanceIdentifier<T> createPath(final YangInstanceIdentifier domPath) {
+    DataObjectReference<T> createPath(final YangInstanceIdentifier domPath) {
         return verifyNotNull(codec.getInstanceIdentifierCodec().toBinding(domPath), "path");
     }
 

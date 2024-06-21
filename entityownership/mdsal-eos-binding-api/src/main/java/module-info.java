@@ -10,7 +10,7 @@ module org.opendaylight.mdsal.eos.binding.api {
 
     requires transitive com.google.common;
     requires transitive org.opendaylight.mdsal.eos.common.api;
-    requires transitive org.opendaylight.yangtools.yang.binding;
+    requires transitive org.opendaylight.yangtools.binding.spec;
 
     requires org.opendaylight.mdsal.model.general.entity;
 }

@@ -25,7 +25,7 @@ public class BindingDOMMountPointServiceAdapter
 
     @Override
     public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
-        final var domPath = currentSerializer().toCachedYangInstanceIdentifier(mountPoint);
+        final var domPath = currentSerializer().toCachedYangInstanceIdentifier(mountPoint.toIdentifier());
         return getDelegate().getMountPoint(domPath).map(this::getAdapter);
     }
 

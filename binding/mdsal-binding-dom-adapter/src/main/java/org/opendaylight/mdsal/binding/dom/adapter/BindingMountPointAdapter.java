@@ -21,7 +21,7 @@ final class BindingMountPointAdapter implements MountPoint {
     private final LoadingCache<Class<? extends BindingService>, Optional<BindingService>> services;
 
     BindingMountPointAdapter(final AdapterContext codec, final DOMMountPoint domMountPoint) {
-        identifier = codec.currentSerializer().fromYangInstanceIdentifier(domMountPoint.getIdentifier());
+        identifier = codec.currentSerializer().fromYangInstanceIdentifier(domMountPoint.getIdentifier()).toLegacy();
         services = CacheBuilder.newBuilder().build(new BindingDOMAdapterLoader(codec) {
             @Override
             @SuppressWarnings({ "rawtypes", "unchecked" })

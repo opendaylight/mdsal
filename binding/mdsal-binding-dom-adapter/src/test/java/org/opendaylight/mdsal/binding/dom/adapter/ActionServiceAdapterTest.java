@@ -57,7 +57,7 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
     @Test
     public void testInvocation() throws ExecutionException {
         final var handle = service.getActionHandle(ActionSpec.builder(Cont.class).build(Foo.class));
-        final var future = handle.invoke(InstanceIdentifier.create(Cont.class), BINDING_FOO_INPUT);
+        final var future = handle.invoke(InstanceIdentifier.create(Cont.class).toIdentifier(), BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
         domResult.set(new DefaultDOMRpcResult(DOM_FOO_OUTPUT));
@@ -70,8 +70,8 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
     @Test
     public void testKeyedInvocation() throws ExecutionException {
         final var handle = service.getActionHandle(ActionSpec.builder(Lstio.class).build(Fooio.class));
-        final var future = handle.invoke(InstanceIdentifier.builder(Lstio.class, new LstioKey("test")).build(),
-                BINDING_LSTIO_INPUT);
+        final var future = handle.invoke(
+            InstanceIdentifier.builder(Lstio.class, new LstioKey("test")).build().toIdentifier(), BINDING_LSTIO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
 

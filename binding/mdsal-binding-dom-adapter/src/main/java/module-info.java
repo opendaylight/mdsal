@@ -11,8 +11,8 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.query.DefaultQueryFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecFactory;
 
 module org.opendaylight.mdsal.binding.dom.adapter {
     exports org.opendaylight.mdsal.binding.dom.adapter;
@@ -27,14 +27,15 @@ module org.opendaylight.mdsal.binding.dom.adapter {
 
     requires transitive com.google.common;
     requires transitive org.opendaylight.mdsal.binding.api;
-    requires transitive org.opendaylight.mdsal.binding.dom.codec.spi;
     requires transitive org.opendaylight.mdsal.dom.api;
+    requires transitive org.opendaylight.yangtools.binding.data.codec.spi;
     requires transitive org.opendaylight.yangtools.yang.data.impl;
     requires com.google.common.util.concurrent.internal;
-    requires org.opendaylight.mdsal.binding.dom.codec.api;
-    requires org.opendaylight.mdsal.binding.runtime.api;
-    requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.mdsal.dom.spi;
+    requires org.opendaylight.yangtools.binding.data.codec.api;
+    requires org.opendaylight.yangtools.binding.runtime.api;
+    requires org.opendaylight.yangtools.binding.reflect;
+    requires org.opendaylight.yangtools.binding.spec;
     requires org.opendaylight.yangtools.concepts;
     requires org.opendaylight.yangtools.yang.common;
     requires org.opendaylight.yangtools.yang.data.api;

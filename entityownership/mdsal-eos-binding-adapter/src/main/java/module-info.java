@@ -11,6 +11,7 @@ module org.opendaylight.mdsal.eos.binding.dom.adapter {
     requires transitive org.opendaylight.mdsal.binding.dom.adapter;
     requires transitive org.opendaylight.mdsal.eos.binding.api;
     requires transitive org.opendaylight.mdsal.eos.dom.api;
+    requires org.opendaylight.yangtools.binding.spec;
     requires org.opendaylight.yangtools.concepts;
     requires org.slf4j;
 

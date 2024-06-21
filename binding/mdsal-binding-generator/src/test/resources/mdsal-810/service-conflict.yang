@@ -1,8 +1,0 @@
-module service-conflict {
-  namespace service-conflict;
-  prefix sc;
-
-  container service-conflict-service; // results in ServiceConflictService
-  rpc bar; // Triggers ServiceConflictService generation for module
-}
-

@@ -28,16 +28,19 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
-import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.BindingContract;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.BindingContract;
+import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.yangtools.binding.data.codec.spi.ForwardingBindingDOMCodecServices;
+import org.opendaylight.yangtools.binding.model.api.JavaTypeName;
+import org.opendaylight.yangtools.binding.runtime.api.ActionRuntimeType;
+import org.opendaylight.yangtools.binding.runtime.api.InputRuntimeType;
+import org.opendaylight.yangtools.binding.runtime.api.NotificationRuntimeType;
+import org.opendaylight.yangtools.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -48,19 +51,21 @@ import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveState
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Beta
 @VisibleForTesting
 public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecServices {
-    private static final Logger LOG = LoggerFactory.getLogger(CurrentAdapterSerializer.class);
-
-    private final LoadingCache<InstanceIdentifier<?>, YangInstanceIdentifier> cache = CacheBuilder.newBuilder()
-            .softValues().build(new CacheLoader<InstanceIdentifier<?>, YangInstanceIdentifier>() {
+    private final LoadingCache<BindingInstanceIdentifier, YangInstanceIdentifier> cache = CacheBuilder.newBuilder()
+            .softValues().build(new CacheLoader<BindingInstanceIdentifier, YangInstanceIdentifier>() {
                 @Override
-                public YangInstanceIdentifier load(final InstanceIdentifier<?> key) {
-                    return toYangInstanceIdentifier(key);
+                public YangInstanceIdentifier load(final BindingInstanceIdentifier key) {
+                    return switch (key) {
+                        case DataObjectIdentifier<?> id -> {
+                            final var yiid = toYangInstanceIdentifier(id);
+                            verify(!yiid.isEmpty(), "Bad conversion of %s to %s", id, yiid);
+                            yield yiid;
+                        }
+                    };
                 }
             });
 
@@ -76,11 +81,11 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return delegate;
     }
 
-    @NonNull YangInstanceIdentifier toCachedYangInstanceIdentifier(final @NonNull InstanceIdentifier<?> path) {
+    @NonNull YangInstanceIdentifier toCachedYangInstanceIdentifier(final @NonNull BindingInstanceIdentifier path) {
         return cache.getUnchecked(path);
     }
 
-    <T extends DataObject> @NonNull InstanceIdentifier<T> coerceInstanceIdentifier(final YangInstanceIdentifier dom) {
+    <T extends DataObject> @NonNull DataObjectReference<T> coerceInstanceIdentifier(final YangInstanceIdentifier dom) {
         return verifyNotNull(fromYangInstanceIdentifier(dom));
     }
 

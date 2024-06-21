@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ForwardingObject;
 import java.util.List;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 
 final class DataListenerAdapter<T extends DataObject> extends ForwardingObject implements DataTreeChangeListener<T> {
     private final DataListener<T> delegate;

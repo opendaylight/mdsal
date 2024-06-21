@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 
 /**
  * ClusteredDataTreeChangeListener is a marker interface to enable data tree change notifications on all

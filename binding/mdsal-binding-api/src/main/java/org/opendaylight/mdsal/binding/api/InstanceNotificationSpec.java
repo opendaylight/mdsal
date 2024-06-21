@@ -13,15 +13,15 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.ChoiceIn;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataRoot;
+import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Mutable;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceNotification;
 
 /**
  * A combination of an {@link InstanceNotification} class and its corresponding instantiation wildcard, expressed as
@@ -43,11 +43,11 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
         this.path = requireNonNull(path);
     }
 
-    public static <P extends ChildOf<? extends DataRoot>> @NonNull Builder<P> builder(final Class<P> container) {
+    public static <P extends ChildOf<? extends DataRoot<?>>> @NonNull Builder<P> builder(final Class<P> container) {
         return new Builder<>(InstanceIdentifier.builder(container));
     }
 
-    public static <C extends ChoiceIn<? extends DataRoot> & DataObject, P extends ChildOf<? super C>>
+    public static <C extends ChoiceIn<? extends DataRoot<?>> & DataObject, P extends ChildOf<? super C>>
             @NonNull Builder<P> builder(final Class<C> caze, final Class<P> container) {
         return new Builder<>(InstanceIdentifier.builder(caze, container));
     }

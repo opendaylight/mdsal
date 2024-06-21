@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.Rpc;
 
 /**
  * Provides ability to registered Remote Procedure Call (RPC) service implementations. The RPCs are defined in YANG

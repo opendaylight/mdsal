@@ -14,12 +14,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.adapter.RpcInvocationStrategy.ContentRouted;
-import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
-import org.opendaylight.yangtools.yang.binding.Rpc;
-import org.opendaylight.yangtools.yang.binding.RpcInput;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.binding.Rpc;
+import org.opendaylight.yangtools.binding.RpcInput;
+import org.opendaylight.yangtools.binding.contract.Naming;
+import org.opendaylight.yangtools.binding.runtime.api.RpcRuntimeType;
 
 final class RpcAdapter implements InvocationHandler {
     private final @NonNull AdapterContext adapterContext;

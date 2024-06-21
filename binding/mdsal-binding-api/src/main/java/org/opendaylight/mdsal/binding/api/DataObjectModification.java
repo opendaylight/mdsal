@@ -10,14 +10,14 @@ package org.opendaylight.mdsal.binding.api;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.ChoiceIn;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.EntryObject;
+import org.opendaylight.yangtools.binding.ExactDataObjectStep;
+import org.opendaylight.yangtools.binding.Key;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.Key;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
@@ -229,8 +229,8 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
      *         to generated model.
      */
-    <N extends KeyAware<K> & ChildOf<? super T>, K extends Key<N>> @Nullable DataObjectModification<N>
-            getModifiedChildListItem(@NonNull Class<N> listItem, @NonNull K listKey);
+    <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
+        @Nullable DataObjectModification<N> getModifiedChildListItem(@NonNull Class<N> listItem, @NonNull K listKey);
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -241,9 +241,9 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
      *         to generated model.
      */
-    <H extends ChoiceIn<? super T> & DataObject, C extends KeyAware<K> & ChildOf<? super H>,
-            K extends Key<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
-                    @NonNull Class<H> caseType, @NonNull Class<C> listItem, @NonNull K listKey);
+    <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>, K extends Key<C>>
+        @Nullable DataObjectModification<C> getModifiedChildListItem(@NonNull Class<H> caseType,
+            @NonNull Class<C> listItem, @NonNull K listKey);
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
