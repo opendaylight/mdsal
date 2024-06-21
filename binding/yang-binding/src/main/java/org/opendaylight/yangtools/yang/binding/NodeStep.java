@@ -9,6 +9,8 @@ package org.opendaylight.yangtools.yang.binding;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 /**
  * A {@link DataObject}-based step along an {@code instance-identifier}. It equates to a {@code node-identifier} and

@@ -34,20 +34,20 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-ri</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-data-codec-dynamic</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec-osgi</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-data-codec-osgi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-osgi</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-runtime-osgi</artifactId>
         </dependency>
     </dependencies>
 </project>

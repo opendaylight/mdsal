@@ -10,6 +10,7 @@ package org.opendaylight.yangtools.yang.binding;
 import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
 
 /**
  * A reference to a {@link DataObject} type forming a single step in a path similar to {@code instance-identifier}.

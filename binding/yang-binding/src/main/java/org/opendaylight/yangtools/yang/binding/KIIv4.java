@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectStreamException;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 final class KIIv4<T extends KeyAware<K> & DataObject, K extends Key<T>> extends IIv4<T> {
     @java.io.Serial
