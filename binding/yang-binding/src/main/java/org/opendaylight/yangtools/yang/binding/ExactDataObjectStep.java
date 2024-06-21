@@ -7,6 +7,8 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import org.opendaylight.yangtools.binding.DataObject;
+
 /**
  * A {@link DataObjectStep} which is exactly specified. Due to how {@link DataObject} and {@link KeyAware} are tied
  * together, a class generated for a {@code list} is strictly a {@link DataObject}, but its semantics differ.

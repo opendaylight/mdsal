@@ -30,8 +30,8 @@
             <artifactId>mdsal-dom-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-spi</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-runtime-osgi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -49,17 +49,6 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.util.tracker</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.karaf.features</groupId>
-            <artifactId>org.apache.karaf.features.core</artifactId>
-            <scope>provided</scope>
-            <!-- Needed to generate optional OSGi import -->
-            <optional>true</optional>
-        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
@@ -68,6 +57,11 @@
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-test-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.util.tracker</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

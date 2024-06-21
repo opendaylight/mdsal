@@ -21,12 +21,12 @@ module org.opendaylight.mdsal.yanglib.rfc8525 {
     uses BindingRuntimeGenerator;
     uses YangParserFactory;
 
+    requires transitive org.opendaylight.yangtools.binding.data.codec.api;
     requires transitive org.opendaylight.yangtools.yang.parser.api;
-    requires transitive org.opendaylight.mdsal.binding.dom.codec.api;
     requires transitive org.opendaylight.mdsal.yanglib.api;
 
     requires com.google.common;
-    requires org.opendaylight.mdsal.binding.runtime.spi;
+    requires org.opendaylight.yangtools.binding.runtime.spi;
     requires org.opendaylight.yangtools.yang.binding;
     requires org.opendaylight.yangtools.yang.data.api;
     requires org.opendaylight.yangtools.yang.data.util;

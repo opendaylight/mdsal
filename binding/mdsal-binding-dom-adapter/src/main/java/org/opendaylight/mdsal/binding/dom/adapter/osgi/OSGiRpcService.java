@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.RpcService;
-import org.opendaylight.yangtools.yang.binding.Rpc;
+import org.opendaylight.yangtools.binding.Rpc;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;

@@ -16,6 +16,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectStreamException;
 import java.io.Serial;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
 
 class InstanceIdentifierV3<T extends DataObject> implements Externalizable {
     @Serial

@@ -14,10 +14,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.annotations.RoutingContext;
+import org.opendaylight.yangtools.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

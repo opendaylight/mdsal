@@ -10,6 +10,8 @@ package org.opendaylight.yangtools.yang.binding;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 /**
  * A {@link KeyAware}-based step without the corresponding key. This corresponds to a {@code node-identifier} step,

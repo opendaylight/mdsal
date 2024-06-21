@@ -10,14 +10,14 @@ package org.opendaylight.mdsal.binding.api;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.ChoiceIn;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.Key;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by

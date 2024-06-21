@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.junit.Test;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.test.mock.FooChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.FooRoot;
 import org.opendaylight.yangtools.yang.binding.test.mock.InstantiatedFoo;
