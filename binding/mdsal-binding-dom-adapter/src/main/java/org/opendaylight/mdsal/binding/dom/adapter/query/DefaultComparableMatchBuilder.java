@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.api.query.ComparableMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 final class DefaultComparableMatchBuilder<T extends DataObject, V extends Comparable<V>>

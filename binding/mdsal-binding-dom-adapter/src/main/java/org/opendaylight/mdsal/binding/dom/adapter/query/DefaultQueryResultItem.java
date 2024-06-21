@@ -17,7 +17,7 @@ import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -77,8 +77,8 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
 
     @SuppressWarnings("unchecked")
     private InstanceIdentifier<T> loadPath() {
-        final InstanceIdentifier<T> ret = result.createPath(domItem.getKey());
-        final Object witness = PATH.compareAndExchangeRelease(this, null, ret);
+        final var ret = result.createPath(domItem.getKey()).toLegacy();
+        final var witness = PATH.compareAndExchangeRelease(this, null, ret);
         return witness == null ? ret : (InstanceIdentifier<T>) witness;
     }
 }

@@ -45,10 +45,10 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.con
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.Foo;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.Addressable;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.AddressableBuilder;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.DataRoot;
+import org.opendaylight.yangtools.binding.NodeStep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.NodeStep;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;

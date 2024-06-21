@@ -1,8 +1,0 @@
-module listener-conflict {
-  namespace listener-conflict;
-  prefix lc;
-
-  container listener-conflict-listener; // results in ListenerConflictListener
-  notification bar; // Triggers ListenerConflictListener generation for module
-}
-

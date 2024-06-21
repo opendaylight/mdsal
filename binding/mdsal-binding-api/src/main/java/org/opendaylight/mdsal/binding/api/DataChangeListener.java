@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 
 /**
  * Interface implemented by classes interested in receiving data changes.

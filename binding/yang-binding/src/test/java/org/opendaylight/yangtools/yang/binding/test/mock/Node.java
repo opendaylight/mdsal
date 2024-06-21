@@ -7,10 +7,10 @@
  */
 package org.opendaylight.yangtools.yang.binding.test.mock;
 
-import org.opendaylight.yangtools.yang.binding.Augmentable;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
+import org.opendaylight.yangtools.binding.Augmentable;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.KeyAware;
 
 public interface Node extends
     DataObject,
