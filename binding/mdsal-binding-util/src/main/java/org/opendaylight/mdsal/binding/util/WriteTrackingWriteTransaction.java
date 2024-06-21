@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.util;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.spi.ForwardingWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -32,6 +32,7 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         super.merge(store, path, data);

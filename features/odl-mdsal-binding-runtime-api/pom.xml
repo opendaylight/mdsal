@@ -23,6 +23,12 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>odl-yangtools-binding-spec</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>odl-yangtools-data</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
@@ -34,34 +40,28 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-base</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-data-codec-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-model-api</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-data-codec-spi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-model-ri</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-model-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-api</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-model-ri</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-spi</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-runtime-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec-spi</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-runtime-spi</artifactId>
         </dependency>
     </dependencies>
 </project>

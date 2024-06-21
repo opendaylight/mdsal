@@ -17,10 +17,10 @@ import static org.mockito.Mockito.mock;
 import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
+import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 

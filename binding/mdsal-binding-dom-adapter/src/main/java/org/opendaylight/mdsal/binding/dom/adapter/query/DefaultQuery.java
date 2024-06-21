@@ -14,11 +14,11 @@ import com.google.common.base.MoreObjects;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryLike;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 
 @Beta
 @NonNullByDefault

@@ -16,10 +16,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.yang.binding.Rpc;
+import org.opendaylight.yangtools.binding.Rpc;
+import org.opendaylight.yangtools.binding.reflect.BindingReflections;
 
 @VisibleForTesting
 public final class BindingDOMRpcServiceAdapter

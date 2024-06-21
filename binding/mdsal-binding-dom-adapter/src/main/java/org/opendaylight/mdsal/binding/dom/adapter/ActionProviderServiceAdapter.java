@@ -28,9 +28,9 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
+import org.opendaylight.yangtools.binding.Action;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.Action;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
@@ -112,7 +112,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
-            final InstanceIdentifier<DataObject> instance = codec.fromYangInstanceIdentifier(path.path());
+            final var instance = codec.fromYangInstanceIdentifier(path.path());
             if (instance == null) {
                 // Not representable: return an error
                 LOG.debug("Path {} is not representable in binding, rejecting invocation", path);
@@ -127,7 +127,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
                     "Supplied path does not identify a concrete instance")));
             }
 
-            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance,
+            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance.toLegacy(),
                 codec.fromNormalizedNodeActionInput(actionInterface, input));
             if (userFuture instanceof BindingOperationFluentFuture) {
                 // If we are looping back through our future we can skip wrapping. This can happen if application

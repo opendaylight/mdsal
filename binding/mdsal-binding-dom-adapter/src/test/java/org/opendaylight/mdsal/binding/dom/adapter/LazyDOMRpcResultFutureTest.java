@@ -25,8 +25,8 @@ import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.yang.binding.RpcOutput;
+import org.opendaylight.yangtools.binding.RpcOutput;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 public class LazyDOMRpcResultFutureTest {

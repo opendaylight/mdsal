@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,13 +72,13 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     @Override
     public void failCommits(final TransactionCommitFailedException exception) {
         unfailCommits();
-        this.commitException = requireNonNull(exception, "exception == null");
+        commitException = requireNonNull(exception, "exception == null");
     }
 
     @Override
     public void failCommits(final int howManyTimes, final TransactionCommitFailedException exception) {
         howManyFailingCommits.set(howManyTimes);
-        this.commitException = requireNonNull(exception, "exception == null");
+        commitException = requireNonNull(exception, "exception == null");
     }
 
     @Override
@@ -89,16 +89,16 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
 
     @Override
     public void unfailCommits() {
-        this.commitException = null;
+        commitException = null;
         howManyFailingCommits.set(-1);
-        this.commitAndThrowException = false;
+        commitAndThrowException = false;
     }
 
     @Override
     public void failButCommitAnyway() {
         unfailCommits();
-        this.commitException = new TransactionCommitFailedException("caused by simulated AskTimeoutException");
-        this.commitAndThrowException = true;
+        commitException = new TransactionCommitFailedException("caused by simulated AskTimeoutException");
+        commitAndThrowException = true;
     }
 
     private FluentFuture<? extends CommitInfo> handleCommit(

@@ -5,10 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
 import org.opendaylight.mdsal.yanglib.rfc8525.YangLibrarySupportFactory;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 module org.opendaylight.mdsal.yanglib.rfc8525 {
@@ -21,13 +21,13 @@ module org.opendaylight.mdsal.yanglib.rfc8525 {
     uses BindingRuntimeGenerator;
     uses YangParserFactory;
 
+    requires transitive org.opendaylight.yangtools.binding.data.codec.api;
     requires transitive org.opendaylight.yangtools.yang.parser.api;
-    requires transitive org.opendaylight.mdsal.binding.dom.codec.api;
     requires transitive org.opendaylight.mdsal.yanglib.api;
 
     requires com.google.common;
-    requires org.opendaylight.mdsal.binding.runtime.spi;
-    requires org.opendaylight.yangtools.yang.binding;
+    requires org.opendaylight.yangtools.binding.runtime.spi;
+    requires org.opendaylight.yangtools.binding.spec;
     requires org.opendaylight.yangtools.yang.data.api;
     requires org.opendaylight.yangtools.yang.data.util;
     requires org.opendaylight.yang.gen.ietf.datastores.rfc8342;

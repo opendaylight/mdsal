@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.util;
 
 import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -31,6 +31,7 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
+    @Deprecated
     public final <T extends DataObject> void mergeParentStructurePut(final InstanceIdentifier<T> path,
             final T data) {
         delegate().mergeParentStructurePut(getDatastoreType(), path, data);
@@ -44,6 +45,7 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
+    @Deprecated
     public final <T extends DataObject> void mergeParentStructureMerge(final InstanceIdentifier<T> path,
             final T data) {
         delegate().mergeParentStructureMerge(getDatastoreType(), path, data);

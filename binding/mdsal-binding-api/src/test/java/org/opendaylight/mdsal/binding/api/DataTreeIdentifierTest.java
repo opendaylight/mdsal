@@ -18,9 +18,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 class DataTreeIdentifierTest {
@@ -71,7 +71,7 @@ class DataTreeIdentifierTest {
         }
 
         final var bytes = bos.toByteArray();
-        assertEquals(342, bytes.length);
+        assertEquals(327, bytes.length);
 
         try (var ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             assertEquals(TEST_IDENTIFIER1, ois.readObject());
