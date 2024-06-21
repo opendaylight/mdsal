@@ -11,8 +11,8 @@ import com.google.common.util.concurrent.FluentFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.InstanceIdentifier;
 
 /**
  * Write-like operations supported by {@link WriteTransaction} and {@link ReadWriteTransaction}. This interface defines

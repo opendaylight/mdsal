@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.mdsal813.norev.RegisterListenerTest;
 import org.opendaylight.yang.gen.v1.mdsal813.norev.register.listener.test.Item;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.InstanceIdentifier;
 
 @ExtendWith(MockitoExtension.class)
 class DataTreeChangeServiceWildcardedTest {

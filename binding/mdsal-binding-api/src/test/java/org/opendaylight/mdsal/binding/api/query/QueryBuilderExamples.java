@@ -15,7 +15,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.Alarms;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.third.grp.AffectedUsers;
 import org.opendaylight.yang.gen.v1.mdsal426.norev.BooleanCont;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.DecimalContainer;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Uint64;
 

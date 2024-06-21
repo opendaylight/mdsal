@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.yang.binding.Rpc;
+import org.opendaylight.yangtools.binding.Rpc;
 
 /**
  * Provides access to registered Remote Procedure Call (RPC) service implementations. The RPCs are defined in YANG

@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.binding.api;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface MountPointService extends BindingService {
 

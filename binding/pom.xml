@@ -25,27 +25,10 @@
     <description>${project.artifactId}</description>
 
     <modules>
-        <module>mdsal-binding-model-api</module>
-        <module>mdsal-binding-model-ri</module>
-        <module>mdsal-binding-generator</module>
-        <module>mdsal-binding-java-api-generator</module>
         <!-- FIXME: should be probably renamed to mdsal-model-binding-parent -->
         <module>binding-parent</module>
-        <!-- FIXME: rename to mdsal-binding-spec-api -->
-        <module>yang-binding</module>
-        <module>mdsal-binding-loader</module>
-        <module>mdsal-binding-spec-util</module>
-
-        <!-- Binding Runtime Services, dealing with class/schema mapping -->
-        <module>mdsal-binding-runtime-api</module>
-        <module>mdsal-binding-runtime-spi</module>
-        <module>mdsal-binding-runtime-osgi</module>
 
         <module>mdsal-binding-test-model</module>
-        <module>mdsal-binding-dom-codec</module>
-        <module>mdsal-binding-dom-codec-api</module>
-        <module>mdsal-binding-dom-codec-spi</module>
-        <module>mdsal-binding-dom-codec-osgi</module>
 
         <module>mdsal-binding-api</module>
         <module>mdsal-binding-spi</module>
