@@ -23,13 +23,13 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-runtime</artifactId>
+            <artifactId>odl-mdsal-binding-api</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-api</artifactId>
+            <artifactId>odl-mdsal-binding-runtime</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

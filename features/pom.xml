@@ -33,7 +33,6 @@
         <module>odl-mdsal-binding-base</module>
         <module>odl-mdsal-binding-dom-adapter</module>
         <module>odl-mdsal-binding-runtime</module>
-        <module>odl-mdsal-binding-runtime-api</module>
 
         <!-- Common -->
         <module>odl-mdsal-common</module>

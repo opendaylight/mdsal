@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.yang.binding.Notification;
+import org.opendaylight.yangtools.binding.Notification;
 
 @VisibleForTesting
 public final class BindingDOMNotificationPublishServiceAdapter

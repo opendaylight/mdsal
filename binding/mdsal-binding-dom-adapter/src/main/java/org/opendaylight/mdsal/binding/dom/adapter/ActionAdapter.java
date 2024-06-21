@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 import static org.opendaylight.yangtools.yang.common.YangConstants.operationInputQName;
@@ -21,9 +20,9 @@ import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.RpcInput;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.RpcInput;
+import org.opendaylight.yangtools.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -59,9 +58,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                 break;
             case Naming.ACTION_INVOKE_NAME:
                 if (args.length == 2) {
-                    final var path = (InstanceIdentifier<?>) requireNonNull(args[0]);
-                    checkArgument(!path.isWildcarded(), "Cannot invoke action on wildcard path %s", path);
-
+                    final var path = (DataObjectIdentifier<?>) requireNonNull(args[0]);
                     final var input = (RpcInput) requireNonNull(args[1]);
                     final var serializer = currentSerializer();
                     final var future = getDelegate().invokeAction(actionPath,

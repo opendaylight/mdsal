@@ -10,14 +10,14 @@ package org.opendaylight.mdsal.binding.api.query;
 import com.google.common.annotations.Beta;
 import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.BaseIdentity;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.ChoiceIn;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.EntryObject;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.TypeObject;
 import org.opendaylight.yangtools.concepts.Mutable;
-import org.opendaylight.yangtools.yang.binding.BaseIdentity;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Key;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
-import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -60,7 +60,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @return This builder
      * @throws NullPointerException if childClass is null
      */
-    <N extends KeyAware<K> & ChildOf<? super T>, K extends Key<N>> @NonNull MatchBuilderPath<O, N> extractChild(
+    <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>> @NonNull MatchBuilderPath<O, N> extractChild(
         Class<@NonNull N> listItem, K listKey);
 
     /**

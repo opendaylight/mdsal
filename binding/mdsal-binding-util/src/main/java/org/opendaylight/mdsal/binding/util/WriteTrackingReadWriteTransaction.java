@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.util;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.spi.ForwardingReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -34,6 +34,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
         super.mergeParentStructurePut(store, path, data);
@@ -48,6 +49,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
         super.mergeParentStructureMerge(store, path, data);

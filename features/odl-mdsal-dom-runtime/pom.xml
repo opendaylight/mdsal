@@ -23,13 +23,19 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-dom-api</artifactId>
+            <artifactId>odl-mdsal-binding-base</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-runtime-api</artifactId>
+            <artifactId>odl-mdsal-dom-api</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>odl-yangtools-binding-runtime</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

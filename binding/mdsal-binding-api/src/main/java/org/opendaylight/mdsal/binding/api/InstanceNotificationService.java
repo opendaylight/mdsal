@@ -11,14 +11,14 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.EntryObject;
+import org.opendaylight.yangtools.binding.InstanceNotification;
+import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyedListNotification;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceNotification;
-import org.opendaylight.yangtools.yang.binding.Key;
-import org.opendaylight.yangtools.yang.binding.KeyAware;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 
 /**
  * A {@link BindingService} which allows clients to subscribe to (YANG 1.1) {@link InstanceNotification}s and
@@ -36,11 +36,11 @@ public interface InstanceNotificationService extends BindingService {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
     }
 
-    <P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
+    <P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
         @NonNull Registration registerListener(InstanceNotificationSpec<N, P> spec, KeyedInstanceIdentifier<P, K> path,
             KeyedListListener<P, N, K> listener, Executor executor);
 
-    default <P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
+    default <P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
             @NonNull Registration registerListener(final InstanceNotificationSpec<N, P> spec,
                 final KeyedInstanceIdentifier<P, K> path, final KeyedListListener<P, N, K> listener) {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
@@ -64,7 +64,7 @@ public interface InstanceNotificationService extends BindingService {
      * Interface for listeners on instance (YANG 1.1) notifications defined in a {@code list} with a {@code key}.
      */
     @FunctionalInterface
-    interface KeyedListListener<P extends DataObject & KeyAware<K>, N extends KeyedListNotification<N, P, K>,
+    interface KeyedListListener<P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>,
             K extends Key<P>> {
         /**
          * Process an instance notification.

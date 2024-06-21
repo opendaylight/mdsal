@@ -22,26 +22,21 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class ContextExtractorTest {
 
-    public interface Transitive extends EncapsulatedRouteInGrouping {
-
-    }
-
-    private static final InstanceIdentifier<?> TEST_ROUTE = InstanceIdentifier.create(Top.class);
-    private static final Transitive TEST_GROUPING = new Transitive() {
+    public interface Transitive extends DataObject, EncapsulatedRouteInGrouping {
         @Override
-        public Class<? extends Transitive> implementedInterface() {
+        default Class<Transitive> implementedInterface() {
             return Transitive.class;
         }
+    }
 
-        @Override
-        public EncapsulatedRoute getRoute() {
-            return new EncapsulatedRoute(TEST_ROUTE);
-        }
-    };
+    private static final DataObjectIdentifier<?> TEST_ROUTE = InstanceIdentifier.create(Top.class).toIdentifier();
+    private static final Transitive TEST_GROUPING = () -> new EncapsulatedRoute(TEST_ROUTE);
 
     @Test
     public void testNonRoutedExtraction() {

@@ -13,9 +13,9 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.Action;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.Action;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -37,7 +37,7 @@ public final class OSGiActionService extends AbstractAdaptedService<ActionServic
     }
 
     @Override
-    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    public <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final Set<DataTreeIdentifier<P>> validNodes) {
         return delegate.getActionHandle(spec, validNodes);
     }

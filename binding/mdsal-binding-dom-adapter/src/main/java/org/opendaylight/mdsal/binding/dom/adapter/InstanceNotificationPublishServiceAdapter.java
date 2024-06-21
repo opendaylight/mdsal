@@ -15,11 +15,11 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationPublishService;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.InstanceNotification;
+import org.opendaylight.yangtools.binding.reflect.BindingReflections;
 
 final class InstanceNotificationPublishServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMInstanceNotificationPublishService, InstanceNotificationSpec<?, ?>,

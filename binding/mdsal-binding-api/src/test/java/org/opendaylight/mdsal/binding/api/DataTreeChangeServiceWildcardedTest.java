@@ -7,8 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -39,11 +38,19 @@ class DataTreeChangeServiceWildcardedTest {
         doCallRealMethod().when(dataBroker).registerDataListener(any(), any());
         final var dataListenerException = assertThrows(IllegalArgumentException.class,
             () -> dataBroker.registerDataListener(itemDTI, listener));
-        assertThat(dataListenerException.getMessage(), startsWith("Cannot register listener for wildcard"));
+        assertEquals("""
+            Cannot register listener for wildcard DataObjectReference[
+              @ mdsal813.norev.RegisterListenerTest
+              ... register.listener.test.Item(any)
+            ]""", dataListenerException.getMessage());
 
         doCallRealMethod().when(dataBroker).registerDataChangeListener(any(), any());
         final var dataListenerChangeException = assertThrows(IllegalArgumentException.class,
             () -> dataBroker.registerDataChangeListener(itemDTI, changeListener));
-        assertThat(dataListenerChangeException.getMessage(), startsWith("Cannot register listener for wildcard"));
+        assertEquals("""
+            Cannot register listener for wildcard DataObjectReference[
+              @ mdsal813.norev.RegisterListenerTest
+              ... register.listener.test.Item(any)
+            ]""", dataListenerChangeException.getMessage());
     }
 }
