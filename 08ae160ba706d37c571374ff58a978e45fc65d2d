@@ -16,6 +16,24 @@
       "message": "revert this part pls",
       "revId": "08ae160ba706d37c571374ff58a978e45fc65d2d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "869e3c71_03845047",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/InstanceIdentifierCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 9255
+      },
+      "writtenOn": "2024-06-25T06:46:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37559443_7d3fb1a8",
+      "revId": "08ae160ba706d37c571374ff58a978e45fc65d2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
