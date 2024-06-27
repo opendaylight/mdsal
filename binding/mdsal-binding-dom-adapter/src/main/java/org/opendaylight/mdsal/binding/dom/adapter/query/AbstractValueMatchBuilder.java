@@ -13,6 +13,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
+import org.opendaylight.mdsal.binding.dom.codec.api.ContainsValueCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.ValueCodec;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -24,12 +26,22 @@ abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements Val
     private final QueryBuilderState builder;
     private final InstanceIdentifier<T> select;
     private final BoundMethod method;
+    private final ValueCodec valueCodec;
 
     AbstractValueMatchBuilder(final QueryBuilderState builder, final InstanceIdentifier<T> select,
             final BoundMethod method) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);
         this.method = requireNonNull(method);
+        if (method.methodCodec instanceof ContainsValueCodec cvc) {
+            this.valueCodec = cvc.getValueCodec();
+        } else {
+            throw new IllegalArgumentException("BoundMethod is missing ValueCodec");
+        }
+    }
+
+    final ValueCodec getValueCodec() {
+        return this.valueCodec;
     }
 
     @Override

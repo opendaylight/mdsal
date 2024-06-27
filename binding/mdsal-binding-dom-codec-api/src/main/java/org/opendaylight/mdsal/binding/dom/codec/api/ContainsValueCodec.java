@@ -13,5 +13,5 @@ public interface ContainsValueCodec {
      *
      * @return ValueCodec instance
      */
-    ValueCodec<Object, Object> getValueCodec();
+    ValueCodec getValueCodec();
 }
