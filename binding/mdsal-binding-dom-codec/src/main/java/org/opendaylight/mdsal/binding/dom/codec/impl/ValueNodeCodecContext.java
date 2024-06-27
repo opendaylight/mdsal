@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.api.ContainsValueCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.ValueCodec;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
@@ -17,7 +19,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
  * Abstract base class for atomic nodes. These are nodes which are not decomposed in the Binding Specification, such
  * as LeafNodes and LeafSetNodes.
  */
-abstract sealed class ValueNodeCodecContext extends CodecContext implements CodecContextSupplier
+abstract sealed class ValueNodeCodecContext extends CodecContext implements CodecContextSupplier, ContainsValueCodec
         permits AbstractOpaqueCodecContext, ValueNodeCodecContext.WithCodec {
     abstract static sealed class WithCodec extends ValueNodeCodecContext
             permits LeafNodeCodecContext, LeafSetNodeCodecContext {
@@ -30,7 +32,7 @@ abstract sealed class ValueNodeCodecContext extends CodecContext implements Code
         }
 
         @Override
-        final ValueCodec<Object, Object> getValueCodec() {
+        public final ValueCodec<Object, Object> getValueCodec() {
             return valueCodec;
         }
     }
@@ -60,8 +62,6 @@ abstract sealed class ValueNodeCodecContext extends CodecContext implements Code
     final String getGetterName() {
         return getterName;
     }
-
-    abstract ValueCodec<Object, Object> getValueCodec();
 
     @Override
     @Deprecated(since = "13.0.0", forRemoval = true)
