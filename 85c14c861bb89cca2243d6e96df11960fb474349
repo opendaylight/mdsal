@@ -16,6 +16,24 @@
       "message": "I will be moving this patch to yangtools",
       "revId": "85c14c861bb89cca2243d6e96df11960fb474349",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f5a645a_96f57e23",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-06-29T11:54:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef4f6dd2_7034357f",
+      "revId": "85c14c861bb89cca2243d6e96df11960fb474349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ],
   "submitRequirementResults": [
