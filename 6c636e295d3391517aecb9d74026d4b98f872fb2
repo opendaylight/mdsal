@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f061d82_2763f6a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2024-06-30T15:13:50Z",
+      "side": 1,
+      "message": "SFT fluke, follow-up patch (unrelated) succeeds.",
+      "revId": "6c636e295d3391517aecb9d74026d4b98f872fb2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
