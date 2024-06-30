@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-uint24-netty">
-    <feature name="odl-mdsal-uint24-netty">
+    <feature name="odl-mdsal-rfc8294-netty">
         <feature version="[14,15)">odl-yangtools-netty</feature>
     </feature>
 </features>
