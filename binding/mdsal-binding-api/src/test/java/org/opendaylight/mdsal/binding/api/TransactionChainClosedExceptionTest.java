@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test;
 
 class TransactionChainClosedExceptionTest {
     @Test
-    void transactionChainClosedExceptionTest() throws Exception {
+    void transactionChainClosedExceptionTest() {
         final var ex = new TransactionChainClosedException("test");
         assertEquals("test", ex.getMessage());
         assertNull(ex.getCause());
     }
 
     @Test
-    void transactionChainClosedExceptionWithNullCauseTest() throws Exception {
+    void transactionChainClosedExceptionWithNullCauseTest() {
         final var cause = new Throwable();
         final var ex = new TransactionChainClosedException("test", cause);
         assertEquals("test", ex.getMessage());

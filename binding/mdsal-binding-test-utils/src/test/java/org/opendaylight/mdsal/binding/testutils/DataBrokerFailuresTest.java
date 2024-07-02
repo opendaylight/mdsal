@@ -103,7 +103,7 @@ public class DataBrokerFailuresTest {
     }
 
     @Test
-    public void testUnfailCommits() throws TimeoutException, InterruptedException, ExecutionException {
+    public void testUnfailCommits() throws Exception {
         dbFailures.failCommits(new OptimisticLockFailedException("bada boum bam!"));
         checkCommitFails();
         dbFailures.unfailCommits();
@@ -113,7 +113,7 @@ public class DataBrokerFailuresTest {
     }
 
     @Test
-    public void testFailButCommitAnywayReadWriteTransaction() throws TimeoutException, InterruptedException {
+    public void testFailButCommitAnywayReadWriteTransaction() throws Exception {
         dbFailures.failButCommitAnyway();
         checkCommitFails();
     }

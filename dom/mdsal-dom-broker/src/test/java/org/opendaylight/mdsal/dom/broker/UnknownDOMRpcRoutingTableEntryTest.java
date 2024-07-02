@@ -25,7 +25,7 @@ public class UnknownDOMRpcRoutingTableEntryTest {
     private static final List<DOMRpcImplementation> TEST_LIST = new ArrayList<>();
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> emptyImpls = new HashMap<>();
         final List<YangInstanceIdentifier> addList1 = new ArrayList<>();
         final List<YangInstanceIdentifier> addList2 = new ArrayList<>();

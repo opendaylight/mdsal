@@ -31,7 +31,7 @@ import org.opendaylight.yangtools.binding.util.BindingMap;
 
 public class ForwardedNotificationAdapterTest extends AbstractNotificationBrokerTest {
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(YangModuleInfoImpl.getInstance());
     }
 

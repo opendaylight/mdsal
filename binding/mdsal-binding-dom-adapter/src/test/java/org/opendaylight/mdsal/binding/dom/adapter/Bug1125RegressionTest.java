@@ -42,7 +42,7 @@ public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
                     TreeComplexUsesAugment.class);
 
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(
             BindingRuntimeHelpers.getYangModuleInfo(Top.class),
             BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));

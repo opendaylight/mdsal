@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -63,7 +62,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void testTransactionChainNoConflict() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testTransactionChainNoConflict() {
         final DOMTransactionChain txChain = domBroker.createTransactionChain();
         assertNotNull(txChain);
 
@@ -171,10 +170,13 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         firstWriteTxFuture.get();
     }
 
-    private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx)
-            throws InterruptedException, ExecutionException {
-        final ListenableFuture<Optional<NormalizedNode>> readFuture = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
-        final Optional<NormalizedNode> readedData = readFuture.get();
+    private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx) {
+        final Optional<NormalizedNode> readedData;
+        try {
+            readedData = readTx.read(OPERATIONAL, TestModel.TEST_PATH).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new AssertionError(e);
+        }
         assertTrue(readedData.isPresent());
     }
 

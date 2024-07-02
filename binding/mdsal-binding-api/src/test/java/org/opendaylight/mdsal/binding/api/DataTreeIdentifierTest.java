@@ -30,7 +30,7 @@ class DataTreeIdentifierTest {
         DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject2.class));
 
     @Test
-    void basicTest() throws Exception {
+    void basicTest() {
         assertEquals(LogicalDatastoreType.OPERATIONAL, TEST_IDENTIFIER1.datastore());
         assertEquals(InstanceIdentifier.create(TestDataObject1.class), TEST_IDENTIFIER1.path());
     }

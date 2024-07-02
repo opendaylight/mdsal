@@ -23,7 +23,7 @@ class NotificationRejectedExceptionTest {
     }
 
     @Test
-    void constructTest() throws Exception {
+    void constructTest() {
         final var ex = new NotificationRejectedException("test");
         assertEquals("test", ex.getMessage());
         assertNull(ex.getCause());
