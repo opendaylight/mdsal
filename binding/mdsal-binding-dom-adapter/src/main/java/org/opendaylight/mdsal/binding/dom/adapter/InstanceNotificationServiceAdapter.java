@@ -23,13 +23,12 @@ import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.binding.Key;
 import org.opendaylight.yangtools.binding.KeyedListNotification;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 
 final class InstanceNotificationServiceAdapter implements InstanceNotificationService {
     private static final class Builder extends BindingDOMAdapterBuilder<InstanceNotificationService> {
@@ -62,7 +61,7 @@ final class InstanceNotificationServiceAdapter implements InstanceNotificationSe
 
     @Override
     public <P extends DataObject, N extends InstanceNotification<N, P>> Registration registerListener(
-            final InstanceNotificationSpec<N, P> spec, final InstanceIdentifier<P> path, final Listener<P, N> listener,
+            final InstanceNotificationSpec<N, P> spec, final DataObjectReference<P> path, final Listener<P, N> listener,
             final Executor executor) {
         return registerListener(spec, path,
             new InstanceNotificationListenerAdapter<>(adapterContext, spec.type(), listener, executor));
@@ -71,14 +70,14 @@ final class InstanceNotificationServiceAdapter implements InstanceNotificationSe
     @Override
     public <P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
             Registration registerListener(final InstanceNotificationSpec<N, P> spec,
-                final KeyedInstanceIdentifier<P, K> path, final KeyedListListener<P, N, K> listener,
+                final DataObjectReference.WithKey<P, K> path, final KeyedListListener<P, N, K> listener,
                 final Executor executor) {
         return registerListener(spec, path,
             new KeyedInstanceNotificationListenerAdapter<>(adapterContext, spec.type(), listener, executor));
     }
 
     private @NonNull Registration registerListener(final @NonNull InstanceNotificationSpec<?, ?> spec,
-            final @NonNull InstanceIdentifier<?> path, final @NonNull DOMInstanceNotificationListener listener) {
+            final @NonNull DataObjectReference<?> path, final @NonNull DOMInstanceNotificationListener listener) {
         final var serializer = adapterContext.currentSerializer();
         return domNotifService.registerNotificationListener(
             DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, serializer.toYangInstanceIdentifier(path)),

@@ -17,7 +17,6 @@ import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.binding.Key;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
@@ -50,9 +49,9 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
-     * Return the {@link InstanceIdentifier} step this modification corresponds to.
+     * Return the {@link ExactDataObjectStep} step this modification corresponds to.
      *
-     * @return the {@link InstanceIdentifier} step this modification corresponds to
+     * @return the {@link ExactDataObjectStep} step this modification corresponds to
      */
     @NonNull ExactDataObjectStep<T> step();
 

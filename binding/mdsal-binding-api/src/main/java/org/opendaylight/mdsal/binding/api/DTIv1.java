@@ -18,20 +18,20 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * A serialization proxy for {@link DataTreeIdentifier}.
+ * A serialization proxy for {@link DataTreeMatch}.
  */
 final class DTIv1 implements Externalizable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    private DataTreeIdentifier<?> id;
+    private DataTreeMatch<?> id;
 
     @SuppressWarnings("redundantModifier")
     public DTIv1() {
         // For Externalizable
     }
 
-    DTIv1(final DataTreeIdentifier<?> id) {
+    DTIv1(final DataTreeMatch<?> id) {
         this.id = requireNonNull(id);
     }
 
@@ -43,7 +43,7 @@ final class DTIv1 implements Externalizable {
 
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-        id = DataTreeIdentifier.of(LogicalDatastoreType.readFrom(in), (InstanceIdentifier<?>) in.readObject());
+        id = DataTreeMatch.of(LogicalDatastoreType.readFrom(in), (InstanceIdentifier<?>) in.readObject());
     }
 
     @java.io.Serial

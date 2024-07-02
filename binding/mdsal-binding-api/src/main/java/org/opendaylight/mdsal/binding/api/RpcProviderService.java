@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Provides ability to registered Remote Procedure Call (RPC) service implementations. The RPCs are defined in YANG
@@ -39,7 +39,7 @@ public interface RpcProviderService extends BindingService {
      * @return A {@link Registration} controlling unregistration
      * @throws NullPointerException if any argument is {@code null}
      */
-    @NonNull Registration registerRpcImplementation(Rpc<?, ?> implementation, Set<InstanceIdentifier<?>> paths);
+    @NonNull Registration registerRpcImplementation(Rpc<?, ?> implementation, Set<DataObjectIdentifier<?>> paths);
 
     /**
      * Register a set of {@link Rpc} implementations.
@@ -79,7 +79,7 @@ public interface RpcProviderService extends BindingService {
      *                                  duplicates
      */
     default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         return registerRpcImplementations(indexImplementations(implementations), paths);
     }
 
@@ -109,7 +109,7 @@ public interface RpcProviderService extends BindingService {
      */
     @Deprecated(since = "13.0.1")
     @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations,
-        Set<InstanceIdentifier<?>> paths);
+        Set<DataObjectIdentifier<?>> paths);
 
     @SuppressWarnings("unchecked")
     private static @NonNull ImmutableClassToInstanceMap<Rpc<?, ?>> indexImplementations(

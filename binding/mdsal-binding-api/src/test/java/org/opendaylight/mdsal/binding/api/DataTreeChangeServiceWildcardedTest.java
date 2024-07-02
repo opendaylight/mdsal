@@ -33,7 +33,7 @@ class DataTreeChangeServiceWildcardedTest {
     @Test
     void testThrowExceptionOnRegister() {
         final var itemIID = InstanceIdentifier.builder(RegisterListenerTest.class).child(Item.class).build();
-        final var itemDTI = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, itemIID);
+        final var itemDTI = DataTreeMatch.of(LogicalDatastoreType.OPERATIONAL, itemIID);
 
         doCallRealMethod().when(dataBroker).registerDataListener(any(), any());
         final var dataListenerException = assertThrows(IllegalArgumentException.class,

@@ -16,7 +16,6 @@ import org.opendaylight.yangtools.binding.Action;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -40,7 +39,7 @@ public final class OSGiActionProviderService extends AbstractAdaptedService<Acti
     @Override
     public <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
             Registration registerImplementation(final ActionSpec<A, P> spec, final A implementation,
-                final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
+                final LogicalDatastoreType datastore, final Set<? extends DataObjectIdentifier<P>> validNodes) {
         return delegate.registerImplementation(spec, implementation, datastore, validNodes);
     }
 }

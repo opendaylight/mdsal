@@ -8,7 +8,9 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -19,10 +21,27 @@ public interface DataTreeCommitCohortRegistry {
      * Register commit cohort which will participate in three-phase commit protocols of write transaction in data broker
      * associated with this instance of extension.
      *
-     * @param subtree Subtree path on which commit cohort operates.
+     * @param datastore datastore to attach to
+     * @param subtree a {@link DataObjectReference} on which commit cohort operates
      * @param cohort Commit cohort
      * @return Registration object for DOM Data Three Commit cohort.
      */
-    <D extends DataObject> @NonNull Registration registerCommitCohort(@NonNull DataTreeIdentifier<D> subtree,
-        @NonNull DataTreeCommitCohort<D> cohort);
+    <D extends DataObject> @NonNull Registration registerCommitCohort(@NonNull LogicalDatastoreType datastore,
+        @NonNull DataObjectReference<D> subtree, @NonNull DataTreeCommitCohort<D> cohort);
+
+    /**
+     * Register commit cohort which will participate in three-phase commit protocols of write transaction in data broker
+     * associated with this instance of extension.
+     *
+     * @param subtree Subtree path on which commit cohort operates.
+     * @param cohort Commit cohort
+     * @return Registration object for DOM Data Three Commit cohort.
+     * @deprecated Use {@link #registerCommitCohort(LogicalDatastoreType, DataObjectReference, DataTreeCommitCohort)}
+     *             instead.
+     */
+    @Deprecated(since = "14.0.0", forRemoval = true)
+    default <D extends DataObject> @NonNull Registration registerCommitCohort(
+            final @NonNull DataTreeMatch<D> subtree, final @NonNull DataTreeCommitCohort<D> cohort) {
+        return registerCommitCohort(subtree.datastore(), subtree.path().toReference(), cohort);
+    }
 }

@@ -10,18 +10,19 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 final class BindingMountPointAdapter implements MountPoint {
-    private final InstanceIdentifier<?> identifier;
+    private final @NonNull DataObjectIdentifier<?> identifier;
     private final LoadingCache<Class<? extends BindingService>, Optional<BindingService>> services;
 
     BindingMountPointAdapter(final AdapterContext codec, final DOMMountPoint domMountPoint) {
-        identifier = codec.currentSerializer().fromYangInstanceIdentifier(domMountPoint.getIdentifier()).toLegacy();
+        identifier = codec.currentSerializer().fromYangInstanceIdentifier(domMountPoint.getIdentifier()).toIdentifier();
         services = CacheBuilder.newBuilder().build(new BindingDOMAdapterLoader(codec) {
             @Override
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -32,7 +33,7 @@ final class BindingMountPointAdapter implements MountPoint {
     }
 
     @Override
-    public InstanceIdentifier<?> getIdentifier() {
+    public DataObjectIdentifier<?> getIdentifier() {
         return identifier;
     }
 

@@ -12,9 +12,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * A {@link BindingService} which allows its users to submit YANG-modeled top-level (YANG 1.1)
@@ -40,11 +40,11 @@ public interface InstanceNotificationPublishService extends BindingService {
      * Interface for publishing {@link InstanceNotification} of a particular type bound to an instantiation. There are
      * three methods of submission, following the patters from {@link java.util.concurrent.BlockingQueue}:
      * <ul>
-     *   <li>{@link #putNotification(InstanceIdentifier, InstanceNotification)}, which may block indefinitely if the
+     *   <li>{@link #putNotification(DataObjectIdentifier, InstanceNotification)}, which may block indefinitely if the
      *       implementation cannot allocate resources to accept the notification,</li>
-     *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification)}, which does not block if face of
+     *   <li>{@link #offerNotification(DataObjectIdentifier, InstanceNotification)}, which does not block if face of
      *       resource starvation,</li>
-     *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification, long, TimeUnit)}, which may block for
+     *   <li>{@link #offerNotification(DataObjectIdentifier, InstanceNotification, long, TimeUnit)}, which may block for
      *       specified time if resources are thin.</li>
      * </ul>
      *
@@ -75,7 +75,8 @@ public interface InstanceNotificationPublishService extends BindingService {
          * @throws InterruptedException if interrupted while waiting
          * @throws NullPointerException if any argument is null
          */
-        void putNotification(@NonNull InstanceIdentifier<P> path, @NonNull N notification) throws InterruptedException;
+        void putNotification(@NonNull DataObjectIdentifier<P> path, @NonNull N notification)
+                throws InterruptedException;
 
         /**
          * Publishes a notification to subscribed listeners. This initiates the process of sending the notification, but
@@ -90,7 +91,7 @@ public interface InstanceNotificationPublishService extends BindingService {
          *         notification to its immediate registrants, or {@link #REJECTED} if resource constraints prevent
          * @throws NullPointerException if any argument is null
          */
-        @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull InstanceIdentifier<P> path,
+        @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DataObjectIdentifier<P> path,
             @NonNull N notification);
 
         /**
@@ -108,7 +109,7 @@ public interface InstanceNotificationPublishService extends BindingService {
          * @throws NullPointerException if any argument is null
          * @throws IllegalArgumentException if timeout is negative.
          */
-        @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull InstanceIdentifier<P> path,
+        @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DataObjectIdentifier<P> path,
             @NonNull N notification, long timeout, @NonNull TimeUnit unit) throws InterruptedException;
     }
 }
