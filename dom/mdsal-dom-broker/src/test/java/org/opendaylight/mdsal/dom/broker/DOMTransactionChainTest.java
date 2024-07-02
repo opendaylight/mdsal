@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -62,7 +63,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void testTransactionChainNoConflict() {
+    public void testTransactionChainNoConflict() throws Exception {
         final DOMTransactionChain txChain = domBroker.createTransactionChain();
         assertNotNull(txChain);
 
@@ -126,7 +127,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
          */
         txChain.close();
 
-        txChain.future().get(1000, TimeUnit.MILLISECONDS);
+        txChain.future().get(1, TimeUnit.SECONDS);
     }
 
     @Test
@@ -149,8 +150,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         assertEquals("Previous transaction OPER-0 is not ready yet", ex.getMessage());
     }
 
-    private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
-            throws InterruptedException, ExecutionException {
+    private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain) {
         final DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
         /**
          * We delete node in third transaction
@@ -165,9 +165,12 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         return tx;
     }
 
-    private static void assertCommitSuccessful(final ListenableFuture<? extends CommitInfo> firstWriteTxFuture)
-            throws InterruptedException, ExecutionException {
-        firstWriteTxFuture.get();
+    private static void assertCommitSuccessful(final ListenableFuture<? extends CommitInfo> firstWriteTxFuture) {
+        try {
+            firstWriteTxFuture.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new AssertionError(e);
+        }
     }
 
     private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx) {

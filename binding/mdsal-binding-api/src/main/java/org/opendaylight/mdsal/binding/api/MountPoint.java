@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.binding.api;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public interface MountPoint extends Identifiable<InstanceIdentifier<?>> {
+public interface MountPoint extends Identifiable<DataObjectIdentifier<?>> {
 
     <T extends BindingService> @NonNull Optional<T> getService(@NonNull Class<T> service);
 }

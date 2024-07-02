@@ -29,12 +29,12 @@ import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingAugmentationCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,9 +72,7 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
 
     protected final <D extends DataObject> @NonNull FluentFuture<Optional<D>> doRead(
             final DOMDataTreeReadOperations readOps, final LogicalDatastoreType store,
-            final InstanceIdentifier<D> path) {
-        checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
-
+            final DataObjectIdentifier<D> path) {
         final var codecWithPath = adapterContext.currentSerializer().getSubtreeCodecWithPath(path);
         final var domPath = codecWithPath.path();
         final var codec = codecWithPath.codec();
@@ -95,9 +93,7 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
     }
 
     protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
-            final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
-        checkArgument(!path.isWildcarded(), "Invalid exists of wildcarded path %s", path);
-
+            final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         final var codecWithPath = adapterContext.currentSerializer().getSubtreeCodecWithPath(path);
         final var domPath = codecWithPath.path();
         if (codecWithPath.codec() instanceof BindingAugmentationCodecTreeNode<?> augment) {
