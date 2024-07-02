@@ -14,7 +14,8 @@ import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 
 /**
  * Utility {@link ReadTransaction} implementation which forwards all interface method invocation to a delegate instance.
@@ -33,12 +34,12 @@ public class ForwardingReadTransaction extends ForwardingTransaction implements 
 
     @Override
     public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path) {
+            final DataObjectIdentifier<T> path) {
         return delegate.read(store, path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final DataObjectReference<?> path) {
         return delegate.exists(store, path);
     }
 
