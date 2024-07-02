@@ -65,7 +65,7 @@ public class BindingDOMRpcIntegrationTest {
     private final KnockKnockImpl knockRpcImpl = new KnockKnockImpl();
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         testContext = testFactory.getTestContext();

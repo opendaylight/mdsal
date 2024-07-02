@@ -66,7 +66,6 @@ public class DOMNotificationRouterTest {
         }
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
     public void complexTest() throws Exception {
         final var demandListener = mock(DemandListener.class);
@@ -154,7 +153,7 @@ public class DOMNotificationRouterTest {
     }
 
     @Test
-    public void close() throws Exception {
+    public void close() {
         final ExecutorService executor;
         final ExecutorService observer;
 

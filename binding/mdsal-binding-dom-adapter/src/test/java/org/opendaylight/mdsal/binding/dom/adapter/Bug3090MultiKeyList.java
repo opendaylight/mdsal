@@ -29,7 +29,7 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
     private static final InstanceIdentifier<Root> ROOT_PATH = InstanceIdentifier.create(Root.class);
 
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Root.class));
     }
 

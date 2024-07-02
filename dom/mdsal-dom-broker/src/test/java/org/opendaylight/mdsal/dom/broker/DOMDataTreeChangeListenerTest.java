@@ -43,7 +43,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void receiveOnDataInitialEventForEmptyRoot() throws Exception {
+    public void receiveOnDataInitialEventForEmptyRoot() {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         doNothing().when(listener).onInitialData();
 

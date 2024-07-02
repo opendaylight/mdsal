@@ -139,19 +139,19 @@ public class BindingDOMTransactionChainAdapterTest {
     }
 
     @Test
-    public void readTransactionTest() throws Exception {
+    public void readTransactionTest() {
         type.mockRead(transactionChain);
         assertNotNull(bindingDOMTransactionChainAdapter.newReadOnlyTransaction());
     }
 
     @Test
-    public void writeTransactionTest() throws Exception {
+    public void writeTransactionTest() {
         type.mockWrite(transactionChain);
         assertNotNull(bindingDOMTransactionChainAdapter.newWriteOnlyTransaction());
     }
 
     @Test
-    public void readWriteTransactionTest() throws Exception {
+    public void readWriteTransactionTest() {
         mockReadWrite(transactionChain);
         assertNotNull(bindingDOMTransactionChainAdapter.newReadWriteTransaction());
     }

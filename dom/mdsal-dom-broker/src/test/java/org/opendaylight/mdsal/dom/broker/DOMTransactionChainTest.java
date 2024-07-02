@@ -63,7 +63,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void testTransactionChainNoConflict() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testTransactionChainNoConflict() throws Exception {
         final DOMTransactionChain txChain = domBroker.createTransactionChain();
         assertNotNull(txChain);
 
@@ -127,7 +127,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
          */
         txChain.close();
 
-        txChain.future().get(1000, TimeUnit.MILLISECONDS);
+        txChain.future().get(1, TimeUnit.SECONDS);
     }
 
     @Test
@@ -150,8 +150,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         assertEquals("Previous transaction OPER-0 is not ready yet", ex.getMessage());
     }
 
-    private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
-            throws InterruptedException, ExecutionException {
+    private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain) {
         final DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
         /**
          * We delete node in third transaction
@@ -166,15 +165,21 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         return tx;
     }
 
-    private static void assertCommitSuccessful(final ListenableFuture<? extends CommitInfo> firstWriteTxFuture)
-            throws InterruptedException, ExecutionException {
-        firstWriteTxFuture.get();
+    private static void assertCommitSuccessful(final ListenableFuture<? extends CommitInfo> firstWriteTxFuture) {
+        try {
+            firstWriteTxFuture.get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new AssertionError(e);
+        }
     }
 
-    private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx)
-            throws InterruptedException, ExecutionException {
-        final ListenableFuture<Optional<NormalizedNode>> readFuture = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
-        final Optional<NormalizedNode> readedData = readFuture.get();
+    private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx) {
+        final Optional<NormalizedNode> readedData;
+        try {
+            readedData = readTx.read(OPERATIONAL, TestModel.TEST_PATH).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new AssertionError(e);
+        }
         assertTrue(readedData.isPresent());
     }
 

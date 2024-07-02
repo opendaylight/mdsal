@@ -45,7 +45,7 @@ public abstract class AbstractSchemaAwareTest {
         setupWithRuntimeContext(getRuntimeContext());
     }
 
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() {
         return cacheModuleInfos(Thread.currentThread().getContextClassLoader());
     }
 

@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 class DataValidationFailedExceptionTest {
     @Test
-    void dataValidationFailedExceptionTest() throws Exception {
+    void dataValidationFailedExceptionTest() {
         final var testObj = new TestClass();
         final var dataValidationFailedException = new DataValidationFailedException(TestClass.class, testObj, "test");
         assertEquals(testObj, dataValidationFailedException.getPath());

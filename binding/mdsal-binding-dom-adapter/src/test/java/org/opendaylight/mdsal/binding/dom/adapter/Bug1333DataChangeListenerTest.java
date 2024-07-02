@@ -39,7 +39,7 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
             TOP_PATH.child(TopLevelList.class).augmentation(TreeComplexUsesAugment.class);
 
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Top.class),
             BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
     }

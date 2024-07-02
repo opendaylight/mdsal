@@ -24,7 +24,7 @@ class TransactionCommitDeadlockExceptionTest {
     private RpcError rpcError;
 
     @Test
-    void transactionCommitDeadlockExceptionTest() throws Exception {
+    void transactionCommitDeadlockExceptionTest() {
         final var message = TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER.get().getMessage();
         final var ex = new TransactionCommitDeadlockException(message, rpcError);
         assertSame(message, ex.getMessage());
