@@ -8,14 +8,18 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.DataChangeListener;
 import org.opendaylight.mdsal.binding.api.DataListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -33,44 +37,37 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     }
 
     @Override
-    public <T extends DataObject> Registration registerTreeChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
-        return getDelegate().registerTreeChangeListener(toDomTreeIdentifier(treeId),
-            new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), treeId, listener));
+    public <T extends DataObject> Registration registerTreeChangeListener(final LogicalDatastoreType datastore,
+            final DataObjectReference<T> subtrees, final DataTreeChangeListener<T> listener) {
+        return getDelegate().registerTreeChangeListener(toDomTreeIdentifier(datastore, subtrees),
+            new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), datastore, subtrees, listener));
     }
 
     @Override
     @Deprecated(since = "13.0.0", forRemoval = true)
-    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
-        return getDelegate().registerLegacyTreeChangeListener(toDomTreeIdentifier(treeId),
-            new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), treeId, listener));
+    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final LogicalDatastoreType datastore,
+            final DataObjectReference<T> subtrees, final DataTreeChangeListener<T> listener) {
+        return getDelegate().registerLegacyTreeChangeListener(toDomTreeIdentifier(datastore, subtrees),
+            new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), datastore, subtrees, listener));
     }
 
     @Override
-    public <T extends DataObject> Registration registerDataListener(final DataTreeIdentifier<T> treeId,
-            final DataListener<T> listener) {
-        return getDelegate().registerTreeChangeListener(toDomTreeInstance(treeId),
+    public <T extends DataObject> Registration registerDataListener(final LogicalDatastoreType datastore,
+            final DataObjectIdentifier<T> path, final DataListener<T> listener) {
+        return getDelegate().registerTreeChangeListener(toDomTreeIdentifier(datastore, path),
             new BindingDOMDataListenerAdapter<>(adapterContext(), listener));
     }
 
     @Override
-    public <T extends DataObject> Registration registerDataChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataChangeListener<T> listener) {
-        return getDelegate().registerTreeChangeListener(toDomTreeInstance(treeId),
+    public <T extends DataObject> Registration registerDataChangeListener(final LogicalDatastoreType datastore,
+            final DataObjectIdentifier<T> path, final DataChangeListener<T> listener) {
+        return getDelegate().registerTreeChangeListener(toDomTreeIdentifier(datastore, path),
             new BindingDOMDataChangeListenerAdapter<>(adapterContext(), listener));
     }
 
-    private @NonNull DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
-        return DOMDataTreeIdentifier.of(treeId.datastore(),
-            currentSerializer().toYangInstanceIdentifier(treeId.path()));
-    }
-
-    private @NonNull DOMDataTreeIdentifier toDomTreeInstance(final DataTreeIdentifier<?> treeId) {
-        final var instanceIdentifier = treeId.path();
-        if (instanceIdentifier.isWildcarded()) {
-            throw new IllegalArgumentException("Cannot register listener for wildcard " + instanceIdentifier);
-        }
-        return toDomTreeIdentifier(treeId);
+    @NonNullByDefault
+    private DOMDataTreeIdentifier toDomTreeIdentifier(final LogicalDatastoreType datastore,
+            final DataObjectReference<?> subtrees) {
+        return DOMDataTreeIdentifier.of(datastore, currentSerializer().toYangInstanceIdentifier(subtrees));
     }
 }
