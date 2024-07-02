@@ -15,12 +15,12 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
@@ -33,10 +33,13 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
  * but only child nodes which are directly accessed by user of data object modification.
  */
 final class LazyDataTreeModification<T extends DataObject> implements DataTreeModification<T> {
-    private final @NonNull DataTreeIdentifier<T> path;
+    private final @NonNull LogicalDatastoreType datastore;
+    private final @NonNull DataObjectIdentifier<T> path;
     private final @NonNull DataObjectModification<T> rootNode;
 
-    private LazyDataTreeModification(final DataTreeIdentifier<T> path, final DataObjectModification<T> modification) {
+    private LazyDataTreeModification(final LogicalDatastoreType datastore, final DataObjectIdentifier<T> path,
+            final DataObjectModification<T> modification) {
+        this.datastore = requireNonNull(datastore);
         this.path = requireNonNull(path);
         rootNode = requireNonNull(modification);
     }
@@ -49,7 +52,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
         final var codec = serializer.getSubtreeCodec(bindingPath);
         final var modification = LazyDataObjectModification.from(codec, domChange.getRootNode());
         return modification == null ? null
-            : new LazyDataTreeModification(DataTreeIdentifier.of(datastoreType, bindingPath), modification);
+            : new LazyDataTreeModification(datastoreType, bindingPath.toIdentifier(), modification);
     }
 
     static <T extends DataObject> @Nullable DataTreeModification<T> from(final CurrentAdapterSerializer serializer,
@@ -62,7 +65,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
         final var modification = (DataObjectModification<T>) LazyDataObjectModification.from(codec,
             candidate.getRootNode());
         return modification == null ? null
-            : new LazyDataTreeModification<>(DataTreeIdentifier.of(domRootPath.datastore(), bindingPath), modification);
+            : new LazyDataTreeModification<>(domRootPath.datastore(), bindingPath.toIdentifier(), modification);
     }
 
     static <T extends DataObject> @NonNull List<DataTreeModification<T>> from(final CurrentAdapterSerializer codec,
@@ -90,17 +93,23 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     }
 
     @Override
-    public DataObjectModification<T> getRootNode() {
-        return rootNode;
+    public LogicalDatastoreType datastore() {
+        return datastore;
     }
 
     @Override
-    public DataTreeIdentifier<T> getRootPath() {
+    public DataObjectIdentifier<T> path() {
         return path;
     }
 
     @Override
+    public DataObjectModification<T> getRootNode() {
+        return rootNode;
+    }
+
+
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("path", path).add("rootNode", rootNode).toString();
+        return MoreObjects.toStringHelper(this).add("path", getRootPath()).add("rootNode", rootNode).toString();
     }
 }
