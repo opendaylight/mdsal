@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.util;
 import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Implementation of {@link TypedWriteTransaction}.
@@ -25,35 +25,35 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
-    public final <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data) {
+    public final <T extends DataObject> void put(final DataObjectIdentifier<T> path, final T data) {
         delegate().put(getDatastoreType(), path, data);
         postOperation();
     }
 
     @Override
     @Deprecated
-    public final <T extends DataObject> void mergeParentStructurePut(final InstanceIdentifier<T> path,
+    public final <T extends DataObject> void mergeParentStructurePut(final DataObjectIdentifier<T> path,
             final T data) {
         delegate().mergeParentStructurePut(getDatastoreType(), path, data);
         postOperation();
     }
 
     @Override
-    public final <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data) {
+    public final <T extends DataObject> void merge(final DataObjectIdentifier<T> path, final T data) {
         delegate().merge(getDatastoreType(), path, data);
         postOperation();
     }
 
     @Override
     @Deprecated
-    public final <T extends DataObject> void mergeParentStructureMerge(final InstanceIdentifier<T> path,
+    public final <T extends DataObject> void mergeParentStructureMerge(final DataObjectIdentifier<T> path,
             final T data) {
         delegate().mergeParentStructureMerge(getDatastoreType(), path, data);
         postOperation();
     }
 
     @Override
-    public final void delete(final InstanceIdentifier<?> path) {
+    public final void delete(final DataObjectIdentifier<?> path) {
         delegate().delete(getDatastoreType(), path);
         postOperation();
     }

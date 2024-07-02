@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Read transaction which is specific to a single logical datastore (configuration or operational). Designed for use
@@ -31,23 +31,23 @@ public interface TypedReadTransaction<D extends Datastore> extends Transaction {
     /**
      * Reads an object from the given path.
      *
-     * @see ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)
+     * @see ReadTransaction#read(LogicalDatastoreType, DataObjectIdentifier)
      *
      * @param path The path to read from.
      * @param <T> The type of the expected object.
      * @return A future providing access to the result of the read, when it’s available, or any error encountered.
      */
-    <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path);
+    <T extends DataObject> FluentFuture<Optional<T>> read(DataObjectIdentifier<T> path);
 
     /**
      * Determines if an object exists at the given path.
      *
-     * @see ReadTransaction#exists(LogicalDatastoreType, InstanceIdentifier)
+     * @see ReadTransaction#exists(LogicalDatastoreType, DataObjectIdentifier)
      *
      * @param path The path to read from.
      * @return A future providing access to the result of the check, when it’s available, or any error encountered.
      */
-    FluentFuture<Boolean> exists(InstanceIdentifier<?> path);
+    FluentFuture<Boolean> exists(DataObjectIdentifier<?> path);
 
     /**
      * Executes a {@link QueryExpression}.

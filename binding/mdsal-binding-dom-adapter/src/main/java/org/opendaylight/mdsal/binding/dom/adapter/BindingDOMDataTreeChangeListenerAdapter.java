@@ -13,11 +13,11 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 /**
@@ -33,12 +33,12 @@ final class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implem
 
     private boolean initialSyncDone;
 
-    BindingDOMDataTreeChangeListenerAdapter(final AdapterContext adapterContext, final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
+    BindingDOMDataTreeChangeListenerAdapter(final AdapterContext adapterContext, final LogicalDatastoreType store,
+            final DataObjectReference<T> treeId, final DataTreeChangeListener<T> listener) {
         this.adapterContext = requireNonNull(adapterContext);
         this.listener = requireNonNull(listener);
-        store = treeId.datastore();
-        augment = extractAugment(treeId.path().getTargetType());
+        this.store = requireNonNull(store);
+        augment = extractAugment(treeId.lastStep().type());
     }
 
     @SuppressWarnings("unchecked")
