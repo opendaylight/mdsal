@@ -16,8 +16,8 @@ import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.InstanceNotification;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +54,9 @@ abstract class AbstractInstanceNotificationListenerAdapter<P extends DataObject,
             return;
         }
 
-        final var bindingPath = serializer.fromYangInstanceIdentifier(path.path()).toLegacy();
+        final var bindingPath = serializer.fromYangInstanceIdentifier(path.path()).toIdentifier();
         executor.execute(() -> onNotification(delegate, bindingPath, castNotification));
     }
 
-    abstract void onNotification(@NonNull L delegate, @NonNull InstanceIdentifier<?> path, @NonNull N notification);
+    abstract void onNotification(@NonNull L delegate, @NonNull DataObjectIdentifier<?> path, @NonNull N notification);
 }

@@ -15,16 +15,17 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -74,16 +75,16 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
     }
 
     @Override
-    public <T extends DataObject> Registration registerTreeChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
-        return getTreeChangeService().registerTreeChangeListener(treeId, listener);
+    public <T extends DataObject> Registration registerTreeChangeListener(final LogicalDatastoreType datastore,
+            final DataObjectReference<T> subtrees, final DataTreeChangeListener<T> listener) {
+        return getTreeChangeService().registerTreeChangeListener(datastore, subtrees, listener);
     }
 
     @Override
     @Deprecated(since = "13.0.0", forRemoval = true)
-    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
-        return getTreeChangeService().registerLegacyTreeChangeListener(treeId, listener);
+    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final LogicalDatastoreType datastore,
+            final DataObjectReference<T> subtrees, final DataTreeChangeListener<T> listener) {
+        return getTreeChangeService().registerLegacyTreeChangeListener(datastore, subtrees, listener);
     }
 
     private @NonNull DataTreeChangeService getTreeChangeService() {

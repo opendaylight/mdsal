@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationService.Listener;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.InstanceNotification;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 final class InstanceNotificationListenerAdapter<P extends DataObject, N extends InstanceNotification<N, P>>
         extends AbstractInstanceNotificationListenerAdapter<P, N, Listener<P, N>> {
@@ -22,7 +22,7 @@ final class InstanceNotificationListenerAdapter<P extends DataObject, N extends 
 
     @Override
     @SuppressWarnings("unchecked")
-    void onNotification(final Listener<P, N> delegate, final InstanceIdentifier<?> path, final N notification) {
-        delegate.onNotification((InstanceIdentifier<P>) path, notification);
+    void onNotification(final Listener<P, N> delegate, final DataObjectIdentifier<?> path, final N notification) {
+        delegate.onNotification((DataObjectIdentifier<P>) path, notification);
     }
 }

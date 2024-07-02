@@ -11,6 +11,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.CommitCohortExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -24,10 +25,11 @@ final class BindingDOMDataTreeCommitCohortRegistryAdapter
     @Override
     public <D extends DataObject> Registration registerCommitCohort(final DataTreeIdentifier<D> subtree,
             final DataTreeCommitCohort<D> cohort) {
-        final var target = subtree.path().getTargetType();
-        final var adapter = new BindingDOMDataTreeCommitCohortAdapter<>(adapterContext(), cohort,
-            Augmentation.class.isAssignableFrom(target) ? target : null);
-        final var domPath = currentSerializer().toDOMDataTreeIdentifier(subtree);
-        return getDelegate().registerCommitCohort(domPath, adapter);
+        final var path = subtree.path();
+        final var target = path.getTargetType();
+        return getDelegate().registerCommitCohort(
+            DOMDataTreeIdentifier.of(subtree.datastore(), currentSerializer().toYangInstanceIdentifier(path)),
+            new BindingDOMDataTreeCommitCohortAdapter<>(adapterContext(), cohort,
+                Augmentation.class.isAssignableFrom(target) ? target : null));
     }
 }

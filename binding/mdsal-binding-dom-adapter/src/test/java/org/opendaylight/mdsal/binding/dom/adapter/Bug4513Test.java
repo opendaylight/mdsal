@@ -19,7 +19,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.DataTreeMatch;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -48,7 +48,7 @@ class Bug4513Test extends AbstractDataBrokerTest {
 
         final var wildCard = InstanceIdentifier.builder(ListenerTest.class).child(ListItem.class).build();
         try (var reg = dataBroker.registerDataTreeChangeListener(
-                DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, wildCard), listener)) {
+            DataTreeMatch.of(LogicalDatastoreType.OPERATIONAL, wildCard), listener)) {
             final var item = writeListItem();
 
             verify(listener, timeout(100)).onDataTreeChanged(captor.capture());

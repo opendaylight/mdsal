@@ -10,9 +10,8 @@ package org.opendaylight.mdsal.dom.api;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public interface DOMMountPointListener {
-
+    // FIXME: pass down DOMMountPoint itself
     void onMountPointCreated(YangInstanceIdentifier path);
 
     void onMountPointRemoved(YangInstanceIdentifier path);
-
 }

@@ -57,7 +57,7 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
     @Test
     public void testInstanceRegistration() {
         adapter.registerImplementation(ActionSpec.builder(Cont.class).build(Foo.class), FOO,
-            LogicalDatastoreType.OPERATIONAL, Set.of(InstanceIdentifier.create(Cont.class)));
+            LogicalDatastoreType.OPERATIONAL, Set.of(InstanceIdentifier.create(Cont.class).toIdentifier()));
 
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
             LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of(new NodeIdentifier(Cont.QNAME)))));
@@ -65,11 +65,10 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
 
     @Test
     public void testKeyedInstanceRegistration() {
-        final InstanceIdentifier<Lstio> identifier = InstanceIdentifier.builder(Lstio.class, new LstioKey(LIST_KEY))
-                .build();
+        final var lstio = InstanceIdentifier.builder(Lstio.class, new LstioKey(LIST_KEY)).build().toIdentifier();
 
         adapter.registerImplementation(ActionSpec.builder(Lstio.class).build(Fooio.class), FOOIO,
-                LogicalDatastoreType.OPERATIONAL, Set.of(identifier));
+                LogicalDatastoreType.OPERATIONAL, Set.of(lstio));
 
         final YangInstanceIdentifier lstioYIID = YangInstanceIdentifier.builder()
                 .node(Lstio.QNAME)

@@ -17,8 +17,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.InstanceNotification;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
@@ -35,13 +35,13 @@ final class PublisherAdapter<N extends InstanceNotification<N, P>, P extends Dat
     }
 
     @Override
-    public void putNotification(final InstanceIdentifier<P> path, final N notification) throws InterruptedException {
+    public void putNotification(final DataObjectIdentifier<P> path, final N notification) throws InterruptedException {
         final var serializer = currentSerializer();
         getDelegate().putNotification(toDomPath(serializer, path), toDomNotification(serializer, notification));
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final InstanceIdentifier<P> path,
+    public ListenableFuture<? extends Object> offerNotification(final DataObjectIdentifier<P> path,
             final N notification) {
         final var serializer = currentSerializer();
         return toBindingResult(getDelegate().offerNotification(toDomPath(serializer, path),
@@ -49,8 +49,8 @@ final class PublisherAdapter<N extends InstanceNotification<N, P>, P extends Dat
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final InstanceIdentifier<P> path, final N notification,
-            final long timeout,  final TimeUnit unit) throws InterruptedException {
+    public ListenableFuture<? extends Object> offerNotification(final DataObjectIdentifier<P> path,
+            final N notification, final long timeout, final TimeUnit unit) throws InterruptedException {
         final var serializer = currentSerializer();
         return toBindingResult(getDelegate().offerNotification(toDomPath(serializer, path),
             toDomNotification(serializer, notification), timeout, unit));
@@ -62,7 +62,7 @@ final class PublisherAdapter<N extends InstanceNotification<N, P>, P extends Dat
     }
 
     private static @NonNull DOMDataTreeIdentifier toDomPath(final CurrentAdapterSerializer serializer,
-            final InstanceIdentifier<?> path) {
+            final DataObjectIdentifier<?> path) {
         return DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, serializer.toYangInstanceIdentifier(path));
     }
 

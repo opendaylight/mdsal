@@ -12,9 +12,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -42,7 +42,7 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
 
     @Override
     public Registration registerRpcImplementation(final Rpc<?, ?> implementation,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         return delegate.registerRpcImplementation(implementation, paths);
     }
 
@@ -53,7 +53,7 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
 
     @Override
     public Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         return delegate.registerRpcImplementations(implementations, paths);
     }
 
@@ -66,7 +66,7 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
     @Override
     @Deprecated(since = "13.0.1")
     public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         return delegate.registerRpcImplementations(implementations, paths);
     }
 }
