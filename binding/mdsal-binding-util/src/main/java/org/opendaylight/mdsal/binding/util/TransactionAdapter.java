@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Adapter allowing managed, datastore-constrained transactions to be used with methods expecting
@@ -33,6 +33,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @Deprecated
 public final class TransactionAdapter {
     private TransactionAdapter() {
+        // Hidden on purpose
     }
 
     /**
@@ -79,7 +80,7 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+        public <T extends DataObject> void put(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
                 final T data) {
             checkStore(store);
             delegate.put(path, data);
@@ -87,13 +88,13 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
-                final InstanceIdentifier<T> path, final T data) {
+                final DataObjectIdentifier<T> path, final T data) {
             checkStore(store);
             delegate.mergeParentStructurePut(path, data);
         }
 
         @Override
-        public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+        public <T extends DataObject> void merge(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
                 final T data) {
             checkStore(store);
             delegate.merge(path, data);
@@ -101,7 +102,7 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
-                final InstanceIdentifier<T> path, final T data) {
+                final DataObjectIdentifier<T> path, final T data) {
             checkStore(store);
             delegate.mergeParentStructureMerge(path, data);
         }
@@ -112,7 +113,7 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        public void delete(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
             checkStore(store);
             delegate.delete(path);
         }
@@ -151,13 +152,13 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
-                final InstanceIdentifier<T> path) {
+                final DataObjectIdentifier<T> path) {
             checkStore(store);
             return delegate().read(path);
         }
 
         @Override
-        public FluentFuture<Boolean> exists(final LogicalDatastoreType store,final InstanceIdentifier<?> path) {
+        public FluentFuture<Boolean> exists(final LogicalDatastoreType store,final DataObjectIdentifier<?> path) {
             checkStore(store);
             return delegate().exists(path);
         }
