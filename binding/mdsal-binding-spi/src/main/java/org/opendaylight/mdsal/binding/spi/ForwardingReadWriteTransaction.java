@@ -15,7 +15,9 @@ import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
+
 
 /**
  * Utility {@link ReadWriteTransaction} implementation which forwards all interface method invocation to a delegate
@@ -34,7 +36,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
-    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         delegate.put(store, path, data);
     }
@@ -42,18 +44,23 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final T data) {
+            final DataObjectIdentifier<T> path, final T data) {
         delegate.mergeParentStructurePut(store, path, data);
     }
 
     @Override
     public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path) {
+            final DataObjectIdentifier<T> path) {
         return delegate.read(store, path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
+        return delegate.exists(store, path);
+    }
+
+    @Override
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final DataObjectReference<?> path) {
         return delegate.exists(store, path);
     }
 
@@ -63,7 +70,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
-    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         delegate.merge(store, path, data);
     }
@@ -71,7 +78,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final T data) {
+            final DataObjectIdentifier<T> path, final T data) {
         delegate.mergeParentStructureMerge(store, path, data);
     }
 
@@ -81,7 +88,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
-    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public void delete(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         delegate.delete(store, path);
     }
 
