@@ -17,6 +17,7 @@ import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -25,7 +26,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * A combination of an {@link InstanceNotification} class and its corresponding instantiation wildcard, expressed as
- * an {@link InstanceIdentifier}. This glue is required because instance notification interfaces are generated at the
+ * an {@link DataObjectReference}. This glue is required because instance notification interfaces are generated at the
  * place of their definition, most importantly in {@code grouping} and we actually need to bind to a particular
  * instantiation (e.g. a place where {@code uses} references that grouping).
  *
@@ -35,24 +36,25 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @Beta
 public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>, P extends DataObject>
         implements Immutable {
-    private final @NonNull InstanceIdentifier<P> path;
+    private final @NonNull DataObjectReference<P> path;
     private final @NonNull Class<N> type;
 
-    private InstanceNotificationSpec(final Class<N> type, final InstanceIdentifier<P> path) {
+    private InstanceNotificationSpec(final @NonNull Class<N> type, final @NonNull InstanceIdentifier<P> path) {
         this.type = requireNonNull(type);
-        this.path = requireNonNull(path);
+        this.path = path.toReference();
     }
 
-    public static <P extends ChildOf<? extends DataRoot<?>>> @NonNull Builder<P> builder(final Class<P> container) {
+    public static <P extends ChildOf<? extends DataRoot<?>>> @NonNull Builder<P> builder(
+            final @NonNull Class<P> container) {
         return new Builder<>(InstanceIdentifier.builder(container));
     }
 
     public static <C extends ChoiceIn<? extends DataRoot<?>> & DataObject, P extends ChildOf<? super C>>
-            @NonNull Builder<P> builder(final Class<C> caze, final Class<P> container) {
+            @NonNull Builder<P> builder(final @NonNull Class<C> caze, final @NonNull Class<P> container) {
         return new Builder<>(InstanceIdentifier.builder(caze, container));
     }
 
-    public @NonNull InstanceIdentifier<P> path() {
+    public @NonNull DataObjectReference<P> path() {
         return path;
     }
 
@@ -67,14 +69,8 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof InstanceNotificationSpec)) {
-            return false;
-        }
-        final var other = (InstanceNotificationSpec<?, ?>) obj;
-        return type.equals(other.type) && path.equals(other.path);
+        return obj == this || obj instanceof final InstanceNotificationSpec<?, ?> other
+            && type.equals(other.type) && path.equals(other.path);
     }
 
     @Override
@@ -90,25 +86,25 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
             this.pathBuilder = requireNonNull(pathBuilder);
         }
 
-        public <N extends ChildOf<? super P>> @NonNull Builder<N> withPathChild(final Class<N> container) {
+        public <N extends ChildOf<? super P>> @NonNull Builder<N> withPathChild(final @NonNull Class<N> container) {
             pathBuilder.child(container);
             return castThis();
         }
 
         public <C extends ChoiceIn<? super P> & DataObject, N extends ChildOf<? super C>>
-                @NonNull Builder<N> withPathChild(final Class<C> caze, final Class<N> container) {
+                @NonNull Builder<N> withPathChild(final @NonNull Class<C> caze, final @NonNull Class<N> container) {
             pathBuilder.child(caze, container);
             return castThis();
         }
 
-        public <N extends DataObject & Augmentation<? super P>> @NonNull Builder<N> withPathAugmentation(
-                final Class<N> container) {
-            pathBuilder.augmentation(container);
+        public <A extends Augmentation<? super P>> @NonNull Builder<A> withPathAugmentation(
+                final @NonNull Class<A> augmentation) {
+            pathBuilder.augmentation(augmentation);
             return castThis();
         }
 
         public <N extends InstanceNotification<N, P>> @NonNull InstanceNotificationSpec<N, P> build(
-                final Class<N> type) {
+                final @NonNull Class<N> type) {
             return new InstanceNotificationSpec<>(type, pathBuilder.build());
         }
 

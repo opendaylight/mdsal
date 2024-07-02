@@ -21,9 +21,9 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
@@ -44,7 +44,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
 
     @Override
     public Registration registerRpcImplementation(final Rpc<?, ?> implementation,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         final var serializer = currentSerializer();
         return register(serializer, implementation, toYangInstanceIdentifiers(serializer, paths));
     }
@@ -56,7 +56,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
 
     @Override
     public Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         final var serializer = currentSerializer();
         return register(serializer, implementations, toYangInstanceIdentifiers(serializer, paths));
     }
@@ -70,7 +70,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     @Override
     @Deprecated(since = "13.0.1")
     public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
-            final Set<InstanceIdentifier<?>> paths) {
+            final Set<DataObjectIdentifier<?>> paths) {
         return registerRpcImplementations(implementations.values(), paths);
     }
 
@@ -107,9 +107,9 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     }
 
     private static List<YangInstanceIdentifier> toYangInstanceIdentifiers(final CurrentAdapterSerializer serializer,
-            final Set<InstanceIdentifier<?>> identifiers) {
+            final Set<DataObjectIdentifier<?>> identifiers) {
         return identifiers.stream()
-            .map(binding -> serializer.toCachedYangInstanceIdentifier(binding.toIdentifier()))
+            .map(binding -> serializer.toCachedYangInstanceIdentifier(binding))
             .collect(Collectors.toList());
     }
 

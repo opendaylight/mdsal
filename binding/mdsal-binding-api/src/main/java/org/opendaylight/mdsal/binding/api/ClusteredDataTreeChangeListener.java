@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * ClusteredDataTreeChangeListener is a marker interface to enable data tree change notifications on all
@@ -20,9 +22,8 @@ import org.opendaylight.yangtools.binding.DataObject;
  *
  * @param <T> the DataObject type
  * @author Thomas Pantelis
- * @deprecated Use plain {@link DataTreeChangeListener} and use
- *             {@link DataTreeChangeService#registerDataChangeListener(DataTreeIdentifier, DataChangeListener)}
- *             instead.
+ * @deprecated Use plain {@link DataTreeChangeListener} and use {@link DataTreeChangeService#registerDataChangeListener(
+ *             LogicalDatastoreType, DataObjectIdentifier, DataChangeListener)} instead.
  */
 @Deprecated(since = "13.0.0", forRemoval = true)
 public interface ClusteredDataTreeChangeListener<T extends DataObject> extends DataTreeChangeListener<T> {

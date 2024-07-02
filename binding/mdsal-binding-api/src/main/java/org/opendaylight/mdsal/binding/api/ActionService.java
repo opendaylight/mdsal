@@ -51,7 +51,7 @@ public interface ActionService extends BindingService {
      * @throws IllegalArgumentException when {@code actionInterface} does not conform to the Binding Specification
      */
     <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
-        ActionSpec<A, P> spec, Set<DataTreeIdentifier<P>> validNodes);
+        ActionSpec<A, P> spec, Set<DataTreeMatch<P>> validNodes);
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec) {
@@ -60,7 +60,7 @@ public interface ActionService extends BindingService {
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final LogicalDatastoreType dataStore, final InstanceIdentifier<P> path) {
-        return getActionHandle(spec, ImmutableSet.of(DataTreeIdentifier.of(dataStore, path)));
+        return getActionHandle(spec, ImmutableSet.of(DataTreeMatch.of(dataStore, path)));
     }
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
@@ -69,7 +69,7 @@ public interface ActionService extends BindingService {
     }
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
-            final ActionSpec<A, P> spec, @SuppressWarnings("unchecked") final DataTreeIdentifier<P>... nodes) {
+            final ActionSpec<A, P> spec, @SuppressWarnings("unchecked") final DataTreeMatch<P>... nodes) {
         return getActionHandle(spec, ImmutableSet.copyOf(nodes));
     }
 }

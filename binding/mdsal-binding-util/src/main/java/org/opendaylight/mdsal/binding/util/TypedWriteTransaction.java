@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.binding.api.Transaction;
 import org.opendaylight.mdsal.binding.api.WriteOperations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Write transaction which is specific to a single logical datastore (configuration or operational). Designed for use
@@ -27,19 +27,19 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
     /**
      * Writes an object to the given path.
      *
-     * @see WriteOperations#put(LogicalDatastoreType, InstanceIdentifier, DataObject)
+     * @see WriteOperations#put(LogicalDatastoreType, DataObjectIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to write.
      * @param <T> The type of the provided object.
      */
-    <T extends DataObject> void put(InstanceIdentifier<T> path, T data);
+    <T extends DataObject> void put(DataObjectIdentifier<T> path, T data);
 
     /**
      * Writes an object to the given path, creating significant parents, like presence containers and list entries,
      * if needed.
      *
-     * @see WriteOperations#mergeParentStructurePut(LogicalDatastoreType, InstanceIdentifier, DataObject)
+     * @see WriteOperations#mergeParentStructurePut(LogicalDatastoreType, DataObjectIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to write.
@@ -47,23 +47,23 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      */
     // TODO: can we come up with a better name?
     @Beta
-    <T extends DataObject> void mergeParentStructurePut(InstanceIdentifier<T> path, T data);
+    <T extends DataObject> void mergeParentStructurePut(DataObjectIdentifier<T> path, T data);
 
     /**
      * Merges an object with the data already present at the given path.
      *
-     * @see WriteOperations#merge(LogicalDatastoreType, InstanceIdentifier, DataObject)
+     * @see WriteOperations#merge(LogicalDatastoreType, DataObjectIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to merge.
      * @param <T> The type of the provided object.
      */
-    <T extends DataObject> void merge(InstanceIdentifier<T> path, T data);
+    <T extends DataObject> void merge(DataObjectIdentifier<T> path, T data);
 
     /**
      * Merges an object with the data already present at the given path, creating missing parents if requested.
      *
-     * @see WriteOperations#merge(LogicalDatastoreType, InstanceIdentifier, DataObject)
+     * @see WriteOperations#merge(LogicalDatastoreType, DataObjectIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to merge.
@@ -71,21 +71,22 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      */
     // TODO: can we come up with a better name?
     @Beta
-    <T extends DataObject> void mergeParentStructureMerge(InstanceIdentifier<T> path, T data);
+    <T extends DataObject> void mergeParentStructureMerge(DataObjectIdentifier<T> path, T data);
 
     /**
      * Deletes the object present at the given path.
      *
-     * @see WriteOperations#delete(LogicalDatastoreType, InstanceIdentifier)
+     * @see WriteOperations#delete(LogicalDatastoreType, DataObjectIdentifier)
      *
      * @param path The path to delete.
      */
-    void delete(InstanceIdentifier<?> path);
+    void delete(DataObjectIdentifier<?> path);
 
     /**
      * Return a {@link FluentFuture} which completes.
      *
      * @return A future which completes when the requested operations complete.
+     * @see WriteOperations#completionFuture()
      */
     @Beta
     @CheckReturnValue

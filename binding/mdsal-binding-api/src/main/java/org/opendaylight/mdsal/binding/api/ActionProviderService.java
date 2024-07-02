@@ -15,7 +15,6 @@ import org.opendaylight.yangtools.binding.Action;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Registration interface used by {@code action} implementations. Each action is defined in a YANG model,
@@ -39,7 +38,7 @@ public interface ActionProviderService extends BindingService {
      */
     <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
         @NonNull Registration registerImplementation(@NonNull ActionSpec<A, P> spec, @NonNull A implementation,
-            @NonNull LogicalDatastoreType datastore, @NonNull Set<? extends InstanceIdentifier<P>> validNodes);
+            @NonNull LogicalDatastoreType datastore, @NonNull Set<? extends DataObjectIdentifier<P>> validNodes);
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
         @NonNull Registration registerImplementation(final @NonNull ActionSpec<A, P> spec,
