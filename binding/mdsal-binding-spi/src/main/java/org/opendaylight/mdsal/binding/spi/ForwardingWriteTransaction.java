@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Utility {@link WriteTransaction} implementation which forwards all interface method
@@ -33,7 +33,7 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
     }
 
     @Override
-    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         delegate.put(store, path, data);
     }
@@ -41,13 +41,13 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
     @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final T data) {
+            final DataObjectIdentifier<T> path, final T data) {
         delegate.mergeParentStructurePut(store, path, data);
     }
 
     @Deprecated
     @Override
-    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         delegate.merge(store, path, data);
     }
@@ -55,12 +55,12 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
     @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final T data) {
+            final DataObjectIdentifier<T> path, final T data) {
         delegate.mergeParentStructureMerge(store, path, data);
     }
 
     @Override
-    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public void delete(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         delegate.delete(store, path);
     }
 

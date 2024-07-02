@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Implementation of {@link TypedReadWriteTransaction}.
@@ -28,12 +28,12 @@ class TypedReadWriteTransactionImpl<D extends Datastore>
     }
 
     @Override
-    public final <T extends DataObject> FluentFuture<Optional<T>> read(final InstanceIdentifier<T> path) {
+    public final <T extends DataObject> FluentFuture<Optional<T>> read(final DataObjectIdentifier<T> path) {
         return delegate().read(getDatastoreType(), path);
     }
 
     @Override
-    public final FluentFuture<Boolean> exists(final InstanceIdentifier<?> path) {
+    public final FluentFuture<Boolean> exists(final DataObjectIdentifier<?> path) {
         return delegate().exists(getDatastoreType(), path);
     }
 

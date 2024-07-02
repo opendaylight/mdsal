@@ -11,12 +11,13 @@ import com.google.common.collect.ForwardingObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -52,15 +53,16 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     }
 
     @Override
-    public <T extends DataObject> Registration registerTreeChangeListener(final DataTreeIdentifier<T> treeId,
-            final DataTreeChangeListener<T> listener) {
-        return delegate().registerTreeChangeListener(treeId, listener);
+    public <T extends DataObject> Registration registerTreeChangeListener(final LogicalDatastoreType datastore,
+            final DataObjectReference<T> subtrees, final DataTreeChangeListener<T> listener) {
+        return delegate().registerTreeChangeListener(datastore, subtrees, listener);
     }
 
     @Override
     @Deprecated(since = "13.0.0", forRemoval = true)
-    public <T extends DataObject> Registration registerLegacyTreeChangeListener(final DataTreeIdentifier<T> treeId,
-        final DataTreeChangeListener<T> listener) {
-        return delegate().registerLegacyTreeChangeListener(treeId, listener);
+    public <T extends DataObject> @NonNull Registration registerLegacyTreeChangeListener(
+            final LogicalDatastoreType datastore, final DataObjectReference<T> subtrees,
+            final DataTreeChangeListener<T> listener) {
+        return delegate().registerLegacyTreeChangeListener(datastore, subtrees, listener);
     }
 }

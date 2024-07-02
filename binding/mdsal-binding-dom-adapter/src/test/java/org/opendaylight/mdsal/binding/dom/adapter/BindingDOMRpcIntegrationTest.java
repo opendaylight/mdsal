@@ -19,7 +19,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -40,7 +39,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
@@ -172,10 +170,8 @@ public class BindingDOMRpcIntegrationTest {
             return receivedKnocks;
         }
 
-        KnockKnockImpl registerTo(final RpcProviderService registry, final DataObjectReference<?>... paths) {
-            registration = registry.registerRpcImplementation(this, Arrays.stream(paths)
-                .map(DataObjectReference::toLegacy)
-                .collect(ImmutableSet.toImmutableSet()));
+        KnockKnockImpl registerTo(final RpcProviderService registry, final DataObjectIdentifier<?>... paths) {
+            registration = registry.registerRpcImplementation(this, ImmutableSet.copyOf(paths));
             assertNotNull(registration);
             return this;
         }

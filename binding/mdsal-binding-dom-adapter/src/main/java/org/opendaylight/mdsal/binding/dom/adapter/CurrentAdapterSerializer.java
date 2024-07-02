@@ -17,18 +17,14 @@ import com.google.common.base.VerifyException;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.binding.BindingContract;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.binding.DataObject;
@@ -41,7 +37,6 @@ import org.opendaylight.yangtools.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.yangtools.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.yangtools.binding.runtime.api.NotificationRuntimeType;
 import org.opendaylight.yangtools.binding.runtime.api.RuntimeType;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -89,14 +84,6 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return verifyNotNull(fromYangInstanceIdentifier(dom));
     }
 
-    DOMDataTreeIdentifier toDOMDataTreeIdentifier(final DataTreeIdentifier<?> path) {
-        return DOMDataTreeIdentifier.of(path.datastore(), toYangInstanceIdentifier(path.path()));
-    }
-
-    Collection<DOMDataTreeIdentifier> toDOMDataTreeIdentifiers(final Collection<DataTreeIdentifier<?>> subtrees) {
-        return subtrees.stream().map(this::toDOMDataTreeIdentifier).collect(Collectors.toSet());
-    }
-
     @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
         return getSchemaNodeIdentifier(spec.path(), spec.type(), ActionRuntimeType.class,
             ActionEffectiveStatement.class);
@@ -107,8 +94,9 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
             NotificationEffectiveStatement.class);
     }
 
-    private <T extends RuntimeType> @NonNull Absolute getSchemaNodeIdentifier(final @NonNull InstanceIdentifier<?> path,
-            final @NonNull Class<? extends BindingContract<?>> type, final @NonNull Class<T> expectedRuntime,
+    private <T extends RuntimeType> @NonNull Absolute getSchemaNodeIdentifier(
+            final @NonNull DataObjectReference<?> path, final @NonNull Class<? extends BindingContract<?>> type,
+            final @NonNull Class<T> expectedRuntime,
             final @NonNull Class<? extends SchemaTreeEffectiveStatement<?>> expectedStatement) {
         final var typeName = JavaTypeName.create(type);
         final var runtimeType = getRuntimeContext().getTypes().findSchema(typeName)
@@ -156,7 +144,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return raced != null ? raced : created;
     }
 
-    private @NonNull Entry<SchemaInferenceStack, QNameModule> resolvePath(final @NonNull InstanceIdentifier<?> path) {
+    private @NonNull Entry<SchemaInferenceStack, QNameModule> resolvePath(final @NonNull DataObjectReference<?> path) {
         final var stack = SchemaInferenceStack.of(getRuntimeContext().modelContext());
         final var it = toYangInstanceIdentifier(path).getPathArguments().iterator();
         verify(it.hasNext(), "Unexpected empty instance identifier for %s", path);

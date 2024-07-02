@@ -11,11 +11,10 @@ import static com.google.common.base.Verify.verify;
 
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationService.KeyedListListener;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.Key;
 import org.opendaylight.yangtools.binding.KeyedListNotification;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 
 final class KeyedInstanceNotificationListenerAdapter<P extends EntryObject<P, K>, K extends Key<P>,
             N extends KeyedListNotification<N, P, K>>
@@ -27,9 +26,9 @@ final class KeyedInstanceNotificationListenerAdapter<P extends EntryObject<P, K>
 
     @Override
     @SuppressWarnings("unchecked")
-    void onNotification(final KeyedListListener<P, N, K> delegate, final InstanceIdentifier<?> path,
+    void onNotification(final KeyedListListener<P, N, K> delegate, final DataObjectIdentifier<?> path,
             final N notification) {
-        verify(path instanceof KeyedInstanceIdentifier, "Unexpected path %s", path);
-        delegate.onNotification((KeyedInstanceIdentifier<P, K>) path, notification);
+        verify(path instanceof DataObjectIdentifier.WithKey, "Unexpected path %s", path);
+        delegate.onNotification((DataObjectIdentifier.WithKey<P, K>) path, notification);
     }
 }

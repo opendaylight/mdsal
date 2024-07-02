@@ -14,9 +14,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.slf4j.Logger;
@@ -60,7 +60,8 @@ final class BindingDOMMountPointListenerAdapter implements Registration, DOMMoun
         }
     }
 
-    private InstanceIdentifier<?> toBinding(final YangInstanceIdentifier path) throws DeserializationException {
+    private @NonNull DataObjectIdentifier<?> toBinding(final YangInstanceIdentifier path)
+            throws DeserializationException {
         final DataObjectReference<?> binding;
         try {
             binding = adapterContext.currentSerializer().fromYangInstanceIdentifier(path);
@@ -70,6 +71,10 @@ final class BindingDOMMountPointListenerAdapter implements Registration, DOMMoun
         if (binding == null) {
             throw new DeserializationException("Deserialization unsuccessful, " + path);
         }
-        return binding.toLegacy();
+        try {
+            return binding.toIdentifier();
+        } catch (UnsupportedOperationException e) {
+            throw new DeserializationException(e);
+        }
     }
 }

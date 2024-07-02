@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
@@ -32,7 +31,6 @@ import org.opendaylight.yangtools.binding.Action;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -76,7 +74,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     @Override
     public <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
             Registration registerImplementation(final ActionSpec<A, P> spec, final A implementation,
-                final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
+                final LogicalDatastoreType datastore, final Set<? extends DataObjectIdentifier<P>> validNodes) {
         final CurrentAdapterSerializer serializer = currentSerializer();
         final Absolute actionPath = serializer.getActionPath(spec);
         final Impl impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);
@@ -85,7 +83,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
             ? DOMActionInstance.of(actionPath, DOMDataTreeIdentifier.of(datastore, YangInstanceIdentifier.of()))
                 // Register on specific instances
                 : DOMActionInstance.of(actionPath, validNodes.stream()
-                    .map(node -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.of(datastore, node)))
+                    .map(node -> DOMDataTreeIdentifier.of(datastore, serializer.toYangInstanceIdentifier(node)))
                     .collect(Collectors.toUnmodifiableSet()));
 
 

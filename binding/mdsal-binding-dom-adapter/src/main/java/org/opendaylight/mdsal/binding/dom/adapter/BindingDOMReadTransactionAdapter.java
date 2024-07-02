@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction>
         implements QueryReadTransaction {
@@ -26,12 +26,12 @@ final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransactio
 
     @Override
     public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path) {
+            final DataObjectIdentifier<T> path) {
         return doRead(getDelegate(), store, path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         return doExists(getDelegate(), store, path);
     }
 
