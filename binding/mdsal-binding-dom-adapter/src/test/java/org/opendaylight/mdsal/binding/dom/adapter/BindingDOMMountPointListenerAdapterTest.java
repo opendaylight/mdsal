@@ -31,12 +31,15 @@ public class BindingDOMMountPointListenerAdapterTest {
     private BindingDOMMountPointListenerAdapter adapter;
     private AdapterContext codec;
 
-    @Mock private MountPointListener listener;
-    @Mock private DOMMountPointService mountPointService;
-    @Mock private Registration listenerRegistration;
+    @Mock
+    private MountPointListener listener;
+    @Mock
+    private DOMMountPointService mountPointService;
+    @Mock
+    private Registration listenerRegistration;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         final var testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         final var testContext = testFactory.getTestContext();
@@ -47,21 +50,21 @@ public class BindingDOMMountPointListenerAdapterTest {
     }
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         assertSame(listener, adapter.listener);
         adapter.close();
         verify(listenerRegistration).close();
     }
 
     @Test
-    public void onMountPointCreatedWithExceptionTest() throws Exception {
+    public void onMountPointCreatedWithExceptionTest() {
         reset(listener);
         adapter.onMountPointCreated(YangInstanceIdentifier.of());
         verifyNoInteractions(listener);
     }
 
     @Test
-    public void onMountPointRemovedWithExceptionTest() throws Exception {
+    public void onMountPointRemovedWithExceptionTest() {
         reset(listener);
         adapter.onMountPointRemoved(YangInstanceIdentifier.of());
         verifyNoInteractions(listener);

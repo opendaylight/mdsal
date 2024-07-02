@@ -40,7 +40,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
     private static final InstanceIdentifier<TopLevelList> TOP_BAR = TOP.child(TopLevelList.class, TOP_BAR_KEY);
 
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Top.class));
     }
 

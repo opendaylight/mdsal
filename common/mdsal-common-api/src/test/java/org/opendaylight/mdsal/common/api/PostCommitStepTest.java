@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Test;
 
 class PostCommitStepTest {
     @Test
-    void preCommitTest() throws Exception {
+    void preCommitTest() {
         final var noop = PostCanCommitStep.NOOP;
         assertEquals(ThreePhaseCommitStep.NOOP_ABORT_FUTURE ,noop.abort());
         assertEquals(PostPreCommitStep.NOOP_FUTURE, noop.preCommit());
     }
 
     @Test
-    void canCommitTest() throws Exception {
+    void canCommitTest() {
         final var noop = PostPreCommitStep.NOOP;
         assertEquals(ThreePhaseCommitStep.NOOP_ABORT_FUTURE ,noop.abort());
         assertEquals(NOOP_COMMIT_FUTURE, noop.commit());

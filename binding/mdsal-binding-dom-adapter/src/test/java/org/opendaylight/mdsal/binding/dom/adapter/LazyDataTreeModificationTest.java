@@ -25,7 +25,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
 public class LazyDataTreeModificationTest {
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
         final AdapterContext codec = new ConstantAdapterContext(registry);
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);

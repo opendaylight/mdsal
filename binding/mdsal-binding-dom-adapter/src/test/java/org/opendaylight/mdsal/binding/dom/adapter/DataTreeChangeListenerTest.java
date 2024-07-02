@@ -18,7 +18,6 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.p
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
@@ -78,8 +77,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     }
 
     @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(
+    protected Set<YangModuleInfo> getModuleInfos() {
+        return Set.of(
             BindingRuntimeHelpers.getYangModuleInfo(TwoLevelList.class),
             BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
     }

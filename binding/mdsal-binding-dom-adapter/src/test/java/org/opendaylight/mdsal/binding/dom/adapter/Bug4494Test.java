@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import java.util.Map;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -19,15 +18,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yangtools.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class Bug4494Test extends AbstractDataBrokerTest {
     @Test
-    public void testDelete() throws Exception {
+    public void testDelete() {
         DataBroker dataBroker = getDataBroker();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         TopLevelList list = new TopLevelListBuilder().setName("name").build();
-        TopBuilder builder = new TopBuilder().setTopLevelList(Map.of(list.key(), list));
+        TopBuilder builder = new TopBuilder().setTopLevelList(BindingMap.of(list));
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class), builder.build());
         assertCommit(writeTransaction.commit());
 

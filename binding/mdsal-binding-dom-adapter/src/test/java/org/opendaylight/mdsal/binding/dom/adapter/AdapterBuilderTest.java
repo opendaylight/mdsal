@@ -16,16 +16,15 @@ import java.util.Set;
 import org.junit.Test;
 
 public class AdapterBuilderTest extends AdapterBuilder {
-
     private static final ClassToInstanceMap<Object> DELEGATES = MutableClassToInstanceMap.create();
 
     @Test
-    public void buildTest() throws Exception {
-        this.addDelegate(String.class, "test");
-        DELEGATES.putAll((Map) this.build());
+    public void buildTest() {
+        addDelegate(String.class, "test");
+        DELEGATES.putAll((Map) build());
         assertTrue(DELEGATES.containsValue("test"));
-        this.addDelegate(Object.class, "test2");
-        DELEGATES.putAll((Map) this.build());
+        addDelegate(Object.class, "test2");
+        DELEGATES.putAll((Map) build());
         assertTrue(DELEGATES.containsValue("test"));
         assertTrue(DELEGATES.get(Object.class).equals("test2"));
     }

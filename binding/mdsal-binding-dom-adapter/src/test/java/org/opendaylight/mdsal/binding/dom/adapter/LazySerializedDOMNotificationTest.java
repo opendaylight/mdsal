@@ -19,9 +19,8 @@ import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSe
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 public class LazySerializedDOMNotificationTest {
-
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final DOMNotification lazySerializedDOMNotification =
                 new LazySerializedNotification(codec, new TwoLevelListChangedBuilder().build());

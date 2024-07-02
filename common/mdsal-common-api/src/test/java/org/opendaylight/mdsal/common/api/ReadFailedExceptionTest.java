@@ -28,14 +28,14 @@ class ReadFailedExceptionTest {
     private RpcError rpcError;
 
     @Test
-    void readFailedExceptionTest() throws Exception {
+    void readFailedExceptionTest() {
         final var ex = new ReadFailedException("test", rpcError);
         assertEquals("test", ex.getMessage());
         assertEquals(List.of(rpcError), ex.getErrorList());
     }
 
     @Test
-    void readFailedExceptionWithThrowableTest() throws Exception {
+    void readFailedExceptionWithThrowableTest() {
         final var npe = new NullPointerException();
         final var ex = new ReadFailedException("test", ReadFailedException.MAPPER.apply(npe));
         assertEquals("test", ex.getMessage());

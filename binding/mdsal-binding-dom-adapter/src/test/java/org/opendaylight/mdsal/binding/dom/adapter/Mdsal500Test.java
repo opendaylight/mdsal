@@ -19,9 +19,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -58,7 +56,7 @@ public class Mdsal500Test {
     private final SwitchImpl switchRpcImpl = new SwitchImpl();
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         testContext = testFactory.getTestContext();
@@ -90,8 +88,7 @@ public class Mdsal500Test {
     }
 
     @Test
-    public void testDOMRegistrationWithBindingInvocation()
-            throws InterruptedException, ExecutionException, TimeoutException {
+    public void testDOMRegistrationWithBindingInvocation() throws Exception {
         SwitchOutput baSwitchOutput = new SwitchOutputBuilder().build();
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
@@ -106,7 +103,7 @@ public class Mdsal500Test {
     }
 
     @Test
-    public void testBindingRpcShortcut() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testBindingRpcShortcut() throws Exception {
         final var baSwitchResult = switchResult(true);
         switchRpcImpl.registerTo(baRpcProviderService).setSwitchResult(baSwitchResult);
 
