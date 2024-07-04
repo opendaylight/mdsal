@@ -463,7 +463,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -519,11 +519,11 @@
                         <link>https://junit.org/junit4/javadoc/4.13/</link>
                         <link>https://hamcrest.org/JavaHamcrest/javadoc/2.2/</link>
                         <link>https://www.slf4j.org/apidocs/</link>
-                        <link>https://guava.dev/releases/32.1.2-jre/api/docs/</link>
+                        <link>https://guava.dev/releases/33.2.1-jre/api/docs/</link>
                         <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
 
-                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/14.0.0-SNAPSHOT/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/13.0.2/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/14.0.0/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/14.0.0-SNAPSHOT/</link>
                     </links>
                     <groups>
                         <group>
