@@ -22,6 +22,8 @@ import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
+import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -36,12 +38,15 @@ class BindingDOMMountPointServiceAdapterTest {
     private DOMMountPoint mountPoint;
     @Mock
     private MountPointListener mountPointListener;
+    @Mock
+    private BindingInstanceIdentifierCodec iiCodec;
 
     @Test
     void basicTest() {
         final var codec = new ConstantAdapterContext(registry);
         final var yiid = YangInstanceIdentifier.of(BooleanContainer.QNAME);
-        doReturn(yiid).when(registry).toYangInstanceIdentifier(any());
+        doReturn(iiCodec).when(registry).getInstanceIdentifierCodec();
+        doReturn(yiid).when(iiCodec).fromBinding(any(BindingInstanceIdentifier.class));
         doReturn(InstanceIdentifier.create(BooleanContainer.class)).when(registry).fromYangInstanceIdentifier(yiid);
 
         final var adapter = new BindingDOMMountPointServiceAdapter(codec, mountPointService);

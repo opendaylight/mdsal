@@ -28,7 +28,6 @@ import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
 import org.opendaylight.yangtools.binding.BindingContract;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yangtools.binding.data.codec.spi.ForwardingBindingDOMCodecServices;
@@ -54,13 +53,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
             .softValues().build(new CacheLoader<BindingInstanceIdentifier, YangInstanceIdentifier>() {
                 @Override
                 public YangInstanceIdentifier load(final BindingInstanceIdentifier key) {
-                    return switch (key) {
-                        case DataObjectIdentifier<?> id -> {
-                            final var yiid = toYangInstanceIdentifier(id);
-                            verify(!yiid.isEmpty(), "Bad conversion of %s to %s", id, yiid);
-                            yield yiid;
-                        }
-                    };
+                    return getInstanceIdentifierCodec().fromBinding(key);
                 }
             });
 
