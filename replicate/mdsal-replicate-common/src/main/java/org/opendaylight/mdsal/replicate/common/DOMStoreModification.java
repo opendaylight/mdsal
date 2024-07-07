@@ -16,6 +16,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModificationCursor;
+import org.opendaylight.yangtools.yang.data.tree.api.VersionInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,11 @@ final class DOMStoreModification implements DataTreeModification {
 
     @Override
     public Optional<NormalizedNode> readNode(final YangInstanceIdentifier path) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<VersionInfo> readVersionInfo(final YangInstanceIdentifier path) {
         throw new UnsupportedOperationException();
     }
 
