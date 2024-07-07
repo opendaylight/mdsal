@@ -154,64 +154,6 @@ public interface DataTreeChangeService extends BindingService {
      * {@link DataTreeIdentifier}.
      *
      * <p>
-     * You are able to register for data change notifications for a subtree or leaf even if it does not exist. You will
-     * receive notification once that node is created.
-     *
-     * <p>
-     * If there is any pre-existing data in the data tree for the path for which you are registering, you will receive
-     * an initial data change event, which will contain all pre-existing data, marked as created.
-     *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
-     * {@link Registration#close()} method on the returned object.
-     *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
-     * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
-     * being still registered.
-     *
-     * @param treeId Data tree identifier of the subtree which should be watched for changes
-     * @param listener Listener instance which is being registered
-     * @return a Registration object, which may be used to unregister your listener using {@link Registration#close()}
-     *         to stop delivery of change events.
-     * @deprecated This interface relies on magic of {@link ClusteredDataTreeChangeListener}. See
-     *             {@link #registerLegacyTreeChangeListener(DataTreeIdentifier, DataTreeChangeListener)} for migration
-     *             guidance.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default <T extends DataObject> @NonNull Registration registerDataTreeChangeListener(
-            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataTreeChangeListener<T> listener) {
-        return listener instanceof ClusteredDataTreeChangeListener ? registerTreeChangeListener(treeId, listener)
-            : registerLegacyTreeChangeListener(treeId, listener);
-    }
-
-    /**
-     * Registers a {@link ClusteredDataTreeChangeListener} to receive notifications when data changes under a given path
-     * in the conceptual data tree. This is a migration shorthand for
-     * {@code registerDataTreeListener(treeId, listener)}.
-     *
-     * @param treeId Data tree identifier of the subtree which should be watched for changes.
-     * @param listener Listener instance which is being registered
-     * @return A {@link Registration} object, which may be used to unregister your listener using
-     *         {@link Registration#close()} to stop delivery of change events.
-     * @throws NullPointerException if any of the arguments is {@code null}
-     * @deprecated Use {@link #registerTreeChangeListener(DataTreeIdentifier, DataTreeChangeListener)} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default <T extends DataObject> @NonNull Registration registerDataTreeChangeListener(
-            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull ClusteredDataTreeChangeListener<T> listener) {
-        return registerTreeChangeListener(treeId, listener);
-    }
-
-    /**
-     * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
-     * conceptual data tree.
-     *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
-     * {@link DataTreeIdentifier}.
-     *
-     * <p>
      * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
