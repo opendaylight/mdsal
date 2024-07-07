@@ -34,10 +34,8 @@ public final class DOMDataTreeIdentifier implements LogicalDatastorePath<DOMData
      * @param datastore {@link LogicalDatastoreType} of this identifier
      * @param path {@link YangInstanceIdentifier} path of this identifier
      * @throws NullPointerException if any argument is {@code null}
-     * @deprecated Use {@link #of(LogicalDatastoreType, YangInstanceIdentifier)} instead
      */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    public DOMDataTreeIdentifier(final LogicalDatastoreType datastore, final YangInstanceIdentifier path) {
+    private DOMDataTreeIdentifier(final LogicalDatastoreType datastore, final YangInstanceIdentifier path) {
         datastoreType = requireNonNull(datastore);
         rootIdentifier = requireNonNull(path);
     }
