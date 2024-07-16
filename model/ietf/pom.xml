@@ -146,6 +146,10 @@
         <!-- RFC9144 Geographic Locations -->
         <module>rfc9179</module>
 
+        <!-- RFC9179 YANG Capabilities for Systems and Notifications -->
+        <module>rfc9196-ietf-system-capabilities</module>
+        <module>rfc9196-ietf-notification-capabilities</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>

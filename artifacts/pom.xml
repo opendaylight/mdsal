@@ -731,6 +731,18 @@
                 <version>14.0.0-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC9196 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9196-ietf-notification-capabilities</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9196-ietf-system-capabilities</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -1036,6 +1048,20 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9179</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc9196-ietf-notification-capabilities</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc9196-ietf-system-capabilities</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
