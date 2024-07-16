@@ -101,6 +101,8 @@
         <module>odl-mdsal-model-rfc8529</module>
         <module>odl-mdsal-model-rfc8530</module>
         <module>odl-mdsal-model-rfc8542</module>
+        <module>odl-mdsal-model-rfc8572-ietf-sztp-bootstrap-server</module>
+        <module>odl-mdsal-model-rfc8572-ietf-sztp-conveyed-info</module>
         <module>odl-mdsal-model-rfc8639</module>
         <module>odl-mdsal-model-rfc8641</module>
         <module>odl-mdsal-model-rfc8650</module>

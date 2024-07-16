@@ -119,6 +119,10 @@
         <module>rfc8542-ietf-dc-fabric-topology</module>
         <module>rfc8542-ietf-dc-fabric-types</module>
 
+        <!-- RFC8572 Secure Zero Touch Provisioning -->
+        <module>rfc8572-ietf-sztp-bootstrap-server</module>
+        <module>rfc8572-ietf-sztp-conveyed-info</module>
+
         <!-- RFC8639 Subscription to YANG Notifications -->
         <module>rfc8639</module>
 

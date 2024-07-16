@@ -263,6 +263,18 @@
     </dependency>
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8572-ietf-sztp-bootstrap-server</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8572-ietf-sztp-conveyed-info</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
         <artifactId>odl-mdsal-model-rfc8639</artifactId>
         <classifier>features</classifier>
         <type>xml</type>
