@@ -46,6 +46,7 @@
         <module>rfc7952</module>
 
         <!-- RFC7407 SNMP Configuration -->
+        <module>rfc7407-ietf-snmp</module>
         <module>rfc7407-ietf-x509-cert-to-name</module>
 
         <!-- RFC8040 RESTCONF -->
