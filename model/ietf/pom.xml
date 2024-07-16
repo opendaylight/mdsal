@@ -143,6 +143,9 @@
         <module>rfc8795-ietf-te-topology</module>
         <module>rfc8795-ietf-te-topology-state</module>
 
+        <!-- RFC8808 Factory Default -->
+        <module>rfc8808</module>
+
         <!-- RFC8819 YANG Module Tags -->
         <module>rfc8819-ietf-module-tags</module>
         <module>rfc8819-ietf-module-tags-state</module>
