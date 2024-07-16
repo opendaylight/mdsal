@@ -119,7 +119,7 @@
     </dependency>
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc8040</artifactId>
+        <artifactId>odl-mdsal-model-rfc8040-ietf-restconf</artifactId>
         <classifier>features</classifier>
         <type>xml</type>
     </dependency>

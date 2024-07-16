@@ -16,11 +16,11 @@
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
-    <artifactId>odl-mdsal-model-rfc8040</artifactId>
+    <artifactId>odl-mdsal-model-rfc8040-ietf-restconf</artifactId>
     <version>14.0.0-SNAPSHOT</version>
     <packaging>feature</packaging>
-    <name>OpenDaylight :: MD-SAL :: Model :: RFC8040</name>
-    <description>Models from RFC8040</description>
+    <name>OpenDaylight :: MD-SAL :: Model :: RFC8040 ietf-restconf</name>
+    <description>ietf-restconf module from RFC8040</description>
 
     <dependencies>
         <dependency>
@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8040</artifactId>
+            <artifactId>rfc8040-ietf-restconf</artifactId>
         </dependency>
     </dependencies>
 </project>

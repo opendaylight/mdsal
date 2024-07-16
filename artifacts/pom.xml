@@ -450,7 +450,7 @@
             <!-- RFC8040 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8040</artifactId>
+                <artifactId>rfc8040-ietf-restconf</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -785,7 +785,7 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-rfc8040</artifactId>
+                <artifactId>odl-mdsal-model-rfc8040-ietf-restconf</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

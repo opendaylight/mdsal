@@ -49,8 +49,7 @@
         <module>rfc7407-ietf-x509-cert-to-name</module>
 
         <!-- RFC8040 RESTCONF -->
-        <!-- FIXME: rename to rfc8040-ietf-restconf -->
-        <module>rfc8040</module>
+        <module>rfc8040-ietf-restconf</module>
         <module>rfc8040-ietf-restconf-monitoring</module>
 
         <!-- RFC8072 YANG Patch -->
