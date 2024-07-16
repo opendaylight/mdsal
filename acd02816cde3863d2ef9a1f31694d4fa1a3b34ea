@@ -36,6 +36,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c596cc9_8405a808",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2024-07-16T14:58:48Z",
+      "side": 1,
+      "message": "Not done 😊",
+      "parentUuid": "2e382b4f_037de237",
+      "revId": "acd02816cde3863d2ef9a1f31694d4fa1a3b34ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "35f69ebd_07e42f71",
