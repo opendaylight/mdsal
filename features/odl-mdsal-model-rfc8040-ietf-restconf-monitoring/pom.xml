@@ -21,7 +21,7 @@
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8040 ietf-restconf-monitoring</name>
-    <description>ietf-restconf-monitoring module from RFC7407</description>
+    <description>ietf-restconf-monitoring module from RFC8040</description>
 
     <dependencies>
         <dependency>
