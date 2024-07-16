@@ -25,6 +25,9 @@
     <description>${project.artifactId}</description>
 
     <modules>
+        <!-- RFC6022 NETCONF Monitoring -->
+        <module>rfc6022</module>
+
         <!-- RFC6991 -->
         <module>rfc6991-ietf-inet-types</module>
         <module>rfc6991-ietf-yang-types</module>

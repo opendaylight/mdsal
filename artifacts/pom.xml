@@ -374,6 +374,13 @@
                 <version>2013.08.27.26.0-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC6022 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc6022</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- RFC6991 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -645,6 +652,13 @@
             </dependency>
 
             <!-- Features -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc6022</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6991</artifactId>
