@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57c1a90b_7334fdde",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2024-07-16T13:09:18Z",
+      "side": 1,
+      "message": "The effort ahs been moved to YANGTOOLS-1634.",
+      "revId": "b12fba6eb86d033d307bb7b8fe7f93cce3fa4d03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
