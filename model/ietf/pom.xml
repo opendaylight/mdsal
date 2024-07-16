@@ -25,6 +25,18 @@
     <description>${project.artifactId}</description>
 
     <modules>
+        <!-- RFC6022 NETCONF Monitoring -->
+        <module>rfc6022</module>
+
+        <!-- RFC6241 NETCONF -->
+        <module>rfc6241</module>
+
+        <!-- RFC6243 NETCONF With Defaults -->
+        <module>rfc6243</module>
+
+        <!-- RFC6243 NETCONF Base Notifications -->
+        <module>rfc6470</module>
+
         <!-- RFC6991 -->
         <module>rfc6991-ietf-inet-types</module>
         <module>rfc6991-ietf-yang-types</module>
@@ -41,6 +53,9 @@
 
         <!-- RFC8294 Common YANG Data Types for the Routing Area -->
         <module>rfc8294-ietf-routing-types</module>
+
+        <!-- RFC8341 NETCONF ACM -->
+        <module>rfc8341</module>
 
         <!-- RFC8342 Network Management Datastore Architecture -->
         <module>rfc8342-ietf-datastores</module>
@@ -80,8 +95,11 @@
         <module>rfc8520-ietf-acldns</module>
         <module>rfc8520-ietf-mud</module>
 
-        <!-- RFC8528 YANG Library -->
+        <!-- RFC8525 YANG Library -->
         <module>rfc8525</module>
+
+        <!-- RFC8526 NETCONF NMDA -->
+        <module>rfc8526</module>
 
         <!-- RFC8528 YANG Schema Mount -->
         <module>rfc8528</module>
@@ -95,6 +113,15 @@
         <!-- RFC8542 Fabric Topology in Data-Center Networks -->
         <module>rfc8542-ietf-dc-fabric-topology</module>
         <module>rfc8542-ietf-dc-fabric-types</module>
+
+        <!-- RFC8639 Subscription to YANG Notifications -->
+        <module>rfc8639</module>
+
+        <!-- RFC8641 Subscription to Datastore Updates -->
+        <module>rfc8641</module>
+
+        <!-- RFC8650 RESTCONF Dynamic Subscription -->
+        <module>rfc8650</module>
 
         <!-- RFC8776 Common YANG Data Types for Traffic Engineering -->
         <module>rfc8776-ietf-te-types</module>

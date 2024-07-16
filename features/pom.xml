@@ -68,6 +68,10 @@
 
         <!-- Models -->
         <!-- Standards -->
+        <module>odl-mdsal-model-rfc6022</module>
+        <module>odl-mdsal-model-rfc6241</module>
+        <module>odl-mdsal-model-rfc6243</module>
+        <module>odl-mdsal-model-rfc6470</module>
         <module>odl-mdsal-model-rfc6991</module>
         <module>odl-mdsal-model-rfc7224</module>
         <module>odl-mdsal-model-rfc7317-iana-crypt-hash</module>
@@ -75,6 +79,7 @@
         <module>odl-mdsal-model-rfc8040</module>
         <module>odl-mdsal-model-rfc8072</module>
         <module>odl-mdsal-model-rfc8294</module>
+        <module>odl-mdsal-model-rfc8341</module>
         <module>odl-mdsal-model-rfc8342</module>
         <module>odl-mdsal-model-rfc8343</module>
         <module>odl-mdsal-model-rfc8344</module>
@@ -88,10 +93,14 @@
         <module>odl-mdsal-model-rfc8519</module>
         <module>odl-mdsal-model-rfc8520</module>
         <module>odl-mdsal-model-rfc8525</module>
+        <module>odl-mdsal-model-rfc8526</module>
         <module>odl-mdsal-model-rfc8528</module>
         <module>odl-mdsal-model-rfc8529</module>
         <module>odl-mdsal-model-rfc8530</module>
         <module>odl-mdsal-model-rfc8542</module>
+        <module>odl-mdsal-model-rfc8639</module>
+        <module>odl-mdsal-model-rfc8641</module>
+        <module>odl-mdsal-model-rfc8650</module>
         <module>odl-mdsal-model-rfc8776</module>
         <module>odl-mdsal-model-rfc8795</module>
         <module>odl-mdsal-model-rfc8795-non-nmda</module>

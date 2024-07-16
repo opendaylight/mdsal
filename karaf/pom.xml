@@ -58,18 +58,46 @@
 
     <!-- Models -->
     <dependency>
-      <groupId>org.opendaylight.mdsal.model</groupId>
-      <artifactId>odl-mdsal-model-rfc6991</artifactId>
-      <classifier>features</classifier>
-      <type>xml</type>
-      <scope>runtime</scope>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc6022</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.mdsal.model</groupId>
-      <artifactId>odl-mdsal-model-rfc7224</artifactId>
-      <classifier>features</classifier>
-      <type>xml</type>
-      <scope>runtime</scope>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc6241</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc6243</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc6470</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc6991</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc7224</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <scope>runtime</scope>
     </dependency>
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
@@ -98,6 +126,12 @@
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
         <artifactId>odl-mdsal-model-rfc8294</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8341</artifactId>
         <classifier>features</classifier>
         <type>xml</type>
     </dependency>
@@ -181,6 +215,12 @@
     </dependency>
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8526</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
         <artifactId>odl-mdsal-model-rfc8528</artifactId>
         <classifier>features</classifier>
         <type>xml</type>
@@ -200,6 +240,24 @@
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
         <artifactId>odl-mdsal-model-rfc8542</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8639</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8641</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+    </dependency>
+    <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>odl-mdsal-model-rfc8650</artifactId>
         <classifier>features</classifier>
         <type>xml</type>
     </dependency>
