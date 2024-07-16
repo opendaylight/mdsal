@@ -436,6 +436,11 @@
             <!-- RFC7407 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc7407-ietf-snmp</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7407-ietf-x509-cert-to-name</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
             </dependency>
@@ -765,6 +770,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7317-iana-crypt-hash</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc7407-ietf-snmp</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
