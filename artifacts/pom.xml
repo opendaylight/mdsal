@@ -432,6 +432,11 @@
                 <artifactId>iana-crypt-hash</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc7317-ietf-system</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+            </dependency>
 
             <!-- RFC7407 -->
             <dependency>
@@ -808,6 +813,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7317-iana-crypt-hash</artifactId>
+                <version>14.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc7317-ietf-system</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
