@@ -1,0 +1,135 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1abd343_8752eba8",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataInput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "Can we use instead Java 21 switch?\n```\n        return switch (type) {\n        case PotassiumValue.BOOLEAN_FALSE -\u003e Boolean.FALSE;\n        case PotassiumValue.BOOLEAN_TRUE -\u003e Boolean.TRUE;\n```",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b288394d_f7ffb935",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataInput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "This condition is suspicious.\n\nVariable \"type\" is byte. So is in range -128 to 127. The PotassiumValue.BINARY_0 \u003d\u003d -128.\n\nThis means \"type \u003e PotassiumValue.BINARY_0\" is redundant because variable type can not be less than -128.",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f307734_823beddc",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataOutput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "Do we not miss double or float here ?",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de56372b_f71b16e3",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataOutput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "Is this part required? Set\u003cString\u003e can not have duplicity.",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c45eb6a_e554ff98",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumPathArgument.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "Do we need this part? It is not used.",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 69
+      },
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "deb3d674_78e548cb",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "Please add more tests. There are a lot of uncovered new code.\n\n```\n        final var matcher \u003d DOMQueryPredicate.Match.exists();\n        final var matcher1 \u003d DOMQueryPredicate.Match.greaterThan(5L);\n        final var matcher2 \u003d DOMQueryPredicate.Match.greaterThanOrEqual((short) 5);\n        // Unsuported\n//        final var matcher3 \u003d DOMQueryPredicate.Match.lessThan((float) 2);\n//        final var matcher4 \u003d DOMQueryPredicate.Match.lessThanOrEqual((double) 15);\n        final var matcher5 \u003d DOMQueryPredicate.Match.valueEquals(true);\n        final var matcher6 \u003d DOMQueryPredicate.Match.lessThanOrEqual(0x7F);\n        final var matcher7 \u003d DOMQueryPredicate.Match.lessThanOrEqual(QName.create(\"urn:test\", \"2017-01-01\", \"cont\"));\n        final var matcher8 \u003d DOMQueryPredicate.Match.valueEquals(Empty.value());\n        final var matcher9 \u003d DOMQueryPredicate.Match.lessThanOrEqual(Decimal64.minValueIn(2));\n        final var matcher10 \u003d DOMQueryPredicate.Match.lessThanOrEqual(Uint16.ZERO);\n        final var matcher11 \u003d DOMQueryPredicate.Match.greaterThan(true);\n        final var matcher12 \u003d DOMQueryPredicate.Match.valueEquals(\"aasdasd\".getBytes());\n        final var matcher13 \u003d DOMQueryPredicate.Match.valueEquals(Set.of(\"data1\", \"data2\", \"a\".repeat(50000)));\n        final var matcher14 \u003d DOMQueryPredicate.Match.valueEquals(new HashSet\u003c\u003e(Set.of(\"a\".repeat(50000), \"data2\")));\n```",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5effad1_c08e031c",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 8449
+      },
+      "writtenOn": "2024-07-16T12:20:25Z",
+      "side": 1,
+      "message": "Please use \u0027var\u0027 in all places, or do not use it. Maintain consistent code style in new classes and methods.\n\nI would prefer to use \u0027var\u0027 in all yours new classes.",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 90
+      },
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
