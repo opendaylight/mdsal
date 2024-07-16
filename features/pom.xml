@@ -68,6 +68,7 @@
 
         <!-- Models -->
         <!-- Standards -->
+        <module>odl-mdsal-model-rfc6022</module>
         <module>odl-mdsal-model-rfc6991</module>
         <module>odl-mdsal-model-rfc7224</module>
         <module>odl-mdsal-model-rfc7317-iana-crypt-hash</module>
