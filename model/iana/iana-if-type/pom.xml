@@ -23,7 +23,7 @@
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
-    <description>iana-if-type@2021-06-21.yang</description>
+    <description>iana-if-type@2023-01-26.yang</description>
 
     <dependencies>
         <dependency>
