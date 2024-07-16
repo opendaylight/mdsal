@@ -140,6 +140,9 @@
         <module>rfc8819-ietf-module-tags</module>
         <module>rfc8819-ietf-module-tags-state</module>
 
+        <!-- RFC9144 NMDA Datastore Compare -->
+        <module>rfc9144</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
