@@ -75,8 +75,10 @@
         <module>odl-mdsal-model-rfc6991</module>
         <module>odl-mdsal-model-rfc7224</module>
         <module>odl-mdsal-model-rfc7317-iana-crypt-hash</module>
+        <module>odl-mdsal-model-rfc7407-ietf-x509-cert-to-name</module>
         <module>odl-mdsal-model-rfc7952</module>
         <module>odl-mdsal-model-rfc8040</module>
+        <module>odl-mdsal-model-rfc8040-ietf-restconf-monitoring</module>
         <module>odl-mdsal-model-rfc8072</module>
         <module>odl-mdsal-model-rfc8294</module>
         <module>odl-mdsal-model-rfc8341</module>
