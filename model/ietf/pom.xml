@@ -143,6 +143,9 @@
         <!-- RFC9144 NMDA Datastore Compare -->
         <module>rfc9144</module>
 
+        <!-- RFC9144 Geographic Locations -->
+        <module>rfc9179</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
