@@ -12,6 +12,7 @@ module org.opendaylight.mdsal.binding.api {
     requires transitive org.opendaylight.yangtools.binding.spec;
     requires transitive org.opendaylight.yangtools.concepts;
     requires transitive org.opendaylight.mdsal.common.api;
+    requires transitive org.opendaylight.yang.gen.ietf.datastores.rfc8342;
     requires org.opendaylight.yangtools.util;
 
     // Annotations
