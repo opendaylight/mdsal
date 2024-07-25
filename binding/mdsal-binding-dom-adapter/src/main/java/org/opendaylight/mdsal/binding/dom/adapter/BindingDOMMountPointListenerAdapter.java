@@ -10,10 +10,11 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
-import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -27,14 +28,14 @@ final class BindingDOMMountPointListenerAdapter implements Registration, DOMMoun
 
     @VisibleForTesting
     final @NonNull MountPointListener listener;
-    private final AdapterContext adapterContext;
+    private final BindingDOMMountPointServiceAdapter service;
     private final Registration registration;
 
-    BindingDOMMountPointListenerAdapter(final MountPointListener listener, final AdapterContext adapterContext,
-            final DOMMountPointService mountService) {
+    BindingDOMMountPointListenerAdapter(final BindingDOMMountPointServiceAdapter service,
+            final MountPointListener listener) {
+        this.service = requireNonNull(service);
         this.listener = requireNonNull(listener);
-        this.adapterContext = requireNonNull(adapterContext);
-        registration = mountService.registerProvisionListener(this);
+        registration = service.getDelegate().registerProvisionListener(this);
     }
 
     @Override
@@ -43,28 +44,34 @@ final class BindingDOMMountPointListenerAdapter implements Registration, DOMMoun
     }
 
     @Override
-    public void onMountPointCreated(final YangInstanceIdentifier path) {
+    public void onMountPointCreated(final DOMMountPoint mountPoint) {
+        final BindingMountPointAdapter binding;
         try {
-            listener.onMountPointCreated(toBinding(path));
-        } catch (final DeserializationException e) {
-            LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
+            binding = service.getAdapter(mountPoint);
+        } catch (UncheckedExecutionException e) {
+            LOG.error("Unable to translate mountPoint {}. Omitting event.", mountPoint, e);
+            return;
         }
+        listener.onMountPointCreated(binding);
     }
 
     @Override
     public void onMountPointRemoved(final YangInstanceIdentifier path) {
+        final DataObjectIdentifier<?> binding;
         try {
-            listener.onMountPointRemoved(toBinding(path));
+            binding = toBinding(path);
         } catch (final DeserializationException e) {
             LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
+            return;
         }
+        listener.onMountPointRemoved(binding);
     }
 
     private @NonNull DataObjectIdentifier<?> toBinding(final YangInstanceIdentifier path)
             throws DeserializationException {
         final DataObjectReference<?> binding;
         try {
-            binding = adapterContext.currentSerializer().fromYangInstanceIdentifier(path);
+            binding = service.currentSerializer().fromYangInstanceIdentifier(path);
         } catch (IllegalArgumentException e) {
             throw new DeserializationException("Deserialization unsuccessful, " + path, e);
         }

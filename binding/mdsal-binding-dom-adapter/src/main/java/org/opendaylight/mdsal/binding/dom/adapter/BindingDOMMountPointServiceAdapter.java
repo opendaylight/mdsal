@@ -32,7 +32,7 @@ public class BindingDOMMountPointServiceAdapter
 
     @Override
     public Registration registerListener(final DataObjectReference<?> path, final MountPointListener listener) {
-        return new BindingDOMMountPointListenerAdapter(listener, adapterContext(), getDelegate());
+        return new BindingDOMMountPointListenerAdapter(this, listener);
     }
 
     @Override

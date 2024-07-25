@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -36,6 +37,8 @@ public class BindingDOMMountPointListenerAdapterTest {
     @Mock
     private DOMMountPointService mountPointService;
     @Mock
+    private DOMMountPoint mountPoint;
+    @Mock
     private Registration listenerRegistration;
 
     @Before
@@ -46,7 +49,8 @@ public class BindingDOMMountPointListenerAdapterTest {
         testContext.start();
         codec = testContext.getCodec();
         doReturn(listenerRegistration).when(mountPointService).registerProvisionListener(any());
-        adapter = new BindingDOMMountPointListenerAdapter(listener, codec, mountPointService);
+        adapter = new BindingDOMMountPointListenerAdapter(
+            new BindingDOMMountPointServiceAdapter(codec, mountPointService), listener);
     }
 
     @Test
@@ -59,7 +63,8 @@ public class BindingDOMMountPointListenerAdapterTest {
     @Test
     public void onMountPointCreatedWithExceptionTest() {
         reset(listener);
-        adapter.onMountPointCreated(YangInstanceIdentifier.of());
+        doReturn(YangInstanceIdentifier.of()).when(mountPoint).getIdentifier();
+        adapter.onMountPointCreated(mountPoint);
         verifyNoInteractions(listener);
     }
 

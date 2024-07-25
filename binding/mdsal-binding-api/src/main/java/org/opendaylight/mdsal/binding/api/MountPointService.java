@@ -26,8 +26,8 @@ public interface MountPointService extends BindingService {
     @NonNull Registration registerListener(DataObjectReference<?> path, MountPointListener listener);
 
     interface MountPointListener {
-        // FIXME: pass down MountPoint itself
-        void onMountPointCreated(@NonNull DataObjectIdentifier<?> path);
+
+        void onMountPointCreated(@NonNull MountPoint mountPoint);
 
         void onMountPointRemoved(@NonNull DataObjectIdentifier<?> path);
     }
