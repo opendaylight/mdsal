@@ -15,6 +15,7 @@ module org.opendaylight.mdsal.dom.api {
     requires transitive org.opendaylight.yangtools.yang.data.tree.api;
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.mdsal.common.api;
+    requires transitive org.opendaylight.yang.gen.ietf.datastores.rfc8342;
     requires transitive org.opendaylight.yangtools.concepts;
     requires org.opendaylight.yangtools.util;
 
