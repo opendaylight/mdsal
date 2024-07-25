@@ -22,4 +22,5 @@ module org.opendaylight.mdsal.dom.api {
     requires static com.github.spotbugs.annotations;
     requires static transitive org.checkerframework.checker.qual;
     requires static transitive org.eclipse.jdt.annotation;
+    requires static org.osgi.annotation.bundle;
 }
