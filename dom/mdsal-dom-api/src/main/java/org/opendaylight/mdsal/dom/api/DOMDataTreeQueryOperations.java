@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
@@ -23,7 +22,6 @@ public interface DOMDataTreeQueryOperations {
     /**
      * Executes a query on the provided logical data store.
      *
-     * @param store Logical data store from which read should occur.
      * @param query DOMQuery to execute
      * @return a FluentFuture containing the result of the query. The Future blocks until the operation is complete.
      *         Once complete:
@@ -36,5 +34,5 @@ public interface DOMDataTreeQueryOperations {
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws IllegalArgumentException if the {@code query} or {@code store} is not supported
      */
-    FluentFuture<DOMQueryResult> execute(LogicalDatastoreType store, DOMQuery query);
+    FluentFuture<DOMQueryResult> execute(DOMQuery query);
 }
