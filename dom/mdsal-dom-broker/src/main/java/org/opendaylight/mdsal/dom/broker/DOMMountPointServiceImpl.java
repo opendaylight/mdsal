@@ -65,13 +65,13 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     private ObjectRegistration<DOMMountPoint> registerMountPoint(final SimpleDOMMountPoint mountPoint) {
-        final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
+        final var mountPointId = mountPoint.getIdentifier();
         synchronized (mountPoints) {
             checkNotExists(mountPointId, mountPoints.putIfAbsent(mountPointId, mountPoint));
         }
         listeners.streamObjects().forEach(listener -> {
             try {
-                listener.onMountPointCreated(mountPointId);
+                listener.onMountPointCreated(mountPoint);
             } catch (final Exception ex) {
                 LOG.error("Listener {} failed on mount point {} created event", listener, mountPoint, ex);
             }
