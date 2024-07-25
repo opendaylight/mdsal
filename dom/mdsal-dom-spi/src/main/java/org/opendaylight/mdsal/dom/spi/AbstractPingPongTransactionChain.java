@@ -28,10 +28,11 @@ import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction.CommitCallback;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -241,15 +242,15 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
             LOG.warn("Submitting transaction {} while {} is still running", tx, witness);
         }
 
-        tx.getTransaction().commit().addCallback(new FutureCallback<CommitInfo>() {
+        tx.getTransaction().commit(new CommitCallback() {
             @Override
             public void onSuccess(final CommitInfo result) {
                 transactionSuccessful(tx, result);
             }
 
             @Override
-            public void onFailure(final Throwable throwable) {
-                transactionFailed(tx, throwable);
+            public void onFailure(final TransactionCommitFailedException cause) {
+                transactionFailed(tx, cause);
             }
         }, MoreExecutors.directExecutor());
     }
@@ -455,14 +456,13 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         }
 
         @Override
-        public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
-                final YangInstanceIdentifier path) {
-            return tx.getTransaction().read(store, path);
+        public FluentFuture<Optional<NormalizedNode>> read(final YangInstanceIdentifier path) {
+            return tx.getTransaction().read(path);
         }
 
         @Override
-        public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-            return tx.getTransaction().exists(store, path);
+        public FluentFuture<Boolean> exists(final YangInstanceIdentifier path) {
+            return tx.getTransaction().exists(path);
         }
 
         @Override

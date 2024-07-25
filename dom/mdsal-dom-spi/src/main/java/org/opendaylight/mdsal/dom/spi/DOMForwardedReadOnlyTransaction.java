@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import java.util.function.Function;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryReadTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -26,25 +25,23 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 class DOMForwardedReadOnlyTransaction extends AbstractDOMForwardedTransaction<DOMStoreReadTransaction>
         implements DOMDataTreeQueryReadTransaction {
-    DOMForwardedReadOnlyTransaction(final Object identifier,
-            final Function<LogicalDatastoreType, DOMStoreReadTransaction> txSupplier) {
-        super(identifier, txSupplier);
+    DOMForwardedReadOnlyTransaction(final Object identifier, final DOMStoreReadTransaction backingTx) {
+        super(identifier, backingTx);
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
-            final YangInstanceIdentifier path) {
-        return getSubtransaction(store).read(path);
+    public FluentFuture<Optional<NormalizedNode>> read(final YangInstanceIdentifier path) {
+        return backingTx().read(path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-        return getSubtransaction(store).exists(path);
+    public FluentFuture<Boolean> exists(final YangInstanceIdentifier path) {
+        return backingTx().exists(path);
     }
 
     @Override
-    public FluentFuture<DOMQueryResult> execute(final LogicalDatastoreType store, final DOMQuery query) {
-        return getSubtransaction(store).execute(query);
+    public FluentFuture<DOMQueryResult> execute(final DOMQuery query) {
+        return backingTx().execute(query);
     }
 
     @Override
