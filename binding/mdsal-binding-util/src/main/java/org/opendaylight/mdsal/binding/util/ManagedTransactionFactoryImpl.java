@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionFactory;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +38,10 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     @Override
     @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <D extends Datastore, E extends Exception, R> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(
-        final D datastore, final InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
+            final D datastore, final InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
             throws E, InterruptedException {
-        try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
-            TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastore, realTx);
-            return txFunction.apply(wrappedTx);
+        try (var realTx = transactionFactory.newReadOnlyTransaction()) {
+            return txFunction.apply(new TypedReadTransactionImpl<>(datastore, realTx));
         }
     }
 
@@ -49,9 +49,8 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(final D datastore,
             final CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E {
-        try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
-            TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastore, realTx);
-            return txFunction.apply(wrappedTx);
+        try (var realTx = transactionFactory.newReadOnlyTransaction()) {
+            return txFunction.apply(new TypedReadTransactionImpl<>(datastore, realTx));
         }
     }
 
