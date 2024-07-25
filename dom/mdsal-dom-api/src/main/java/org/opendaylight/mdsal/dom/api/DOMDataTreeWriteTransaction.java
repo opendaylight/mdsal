@@ -8,8 +8,9 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import edu.umd.cs.findbugs.annotations.CheckReturnValue;
-import org.eclipse.jdt.annotation.NonNull;
+import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.Executor;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
@@ -416,30 +417,27 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
      * txB = broker.newWriteTransaction(); // allocates new transaction, data tree is empty
      * txA.put(CONFIGURATION, PATH, A);    // writes to PATH value A
      * txB.put(CONFIGURATION, PATH, B)     // writes to PATH value B
-     * ListenableFuture futureA = txA.commit(); // transaction A is sealed and committed
-     * ListenebleFuture futureB = txB.commit(); // transaction B is sealed and committed
+     * txA.commit(callbackA);              // transaction A is sealed and committed
+     * txB.commit(callbackB);              // transaction B is sealed and committed
      * </pre>
-     * Commit of transaction A will be processed asynchronously and data tree will be updated to
-     * contain value <code>A</code> for <code>PATH</code>. Returned {@link FluentFuture} will
-     * successfully complete once state is applied to data tree.
-     * Commit of Transaction B will fail, because previous transaction also modified path in a
-     * concurrent way. The state introduced by transaction B will not be applied. Returned
-     * {@link FluentFuture} object will fail with {@link OptimisticLockFailedException}
-     * exception, which indicates to client that concurrent transaction prevented the committed
-     * transaction from being applied. <br>
+     * Commit of transaction A will be processed asynchronously and data tree will be updated to contain value
+     * {@code A} for {@code PATH}. Supplied {@code callbackA} will see {@link CommitCallback#onSuccess(CommitInfo)} once
+     * state is applied to data tree.
+     * Commit of Transaction B will fail, because previous transaction also modified path in a concurrent way. The state
+     * introduced by transaction B will not be applied. Supplied {@code callbackB} will see
+     * {@link CommitCallback#onFailure(TransactionCommitFailedException)} with {@link OptimisticLockFailedException}
+     * exception, which indicates to client that concurrent transaction prevented the committed transaction from being
+     * applied. <br>
      *
-     * <p>
-     * A successful commit produces implementation-specific {@link CommitInfo} structure, which is used to communicate
-     * post-condition information to the caller. Such information can contain commit-id, timing information or any
-     * other information the implementation wishes to share.
-     *
-     * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
-     *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
-     *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
+     * @param callback callback to invoke once the commit completes.
+     * @param executor executor to use to deliver the callback
      * @throws IllegalStateException if the transaction is already committed or was canceled.
      */
-    @CheckReturnValue
-    @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
+    void commit(CommitCallback callback, Executor executor);
+
+    default void commit(final CommitCallback callback) {
+        commit(callback, MoreExecutors.directExecutor());
+    }
 
     /**
      * Cancels the transaction. Transactions can only be cancelled if it was not yet committed.
@@ -451,4 +449,27 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
      *         {@code true} otherwise
      */
     boolean cancel();
+
+    /**
+     * Callback invoked once a transaction's effect was resolved, either via {@link #onSuccess(CommitInfo)} or via
+     * {@link #onFailure(TransactionCommitFailedException)}.
+     */
+    @NonNullByDefault
+    interface CommitCallback {
+        /**
+         * Invoked when a transaction commits successfully. An implementation-specific {@link CommitInfo}, which is
+         * used to communicate post-condition information. Such information can contain commit-id, timing information or
+         * any other information the implementation wishes to share.
+         *
+         * @param commitInfo a {@link CommitInfo}
+         */
+        void onSuccess(CommitInfo commitInfo);
+
+        /**
+         * Invoked when a transaction fails.
+         *
+         * @param cause the cause for transaction failure
+         */
+        void onFailure(TransactionCommitFailedException cause);
+    }
 }

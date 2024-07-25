@@ -13,8 +13,8 @@ import static org.opendaylight.yangtools.util.concurrent.FluentFutures.immediate
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -75,31 +75,28 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
      */
     private volatile FluentFuture<?> commitFuture;
 
-    protected DOMForwardedWriteTransaction(final Object identifier,
-            final Function<LogicalDatastoreType, T> backingTxFactory,
+    protected DOMForwardedWriteTransaction(final Object identifier, final T backingTx,
             final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
-        super(identifier, backingTxFactory);
+        super(identifier, backingTx);
         this.commitImpl = requireNonNull(commitImpl, "commitImpl must not be null.");
     }
 
     @Override
-    public final void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode data) {
+    public final void put(final YangInstanceIdentifier path, final NormalizedNode data) {
         checkRunning(commitImpl);
-        getSubtransaction(store).write(path, data);
+        backingTx().write(path, data);
     }
 
     @Override
-    public final void delete(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
+    public final void delete(final YangInstanceIdentifier path) {
         checkRunning(commitImpl);
-        getSubtransaction(store).delete(path);
+        backingTx().delete(path);
     }
 
     @Override
-    public final void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode data) {
+    public final void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
         checkRunning(commitImpl);
-        getSubtransaction(store).merge(path, data);
+        backingTx().merge(path, data);
     }
 
     @Override
@@ -123,24 +120,20 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public final FluentFuture<? extends CommitInfo> commit() {
+    public final void commit(final CommitCallback callback, final Executor executor) {
         final AbstractDOMForwardedTransactionFactory<?> impl = IMPL_UPDATER.getAndSet(this, null);
         checkRunning(impl);
 
         FluentFuture<? extends CommitInfo> ret;
-        final var tx = getSubtransaction();
-        if (tx == null) {
-            ret = CommitInfo.emptyFluentFuture();
-        } else {
-            try {
-                ret = impl.commit(this, tx.ready());
-            } catch (RuntimeException e) {
-                ret = immediateFailedFluentFuture(TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
-            }
+        try {
+            ret = impl.commit(this, backingTx().ready());
+        } catch (RuntimeException e) {
+            ret = immediateFailedFluentFuture(TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
         }
 
         settableCompletion.setFuture(ret);
         FUTURE_UPDATER.lazySet(this, ret);
+
         return completionFuture;
     }
 

@@ -47,18 +47,17 @@ final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransactio
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
-            final YangInstanceIdentifier path) {
-        return getSubtransaction(store).read(path);
+    public FluentFuture<Optional<NormalizedNode>> read(final YangInstanceIdentifier path) {
+        return backingTx().read(path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-        return getSubtransaction(store).exists(path);
+    public FluentFuture<Boolean> exists(final YangInstanceIdentifier path) {
+        return backingTx().exists(path);
     }
 
     @Override
-    public FluentFuture<DOMQueryResult> execute(final LogicalDatastoreType store, final DOMQuery query) {
-        return getSubtransaction(store).execute(query);
+    public FluentFuture<DOMQueryResult> execute(final DOMQuery query) {
+        return backingTx().execute(query);
     }
 }

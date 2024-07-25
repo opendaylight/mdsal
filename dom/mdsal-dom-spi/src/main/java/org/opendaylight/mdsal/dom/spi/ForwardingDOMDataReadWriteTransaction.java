@@ -11,8 +11,6 @@ import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -27,14 +25,13 @@ public abstract class ForwardingDOMDataReadWriteTransaction extends ForwardingOb
     protected abstract @NonNull DOMDataTreeReadWriteTransaction delegate();
 
     @Override
-    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
-            final YangInstanceIdentifier path) {
-        return delegate().read(store, path);
+    public FluentFuture<Optional<NormalizedNode>> read(final YangInstanceIdentifier path) {
+        return delegate().read(path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-        return delegate().exists(store, path);
+    public FluentFuture<Boolean> exists(final YangInstanceIdentifier path) {
+        return delegate().exists(path);
     }
 
     @Override
@@ -43,13 +40,13 @@ public abstract class ForwardingDOMDataReadWriteTransaction extends ForwardingOb
     }
 
     @Override
-    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
-        delegate().put(store, path, data);
+    public void put(final YangInstanceIdentifier path, final NormalizedNode data) {
+        delegate().put(path, data);
     }
 
     @Override
-    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
-        delegate().merge(store, path, data);
+    public void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
+        delegate().merge(path, data);
     }
 
     @Override
@@ -58,13 +55,13 @@ public abstract class ForwardingDOMDataReadWriteTransaction extends ForwardingOb
     }
 
     @Override
-    public void delete(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-        delegate().delete(store, path);
+    public void delete(final YangInstanceIdentifier path) {
+        delegate().delete(path);
     }
 
     @Override
-    public FluentFuture<? extends CommitInfo> commit() {
-        return delegate().commit();
+    public void commit(final CommitCallback callback) {
+        delegate().commit(callback);
     }
 
     @Override

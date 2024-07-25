@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -23,7 +22,6 @@ public interface DOMDataTreeReadOperations {
      * If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
      * object).
      *
-     * @param store Logical data store from which read should occur.
      * @param path Path which uniquely identifies subtree which client want to read
      * @return a FluentFuture containing the result of the read. The Future blocks until the commit operation is
      *         complete. Once complete:
@@ -38,7 +36,7 @@ public interface DOMDataTreeReadOperations {
      * @throws NullPointerException if any argument is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
-    FluentFuture<Optional<NormalizedNode>> read(LogicalDatastoreType store, YangInstanceIdentifier path);
+    FluentFuture<Optional<NormalizedNode>> read(YangInstanceIdentifier path);
 
     /**
      * Checks if data is available in the logical data store located at provided path.
@@ -49,7 +47,6 @@ public interface DOMDataTreeReadOperations {
      * a network failure occurs, a subsequent read would fail. Another scenario is if the data is deleted in between
      * the calls to <code>exists</code> and <code>read</code>
      *
-     * @param store Logical data store from which read should occur.
      * @param path Path which uniquely identifies subtree which client want to check existence of
      * @return a FluentFuture containing the result of the check.
      *         <ul>
@@ -62,5 +59,5 @@ public interface DOMDataTreeReadOperations {
      * @throws NullPointerException if any argument is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
-    FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path);
+    FluentFuture<Boolean> exists(YangInstanceIdentifier path);
 }

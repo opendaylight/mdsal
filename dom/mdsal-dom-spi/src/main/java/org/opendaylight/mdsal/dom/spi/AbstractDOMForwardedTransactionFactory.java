@@ -10,18 +10,17 @@ package org.opendaylight.mdsal.dom.spi;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.util.concurrent.FluentFuture;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.EnumMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction.CommitCallback;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionFactory;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
@@ -62,7 +61,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
 
     protected AbstractDOMForwardedTransactionFactory(final Map<LogicalDatastoreType, ? extends T> txFactories) {
         checkState(!txFactories.isEmpty(), "txFactories should not be empty.");
-        this.storeTxFactories = new EnumMap<>(txFactories);
+        storeTxFactories = new EnumMap<>(txFactories);
     }
 
     /**
@@ -73,19 +72,20 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     protected abstract Object newTransactionIdentifier();
 
     /**
-     * User-supplied implementation of {@link DOMDataTreeWriteTransaction#commit()} for transaction.
+     * User-supplied implementation of {@link DOMDataTreeWriteTransaction#commit(CommitCallback)} for transaction.
      *
      * <p>
-     * Callback invoked when {@link DOMDataTreeWriteTransaction#commit()} is invoked on transaction created by this
-     * factory.
+     * Callback invoked when {@link DOMDataTreeWriteTransaction#commit(CommitCallback)} is invoked on transaction
+     * created by this factory.
      *
      * @param transaction Transaction on which {@link DOMDataTreeWriteTransaction#commit()} was invoked.
      * @param cohort      Subtransactions associated with the transaction being committed.
+     * @param callback    callback to invoke when commit completes
      * @return a FluentFuture. if commit coordination on cohorts finished successfully, a CommitInfo is returned from
      *     the Future, On failure, the Future fails with a {@link TransactionCommitFailedException}.
      */
-    protected abstract FluentFuture<? extends CommitInfo> commit(DOMDataTreeWriteTransaction transaction,
-            DOMStoreThreePhaseCommitCohort cohort);
+    protected abstract void commit(DOMDataTreeWriteTransaction transaction, DOMStoreThreePhaseCommitCohort cohort,
+        CommitCallback callback);
 
     /**
      * Creates a new forwarded read-only transaction.
