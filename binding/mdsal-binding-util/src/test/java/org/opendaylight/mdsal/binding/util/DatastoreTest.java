@@ -7,23 +7,17 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
 
-public class DatastoreTest {
+class DatastoreTest {
     @Test
-    public void testDatastoreToType() {
-        assertEquals(LogicalDatastoreType.CONFIGURATION, Datastore.CONFIGURATION.type());
-        assertEquals(LogicalDatastoreType.OPERATIONAL, Datastore.OPERATIONAL.type());
-    }
-
-    @Test
-    public void testDatastoreToClass() {
-        assertEquals(Datastore.CONFIGURATION, Datastore.ofType(LogicalDatastoreType.CONFIGURATION));
-        assertEquals(Datastore.OPERATIONAL, Datastore.ofType(LogicalDatastoreType.OPERATIONAL));
-        assertThrows(NullPointerException.class, () -> Datastore.ofType(null));
+    void testDatastoreToType() {
+        assertEquals(LogicalDatastoreType.CONFIGURATION, TypedTransaction.typeOf(Running.VALUE));
+        assertEquals(LogicalDatastoreType.OPERATIONAL, TypedTransaction.typeOf(Operational.VALUE));
     }
 }

@@ -10,6 +10,7 @@ module org.opendaylight.mdsal.binding.util {
 
     requires transitive org.opendaylight.mdsal.binding.api;
     requires transitive org.opendaylight.mdsal.common.api;
+    requires transitive org.opendaylight.yang.gen.ietf.datastores.rfc8342;
     requires org.opendaylight.mdsal.binding.spi;
     requires org.opendaylight.yangtools.util;
     requires org.slf4j;
