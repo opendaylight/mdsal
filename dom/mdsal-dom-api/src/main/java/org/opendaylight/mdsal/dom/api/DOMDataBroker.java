@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -43,7 +44,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * but only to be consumed by them.
  */
 @NonNullByDefault
-public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.Extension>, DOMTransactionFactory {
+public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.Extension> {
     /**
      * Type capture of a {@link DOMService.Extension} applicable to {@link DOMDataBroker} implementations.
      */
@@ -52,30 +53,30 @@ public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.E
     }
 
     /**
-     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
-     * no outstanding transaction.
+     * Return the {@link LogicalDatastoreType#CONFIGURATION} datastore.
      *
-     * @return A new transaction chain.
+     * @return the {@link LogicalDatastoreType#CONFIGURATION} datastore
      */
-    DOMTransactionChain createTransactionChain();
+    DOMConfigurationDatastore configuration();
 
     /**
-     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
-     * no outstanding transaction.
+     * Return the {@link LogicalDatastoreType#OPERATIONAL} datastore.
      *
-     * <p>
-     * Unlike {@link #createTransactionChain()}, the transaction chain returned by this method is allowed to merge
-     * individual transactions into larger chunks. When transactions are merged, the results must be indistinguishable
-     * from the result of all operations having been performed on a single transaction.
-     *
-     * <p>
-     * When transactions are merged, {@link DOMTransactionChain#newReadOnlyTransaction()} may actually be backed by
-     * a read-write transaction, hence an additional restriction on API use is that multiple read-only transactions
-     * may not be open at the same time.
-     *
-     * @return A new transaction chain.
+     * @return the {@link LogicalDatastoreType#OPERATIONAL} datastore
      */
-    DOMTransactionChain createMergingTransactionChain();
+    DOMOperationalDatastore operational();
+
+    /**
+     * Return the datastore of specified {@link LogicalDatastoreType}.
+     *
+     * @return the datastore
+     */
+    default DOMLogicalDatastore datastore(final LogicalDatastoreType type) {
+        return switch (type) {
+            case CONFIGURATION -> configuration();
+            case OPERATIONAL -> operational();
+        };
+    }
 
     /**
      * Optional support for allowing a {@link DOMDataTreeCommitCohort} to participate in the process of committing

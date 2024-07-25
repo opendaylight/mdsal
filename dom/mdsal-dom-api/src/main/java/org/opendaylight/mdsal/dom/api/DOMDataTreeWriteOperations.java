@@ -11,7 +11,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -25,7 +24,6 @@ public interface DOMDataTreeWriteOperations {
      * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
      * put, consider using {@link #merge} instead.
      *
-     * @param store the logical data store which should be modified
      * @param path the data object path
      * @param data the data object to be written to the specified path
      * @throws IllegalArgumentException if {@code store} is not supported
@@ -33,7 +31,7 @@ public interface DOMDataTreeWriteOperations {
      * @throws NullPointerException if any argument is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
-    void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data);
+    void put(YangInstanceIdentifier path, NormalizedNode data);
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -42,7 +40,6 @@ public interface DOMDataTreeWriteOperations {
      * <p>
      * If you require an explicit replace operation, use {@link #put} instead.
      *
-     * @param store the logical data store which should be modified
      * @param path the data object path
      * @param data the data object to be merged to the specified path
      * @throws IllegalArgumentException if {@code store} is not supported
@@ -50,19 +47,18 @@ public interface DOMDataTreeWriteOperations {
      * @throws NullPointerException if any argument is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
-    void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data);
+    void merge(YangInstanceIdentifier path, NormalizedNode data);
 
     /**
      * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
      *
-     * @param store Logical data store which should be modified
      * @param path Data object path
      * @throws IllegalArgumentException if {@code store} is not supported
      * @throws IllegalStateException if the transaction was committed or canceled.
      * @throws NullPointerException if any argument is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
-    void delete(LogicalDatastoreType store, YangInstanceIdentifier path);
+    void delete(YangInstanceIdentifier path);
 
     /**
      * Return a {@link FluentFuture} which completes.
