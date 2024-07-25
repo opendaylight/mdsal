@@ -7,10 +7,19 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.Notification;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
@@ -78,4 +87,50 @@ public interface NotificationPublishService extends BindingService {
      */
     @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification<?> notification,
             int timeout, @NonNull TimeUnit unit) throws InterruptedException;
+
+    @Nullable OnDemandExtension onDemandExtension();
+
+    default Optional<OnDemandExtension> findOnDemandExtension() {
+        return Optional.ofNullable(onDemandExtension());
+    }
+
+    default @NonNull OnDemandExtension getOnDemandExtension() {
+        final var onDemand = onDemandExtension();
+        if (onDemand == null) {
+            throw new NoSuchElementException();
+        }
+        return onDemand;
+    }
+
+    /**
+     * An extension providing access to listening for notification demand -- which is typically triggered by users
+     * calling {@link NotificationService#registerListener()};
+     */
+    interface OnDemandExtension {
+
+        default Registration registerOnDemandListener(final OnDemandListener<?> listener) {
+            return registerOnDemandListeners(List.of(listener));
+        }
+
+        default Registration registerOnDemandListeners(final OnDemandListener<?>... listeners) {
+            return registerOnDemandListeners(List.of(listeners));
+        }
+
+        Registration registerOnDemandListeners(Collection<? extends OnDemandListener<?>> listener);
+    }
+
+    abstract class OnDemandListener<T extends Notification<T> & DataObject> {
+        private final Class<T> notificationType;
+
+        protected OnDemandListener(final Class<T> notificationType) {
+            this.notificationType = requireNonNull(notificationType);
+            notificationType.asSubclass(Notification.class).asSubclass(DataObject.class);
+        }
+
+        public final Class<T> notificationType() {
+            return notificationType;
+        }
+
+        public abstract Registration notificationInDemand();
+    }
 }
