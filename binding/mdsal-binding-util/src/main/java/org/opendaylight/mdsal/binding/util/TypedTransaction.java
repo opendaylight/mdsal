@@ -14,6 +14,9 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.spi.ForwardingTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
 import org.opendaylight.yangtools.binding.DataObject;
 
 abstract class TypedTransaction<D extends Datastore, X extends Transaction> extends ForwardingTransaction {
@@ -21,8 +24,18 @@ abstract class TypedTransaction<D extends Datastore, X extends Transaction> exte
     private final X delegate;
 
     TypedTransaction(final D datastore, final X delegate) {
-        datastoreType = datastore.type();
+        datastoreType = typeOf(datastore);
         this.delegate = delegate;
+    }
+
+    static final LogicalDatastoreType typeOf(final Datastore datastore) {
+        if (datastore.equals(Running.VALUE)) {
+            return LogicalDatastoreType.CONFIGURATION;
+        } else if (datastore.equals(Operational.VALUE)) {
+            return LogicalDatastoreType.OPERATIONAL;
+        } else {
+            throw new IllegalArgumentException("Unsupported datastore " + datastore);
+        }
     }
 
     @Override

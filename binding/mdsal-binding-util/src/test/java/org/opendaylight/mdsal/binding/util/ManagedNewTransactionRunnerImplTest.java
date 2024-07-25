@@ -14,7 +14,6 @@ import static org.junit.Assert.assertThrows;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
-import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -29,6 +28,7 @@ import org.opendaylight.mdsal.binding.testutils.DataBrokerFailuresImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
@@ -67,35 +67,35 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testApplyWithNewReadTransactionAndCloseEmptySuccessfully() {
         assertEquals(Long.valueOf(1),
-            managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(OPERATIONAL, tx -> 1L));
+            managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(Operational.VALUE, tx -> 1L));
     }
 
     @Test
     public void testCallWithNewReadTransactionAndCloseEmptySuccessfully() {
-        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(OPERATIONAL, tx -> { });
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(Operational.VALUE, tx -> { });
     }
 
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionAndSubmitEmptySuccessfully() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, writeTx -> { }).get();
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE, writeTx -> { }).get();
     }
 
     @Test
     public void testCallWithNewTypedReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> { }).get();
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE, tx -> { }).get();
     }
 
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
         assertEquals(1,
-            (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+            (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
                 tx -> 1).get());
     }
 
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, data)).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
@@ -103,7 +103,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testCallWithNewTypedReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             tx -> tx.put(TEST_PATH, data)).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
@@ -111,8 +111,8 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
-            OPERATIONAL, tx -> {
+        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
+            tx -> {
                 tx.put(TEST_PATH, data);
                 return 1;
             }).get());
@@ -122,10 +122,10 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testCallWithNewReadTransactionAndCloseReadSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             tx -> tx.put(TEST_PATH, data)).get();
-        assertEquals(Optional.of(data), managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
-            tx -> tx.read(TEST_PATH)).get());
+        assertEquals(Optional.of(data), managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(
+            Operational.VALUE, tx -> tx.read(TEST_PATH)).get());
     }
 
     TopLevelList newTestDataObject() {
@@ -136,7 +136,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
 
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionAndSubmitPutButLaterException() throws Exception {
-        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> {
                 writeTx.put(TEST_PATH, newTestDataObject());
                 // We now throw an arbitrary kind of checked (not unchecked!) exception here
@@ -149,7 +149,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
 
     @Test
     public void testCallWithNewTypedReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
-        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> {
                 writeTx.put(TEST_PATH, newTestDataObject());
                 // We now throw an arbitrary kind of checked (not unchecked!) exception here
@@ -162,7 +162,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
 
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
-        Future<?> future = managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> {
                 writeTx.put(TEST_PATH, newTestDataObject());
                 // We now throw an arbitrary kind of checked (not unchecked!) exception here
@@ -176,7 +176,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionCommitFailedException() throws Exception {
         testableDataBroker.failCommits(new TransactionCommitFailedException("bada boum bam!"));
-        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, newTestDataObject()));
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
         assertThat(ex.getCause(), instanceOf(TransactionCommitFailedException.class));
@@ -186,7 +186,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testCallWithNewTypedReadWriteTransactionCommitFailedException() throws Exception {
         testableDataBroker.failCommits(new TransactionCommitFailedException("bada boum bam!"));
-        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, newTestDataObject()));
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
         assertThat(ex.getCause(), instanceOf(TransactionCommitFailedException.class));
@@ -196,7 +196,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testApplyWithNewReadWriteTransactionCommitFailedException() throws Exception {
         testableDataBroker.failCommits(new TransactionCommitFailedException("bada boum bam!"));
-        Future<?> future = managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> {
                 writeTx.put(TEST_PATH, newTestDataObject());
                 return 1;
@@ -209,7 +209,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionOptimisticLockFailedException() throws Exception {
         testableDataBroker.failCommits(2, new OptimisticLockFailedException("bada boum bam!"));
-        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, newTestDataObject()));
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
         assertThat(ex.getCause(), instanceOf(OptimisticLockFailedException.class));
@@ -219,7 +219,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testCallWithNewTypedReadWriteTransactionOptimisticLockFailedException() throws Exception {
         testableDataBroker.failCommits(2, new OptimisticLockFailedException("bada boum bam!"));
-        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, newTestDataObject()));
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
         assertThat(ex.getCause(), instanceOf(OptimisticLockFailedException.class));
@@ -229,7 +229,7 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
     @Test
     public void testApplyWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
         testableDataBroker.failCommits(2, new OptimisticLockFailedException("bada boum bam!"));
-        Future<?> future = managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        var future = managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> {
                 writeTx.put(TEST_PATH, newTestDataObject());
                 return 1;

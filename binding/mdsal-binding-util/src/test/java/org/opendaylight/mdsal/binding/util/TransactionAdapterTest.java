@@ -14,7 +14,6 @@ import static org.junit.Assert.assertThrows;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
-import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -26,6 +25,7 @@ import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.binding.testutils.DataBrokerFailuresImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
@@ -57,7 +57,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void testAdaptedWriteTransactionPutsSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.OPERATIONAL,
                     TEST_PATH, data)).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
@@ -66,7 +66,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void testAdaptedReadWriteTransactionPutsSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toReadWriteTransaction(writeTx).put(LogicalDatastoreType.OPERATIONAL,
                     TEST_PATH, data)).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
@@ -74,7 +74,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test
     public void testAdaptedWriteTransactionFailsOnInvalidDatastore() throws Exception {
-        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
                     TEST_PATH, newTestDataObject()));
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
@@ -84,7 +84,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test
     public void testAdaptedReadWriteTransactionFailsOnInvalidDatastore() throws Exception {
-        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toReadWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
                 TEST_PATH, newTestDataObject()));
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
@@ -94,25 +94,25 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test(expected = ExecutionException.class)
     public void testAdaptedWriteTransactionCannotCommit() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             tx -> TransactionAdapter.toWriteTransaction(tx).commit()).get();
     }
 
     @Test(expected = ExecutionException.class)
     public void testAdaptedReadWriteTransactionCannotCommit() throws Exception {
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             tx -> TransactionAdapter.toReadWriteTransaction(tx).commit()).get();
     }
 
     @Test(expected = ExecutionException.class)
     public void testAdaptedWriteTransactionCannotCancel() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             tx -> TransactionAdapter.toWriteTransaction(tx).cancel()).get();
     }
 
     @Test(expected = ExecutionException.class)
     public void testAdaptedReadWriteTransactionCannotCancel() throws Exception {
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             tx -> TransactionAdapter.toReadWriteTransaction(tx).cancel()).get();
     }
 
