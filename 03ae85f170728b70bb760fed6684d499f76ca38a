@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d068e85_e0423816",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataInput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-29T09:57:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1abd343_8752eba8",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b288394d_f7ffb935",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-07-16T12:20:25Z",
       "side": 1,
       "message": "This condition is suspicious.\n\nVariable \"type\" is byte. So is in range -128 to 127. The PotassiumValue.BINARY_0 \u003d\u003d -128.\n\nThis means \"type \u003e PotassiumValue.BINARY_0\" is redundant because variable type can not be less than -128.",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f0ffc4f_5f03bb77",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataInput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-29T09:57:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b288394d_f7ffb935",
       "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -82,6 +118,30 @@
       "writtenOn": "2024-07-16T12:20:25Z",
       "side": 1,
       "message": "Do we need this part? It is not used.",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 69
+      },
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c94469f9_333c56e2",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumPathArgument.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-29T09:57:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c45eb6a_e554ff98",
       "range": {
         "startLine": 65,
         "startChar": 0,
