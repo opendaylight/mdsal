@@ -190,6 +190,30 @@
       },
       "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5319d37_56fc97ff",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-29T13:33:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5effad1_c08e031c",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 90
+      },
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
