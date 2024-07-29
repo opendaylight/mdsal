@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0960c65d_4ff92864",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9255
+      },
+      "writtenOn": "2024-07-29T07:43:19Z",
+      "side": 1,
+      "message": "code base moved to yangtools",
+      "revId": "6f0bc7f702b9dd5eed3fa5a59184a4a8451b8c97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
