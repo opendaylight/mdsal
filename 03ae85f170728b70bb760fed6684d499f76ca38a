@@ -88,6 +88,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fa49049_e558b9a9",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataOutput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-30T11:24:13Z",
+      "side": 1,
+      "message": "No, it is not in build-in types",
+      "parentUuid": "6f307734_823beddc",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "de56372b_f71b16e3",
@@ -101,6 +119,24 @@
       "writtenOn": "2024-07-16T12:20:25Z",
       "side": 1,
       "message": "Is this part required? Set\u003cString\u003e can not have duplicity.",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a203afb_2705d799",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/PotassiumDataOutput.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-30T11:24:13Z",
+      "side": 1,
+      "message": "This is how it suppose to be",
+      "parentUuid": "de56372b_f71b16e3",
       "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -165,6 +201,24 @@
       "writtenOn": "2024-07-16T12:20:25Z",
       "side": 1,
       "message": "Please add more tests. There are a lot of uncovered new code.\n\n```\n        final var matcher \u003d DOMQueryPredicate.Match.exists();\n        final var matcher1 \u003d DOMQueryPredicate.Match.greaterThan(5L);\n        final var matcher2 \u003d DOMQueryPredicate.Match.greaterThanOrEqual((short) 5);\n        // Unsuported\n//        final var matcher3 \u003d DOMQueryPredicate.Match.lessThan((float) 2);\n//        final var matcher4 \u003d DOMQueryPredicate.Match.lessThanOrEqual((double) 15);\n        final var matcher5 \u003d DOMQueryPredicate.Match.valueEquals(true);\n        final var matcher6 \u003d DOMQueryPredicate.Match.lessThanOrEqual(0x7F);\n        final var matcher7 \u003d DOMQueryPredicate.Match.lessThanOrEqual(QName.create(\"urn:test\", \"2017-01-01\", \"cont\"));\n        final var matcher8 \u003d DOMQueryPredicate.Match.valueEquals(Empty.value());\n        final var matcher9 \u003d DOMQueryPredicate.Match.lessThanOrEqual(Decimal64.minValueIn(2));\n        final var matcher10 \u003d DOMQueryPredicate.Match.lessThanOrEqual(Uint16.ZERO);\n        final var matcher11 \u003d DOMQueryPredicate.Match.greaterThan(true);\n        final var matcher12 \u003d DOMQueryPredicate.Match.valueEquals(\"aasdasd\".getBytes());\n        final var matcher13 \u003d DOMQueryPredicate.Match.valueEquals(Set.of(\"data1\", \"data2\", \"a\".repeat(50000)));\n        final var matcher14 \u003d DOMQueryPredicate.Match.valueEquals(new HashSet\u003c\u003e(Set.of(\"a\".repeat(50000), \"data2\")));\n```",
+      "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b15338e2_e1153160",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 9229
+      },
+      "writtenOn": "2024-07-30T11:24:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "deb3d674_78e548cb",
       "revId": "03ae85f170728b70bb760fed6684d499f76ca38a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
