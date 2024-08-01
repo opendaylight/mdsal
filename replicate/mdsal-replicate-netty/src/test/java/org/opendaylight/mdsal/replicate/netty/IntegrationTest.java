@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.replicate.netty;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
@@ -85,6 +86,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
             final DOMTransactionChain sinkChain = mock(DOMTransactionChain.class);
             final DOMDataTreeWriteTransaction sinkTx = mock(DOMDataTreeWriteTransaction.class);
             doReturn(CommitInfo.emptyFluentFuture()).when(sinkTx).commit();
+            doCallRealMethod().when(sinkTx).commit(any(), any());
             doReturn(sinkTx).when(sinkChain).newWriteOnlyTransaction();
             final DOMDataBroker sinkBroker = mock(DOMDataBroker.class);
             doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain();
@@ -106,7 +108,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
                 // verify that all the deltas were transferred and committed + 1 invocation from receiving
                 // MSG_EMPTY_DATA
                 verify(sinkChain, timeout(2000).times(deltaCount + 1)).newWriteOnlyTransaction();
-                verify(sinkTx, timeout(2000).times(deltaCount + 1)).commit();
+                verify(sinkTx, timeout(2000).times(deltaCount + 1)).commit(any(), any());
             }
         }
     }
@@ -131,6 +133,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
             final DOMTransactionChain sinkChain = mock(DOMTransactionChain.class);
             final DOMDataTreeWriteTransaction sinkTx = mock(DOMDataTreeWriteTransaction.class);
             doReturn(CommitInfo.emptyFluentFuture()).when(sinkTx).commit();
+            doCallRealMethod().when(sinkTx).commit(any(), any());
             doReturn(sinkTx).when(sinkChain).newWriteOnlyTransaction();
             final DOMDataBroker sinkBroker = mock(DOMDataBroker.class);
             doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain();
@@ -152,7 +155,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
                 NormalizedNode expectedEntityState = generateNormalizedNodeForEntities(deltaCount);
                 assertEquals(expectedEntityState, capturedInitialState);
 
-                verify(sinkTx, timeout(2000).times(1)).commit();
+                verify(sinkTx, timeout(2000).times(1)).commit(any(), any());
             }
         }
     }
