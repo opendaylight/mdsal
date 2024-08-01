@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -23,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -101,14 +102,14 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     private static void commit(final DOMDataTreeWriteTransaction tx) {
-        tx.commit().addCallback(new FutureCallback<CommitInfo>() {
+        tx.commit(new OnCommitCallback() {
             @Override
             public void onSuccess(final CommitInfo result) {
                 LOG.trace("Transaction committed with {}", result);
             }
 
             @Override
-            public void onFailure(final Throwable cause) {
+            public void onFailure(final TransactionCommitFailedException cause) {
                 // Handled by transaction chain listener
             }
         }, MoreExecutors.directExecutor());
