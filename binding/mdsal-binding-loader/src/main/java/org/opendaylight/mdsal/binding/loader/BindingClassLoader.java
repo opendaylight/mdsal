@@ -11,6 +11,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.Set;
 import java.util.function.Supplier;
 import net.bytebuddy.dynamic.DynamicType.Unloaded;
@@ -166,6 +169,25 @@ public abstract sealed class BindingClassLoader extends ClassLoader
 
         checkArgument(ret != null, "Failed to find generated class %s for %s", fqcn, bindingInterface);
         return ret;
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public final boolean equals(final Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public final String toString() {
+        return addToStringAttributes(MoreObjects.toStringHelper(this).omitNullValues()).toString();
+    }
+
+    ToStringHelper addToStringAttributes(final ToStringHelper helper) {
+        return helper.add("identity", HexFormat.of().toHexDigits(hashCode())).add("parent", getParent());
     }
 
     /**
