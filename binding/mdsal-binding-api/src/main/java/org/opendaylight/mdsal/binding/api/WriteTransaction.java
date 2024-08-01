@@ -7,11 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
+import org.opendaylight.mdsal.common.api.ForwardingOnCommitFutureCallback;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
@@ -446,4 +451,18 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      */
     @CheckReturnValue
     @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
+
+    /**
+     * Commit this tranaction and invoke specified callback when it completes using the specified executor.
+     *
+     * @param callback {@link OnCommitCallback} to invoke
+     * @param executor {@link Executor} to use
+     * @throws IllegalStateException if the transaction is already committed or was cancelled.
+     * @throws NullPointerException if any argument is {@code null}
+     */
+    default void commit(final @NonNull OnCommitCallback callback, final @NonNull Executor executor) {
+        final var compat = new ForwardingOnCommitFutureCallback(callback);
+        requireNonNull(executor);
+        commit().addCallback(compat, executor);
+    }
 }
