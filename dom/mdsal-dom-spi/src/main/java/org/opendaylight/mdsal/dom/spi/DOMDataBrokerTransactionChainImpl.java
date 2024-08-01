@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
@@ -22,6 +21,9 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
+import org.opendaylight.mdsal.common.api.OnCommitFutureCallback;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
@@ -89,17 +91,17 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         final var ret = broker.commit(transaction, cohort);
         COUNTER_UPDATER.incrementAndGet(this);
 
-        ret.addCallback(new FutureCallback<CommitInfo>() {
+        OnCommitFutureCallback.addTo(new OnCommitCallback() {
             @Override
-            public void onSuccess(final CommitInfo result) {
+            public void onSuccess(final CommitInfo commitInfo) {
                 transactionCompleted();
             }
 
             @Override
-            public void onFailure(final Throwable throwable) {
-                transactionFailed(transaction, throwable);
+            public void onFailure(final TransactionCommitFailedException cause) {
+                transactionFailed(transaction, cause);
             }
-        }, MoreExecutors.directExecutor());
+        }, MoreExecutors.directExecutor(), ret);
 
         return ret;
     }
@@ -133,7 +135,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         }
     }
 
-    private void transactionFailed(final DOMDataTreeWriteTransaction tx, final Throwable cause) {
+    private void transactionFailed(final DOMDataTreeWriteTransaction tx, final TransactionCommitFailedException cause) {
         state = State.FAILED;
         LOG.debug("Transaction chain {} failed.", this, cause);
         future.setException(cause);

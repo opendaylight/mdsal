@@ -14,7 +14,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
@@ -29,6 +28,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -241,17 +242,17 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
             LOG.warn("Submitting transaction {} while {} is still running", tx, witness);
         }
 
-        tx.getTransaction().commit().addCallback(new FutureCallback<CommitInfo>() {
+        tx.getTransaction().commit(new OnCommitCallback() {
             @Override
-            public void onSuccess(final CommitInfo result) {
-                transactionSuccessful(tx, result);
+            public void onSuccess(final CommitInfo commitInfo) {
+                transactionSuccessful(tx, commitInfo);
             }
 
             @Override
-            public void onFailure(final Throwable throwable) {
-                transactionFailed(tx, throwable);
+            public void onFailure(final TransactionCommitFailedException cause) {
+                transactionFailed(tx, cause);
             }
-        }, MoreExecutors.directExecutor());
+        });
     }
 
     /*
@@ -299,10 +300,10 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         processNextTransaction(tx);
     }
 
-    private void transactionFailed(final PingPongTransaction tx, final Throwable throwable) {
-        LOG.debug("Transaction {} failed", tx, throwable);
+    private void transactionFailed(final PingPongTransaction tx, final TransactionCommitFailedException cause) {
+        LOG.debug("Transaction {} failed", tx, cause);
 
-        tx.onFailure(throwable);
+        tx.onFailure(cause);
         processNextTransaction(tx);
     }
 
