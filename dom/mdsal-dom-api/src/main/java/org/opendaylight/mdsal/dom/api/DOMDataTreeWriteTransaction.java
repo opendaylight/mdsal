@@ -7,11 +7,18 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
+import org.opendaylight.mdsal.common.api.OnCommitFutureCallback;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
@@ -436,10 +443,35 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
      * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
      *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
      *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
-     * @throws IllegalStateException if the transaction is already committed or was canceled.
+     * @throws IllegalStateException if the transaction is already committed or was cancelled.
      */
     @CheckReturnValue
     @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
+
+    /**
+     * Commit this transaction and invoke specified callback when it completes on the thread that signals completion.
+     *
+     * @param callback {@link OnCommitCallback} to invoke
+     * @throws IllegalStateException if the transaction is already committed or was cancelled.
+     * @throws NullPointerException if {@code callback} is {@code null}
+     */
+    @Beta
+    default void commit(final @NonNull OnCommitCallback callback) {
+        commit(callback, MoreExecutors.directExecutor());
+    }
+
+    /**
+     * Commit this tranaction and invoke specified callback when it completes using the specified executor.
+     *
+     * @param callback {@link OnCommitCallback} to invoke
+     * @param executor {@link Executor} to use
+     * @throws IllegalStateException if the transaction is already committed or was cancelled.
+     * @throws NullPointerException if any argument is {@code null}
+     */
+    @Beta
+    default void commit(final @NonNull OnCommitCallback callback, final @NonNull Executor executor) {
+        OnCommitFutureCallback.addTo(requireNonNull(callback), requireNonNull(executor), commit());
+    }
 
     /**
      * Cancels the transaction. Transactions can only be cancelled if it was not yet committed.
