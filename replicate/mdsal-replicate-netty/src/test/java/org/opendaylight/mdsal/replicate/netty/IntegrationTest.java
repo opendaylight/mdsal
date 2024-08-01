@@ -106,7 +106,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
                 // verify that all the deltas were transferred and committed + 1 invocation from receiving
                 // MSG_EMPTY_DATA
                 verify(sinkChain, timeout(2000).times(deltaCount + 1)).newWriteOnlyTransaction();
-                verify(sinkTx, timeout(2000).times(deltaCount + 1)).commit();
+                verify(sinkTx, timeout(2000).times(deltaCount + 1)).commit(any(), any());
             }
         }
     }
@@ -152,7 +152,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
                 NormalizedNode expectedEntityState = generateNormalizedNodeForEntities(deltaCount);
                 assertEquals(expectedEntityState, capturedInitialState);
 
-                verify(sinkTx, timeout(2000).times(1)).commit();
+                verify(sinkTx, timeout(2000).times(1)).commit(any(), any());
             }
         }
     }
