@@ -19,9 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.model.ietf.type.util.Ipv4Utils;
@@ -69,11 +67,11 @@ public final class IetfInetUtil {
 
     @Beta
     public static Host hostFor(final String str) {
-        final Matcher ipv4Matcher = HOST_IPV4_PATTERN.matcher(str);
-        final Matcher ipv6Matcher1 = HOST_IPV6_PATTERN1.matcher(str);
-        final Matcher ipv6Matcher2 = HOST_IPV6_PATTERN2.matcher(str);
-        final Matcher domainMatcher = HOST_DOMAIN_PATTERN.matcher(str);
-        List<String> matchers = new ArrayList<>(3);
+        final var ipv4Matcher = HOST_IPV4_PATTERN.matcher(str);
+        final var ipv6Matcher1 = HOST_IPV6_PATTERN1.matcher(str);
+        final var ipv6Matcher2 = HOST_IPV6_PATTERN2.matcher(str);
+        final var domainMatcher = HOST_DOMAIN_PATTERN.matcher(str);
+        final var matchers = new ArrayList<>(3);
         if (ipv6Matcher1.matches() || ipv6Matcher2.matches()) {
             matchers.add(Ipv6Address.class.getSimpleName());
         }
@@ -89,21 +87,18 @@ public final class IetfInetUtil {
             throw new IllegalArgumentException("Cannot create Host from " + str + ". Value is ambigious for "
                 + matchers);
         }
+
+        final IpAddress ipAddress;
         if (ipv4Matcher.matches()) {
-            Ipv4Address ipv4 = new Ipv4Address(str);
-            IpAddress ipAddress = new IpAddress(ipv4);
-            return new Host(ipAddress);
+            ipAddress = new IpAddress(new Ipv4Address(str));
+        } else if (ipv6Matcher1.matches() || ipv6Matcher2.matches()) {
+            ipAddress = new IpAddress(new Ipv6Address(str));
+        } else if (domainMatcher.matches()) {
+            return new Host(new DomainName(str));
+        } else {
+            throw new IllegalArgumentException("Cannot create Host from " + str);
         }
-        if (ipv6Matcher1.matches() || ipv6Matcher2.matches()) {
-            Ipv6Address ipv6 = new Ipv6Address(str);
-            IpAddress ipAddress = new IpAddress(ipv6);
-            return new Host(ipAddress);
-        }
-        if (domainMatcher.matches()) {
-            DomainName domainName = new DomainName(str);
-            return new Host(domainName);
-        }
-        throw new IllegalArgumentException("Cannot create Host from " + str);
+        return new Host(ipAddress);
     }
 
     @Beta
@@ -146,14 +141,11 @@ public final class IetfInetUtil {
     }
 
     public static @NonNull IpAddress ipAddressFor(final @NonNull InetAddress addr) {
-        requireAddress(addr);
-        if (addr instanceof Inet4Address) {
-            return new IpAddress(ipv4AddressFor(addr));
-        } else if (addr instanceof Inet6Address) {
-            return new IpAddress(ipv6AddressFor(addr));
-        } else {
-            throw unhandledAddress(addr);
-        }
+        return switch (addr) {
+            case Inet4Address inet4 -> new IpAddress(ipv4AddressFor(inet4));
+            case Inet6Address inet6 -> new IpAddress(ipv6AddressFor(inet6));
+            default -> throw unhandledAddress(addr);
+        };
     }
 
     private static <T> @NonNull T requireAddress(final T addr) {
@@ -177,14 +169,11 @@ public final class IetfInetUtil {
     }
 
     public static @NonNull IpAddressNoZone ipAddressNoZoneFor(final @NonNull InetAddress addr) {
-        requireAddress(addr);
-        if (addr instanceof Inet4Address) {
-            return new IpAddressNoZone(ipv4AddressFor(addr));
-        } else if (addr instanceof Inet6Address) {
-            return new IpAddressNoZone(ipv6AddressFor(addr));
-        } else {
-            throw unhandledAddress(addr);
-        }
+        return switch (addr) {
+            case Inet4Address inet4 -> new IpAddressNoZone(ipv4AddressFor(inet4));
+            case Inet6Address inet6 -> new IpAddressNoZone(ipv6AddressFor(inet6));
+            default -> throw unhandledAddress(addr);
+        };
     }
 
     private static <T> T throwInvalidArray(final byte[] bytes) {
@@ -216,14 +205,11 @@ public final class IetfInetUtil {
     }
 
     public static @NonNull IpPrefix ipPrefixFor(final @NonNull InetAddress addr, final int mask) {
-        requireAddress(addr);
-        if (addr instanceof Inet4Address) {
-            return new IpPrefix(ipv4PrefixFor(addr, mask));
-        } else if (addr instanceof Inet6Address) {
-            return new IpPrefix(ipv6PrefixFor(addr, mask));
-        } else {
-            throw unhandledAddress(addr);
-        }
+        return switch (addr) {
+            case Inet4Address inet4 -> new IpPrefix(newIpv4Prefix(inet4.getHostAddress(), mask));
+            case Inet6Address inet6 -> new IpPrefix(newIpv6Prefix(inet6.getHostAddress(), mask));
+            default -> throw unhandledAddress(addr);
+        };
     }
 
     public static @NonNull IpPrefix ipPrefixFor(final @NonNull IpAddress addr) {
@@ -304,6 +290,17 @@ public final class IetfInetUtil {
     }
 
     /**
+     * Create an Ipv4AddressNoZone by interpreting an {@link Inet4Address}.
+     *
+     * @param addr An {@link Inet4Address}
+     * @return An Ipv4AddressNoZone object
+     * @throws NullPointerException if addr is null
+     */
+    public static @NonNull Ipv4AddressNoZone ipv4AddressFor(final @NonNull Inet4Address addr) {
+        return V4NZ_FACTORY.newInstance(addr.getHostAddress());
+    }
+
+    /**
      * Create an Ipv4AddressNoZone by interpreting input 32 bits as an IPv4 address in big-endian format.
      *
      * @param bits 32 bits, big endian
@@ -321,9 +318,8 @@ public final class IetfInetUtil {
      * @throws NullPointerException if {@code addr} is {@code null}
      */
     public static @NonNull Ipv4AddressNoZone ipv4AddressNoZoneFor(final @NonNull Ipv4Address addr) {
-        requireAddress(addr);
         return addr instanceof Ipv4AddressNoZone noZone ? noZone
-            :  V4NZ_FACTORY.newInstance(stripZone(addr.getValue()));
+            :  V4NZ_FACTORY.newInstance(stripZone(requireAddress(addr).getValue()));
     }
 
     public static @NonNull Ipv4AddressNoZone ipv4AddressFrom(final @NonNull Ipv4Prefix prefix) {
@@ -485,14 +481,25 @@ public final class IetfInetUtil {
     }
 
     /**
-     * Create an Ipv6Address by interpreting an {@link Inet6Address}.
+     * Create an Ipv6Address by interpreting an {@link InetAddress}.
      *
-     * @param addr An {@link Inet6Address}
+     * @param addr An {@link InetAddress}
      * @return An Ipv6Address object
      * @throws IllegalArgumentException if @{code addr} is not an {@link Inet6Address}
      * @throws NullPointerException if {@code addr} is {@code null}
      */
     public static @NonNull Ipv6AddressNoZone ipv6AddressFor(final @NonNull InetAddress addr) {
+        return V6NZ_FACTORY.newInstance(addressStringV6(addr));
+    }
+
+    /**
+     * Create an Ipv6Address from an {@link Inet6Address}.
+     *
+     * @param addr An {@link Inet6Address}
+     * @return An Ipv6Address object
+     * @throws NullPointerException if {@code addr} is {@code null}
+     */
+    public static @NonNull Ipv6AddressNoZone ipv6AddressFor(final @NonNull Inet6Address addr) {
         return V6NZ_FACTORY.newInstance(addressStringV6(addr));
     }
 
@@ -504,9 +511,8 @@ public final class IetfInetUtil {
      * @throws NullPointerException if addr is null
      */
     public static @NonNull Ipv6AddressNoZone ipv6AddressNoZoneFor(final @NonNull Ipv6Address addr) {
-        requireAddress(addr);
         return addr instanceof Ipv6AddressNoZone noZone ? noZone
-                : V6NZ_FACTORY.newInstance(stripZone(addr.getValue()));
+            : V6NZ_FACTORY.newInstance(stripZone(requireAddress(addr).getValue()));
     }
 
     public static @NonNull Ipv6AddressNoZone ipv6AddressFrom(final @NonNull Ipv6Prefix prefix) {
