@@ -22,7 +22,6 @@ import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Mutable;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * A combination of an {@link InstanceNotification} class and its corresponding instantiation wildcard, expressed as
@@ -39,19 +38,19 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
     private final @NonNull DataObjectReference<P> path;
     private final @NonNull Class<N> type;
 
-    private InstanceNotificationSpec(final @NonNull Class<N> type, final @NonNull InstanceIdentifier<P> path) {
+    private InstanceNotificationSpec(final @NonNull Class<N> type, final @NonNull DataObjectReference<P> path) {
         this.type = requireNonNull(type);
-        this.path = path.toReference();
+        this.path = requireNonNull(path);
     }
 
     public static <P extends ChildOf<? extends DataRoot<?>>> @NonNull Builder<P> builder(
             final @NonNull Class<P> container) {
-        return new Builder<>(InstanceIdentifier.builder(container));
+        return new Builder<>(DataObjectReference.builder(container));
     }
 
     public static <C extends ChoiceIn<? extends DataRoot<?>> & DataObject, P extends ChildOf<? super C>>
             @NonNull Builder<P> builder(final @NonNull Class<C> caze, final @NonNull Class<P> container) {
-        return new Builder<>(InstanceIdentifier.builder(caze, container));
+        return new Builder<>(DataObjectReference.builder(caze, container));
     }
 
     public @NonNull DataObjectReference<P> path() {
@@ -80,9 +79,9 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
 
     @Beta
     public static final class Builder<P extends DataObject> implements Mutable {
-        private final InstanceIdentifier.Builder<P> pathBuilder;
+        private final DataObjectReference.Builder<P> pathBuilder;
 
-        Builder(final InstanceIdentifier.Builder<P> pathBuilder) {
+        Builder(final DataObjectReference.Builder<P> pathBuilder) {
             this.pathBuilder = requireNonNull(pathBuilder);
         }
 
