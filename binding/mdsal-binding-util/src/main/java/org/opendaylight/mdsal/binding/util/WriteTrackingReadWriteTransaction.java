@@ -27,6 +27,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         super.put(store, path, data);
@@ -42,6 +43,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         super.merge(store, path, data);
@@ -57,6 +59,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    @Deprecated
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         super.delete(store, path);
         written = true;

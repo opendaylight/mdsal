@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.binding.testutils.DataBrokerFailuresImpl;
@@ -43,15 +42,11 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     private ManagedNewTransactionRunner managedNewTransactionRunner;
     private DataBrokerFailuresImpl testableDataBroker;
 
-    private ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(final DataBroker dataBroker) {
-        return new ManagedNewTransactionRunnerImpl(dataBroker);
-    }
-
     @Before
     public void beforeTest() throws Exception {
         setup();
         testableDataBroker = new DataBrokerFailuresImpl(getDataBroker());
-        managedNewTransactionRunner = createManagedNewTransactionRunnerToTest(testableDataBroker);
+        managedNewTransactionRunner = new ManagedNewTransactionRunnerImpl(testableDataBroker);
     }
 
     @Test

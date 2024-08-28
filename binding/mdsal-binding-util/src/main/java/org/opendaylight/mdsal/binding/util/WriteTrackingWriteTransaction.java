@@ -25,6 +25,7 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         super.put(store, path, data);
@@ -40,6 +41,7 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
+    @Deprecated
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         super.delete(store, path);
         written = true;
