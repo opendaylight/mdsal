@@ -153,6 +153,9 @@
         <module>rfc8819-ietf-module-tags</module>
         <module>rfc8819-ietf-module-tags-state</module>
 
+        <!-- RFC8916 YANG Data Model for the Multicast Source Discovery Protocol (MSDP) -->
+        <module>rfc8916</module>
+
         <!-- RFC9144 NMDA Datastore Compare -->
         <module>rfc9144</module>
 
