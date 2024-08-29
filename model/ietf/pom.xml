@@ -59,6 +59,9 @@
         <!-- RFC8072 YANG Patch -->
         <module>rfc8072</module>
 
+        <!-- RFC8177 Data Model for Key Chains -->
+        <module>rfc8177</module>
+
         <!-- RFC8294 Common YANG Data Types for the Routing Area -->
         <module>rfc8294-ietf-routing-types</module>
 
