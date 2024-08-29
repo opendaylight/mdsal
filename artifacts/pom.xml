@@ -748,6 +748,13 @@
                 <version>14.0.2-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC8916 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8916</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+            </dependency>
+
             <!-- RFC9144 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -1100,6 +1107,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8819-non-nmda</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8916</artifactId>
                 <version>14.0.2-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
