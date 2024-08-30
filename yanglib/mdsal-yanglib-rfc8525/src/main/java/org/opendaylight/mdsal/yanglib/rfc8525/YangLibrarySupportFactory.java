@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -24,15 +24,15 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 @MetaInfServices
 @NonNullByDefault
 public final class YangLibrarySupportFactory implements YangLibSupportFactory {
-    private final BindingCodecTreeFactory codecFactory;
+    private final BindingDataCodecFactory codecFactory;
     private final BindingRuntimeGenerator generator;
 
     public YangLibrarySupportFactory() {
-        this(load(BindingRuntimeGenerator.class), load(BindingCodecTreeFactory.class));
+        this(load(BindingRuntimeGenerator.class), load(BindingDataCodecFactory.class));
     }
 
     public YangLibrarySupportFactory(final BindingRuntimeGenerator generator,
-            final BindingCodecTreeFactory codecFactory) {
+            final BindingDataCodecFactory codecFactory) {
         this.generator = requireNonNull(generator);
         this.codecFactory = requireNonNull(codecFactory);
     }

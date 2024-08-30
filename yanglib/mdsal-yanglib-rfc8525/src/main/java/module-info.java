@@ -7,7 +7,7 @@
  */
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
 import org.opendaylight.mdsal.yanglib.rfc8525.YangLibrarySupportFactory;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
@@ -17,11 +17,12 @@ module org.opendaylight.mdsal.yanglib.rfc8525 {
 
     provides YangLibSupportFactory with YangLibrarySupportFactory;
 
-    uses BindingCodecTreeFactory;
+    uses BindingDataCodecFactory;
     uses BindingRuntimeGenerator;
     uses YangParserFactory;
 
     requires transitive org.opendaylight.yangtools.binding.data.codec.api;
+    requires transitive org.opendaylight.yangtools.binding.data.codec.dynamic;
     requires transitive org.opendaylight.yangtools.yang.parser.api;
     requires transitive org.opendaylight.mdsal.yanglib.api;
 

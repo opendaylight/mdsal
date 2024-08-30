@@ -36,7 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedList;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -54,8 +54,8 @@ public class QueryBuilderTest {
 
     @BeforeClass
     public static final void beforeClass() {
-        CODEC = ServiceLoader.load(BindingCodecTreeFactory.class).findFirst().orElseThrow()
-            .create(BindingRuntimeHelpers.createRuntimeContext());
+        CODEC = ServiceLoader.load(BindingDataCodecFactory.class).findFirst().orElseThrow()
+            .newBindingDataCodec(BindingRuntimeHelpers.createRuntimeContext()).tree();
     }
 
     @AfterClass

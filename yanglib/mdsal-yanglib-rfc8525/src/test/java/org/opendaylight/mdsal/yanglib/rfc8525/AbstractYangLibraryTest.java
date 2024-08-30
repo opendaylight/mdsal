@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import java.util.ServiceLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
@@ -22,11 +22,11 @@ abstract class AbstractYangLibraryTest {
         ServiceLoader.load(BindingRuntimeGenerator.class).findFirst().orElseThrow();
     private static final YangParserFactory YANG_PARSER_FACTORY = ServiceLoader.load(YangParserFactory.class).findFirst()
         .orElseThrow();
-    private static final BindingCodecTreeFactory CODEC_FACTORY = ServiceLoader.load(BindingCodecTreeFactory.class)
+    private static final BindingDataCodecFactory CODEC_FACTORY = ServiceLoader.load(BindingDataCodecFactory.class)
         .findFirst().orElseThrow();
 
     static final BindingRuntimeContext RUNTIME_CONTEXT = BindingRuntimeHelpers.createRuntimeContext();
-    static final BindingCodecTree CODEC_TREE = CODEC_FACTORY.create(RUNTIME_CONTEXT);
+    static final BindingCodecTree CODEC_TREE = CODEC_FACTORY.newBindingDataCodec(RUNTIME_CONTEXT).tree();
 
     YangLibrarySupport yangLib;
 

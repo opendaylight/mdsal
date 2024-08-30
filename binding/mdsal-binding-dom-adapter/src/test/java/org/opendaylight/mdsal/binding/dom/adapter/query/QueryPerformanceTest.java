@@ -35,7 +35,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.FooBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemKey;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -70,8 +70,8 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
     @Override
     protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
         super.setupWithRuntimeContext(runtimeContext);
-        factory = new DefaultQueryFactory(ServiceLoader.load(BindingCodecTreeFactory.class).findFirst().orElseThrow()
-            .create(runtimeContext));
+        factory = new DefaultQueryFactory(ServiceLoader.load(BindingDataCodecFactory.class).findFirst().orElseThrow()
+            .newBindingDataCodec(runtimeContext).tree());
     }
 
     @Override

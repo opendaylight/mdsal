@@ -17,9 +17,9 @@ import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingIdentityCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.yangtools.binding.runtime.api.ModuleInfoSnapshot;
@@ -52,15 +52,15 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Inject
     @Activate
     public YangLibrarySupport(@Reference final YangParserFactory parserFactory,
-            @Reference final BindingRuntimeGenerator generator, @Reference final BindingCodecTreeFactory codecFactory)
+            @Reference final BindingRuntimeGenerator generator, @Reference final BindingDataCodecFactory codecFactory)
                 throws YangParserException {
         final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder(parserFactory)
                 .add(YangLibrary.class)
                 .build();
         modelContext = snapshot.modelContext();
 
-        codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
-            generator.generateTypeMapping(modelContext), snapshot));
+        codecTree = codecFactory.newBindingDataCodec(new DefaultBindingRuntimeContext(
+            generator.generateTypeMapping(modelContext), snapshot)).tree();
 
         identityCodec = codecTree.getIdentityCodec();
         codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));

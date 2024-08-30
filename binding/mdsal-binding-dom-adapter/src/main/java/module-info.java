@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.query.DefaultQueryFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecFactory;
 
 module org.opendaylight.mdsal.binding.dom.adapter {
@@ -22,12 +22,13 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     provides AdapterContext with ConstantAdapterContext;
     provides QueryFactory with DefaultQueryFactory;
 
-    uses BindingCodecTreeFactory;
+    uses BindingDataCodecFactory;
     uses BindingDOMCodecFactory;
 
     requires transitive com.google.common;
     requires transitive org.opendaylight.mdsal.binding.api;
     requires transitive org.opendaylight.mdsal.dom.api;
+    requires transitive org.opendaylight.yangtools.binding.data.codec.dynamic;
     requires transitive org.opendaylight.yangtools.binding.data.codec.spi;
     requires transitive org.opendaylight.yangtools.yang.data.impl;
     requires com.google.common.util.concurrent.internal;
