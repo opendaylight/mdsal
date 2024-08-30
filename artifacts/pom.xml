@@ -755,6 +755,25 @@
                 <version>14.0.2-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC9067 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9067</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+            </dependency>
+
+            <!-- RFC9070 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9070-ietf-mpls-ldp</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9070-ietf-mpls-ldp-extended</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+            </dependency>
+
             <!-- RFC9144 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -1114,6 +1133,20 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8916</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc9067</artifactId>
+                <version>14.0.2-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc9070</artifactId>
                 <version>14.0.2-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

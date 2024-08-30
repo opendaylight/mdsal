@@ -156,6 +156,13 @@
         <!-- RFC8916 YANG Data Model for the Multicast Source Discovery Protocol (MSDP) -->
         <module>rfc8916</module>
 
+        <!-- RFC9067 Data Model for Routing Policy -->
+        <module>rfc9067</module>
+
+        <!-- RFC9070 YANG Data Model for MPLS LDP -->
+        <module>rfc9070-ietf-mpls-ldp</module>
+        <module>rfc9070-ietf-mpls-ldp-extended</module>
+
         <!-- RFC9144 NMDA Datastore Compare -->
         <module>rfc9144</module>
 
