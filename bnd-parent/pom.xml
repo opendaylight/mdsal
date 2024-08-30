@@ -12,13 +12,13 @@
     <parent>
         <groupId>org.opendaylight.yangtools</groupId>
         <artifactId>bnd-parent</artifactId>
-        <version>14.0.2</version>
+        <version>14.0.3</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>bnd-parent</artifactId>
-    <version>14.0.2-SNAPSHOT</version>
+    <version>14.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Bundle parent (bnd-based)</description>
@@ -32,7 +32,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>14.0.2-SNAPSHOT</version>
+                <version>14.0.3-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
