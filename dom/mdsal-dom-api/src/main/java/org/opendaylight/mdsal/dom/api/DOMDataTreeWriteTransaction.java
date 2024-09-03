@@ -7,15 +7,15 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
-import org.opendaylight.mdsal.common.api.ForwardingOnCommitFutureCallback;
 import org.opendaylight.mdsal.common.api.OnCommitCallback;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -443,8 +443,23 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
      *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      * @throws IllegalStateException if the transaction is already committed or was cancelled.
      */
+    @Deprecated(since = "15.0.0")
     @CheckReturnValue
-    @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
+    default @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+        final var future = SettableFuture.<CommitInfo>create();
+        commit(new OnCommitCallback() {
+            @Override
+            public void onSuccess(final CommitInfo commitInfo) {
+                future.set(commitInfo);
+            }
+
+            @Override
+            public void onFailure(final TransactionCommitFailedException cause) {
+                future.setException(cause);
+            }
+        }, MoreExecutors.directExecutor());
+        return FluentFuture.from(future);
+    }
 
     /**
      * Commit this tranaction and invoke specified callback when it completes using the specified executor.
@@ -454,11 +469,8 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
      * @throws IllegalStateException if the transaction is already committed or was cancelled.
      * @throws NullPointerException if any argument is {@code null}
      */
-    default void commit(final @NonNull OnCommitCallback callback, final @NonNull Executor executor) {
-        final var compat = new ForwardingOnCommitFutureCallback(callback);
-        requireNonNull(executor);
-        commit().addCallback(compat, executor);
-    }
+    @NonNullByDefault
+    void commit(OnCommitCallback callback, Executor executor);
 
     /**
      * Cancels the transaction. Transactions can only be cancelled if it was not yet committed.

@@ -10,9 +10,10 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -63,8 +64,8 @@ public abstract class ForwardingDOMDataReadWriteTransaction extends ForwardingOb
     }
 
     @Override
-    public FluentFuture<? extends CommitInfo> commit() {
-        return delegate().commit();
+    public void commit(final OnCommitCallback callback, final Executor executor) {
+        delegate().commit(callback, executor);
     }
 
     @Override
