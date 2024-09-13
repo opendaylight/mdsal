@@ -310,10 +310,10 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 }
             }
         });
-    private final LoadingCache<Absolute, RpcInputCodec<?>> rpcDataByPath =
+    private final LoadingCache<Absolute, ContainerLikeCodecContext<?>> rpcDataByPath =
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
-            public RpcInputCodec<?> load(final Absolute key) {
+            public ContainerLikeCodecContext<?> load(final Absolute key) {
                 final var rpcName = key.firstNodeIdentifier();
 
                 final Class<? extends DataContainer> container = switch (key.lastNodeIdentifier().getLocalName()) {
@@ -607,7 +607,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return getOrRethrow(rpcDataByClass, rpcInputOrOutput);
     }
 
-    RpcInputCodec<?> getRpcInputCodec(final Absolute containerPath) {
+    ContainerLikeCodecContext<?> getRpcInputCodec(final Absolute containerPath) {
         return getOrRethrow(rpcDataByPath, containerPath);
     }
 
