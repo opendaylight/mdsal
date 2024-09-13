@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder.SetMultimapBuilder;
 import com.google.common.collect.Multimaps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.slf4j.Logger;
@@ -261,6 +263,11 @@ final class ChoiceCodecContext<D extends DataObject> extends CommonDataObjectCod
     public YangInstanceIdentifier.PathArgument serializePathArgument(final PathArgument arg) {
         // FIXME: check for null, since binding container is null.
         return getDomPathArgument();
+    }
+
+    @Override
+    public void writeTo(final NormalizedNodeStreamWriter writer, final D dataContainer) throws IOException {
+        eventStreamSerializer().serialize(dataContainer, new BindingToNormalizedStreamWriter(this, writer));
     }
 
     @Override
