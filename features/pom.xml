@@ -12,13 +12,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>14.0.4</version>
+        <version>14.0.3</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal-aggregator</artifactId>
-    <version>14.0.5-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -121,13 +121,6 @@
         <module>odl-mdsal-model-rfc9179</module>
         <module>odl-mdsal-model-rfc9196-ietf-notification-capabilities</module>
         <module>odl-mdsal-model-rfc9196-ietf-system-capabilities</module>
-        <module>odl-mdsal-model-rfc9640</module>
-        <module>odl-mdsal-model-rfc9641</module>
-        <module>odl-mdsal-model-rfc9642</module>
-        <module>odl-mdsal-model-rfc9643</module>
-        <module>odl-mdsal-model-rfc9644</module>
-        <module>odl-mdsal-model-rfc9645</module>
-        <module>odl-mdsal-model-rfc9648</module>
 
         <!-- IETF drafts -->
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>

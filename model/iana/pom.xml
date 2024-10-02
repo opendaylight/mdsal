@@ -12,14 +12,14 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>14.0.4</version>
+        <version>14.0.3</version>
         <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>model-iana-aggregator</artifactId>
-    <version>14.0.5-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
@@ -36,15 +36,6 @@
 
         <!-- RFC8348 and updates -->
         <module>iana-hardware</module>
-
-        <!-- RFC9644 and updates -->
-        <module>iana-ssh-encryption-algs</module>
-        <module>iana-ssh-key-exchange-algs</module>
-        <module>iana-ssh-mac-algs</module>
-        <module>iana-ssh-public-key-algs</module>
-
-        <!-- RFC9645 and updates -->
-        <module>iana-tls-cipher-suite-algs</module>
     </modules>
 
     <properties>

@@ -11,13 +11,13 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>karaf4-parent</artifactId>
-    <version>14.0.4</version>
+    <version>14.0.3</version>
     <relativePath/>
 </parent>
 
   <groupId>org.opendaylight.mdsal</groupId>
   <artifactId>mdsal-karaf</artifactId>
-  <version>14.0.5-SNAPSHOT</version>
+  <version>15.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <dependencyManagement>
@@ -25,7 +25,7 @@
       <dependency>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>mdsal-artifacts</artifactId>
-        <version>14.0.5-SNAPSHOT</version>
+        <version>15.0.0-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -378,48 +378,6 @@
     <dependency>
         <groupId>org.opendaylight.mdsal.model</groupId>
         <artifactId>odl-mdsal-model-rfc9196-ietf-system-capabilities</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9640</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9641</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9642</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9643</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9644</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9645</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-    </dependency>
-    <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>odl-mdsal-model-rfc9648</artifactId>
         <classifier>features</classifier>
         <type>xml</type>
     </dependency>

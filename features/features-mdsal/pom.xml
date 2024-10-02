@@ -12,13 +12,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>feature-repo-parent</artifactId>
-        <version>14.0.4</version>
+        <version>14.0.3</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal</artifactId>
-    <version>14.0.5-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Stable Features</name>
     <description>MD-SAL stable feature repository</description>

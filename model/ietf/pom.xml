@@ -12,14 +12,14 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>14.0.4</version>
+        <version>14.0.3</version>
         <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>model-ietf-aggregator</artifactId>
-    <version>14.0.5-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
@@ -172,33 +172,6 @@
         <!-- RFC9179 YANG Capabilities for Systems and Notifications -->
         <module>rfc9196-ietf-system-capabilities</module>
         <module>rfc9196-ietf-notification-capabilities</module>
-
-        <!-- RFC9640 YANG Data Types and Groupings for Cryptography -->
-        <module>rfc9640</module>
-
-        <!-- RFC9641 A YANG Data Model for a Truststore -->
-        <module>rfc9641</module>
-
-        <!-- RFC9642 A YANG Data Model for a Keystore -->
-        <module>rfc9642</module>
-
-        <!-- RFC9643 YANG Groupings for TCP Clients and TCP Servers -->
-        <module>rfc9643-ietf-tcp-client</module>
-        <module>rfc9643-ietf-tcp-common</module>
-        <module>rfc9643-ietf-tcp-server</module>
-
-        <!-- RFC9644 YANG Groupings for SSH Clients and SSH Servers -->
-        <module>rfc9644-ietf-ssh-client</module>
-        <module>rfc9644-ietf-ssh-common</module>
-        <module>rfc9644-ietf-ssh-server</module>
-
-        <!-- RFC9645 YANG Groupings for TLS Clients and TLS Servers -->
-        <module>rfc9645-ietf-tls-client</module>
-        <module>rfc9645-ietf-tls-common</module>
-        <module>rfc9645-ietf-tls-server</module>
-
-        <!-- RFC9648 YANG Data Model for TCP -->
-        <module>rfc9648</module>
 
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
