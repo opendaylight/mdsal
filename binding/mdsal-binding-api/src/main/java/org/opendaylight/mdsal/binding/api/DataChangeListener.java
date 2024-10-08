@@ -12,18 +12,17 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.binding.DataObject;
 
 /**
- * Interface implemented by classes interested in receiving data changes.
- * It provides a comparison on before-value and after-value.
+ * Interface implemented by classes interested in receiving data changes. It provides a comparison on before-value and
+ * after-value.
  */
 @Beta
 @FunctionalInterface
 public interface DataChangeListener<T extends DataObject> {
     /**
-     * Invoked when there was data change for the supplied path, which was used
-     * to register the listener.
+     * Invoked when there was data change for the supplied path, which was used to register the listener.
      *
-     * <p>
-     * Note: When invoking the method {@link DataTreeChangeListener#onInitialData} initial data == null, null.
+     * <p>Note: When invoking the method {@link DataTreeChangeListener#onInitialData} initial data == null, null.
+     *
      * @param previousValue data before.
      * @param currentValue data after.
      */

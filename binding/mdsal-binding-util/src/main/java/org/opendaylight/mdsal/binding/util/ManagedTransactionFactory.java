@@ -23,8 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.
  * Managed transaction factories provide managed transactions, <em>i.e.</em> transactions which are automatically
  * submitted or cancelled (write) or closed (read).
  *
- * <p>
- * This is a common interface for broker- and chain-based transaction managers, and should not be used directly.
+ * <p>This is a common interface for broker- and chain-based transaction managers, and should not be used directly.
  */
 @Beta
 public interface ManagedTransactionFactory {

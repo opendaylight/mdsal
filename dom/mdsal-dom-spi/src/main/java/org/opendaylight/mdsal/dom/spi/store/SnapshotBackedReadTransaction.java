@@ -107,10 +107,9 @@ public final class SnapshotBackedReadTransaction<T> extends
     /**
      * Prototype implementation of {@link SnapshotBackedReadTransaction#close()}.
      *
-     * <p>
-     * This class is intended to be implemented by Transaction factories responsible for allocation
-     * of {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} and
-     * providing underlying logic for applying implementation.
+     * <p>This class is intended to be implemented by Transaction factories responsible for allocation
+     * of {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} and providing underlying logic
+     * for applying implementation.
      *
      * @param <T> identifier type
      */

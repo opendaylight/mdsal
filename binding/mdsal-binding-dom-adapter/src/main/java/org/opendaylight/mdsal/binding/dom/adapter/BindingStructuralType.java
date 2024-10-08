@@ -29,11 +29,9 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
  * Defines structural mapping of Normalized Node to Binding data addressable by Instance Identifier. Not all binding
  * data are addressable by instance identifier and there are some differences.
  *
- * <p>
- * See {@link #NOT_ADDRESSABLE},{@link #INVISIBLE_CONTAINER},{@link #VISIBLE_CONTAINER} for more details.
+ * <p>See {@link #NOT_ADDRESSABLE},{@link #INVISIBLE_CONTAINER},{@link #VISIBLE_CONTAINER} for more details.
  *
- * <p>
- * NOTE: this class is exposed for migration purposes only, no new users outside of its package should be introduced.
+ * <p>NOTE: this class is exposed for migration purposes only, no new users outside of its package should be introduced.
  */
 @Beta
 public enum BindingStructuralType {
@@ -46,16 +44,14 @@ public enum BindingStructuralType {
      * Data container is addressable in NormalizedNode format, but in Binding it is not represented in
      * InstanceIdentifier. These are choice / case nodes.
      *
-     * <p>
-     * This data is still accessible using parent object and their children are addressable.
+     * <p>This data is still accessible using parent object and their children are addressable.
      */
     INVISIBLE_CONTAINER,
     /**
      * Data container is addressable in NormalizedNode format, but in Binding it is not represented in
      * InstanceIdentifier. These are list nodes.
      *
-     * <p>
-     * This data is still accessible using parent object and their children are addressable.
+     * <p>This data is still accessible using parent object and their children are addressable.
      */
     INVISIBLE_LIST,
     /**

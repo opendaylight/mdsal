@@ -47,18 +47,12 @@ public class SchemaUpdateForTransactionTest {
     }
 
     /**
-     * Test suite tests allocating transaction when schema context
-     * does not contain module necessary for client write,
-     * then triggering update of global schema context
-     * and then performing write (according to new module).
+     * Test suite tests allocating transaction when schema context does not contain module necessary for client write,
+     * then triggering update of global schema context and then performing write (according to new module).
      *
-     *<p>
-     * If transaction between allocation and schema context was
-     * unmodified, it is safe to change its schema context
-     * to new one (e.g. it will be same as if allocated after
-     * schema context update.)
+     * <p>If transaction between allocation and schema context was unmodified, it is safe to change its schema context
+     * to new one (e.g. it will be same as if allocated after schema context update.)
      *
-     *<p>
      * @throws InterruptedException when this condition met
      * @throws ExecutionException when execution fails
      */

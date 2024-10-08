@@ -57,8 +57,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      * Registration handle for a {@link DOMDataTreeChangeListener}. This class is exposed to subclasses only as a
      * convenience, so they can use its identity-based equality while at the same time having access to the listener.
      *
-     * <p>
-     * Implementations must not invoke {@link #close()} nor should otherwise interact with the registration.
+     * <p>Implementations must not invoke {@link #close()} nor should otherwise interact with the registration.
      */
     @NonNullByDefault
     final class RegImpl extends AbstractObjectRegistration<DOMDataTreeChangeListener> implements Reg {
@@ -142,9 +141,8 @@ public abstract class AbstractDOMStoreTreeChangePublisher
     /**
      * {@inheritDoc}
      *
-     * <p>
-     * This implementation calls {@link #registerTreeChangeListener(YangInstanceIdentifier, DOMDataTreeChangeListener)},
-     * override if necessary.
+     * <p>This implementation calls
+     * {@link #registerTreeChangeListener(YangInstanceIdentifier, DOMDataTreeChangeListener)}, override if necessary.
      */
     @Override
     @Deprecated(since = "13.0.0", forRemoval = true)

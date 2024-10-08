@@ -22,21 +22,17 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
      * conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications for any node or subtree which can be represented
+     * <p>You are able to register for notifications for any node or subtree which can be represented
      * {@link DataObjectReference} on a particular {@link LogicalDatastoreType}, irrespective of its existence. You will
      * receive notification once that node is created.
      *
-     * <p>
-     * If there is any pre-existing data in the data tree for the path for which you are registering, you will receive
-     * an initial data change event, which will contain all pre-existing data, marked as created.
+     * <p>If there is any pre-existing data in the data tree for the path for which you are registering, you will
+     * receive an initial data change event, which will contain all pre-existing data, marked as created.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer wish to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer wish to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *
@@ -53,24 +49,19 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
      * conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
+     * <p>You are able to register for notifications  for any node or subtree which can be represented using
      * {@link DataTreeIdentifier}.
      *
-     * <p>
-     * You are able to register for data change notifications for a subtree or leaf even if it does not exist. You will
-     * receive notification once that node is created.
+     * <p>You are able to register for data change notifications for a subtree or leaf even if it does not exist. You
+     * will receive notification once that node is created.
      *
-     * <p>
-     * If there is any pre-existing data in the data tree for the path for which you are registering, you will receive
-     * an initial data change event, which will contain all pre-existing data, marked as created.
+     * <p>If there is any pre-existing data in the data tree for the path for which you are registering, you will
+     * receive an initial data change event, which will contain all pre-existing data, marked as created.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *
@@ -93,13 +84,11 @@ public interface DataTreeChangeService extends BindingService {
      * conceptual data tree, with legacy semantics, where no events are delivered if this "cluster node" (further
      * undefined) is a "leader" (also not explicitly undefined).
      *
-     * <p>
-     * The sole known implementation, the Akka-based datastore, defines the difference in terms of RAFT, suspending
+     * <p>The sole known implementation, the Akka-based datastore, defines the difference in terms of RAFT, suspending
      * even delivery when the RAFT leader is not local. Even when there may be valid use cases for this, RAFT there
      * is a storage backend whose lifecycle is disconnected from this object.
      *
-     * <p>
-     * Aside from the above difference, this method is equivalent to
+     * <p>Aside from the above difference, this method is equivalent to
      * {@link #registerTreeChangeListener(LogicalDatastoreType, DataObjectReference, DataTreeChangeListener)}. If you
      * are unable to migrate, please contact us on <a href="email:discuss@lists.opendaylight.org">the mailing list</a>,
      *
@@ -120,13 +109,11 @@ public interface DataTreeChangeService extends BindingService {
      * conceptual data tree, with legacy semantics, where no events are delivered if this "cluster node" (further
      * undefined) is a "leader" (also not explicitly undefined).
      *
-     * <p>
-     * The sole known implementation, the Akka-based datastore, defines the difference in terms of RAFT, suspending
+     * <p>The sole known implementation, the Akka-based datastore, defines the difference in terms of RAFT, suspending
      * even delivery when the RAFT leader is not local. Even when there may be valid use cases for this, RAFT there
      * is a storage backend whose lifecycle is disconnected from this object.
      *
-     * <p>
-     * Aside from the above difference, this method is equivalent to
+     * <p>Aside from the above difference, this method is equivalent to
      * {@link #registerTreeChangeListener(DataTreeIdentifier, DataTreeChangeListener)}. If you are unable to migrate,
      * please contact us on <a href="email:discuss@lists.opendaylight.org">the mailing list</a>
      *
@@ -149,24 +136,19 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
      * conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
+     * <p>You are able to register for notifications  for any node or subtree which can be represented using
      * {@link DataTreeIdentifier}.
      *
-     * <p>
-     * You are able to register for data change notifications for a subtree or leaf even if it does not exist. You will
-     * receive notification once that node is created.
+     * <p>You are able to register for data change notifications for a subtree or leaf even if it does not exist. You
+     * will receive notification once that node is created.
      *
-     * <p>
-     * If there is any pre-existing data in the data tree for the path for which you are registering, you will receive
-     * an initial data change event, which will contain all pre-existing data, marked as created.
+     * <p>If there is any pre-existing data in the data tree for the path for which you are registering, you will
+     * receive an initial data change event, which will contain all pre-existing data, marked as created.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *
@@ -207,16 +189,13 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
      * conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
+     * <p>You are able to register for notifications  for any node or subtree which can be represented using
      * {@link DataTreeIdentifier}.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *
@@ -240,16 +219,13 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
      * conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
+     * <p>You are able to register for notifications  for any node or subtree which can be represented using
      * {@link DataTreeIdentifier}.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *
@@ -272,16 +248,13 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications about the last data state when it changes
      * under a given path in the conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
+     * <p>You are able to register for notifications  for any node or subtree which can be represented using
      * {@link DataTreeIdentifier}.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *
@@ -304,16 +277,13 @@ public interface DataTreeChangeService extends BindingService {
      * Registers a {@link DataTreeChangeListener} to receive notifications about the last data state when it changes
      * under a given path in the conceptual data tree.
      *
-     * <p>
-     * You are able to register for notifications  for any node or subtree which can be represented using
+     * <p>You are able to register for notifications  for any node or subtree which can be represented using
      * {@link DataTreeIdentifier}.
      *
-     * <p>
-     * This method returns a {@link Registration} object. To "unregister" your listener for changes call the
+     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
      * {@link Registration#close()} method on the returned object.
      *
-     * <p>
-     * You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
+     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
      * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
      * being still registered.
      *

@@ -42,12 +42,9 @@ public class CurrentAdapterSerializerTest {
     /**
      * Positive test.
      *
-     * <p>
-     * Test for yang with leaf of type int in container where data are created
-     * with int value (acceptable data).
+     * <p>Test for yang with leaf of type int in container where data are created with int value (acceptable data).
      *
-     * @throws Exception
-     *             - throw exception
+     * @throws Exception throw exception
      */
     @Test
     public void fromNormalizedNodeTest() throws Exception {
@@ -72,13 +69,10 @@ public class CurrentAdapterSerializerTest {
     /**
      * Negative test.
      *
-     * <p>
-     * Test for yang with leaf of type int in container where data are created
-     * with String value (non acceptable data - should failed with
-     * {@link IllegalArgumentException})
+     * <p>Test for yang with leaf of type int in container where data are created with String value (non acceptable
+     * data - should failed with {@link IllegalArgumentException})
      *
-     * @throws Exception
-     *             - throw exception
+     * @throws Exception throw exception
      */
     @Test
     public void fromNormalizedNodeWithAnotherInputDataTest() throws Exception {

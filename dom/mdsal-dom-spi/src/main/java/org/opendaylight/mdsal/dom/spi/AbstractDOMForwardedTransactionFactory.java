@@ -33,9 +33,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract composite transaction factory.
  *
- * <p>
- * Provides a convenience common implementation for composite DOM Transactions, where subtransaction is identified by
- * {@link LogicalDatastoreType} type and implementation of subtransaction is provided by
+ * <p>Provides a convenience common implementation for composite DOM Transactions, where subtransaction is identified
+ * by {@link LogicalDatastoreType} type and implementation of subtransaction is provided by
  * {@link DOMStoreTransactionFactory}.
  *
  * <b>Note:</b>This class does not have thread-safe implementation of  {@link #close()}, implementation may allow
@@ -75,8 +74,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     /**
      * User-supplied implementation of {@link DOMDataTreeWriteTransaction#commit()} for transaction.
      *
-     * <p>
-     * Callback invoked when {@link DOMDataTreeWriteTransaction#commit()} is invoked on transaction created by this
+     * <p>Callback invoked when {@link DOMDataTreeWriteTransaction#commit()} is invoked on transaction created by this
      * factory.
      *
      * @param transaction Transaction on which {@link DOMDataTreeWriteTransaction#commit()} was invoked.
@@ -90,16 +88,13 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     /**
      * Creates a new forwarded read-only transaction.
      *
-     * <p>
-     * Creates a new read-only transaction backed by single read-only sub-transaction.
-     * Target datastore is determined dynamically on first usage.
+     * <p>Creates a new read-only transaction backed by single read-only sub-transaction. Target datastore is determined
+     * dynamically on first usage.
      *
-     * <p>
-     * Sub-transaction for reading is selected by supplied {@link LogicalDatastoreType} as parameter for
+     * <p>Sub-transaction for reading is selected by supplied {@link LogicalDatastoreType} as parameter for
      * {@link DOMDataTreeReadTransaction#read(LogicalDatastoreType, YangInstanceIdentifier)}
      *
-     * <p>
-     * Identifier of returned transaction is retrieved via {@link #newTransactionIdentifier()}.
+     * <p>Identifier of returned transaction is retrieved via {@link #newTransactionIdentifier()}.
      *
      * @return New composite read-only transaction.
      */
@@ -112,12 +107,10 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     /**
      * Creates a new forwarded write-only transaction
      *
-     * <p>
-     * Creates a new write-only transaction backed by single write-only sub-transaction.
-     * Target datastore is determined dynamically on first usage.
+     * <p>Creates a new write-only transaction backed by single write-only sub-transaction. Target datastore is
+     * determined dynamically on first usage.
      *
-     * <p>
-     * Implementation of composite Write-only transaction is following:
+     * <p>Implementation of composite Write-only transaction is following:
      *
      * <ul>
      * <li>{@link DOMDataTreeWriteTransaction#put(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
@@ -137,8 +130,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      *     was committed and gathered results.</li>
      * </ul>
      *
-     * <p>
-     * Identifier of returned transaction is generated via {@link #newTransactionIdentifier()}.
+     * <p>Identifier of returned transaction is generated via {@link #newTransactionIdentifier()}.
      *
      * @return New composite write-only transaction associated with this factory.
      */

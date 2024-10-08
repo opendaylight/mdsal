@@ -178,8 +178,7 @@ public interface DataObjectModification<T extends DataObject> {
      * Returns container child modification if {@code child} was modified by this modification. This method should be
      * used if the child is defined in a grouping brought into a case inside this object.
      *
-     * <p>
-     * For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
+     * <p>For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
      *
      * @param caseType Case type class
      * @param child Type of child - must be only container
@@ -194,8 +193,7 @@ public interface DataObjectModification<T extends DataObject> {
      * Returns container child modification if {@code child} was modified by this
      * modification.
      *
-     * <p>
-     * For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
+     * <p>For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
      *
      * @param child Type of child - must be only container
      * @return Modification of {@code child} if {@code child} was modified, null otherwise.
@@ -208,8 +206,7 @@ public interface DataObjectModification<T extends DataObject> {
     /**
      * Returns augmentation child modification if {@code augmentation} was modified by this modification.
      *
-     * <p>
-     * For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
+     * <p>For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
      *
      * @param augmentation Type of augmentation - must be only container
      * @return Modification of {@code augmentation} if {@code augmentation} was modified, null otherwise.

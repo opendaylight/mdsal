@@ -35,8 +35,7 @@ import org.slf4j.LoggerFactory;
  * <li>{@link #merge(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
  * </ul>
  *
- * <p>
- * {@link #submit()} will result in invocation of
+ * <p>{@link #submit()} will result in invocation of
  * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction, Iterable)}
  * invocation with all {@link org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort} for underlying
  * transactions.

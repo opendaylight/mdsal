@@ -182,10 +182,9 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
     /**
      * Prototype implementation of {@link SnapshotBackedWriteTransaction#ready()}.
      *
-     * <p>
-     * This class is intended to be implemented by Transaction factories responsible for allocation
-     * of {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction} and
-     * providing underlying logic for applying implementation.
+     * <p>This class is intended to be implemented by Transaction factories responsible for allocation
+     * of {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction} and providing underlying logic
+     * for applying implementation.
      *
      * @param <T> identifier type
      */

@@ -26,13 +26,11 @@ public interface DOMActionAvailabilityExtension extends DOMActionService.Extensi
      * implementations becoming (un)available. The listener will be invoked with the current implementations reported
      * and will be kept uptodate as implementations come and go.
      *
-     * <p>
-     * Users should note that using a listener does not necessarily mean that
+     * <p>Users should note that using a listener does not necessarily mean that
      * {@link DOMActionService#invokeAction(Absolute, DOMDataTreeIdentifier, ContainerNode)} will not report
      * a failure due to {@link DOMActionNotAvailableException} and need to be ready to handle it.
      *
-     * <p>
-     * Implementations are encouraged to take reasonable precautions to prevent this scenario from occurring.
+     * <p>Implementations are encouraged to take reasonable precautions to prevent this scenario from occurring.
      *
      * @param listener {@link AvailabilityListener} instance to register
      * @return A {@link Registration} representing this registration. Performing a {@link Registration#close()} will

@@ -23,8 +23,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 /**
  * Lazy serialized implementation of {@link DOMNotification} and {@link DOMEvent}.
  *
- * <p>
- * This implementation performs serialization of data, only if receiver of notification actually accessed data from
+ * <p>This implementation performs serialization of data, only if receiver of notification actually accessed data from
  * notification.
  */
 abstract class AbstractLazySerializedEvent<T extends BaseNotification> implements DOMNotification, DOMEvent {

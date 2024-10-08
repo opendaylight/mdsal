@@ -34,9 +34,8 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
  * Implementation SHOULD use only the {@link DOMDataTreeCandidate} instances and provided {@link EffectiveModelContext}
  * for validation purposes.
  *
- * <p>
- * Use of any other external mutable state is discouraged, implementation MUST NOT use any transaction related APIs on
- * the same data broker / data store instance during invocation of callbacks, except ones provided as argument. Note
+ * <p>Use of any other external mutable state is discouraged, implementation MUST NOT use any transaction related APIs
+ * on the same data broker / data store instance during invocation of callbacks, except ones provided as argument. Note
  * that this MAY BE enforced by some implementations of {@link DOMDataBroker} or {@link CommitCohortExtension},
  * potentially enforced through the extension and such calls may fail.
  *
@@ -63,18 +62,15 @@ public interface DOMDataTreeCommitCohort {
      * Validates the supplied data tree modifications and associates the cohort-specific steps with data broker
      * transaction.
      *
-     * <p>
-     * If {@link DataValidationFailedException} is thrown by implementation, the commit of the supplied data
+     * <p>If {@link DataValidationFailedException} is thrown by implementation, the commit of the supplied data
      * will be prevented, with the DataBroker transaction providing the thrown exception as the cause of failure.
      *
-     * <p>
-     * Note the implementations are expected to do validation and processing asynchronous. Implementations SHOULD do
+     * <p>Note the implementations are expected to do validation and processing asynchronous. Implementations SHOULD do
      * processing fast, and are discouraged from blocking on any external resources. Implementation MUST NOT access
      * any data transaction related APIs during invocation of the callback. Note that this may be enforced by some
      * implementations of {@link CommitCohortExtension} and such calls may fail.
      *
-     * <p>
-     * Implementation MAY opt-out from implementing other steps by returning
+     * <p>Implementation MAY opt-out from implementing other steps by returning
      * {@link PostCanCommitStep#NOOP}. Otherwise implementation MUST return instance of
      * {@link PostCanCommitStep}, which will be used to invoke
      * {@link org.opendaylight.mdsal.common.api.PostPreCommitStep#commit()} or

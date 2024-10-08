@@ -16,9 +16,8 @@ import org.eclipse.jdt.annotation.Nullable;
  * Implementation of {@link CloseTracked} which can be used as a field in another class which implements
  * {@link CloseTracked} and delegates its methods to this.
  *
- * <p>
- * This is useful if that class already has another parent class. If it does not, then it's typically more convenient to
- *  just extend AbstractCloseTracked.
+ * <p>This is useful if that class already has another parent class. If it does not, then it's typically more convenient
+ * to just extend AbstractCloseTracked.
  *
  * @author Michael Vorburger.ch
  */

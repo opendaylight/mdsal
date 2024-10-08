@@ -23,26 +23,22 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 /**
  * A transaction that provides mutation capabilities on a data tree.
  *
- * <p>
- * Initial state of write transaction is a stable snapshot of the current data tree. The state is captured when
+ * <p>Initial state of write transaction is a stable snapshot of the current data tree. The state is captured when
  * the transaction is created and its state and underlying data tree are not affected by other concurrently running
  * transactions.
  *
- * <p>
- * Write transactions are isolated from other concurrent write transactions. All writes are local to the transaction
+ * <p>Write transactions are isolated from other concurrent write transactions. All writes are local to the transaction
  * and represent only a proposal of state change for the data tree and it is not visible to any other concurrently
  * running transaction.
  *
- * <p>
- * Applications make changes to the local data tree in the transaction by via the <b>put</b>, <b>merge</b>,
+ * <p>Applications make changes to the local data tree in the transaction by via the <b>put</b>, <b>merge</b>,
  * and <b>delete</b> operations.
  *
  * <h2>Put operation</h2>
  * Stores a piece of data at a specified path. This acts as an add / replace operation, which is to say that whole
  * subtree will be replaced by the specified data.
  *
- * <p>
- * Performing the following put operations:
+ * <p>Performing the following put operations:
  *
  * <pre>
  * 1) container { list [ a ] }
@@ -57,8 +53,7 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
  * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
  * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
  *
- * <p>
- * Performing the following merge operations:
+ * <p>Performing the following merge operations:
  *
  * <pre>
  * 1) container { list [ a ] }
@@ -74,17 +69,14 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
  * <h2>Delete operation</h2>
  * Removes a piece of data from a specified path.
  *
- * <p>
- * After applying changes to the local data tree, applications publish the changes proposed in the transaction
+ * <p>After applying changes to the local data tree, applications publish the changes proposed in the transaction
  * by calling {@link #commit} on the transaction. This seals the transaction (preventing any further writes using this
  * transaction) and commits it to be processed and applied to global conceptual data tree.
  *
- * <p>
- * The transaction commit may fail due to a concurrent transaction modifying and committing data in an incompatible way.
- * See {@link #commit} for more concrete commit failure examples.
+ * <p>The transaction commit may fail due to a concurrent transaction modifying and committing data in an incompatible
+ * way. See {@link #commit} for more concrete commit failure examples.
  *
- * <p>
- * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL, but only to be
+ * <p><b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL, but only to be
  * consumed by them.
  */
 public interface WriteTransaction extends Transaction, WriteOperations {
@@ -103,20 +95,17 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * Commits this transaction to be asynchronously applied to update the logical data tree. The returned
      * {@link FluentFuture} conveys the result of applying the data changes.
      *
-     * <p>
-     * This call logically seals the transaction, which prevents the client from further changing the data tree using
+     * <p>This call logically seals the transaction, which prevents the client from further changing the data tree using
      * this transaction. Any subsequent calls to <code>put(LogicalDatastoreType, Path, Object)</code>,
      * <code>merge(LogicalDatastoreType, Path, Object)</code>, <code>delete(LogicalDatastoreType, Path)</code> will fail
      * with {@link IllegalStateException}. The transaction is marked as committed and enqueued into the data store
      * back-end for processing.
      *
-     * <p>
-     * Whether or not the commit is successful is determined by versioning of the data tree and validation of registered
-     * commit participants if the transaction changes the data tree.
+     * <p>Whether or not the commit is successful is determined by versioning of the data tree and validation of
+     * registered commit participants if the transaction changes the data tree.
      *
-     * <p>
-     * The effects of a successful commit of data depends on listeners and commit participants that are registered with
-     * the data broker.
+     * <p>The effects of a successful commit of data depends on listeners and commit participants that are registered
+     * with the data broker.
      *
      * <h4>Example usage:</h4>
      * <pre>
@@ -148,8 +137,7 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      *
      * <h4>Failure scenarios</h4>
      *
-     * <p>
-     * Transaction may fail because of multiple reasons, such as
+     * <p>Transaction may fail because of multiple reasons, such as
      * <ul>
      *   <li>
      *     Another transaction finished earlier and modified the same node in a non-compatible way (see below). In this
@@ -439,10 +427,9 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * exception, which indicates to client that concurrent transaction prevented the committed
      * transaction from being applied. <br>
      *
-     * <p>
-     * A successful commit produces implementation-specific {@link CommitInfo} structure, which is used to communicate
-     * post-condition information to the caller. Such information can contain commit-id, timing information or any
-     * other information the implementation wishes to share.
+     * <p>A successful commit produces implementation-specific {@link CommitInfo} structure, which is used to
+     * communicate post-condition information to the caller. Such information can contain commit-id, timing information
+     * or any other information the implementation wishes to share.
      *
      * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
      *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a

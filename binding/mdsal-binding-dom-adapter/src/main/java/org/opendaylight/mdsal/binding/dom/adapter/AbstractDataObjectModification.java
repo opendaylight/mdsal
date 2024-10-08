@@ -52,9 +52,8 @@ import org.slf4j.LoggerFactory;
  * {@link AbstractDataObjectModification} represents Data tree change event, but whole tree is not translated or
  * resolved eagerly, but only child nodes which are directly accessed by user of data object modification.
  *
- * <p>
- * This class is further specialized as {@link LazyAugmentationModification} and {@link LazyDataObjectModification}, as
- * both use different serialization methods.
+ * <p>This class is further specialized as {@link LazyAugmentationModification} and {@link LazyDataObjectModification},
+ * as both use different serialization methods.
  *
  * @param <T> Type of Binding {@link DataObject}
  * @param <N> Type of underlying {@link CommonDataObjectCodecTreeNode}

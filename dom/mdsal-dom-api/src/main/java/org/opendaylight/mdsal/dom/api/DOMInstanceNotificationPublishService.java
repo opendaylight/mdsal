@@ -59,8 +59,7 @@ public interface DOMInstanceNotificationPublishService extends
      * enough resources become available to accept the notification for processing, or it is
      * interrupted.
      *
-     * <p>
-     * Caution: completion here means that the implementation has completed processing of the
+     * <p>Caution: completion here means that the implementation has completed processing of the
      * notification. This does not mean that all existing registrants have seen the notification.
      * Most importantly, the delivery process at other cluster nodes may have not begun yet.
      *

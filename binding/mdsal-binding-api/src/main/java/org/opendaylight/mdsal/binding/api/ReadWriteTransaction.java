@@ -12,11 +12,10 @@ import com.google.common.annotations.Beta;
 /**
  * A transaction that enables combined read/write capabilities.
  *
- * <p>
- * For more information on usage and examples, please see the documentation in {@link ReadTransaction} and
+ * <p>For more information on usage and examples, please see the documentation in {@link ReadTransaction} and
  * {@link WriteTransaction}.
  */
 @Beta
 public interface ReadWriteTransaction extends WriteTransaction, ReadWriteOperations {
-
+    // Nothing else
 }

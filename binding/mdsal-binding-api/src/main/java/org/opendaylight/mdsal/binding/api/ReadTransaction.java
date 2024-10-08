@@ -10,14 +10,11 @@ package org.opendaylight.mdsal.binding.api;
 /**
  * A transaction that provides a stateful read-only view of the data tree.
  *
- * <p>
- * View of the data tree is a stable point-in-time snapshot of the current data tree state when the
- * transaction was created. It's state and underlying data tree is not affected by other
- * concurrently running transactions.
+ * <p>View of the data tree is a stable point-in-time snapshot of the current data tree state when the transaction
+ * was created. It's state and underlying data tree is not affected by other concurrently running transactions.
  *
- * <p>
- * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
- * but only to be consumed by them.
+ * <p><b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL, but only to be
+ * consumed by them.
  *
  * <h2>Transaction isolation example</h2>
  * Lets assume initial state of data tree for <code>PATH</code> is <code>A</code>.
@@ -34,8 +31,7 @@ package org.opendaylight.mdsal.binding.api;
  * txAfterCommit.read(OPERATIONAL, PATH).get(); // returns Optional containing B;
  * </code>
  *
- * <p>
- * <b>Note:</b> example contains blocking calls on future only to illustrate that action happened after other
+ * <p><b>Note:</b> example contains blocking calls on future only to illustrate that action happened after other
  * asynchronous action. Use of blocking call {@link com.google.common.util.concurrent.FluentFuture#get()} is
  * discouraged for most uses and you should use
  * {@link com.google.common.util.concurrent.FluentFuture#addCallback(com.google.common.util.concurrent.FutureCallback,

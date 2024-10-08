@@ -28,9 +28,8 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 /**
  * Lazily translated {@link DataTreeModification} based on {@link DataTreeCandidate}.
  *
- * <p>
- * {@link DataTreeModification} represents Data tree change event, but whole tree is not translated or resolved eagerly,
- * but only child nodes which are directly accessed by user of data object modification.
+ * <p>{@link DataTreeModification} represents Data tree change event, but whole tree is not translated or resolved
+ * eagerly, but only child nodes which are directly accessed by user of data object modification.
  */
 final class LazyDataTreeModification<T extends DataObject> implements DataTreeModification<T> {
     private final @NonNull LogicalDatastoreType datastore;

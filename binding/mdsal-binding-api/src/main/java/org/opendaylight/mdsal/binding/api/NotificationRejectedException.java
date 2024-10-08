@@ -13,8 +13,7 @@ import java.io.Serial;
  * This exception indicates that given notification can not be processed by corresponding mechanism.
  * More info can be provided in message.
  *
- * <p>
- * Expected use: {@link NotificationPublishService}
+ * <p>Expected use: {@link NotificationPublishService}
  */
 public class NotificationRejectedException extends Exception {
     @Serial

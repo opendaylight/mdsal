@@ -20,15 +20,12 @@ import org.eclipse.jdt.annotation.NonNull;
  * the strings presented to it have been previously validated to conform to the regular expressions defined in the YANG
  * model.
  *
- * <p>
- * IPv6 routines added by Anton Ivanov on 14.6.2015, revised by Robert Varga
+ * <p>IPv6 routines added by Anton Ivanov on 14.6.2015, revised by Robert Varga
  *
- * <p>
- * <b>BIG FAT WARNING!!!</b>
+ * <p><b>BIG FAT WARNING!!!</b>
  * Read all of the following before you touch any v6 code or decide to optimize it by invoking a "simple" Guava call.
  *
- * <p>
- * Java IPv6 is fundamentally broken and Google libraries do not fix it.
+ * <p>Java IPv6 is fundamentally broken and Google libraries do not fix it.
  * <ol>
  *   <li>Java will always implicitly rewrite v4 mapped into v6 as a v4 address and there is absolutely no way to
  *       override this behaviour</li>
@@ -37,11 +34,9 @@ import org.eclipse.jdt.annotation.NonNull;
  * </ol>
  * This is why we have to parse v6 by ourselves.
  *
- * <p>
- * The following conversion code is based on inet_cidr_pton_ipv6 in NetBSD.
+ * <p>The following conversion code is based on inet_cidr_pton_ipv6 in NetBSD.
  *
- * <p>
- * The original BSD code is licensed under standard BSD license. While we are not obliged to provide an attribution,
+ * <p>The original BSD code is licensed under standard BSD license. While we are not obliged to provide an attribution,
  * credit where credit is due. As far as why it is similar to Sun's sun.net.util please ask Sun why their code has the
  * same variable names, comments and code flow.
  */

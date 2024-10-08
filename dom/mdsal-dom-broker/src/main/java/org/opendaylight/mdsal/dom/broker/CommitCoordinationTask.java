@@ -90,8 +90,7 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     /**
      * Invokes canCommit on underlying cohort and blocks till the result is returned.
      *
-     * <p>
-     * Valid state transition is from SUBMITTED to CAN_COMMIT, if currentPhase is not SUBMITTED throws
+     * <p>Valid state transition is from SUBMITTED to CAN_COMMIT, if currentPhase is not SUBMITTED throws
      * IllegalStateException.
      *
      * @throws TransactionCommitFailedException If cohort fails Commit
@@ -114,8 +113,7 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     /**
      * Invokes preCommit on underlying cohort and blocks until the result is returned.
      *
-     * <p>
-     * Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current state is not CAN_COMMIT throws
+     * <p>Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current state is not CAN_COMMIT throws
      * IllegalStateException.
      *
      * @throws TransactionCommitFailedException If cohort fails preCommit
@@ -132,8 +130,7 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     /**
      * Invokes commit on underlying cohort and blocks until result is returned.
      *
-     * <p>
-     * Valid state transition is from PRE_COMMIT to COMMIT, if not throws IllegalStateException.
+     * <p>Valid state transition is from PRE_COMMIT to COMMIT, if not throws IllegalStateException.
      *
      * @throws TransactionCommitFailedException If cohort fails preCommit
      */
@@ -149,12 +146,10 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     /**
      * Aborts transaction.
      *
-     * <p>
-     * Invokes {@link DOMStoreThreePhaseCommitCohort#abort()} on underlying cohort, blocks the results. If
-     * abort failed throws IllegalStateException, which will contains originalCause as suppressed Exception.
+     * <p>Invokes {@link DOMStoreThreePhaseCommitCohort#abort()} on underlying cohort, blocks the results. If abort
+     * failed throws IllegalStateException, which will contains originalCause as suppressed Exception.
      *
-     * <p>
-     * If abort was successful throws supplied exception
+     * <p>If abort was successful throws supplied exception
      *
      * @param originalCause Exception which should be used to fail transaction for consumers of transaction future
      *                      and listeners of transaction failure.

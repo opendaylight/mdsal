@@ -25,10 +25,8 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 /**
  * Composite DOM Transaction backed by {@link DOMStoreTransaction}.
  *
- * <p>
- * Abstract base for composite transaction, which provides access only to common
- * functionality as retrieval of subtransaction, close method and retrieval of
- * identifier.
+ * <p>Abstract base for composite transaction, which provides access only to common functionality as retrieval of
+ * subtransaction, close method and retrieval of identifier.
  *
  * @param <T> Subtransaction type
  */
@@ -69,9 +67,8 @@ abstract class AbstractDOMForwardedTransaction<T extends DOMStoreTransaction>
     /**
      * Returns subtransaction associated with supplied datastore type.
      *
-     * <p>
-     * The method allows usage of single datastore type per transaction instance;
-     * eligible datastore type is defined by first method access.
+     * <p>The method allows usage of single datastore type per transaction instance; eligible datastore type is defined
+     * by first method access.
      *
      * @param datastoreType is used to identify subtransaction object
      * @return the subtransaction object

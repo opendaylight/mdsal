@@ -19,9 +19,8 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  * Failure of asynchronous transaction commit caused by invalid data. This exception is raised and returned when
  * a transaction commit failed, because other data submitted via transactions.
  *
- * <p>
- * Clients usually are not able recover from this error condition by retrieving same transaction, since data introduced
- * by this transaction is invalid.
+ * <p>Clients usually are not able recover from this error condition by retrieving same transaction, since data
+ * introduced by this transaction is invalid.
  */
 public class DataValidationFailedException extends TransactionCommitFailedException {
     @Serial

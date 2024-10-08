@@ -28,13 +28,11 @@ import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
  * {@code MatchBuilderPath.leaf()} methods are expected to be used with {@code method references}, which are converted
  * to {@link LeafReference} lambdas.
  *
- * <p>
- * We then assume runtime is following guidance around {@link SerializedLambda}, thus {@link Serializable} lambdas have
- * a {@code writeReplace()} method and it produces a {@link SerializedLambda} -- which we use to get the information
- * about what the lambda does at least in the single case we support.
+ * <p>We then assume runtime is following guidance around {@link SerializedLambda}, thus {@link Serializable} lambdas
+ * have a {@code writeReplace()} method and it produces a {@link SerializedLambda} -- which we use to get the
+ * information about what the lambda does at least in the single case we support.
  *
- * <p>
- * An alternative approach to cracking the lambda would be to generate a dynamic proxy implementation of the base
+ * <p>An alternative approach to cracking the lambda would be to generate a dynamic proxy implementation of the base
  * DataObject (we have the Class to do that), back it by a invocation handler which throws a private RuntimeException
  * subclass containing the name of the invoked method. We then would invoke the lambda on such a proxy and intercept
  * the exception raised. This unfortunately has multiple downsides:

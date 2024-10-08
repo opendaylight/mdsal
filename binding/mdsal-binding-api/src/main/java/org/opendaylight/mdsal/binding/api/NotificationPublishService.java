@@ -25,9 +25,8 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
  *       thin.</li>
  * </ul>
  *
- * <p>
- * The actual delivery to listeners is asynchronous and implementation-specific. Users of this interface should not make
- * any assumptions as to whether the notification has or has not been seen.
+ * <p>The actual delivery to listeners is asynchronous and implementation-specific. Users of this interface should not
+ * make any assumptions as to whether the notification has or has not been seen.
  */
 public interface NotificationPublishService extends BindingService {
     /**
@@ -52,8 +51,7 @@ public interface NotificationPublishService extends BindingService {
      * Publishes a notification to subscribed listeners. This initiates the process of sending the notification, but
      * delivery to the listeners can happen asynchronously, potentially after a call to this method returns.
      *
-     * <p>
-     * Still guaranteed not to block. Returns Listenable Future which will complete once.
+     * <p>Still guaranteed not to block. Returns Listenable Future which will complete once.
      *
      * @param notification the notification to publish.
      * @return A listenable future which will report completion when the service has finished propagating the

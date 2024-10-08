@@ -30,8 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * This testsuite tries to replicate bug 1333 and tests regresion of it  using test-model with similar construction as
  * one reported.
  *
- * <p>
- * See  https://bugs.opendaylight.org/show_bug.cgi?id=1333 for Bug Description
+ * <p>See https://bugs.opendaylight.org/show_bug.cgi?id=1333 for Bug Description
  */
 public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListenerTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);

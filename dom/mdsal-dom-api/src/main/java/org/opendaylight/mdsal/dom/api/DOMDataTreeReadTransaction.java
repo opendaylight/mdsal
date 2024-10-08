@@ -12,13 +12,11 @@ import org.opendaylight.yangtools.concepts.Registration;
 /**
  * A transaction that provides read access to a logical data store.
  *
- * <p>
- * View of the data tree is a stable point-in-time snapshot of the current data tree state when the
+ * <p>View of the data tree is a stable point-in-time snapshot of the current data tree state when the
  * transaction was created. It's state and underlying data tree is not affected by other
  * concurrently running transactions.
  *
- * <p>
- * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
+ * <p><b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
  *
  * <h2>Transaction isolation example</h2>
@@ -36,8 +34,7 @@ import org.opendaylight.yangtools.concepts.Registration;
  * txAfterCommit.read(OPERATIONAL, PATH).get(); // returns Optional containing B;
  * </code>
  *
- * <p>
- * <b>Note:</b> example contains blocking calls on future only to illustrate that action happened after other
+ * <p><b>Note:</b> example contains blocking calls on future only to illustrate that action happened after other
  * asynchronous action. Use of blocking call {@link com.google.common.util.concurrent.FluentFuture#get()} is
  * discouraged for most uses and you should use
  * {@link com.google.common.util.concurrent.FluentFuture#addCallback(com.google.common.util.concurrent.FutureCallback,

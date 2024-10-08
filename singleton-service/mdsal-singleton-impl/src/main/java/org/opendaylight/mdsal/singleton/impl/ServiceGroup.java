@@ -46,8 +46,7 @@ abstract sealed class ServiceGroup implements Identifiable<ServiceGroupIdentifie
      * Method provides possibility to restart some service from group without change leadership for whole group.
      * {@link ServiceRegistration#removeRegistration()} implementation has to call this service.
      *
-     * <p>
-     * Candidates are signed for group, so unregistration for group with one service has to trigger new election only
+     * <p>Candidates are signed for group, so unregistration for group with one service has to trigger new election only
      * otherwise we can see same behavior as on server without clustering.
      *
      * @param service instance

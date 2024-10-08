@@ -23,8 +23,7 @@ public enum LogicalDatastoreType implements WritableObject {
      * Logical datastore representing operational state of the system and it's components. This datastore is used
      * to describe operational state of the system and it's operation related data.
      *
-     * <p>
-     * It is defined to:
+     * <p>It is defined to:
      * <ul>
      *   <li>contain both {@code config=true} and {@code config=false} nodes</li>
      *   <li>be replicated across all nodes by default, individual shards may have different strategies, which need to
@@ -37,8 +36,7 @@ public enum LogicalDatastoreType implements WritableObject {
      * Logical Datastore representing configuration state of the system and it's components. This datastore is used
      * to describe intended state of the system and intended operation mode.
      *
-     * <p>
-     * It is defined to:
+     * <p>It is defined to:
      * <ul>
      *   <li>contain only {@code config=true} nodes</li>
      *   <li>be replicated across all nodes by default, individual shards may have different strategies, which need to

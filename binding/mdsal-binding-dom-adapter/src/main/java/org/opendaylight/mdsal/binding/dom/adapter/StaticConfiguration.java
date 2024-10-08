@@ -17,16 +17,14 @@ final class StaticConfiguration {
      * When we are invoking a Binding-Aware RPC implementation, we can side-step translation through NormalizedNodes,
      * which is an obvious performance win.
      *
-     * <p>
-     * Unfortunately Binding Specification does not truthfully cover YANG semantics, in that grouping instantiations
+     * <p>Unfortunately Binding Specification does not truthfully cover YANG semantics, in that grouping instantiations
      * are not treated separately, which leads to constructs which are Binding-valid, but are actually YANG-invalid.
      * These are usually easily rectified when identified, but the existence of this shortcut means that in single-node
      * scenario we do not detect these mismatches and thus these issues remain unidentified -- only to break when
      * in multi-node scenarios or the shortcut becomes otherwise ineffective.
      *
-     * <p>
-     * We therefore allow the shortcuts to be globally disabled via a property, which is evaluated when this component
-     * loads.
+     * <p>We therefore allow the shortcuts to be globally disabled via a property, which is evaluated when this
+     * component loads.
      */
     static final boolean ENABLE_CODEC_SHORTCUT = !Boolean.getBoolean(
         "org.opendaylight.mdsal.binding.dom.adapter.disableCodecShortcut");

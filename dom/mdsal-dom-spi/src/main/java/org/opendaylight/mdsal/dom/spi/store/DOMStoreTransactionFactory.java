@@ -10,32 +10,22 @@ package org.opendaylight.mdsal.dom.spi.store;
 /**
  * Factory for DOM Store Transactions.
  *
- * <p>
- * Factory provides method to construct read-only, read-write and write-only
- * transactions, which may be used to retrieve and modify stored information in
- * Underlying {@link DOMStore} or {@link DOMStoreTransactionChain}.
+ * <p>Factory provides method to construct read-only, read-write and write-only transactions, which may be used to
+ * retrieve and modify stored information in Underlying {@link DOMStore} or {@link DOMStoreTransactionChain}.
  *
- * <p>
- * See {@link DOMStore} or {@link DOMStoreTransactionChain} for concrete
- * variations of this factory.
+ * <p>See {@link DOMStore} or {@link DOMStoreTransactionChain} for concrete variations of this factory.
  *
- * <p>
- * <b>Note:</b> This interface is used only to define common functionality
- * between {@link DOMStore} and {@link DOMStoreTransactionChain}, which
- * further specify behaviour of returned transactions.
- *
+ * <p><b>Note:</b> This interface is used only to define common functionality between {@link DOMStore} and
+ * {@link DOMStoreTransactionChain}, which further specify behaviour of returned transactions.
  */
 public interface DOMStoreTransactionFactory {
 
     /**
      * Creates a read only transaction.
      *
-     * <p>
-     * Creates a new read-only transaction, which provides read access to
-     * snapshot of current state.
+     * <p>Creates a new read-only transaction, which provides read access to snapshot of current state.
      *
-     * <p>
-     * See {@link DOMStoreReadTransaction} for more information.
+     * <p>See {@link DOMStoreReadTransaction} for more information.
      *
      * @return new {@link DOMStoreReadTransaction}
      * @throws IllegalStateException
@@ -46,8 +36,7 @@ public interface DOMStoreTransactionFactory {
     /**
      * Creates write only transaction.
      *
-     * <p>
-     * See {@link DOMStoreWriteTransaction} for more information.
+     * <p>See {@link DOMStoreWriteTransaction} for more information.
      *
      * @return new {@link DOMStoreWriteTransaction}
      * @throws IllegalStateException If state of factory prevents allocating new transaction.
@@ -57,8 +46,7 @@ public interface DOMStoreTransactionFactory {
     /**
      * Creates Read-Write transaction.
      *
-     * <p>
-     * See {@link DOMStoreReadWriteTransaction} for more information.
+     * <p>See {@link DOMStoreReadWriteTransaction} for more information.
      *
      * @return  new {@link DOMStoreWriteTransaction}
      * @throws IllegalStateException If state of factory prevents allocating new transaction.

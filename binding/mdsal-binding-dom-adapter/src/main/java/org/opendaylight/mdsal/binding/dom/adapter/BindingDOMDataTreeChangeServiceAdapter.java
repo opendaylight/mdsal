@@ -24,8 +24,7 @@ import org.opendaylight.yangtools.concepts.Registration;
  * Adapter exposing Binding {@link DataTreeChangeService} and wrapping a {@link DataTreeChangeExtension} and is
  * responsible for translation and instantiation of {@link BindingDOMDataTreeChangeListenerAdapter} adapters.
  *
- * <p>
- * Each registered {@link DataTreeChangeListener} is wrapped using adapter and registered directly to DOM service.
+ * <p>Each registered {@link DataTreeChangeListener} is wrapped using adapter and registered directly to DOM service.
  */
 final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapter<DataTreeChangeExtension>
         implements DataTreeChangeService {

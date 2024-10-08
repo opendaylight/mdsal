@@ -193,10 +193,9 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * Base interface for capturing binding getter method references through lambda expressions. This interface should
      * never be used directly, but rather through one of its specializations.
      *
-     * <p>
-     * This interface uncharacteristically extends {@link Serializable} for the purposes of making the resulting lambda
-     * also Serializable. This part is critical for the process of introspection into the lambda and identifying the
-     * method being invoked.
+     * <p>This interface uncharacteristically extends {@link Serializable} for the purposes of making the resulting
+     * lambda also Serializable. This part is critical for the process of introspection into the lambda and identifying
+     * the method being invoked.
      *
      * @param <P> Parent type
      * @param <C> Child type

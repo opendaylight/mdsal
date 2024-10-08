@@ -13,8 +13,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
  * ClusteredDOMDataTreeChangeListener is a marker interface to enable data tree change notifications on all instances in
  * a cluster where this listener is registered.
  *
- * <p>
- * Applications should implement ClusteredDOMDataTreeChangeListener instead of {@link DOMDataTreeChangeListener},
+ * <p>Applications should implement ClusteredDOMDataTreeChangeListener instead of {@link DOMDataTreeChangeListener},
  * if they want to listen for data tree change notifications on any node of a clustered data store.
  * {@link DOMDataTreeChangeListener} enables notifications only at the leader of the data store.
  *

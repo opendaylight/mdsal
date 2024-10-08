@@ -24,9 +24,8 @@ public interface WriteOperations {
      * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that
      * whole subtree will be replaced by the specified data.
      *
-     * <p>
-     * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
-     * put, consider using {@link #merge} instead.
+     * <p>If you need to make sure that a parent object exists but you do not want modify its pre-existing state by
+     * using put, consider using {@link #merge} instead.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -42,9 +41,8 @@ public interface WriteOperations {
      * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that
      * whole subtree will be replaced by the specified data.
      *
-     * <p>
-     * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
-     * put, consider using {@link #merge} instead.
+     * <p>If you need to make sure that a parent object exists but you do not want modify its pre-existing state by
+     * using put, consider using {@link #merge} instead.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -68,15 +66,13 @@ public interface WriteOperations {
      * {@link #put(LogicalDatastoreType, DataObjectIdentifier, DataObject)}, this method will attempt to create
      * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
      *
-     * <p>
-     * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
-     * put, consider using {@link #merge} instead.
+     * <p>If you need to make sure that a parent object exists but you do not want modify its pre-existing state by
+     * using put, consider using {@link #merge} instead.
      *
-     * <p>
-     * <b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted by
-     *                 a previous transaction. It also has a significantly higher cost than
-     *                 {@link #put(LogicalDatastoreType, DataObjectIdentifier, DataObject)} and should only be used when
-     *                 absolutely necessary.
+     * <p><b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted
+     * by a previous transaction. It also has a significantly higher cost than
+     * {@link #put(LogicalDatastoreType, DataObjectIdentifier, DataObject)} and should only be used when absolutely
+     * necessary.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -111,15 +107,13 @@ public interface WriteOperations {
      * {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)}, this method will attempt to create
      * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
      *
-     * <p>
-     * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
-     * put, consider using {@link #merge} instead.
+     * <p>If you need to make sure that a parent object exists but you do not want modify its pre-existing state by
+     * using put, consider using {@link #merge} instead.
      *
-     * <p>
-     * <b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted by
-     *                 a previous transaction. It also has a significantly higher cost than
-     *                 {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)} and should only be used when
-     *                 absolutely necessary.
+     * <p><b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted
+     * by a previous transaction. It also has a significantly higher cost than
+     * {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)} and should only be used when absolutely
+     * necessary.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -140,8 +134,7 @@ public interface WriteOperations {
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
      * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
      *
-     * <p>
-     * If you require an explicit replace operation, use {@link #put} instead.
+     * <p>If you require an explicit replace operation, use {@link #put} instead.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -157,8 +150,7 @@ public interface WriteOperations {
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
      * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
      *
-     * <p>
-     * If you require an explicit replace operation, use {@link #put} instead.
+     * <p>If you require an explicit replace operation, use {@link #put} instead.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -181,14 +173,12 @@ public interface WriteOperations {
      * {@link #merge(LogicalDatastoreType, DataObjectIdentifier, DataObject)}, this method will attempt to create
      * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
      *
-     * <p>
-     * If you require an explicit replace operation, use {@link #put} instead.
+     * <p>If you require an explicit replace operation, use {@link #put} instead.
      *
-     * <p>
-     * <b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted by
-     *                 a previous transaction. It is not necessary in most scenarios and has a significantly higher cost
-     *                 than {@link #merge(LogicalDatastoreType, DataObjectIdentifier, DataObject)}. It should only be
-     *                 used when absolutely necessary.
+     * <p><b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted
+     * by a previous transaction. It is not necessary in most scenarios and has a significantly higher cost than
+     * {@link #merge(LogicalDatastoreType, DataObjectIdentifier, DataObject)}. It should only be used when absolutely
+     * necessary.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path
@@ -223,14 +213,12 @@ public interface WriteOperations {
      * {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)}, this method will attempt to create
      * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
      *
-     * <p>
-     * If you require an explicit replace operation, use {@link #put} instead.
+     * <p>If you require an explicit replace operation, use {@link #put} instead.
      *
-     * <p>
-     * <b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted by
-     *                 a previous transaction. It is not necessary in most scenarios and has a significantly higher cost
-     *                 than {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)}. It should only be used
-     *                 when absolutely necessary.
+     * <p><b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted
+     * by a previous transaction. It is not necessary in most scenarios and has a significantly higher cost than
+     * {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)}. It should only be used when absolutely
+     * necessary.
      *
      * @param store the logical data store which should be modified
      * @param path the data object path

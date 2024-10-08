@@ -18,12 +18,10 @@ public interface RpcService extends BindingService {
     /**
      * Returns an implementation of a requested RPC service.
      *
-     * <p>
-     * The returned instance is not an actual implementation of the RPC service interface, but a proxy implementation of
-     * the interface that forwards to an actual implementation, if any.
+     * <p>The returned instance is not an actual implementation of the RPC service interface, but a proxy
+     * implementation of the interface that forwards to an actual implementation, if any.
      *
-     * <p>
-     * The following describes the behavior of the proxy when invoking RPC methods:
+     * <p>The following describes the behavior of the proxy when invoking RPC methods:
      * <ul>
      *   <li>If an actual implementation is registered with the MD-SAL, all invocations are forwarded to the registered
      *       implementation.</li>
@@ -34,8 +32,7 @@ public interface RpcService extends BindingService {
      * </ul>
      * The returned proxy is automatically updated with the most recent registered implementation.
      *
-     * <p>
-     * The generated RPC method APIs require implementors to return a
+     * <p>The generated RPC method APIs require implementors to return a
      * {@link java.util.concurrent.Future Future} instance that wraps the
      * {@link org.opendaylight.yangtools.yang.common.RpcResult RpcResult}. Since RPC methods may be
      * implemented asynchronously, callers should avoid blocking on the

@@ -16,12 +16,10 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
  * a scratch pad. Once the committing transaction completes successfully, the scratch transaction is enqueued as soon as
  * it is ready.
  *
- * <p>
- * This mode of operation means that there is no inherent isolation between the front-end transactions and transactions
- * cannot be reasonably cancelled.
+ * <p>This mode of operation means that there is no inherent isolation between the front-end transactions and
+ * transactions cannot be reasonably cancelled.
  *
- * <p>
- * It furthermore means that the transactions returned by {@link #newReadOnlyTransaction()} counts as an outstanding
+ * <p>It furthermore means that the transactions returned by {@link #newReadOnlyTransaction()} counts as an outstanding
  * transaction and the user may not allocate multiple read-only transactions at the same time.
  */
 public final class PingPongTransactionChain extends AbstractPingPongTransactionChain {

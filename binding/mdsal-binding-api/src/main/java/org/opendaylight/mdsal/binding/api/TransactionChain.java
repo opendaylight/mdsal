@@ -43,12 +43,10 @@ public interface TransactionChain extends Registration, TransactionFactory {
     /**
      * Create a new read only transaction which will continue the chain.
      *
-     * <p>
-     * The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
+     * <p>The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
      * or CANCELLED ({@link #close close} was invoked).
      *
-     * <p>
-     * The returned read-only transaction presents an isolated view of the data if the previous write transaction was
+     * <p>The returned read-only transaction presents an isolated view of the data if the previous write transaction was
      * successful - in other words, this read-only transaction will see the state changes made by the previous write
      * transaction in the chain. However, state which was introduced by other transactions outside this transaction
      * chain after creation of the previous transaction is not visible.
@@ -63,18 +61,15 @@ public interface TransactionChain extends Registration, TransactionFactory {
     /**
      * Create a new write-only transaction which will continue the chain.
      *
-     * <p>
-     * The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
+     * <p>The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
      * or CANCELLED ({@link #close close} was invoked)
      *
-     * <p>
-     * The returned write-only transaction presents an isolated view of the data if the previous write transaction was
-     * successful - in other words, this write-only transaction will see the state changes made by the previous write
-     * transaction in the chain. However, state which was introduced by other transactions outside this transaction
-     * chain after creation of the previous transaction is not visible
+     * <p>The returned write-only transaction presents an isolated view of the data if the previous write transaction
+     * was successful - in other words, this write-only transaction will see the state changes made by the previous
+     * write transaction in the chain. However, state which was introduced by other transactions outside this
+     * transaction chain after creation of the previous transaction is not visible
      *
-     * <p>
-     * Committing this write-only transaction using {@link WriteTransaction#commit commit} will commit the state
+     * <p>Committing this write-only transaction using {@link WriteTransaction#commit commit} will commit the state
      * changes in this transaction to be visible to any subsequent transaction in this chain and also to any transaction
      * outside this chain.
      *
@@ -88,20 +83,17 @@ public interface TransactionChain extends Registration, TransactionFactory {
     /**
      * Create a new read-write transaction which will continue the chain.
      *
-     * <p>
-     * The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
+     * <p>The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
      * or CANCELLED ({@link #close close} was invoked).
      *
-     * <p>
-     * The returned read-write transaction presents an isolated view of the data if the previous write transaction was
-     * successful - in other words, this read-write transaction will see the state changes made by the previous write
-     * transaction in the chain. However, state which was introduced by other transactions outside this transaction
-     * chain after creation of the previous transaction is not visible.
+     * <p>The returned read-write transaction presents an isolated view of the data if the previous write transaction
+     * was successful - in other words, this read-write transaction will see the state changes made by the previous
+     * write transaction in the chain. However, state which was introduced by other transactions outside this
+     * transaction chain after creation of the previous transaction is not visible.
      *
-     * <p>
-     * Committing this read-write transaction using {@link WriteTransaction#commit commit} will commit the state changes
-     * in this transaction to be visible to any subsequent transaction in this chain and also to any transaction outside
-     * this chain.
+     * <p>Committing this read-write transaction using {@link WriteTransaction#commit commit} will commit the state
+     * changes in this transaction to be visible to any subsequent transaction in this chain and also to any
+     * transaction outside this chain.
      *
      * @return New transaction in the chain.
      * @throws IllegalStateException if the previous transaction was not SUBMITTED or CANCELLED.

@@ -19,8 +19,7 @@ import org.opendaylight.yangtools.concepts.Registration;
  * on the current cluster member. Entity ownership is always tied to a process and two components on the same process
  * cannot register a candidate for a given Entity.
  *
- * <p>
- * A component/application may also register interest in the ownership status of an entity. The listener would be
+ * <p>A component/application may also register interest in the ownership status of an entity. The listener would be
  * notified whenever the ownership status changes.
  *
  * @author Thomas Pantelis
@@ -33,8 +32,7 @@ public interface DOMEntityOwnershipService {
      * process. If multiple requests for registering a candidate for a given entity are received in the current process
      * a CandidateAlreadyRegisteredException will be thrown.
      *
-     * <p>
-     * The registration is performed asynchronously and any registered entity ownership listener is notified of
+     * <p>The registration is performed asynchronously and any registered entity ownership listener is notified of
      * ownership status changes for the entity.
      *
      * @param entity the entity which the Candidate wants to own

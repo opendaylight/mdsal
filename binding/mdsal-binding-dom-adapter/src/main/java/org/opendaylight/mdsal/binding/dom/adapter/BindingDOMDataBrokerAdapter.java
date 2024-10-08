@@ -33,9 +33,8 @@ import org.opendaylight.yangtools.concepts.Registration;
  * registrations are wrapped by the DataBrokerImpl to allow binding aware components to use the DataBroker
  * transparently.
  *
- * <p>
- * Besides this the DataBrokerImpl and it's collaborators also cache data that is already transformed from the binding
- * independent to binding aware format.
+ * <p>Besides this the DataBrokerImpl and it's collaborators also cache data that is already transformed from the
+ * binding independent to binding aware format.
  */
 @VisibleForTesting
 public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull DOMDataBroker> implements DataBroker {

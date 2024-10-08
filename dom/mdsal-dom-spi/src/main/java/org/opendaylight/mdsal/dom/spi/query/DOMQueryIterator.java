@@ -295,17 +295,14 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
      * Unwind the stack, discarding current frame, and possibly some others. Unwind removes contents of
      * {@link #currentPath}, walking back towards the query root.
      *
-     * <p>
-     * Since we are unwinding a data item, we pop its path -- hence {@link #currentPath} points to the parent path.
+     * <p>Since we are unwinding a data item, we pop its path -- hence {@link #currentPath} points to the parent path.
      * We then examine {@link Frame#select} to see if it's null -- if it is, we have reached the top-most frame and
      * hence have nothing left to do.
      *
-     * <p>
-     * Otherwise we remember {@code select} back to {@link #remainingSelect} and pop the next frame to be processed.
+     * <p>Otherwise we remember {@code select} back to {@link #remainingSelect} and pop the next frame to be processed.
      * If the frame does not have work, as indicated by {@link Frame#hasNext()}, we unwind it as well.
      *
-     * <p>
-     * We repeat this process until we find a frame with some work or we run out of frames.
+     * <p>We repeat this process until we find a frame with some work or we run out of frames.
      *
      * @param current Current frame
      * @param next Next path argument to lookup (after this frame)

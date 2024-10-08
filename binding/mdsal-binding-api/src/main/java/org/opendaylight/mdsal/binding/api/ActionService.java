@@ -28,8 +28,7 @@ public interface ActionService extends BindingService {
      * of the Action service interface, but a proxy implementation of the interface that forwards to an actual
      * implementation, if any.
      *
-     * <p>
-     * The following describes the behavior of the proxy when invoking
+     * <p>The following describes the behavior of the proxy when invoking
      * {@link Action#invoke(DataObjectIdentifier, RpcInput)}:
      * <ul>
      * <li>If an actual implementation is registered with the MD-SAL, all invocations are forwarded to the registered
@@ -40,8 +39,7 @@ public interface ActionService extends BindingService {
      * an {@link IllegalArgumentException} is thrown.
      * </ul>
      *
-     * <p>
-     * The returned proxy is automatically updated with the most recent registered implementation, hence there is no
+     * <p>The returned proxy is automatically updated with the most recent registered implementation, hence there is no
      * guarantee that multiple consecutive invocations will be handled by the same implementation.
      *
      * @param spec Action instance specification

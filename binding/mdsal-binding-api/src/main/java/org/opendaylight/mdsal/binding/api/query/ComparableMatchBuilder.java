@@ -14,10 +14,9 @@ import org.opendaylight.yangtools.binding.DataObject;
 /**
  * Builder for a match of a leaf value which define a total ordering by implementing the {@link Comparable} interface.
  *
- * <p>
- * Note that value comparison is preconditioned on target leaf existence. If the leaf does not exist any total ordering
- * checks will not match it -- thus a non-existent leaf does not match {@link #greaterThan(Comparable)} and at the same
- * time it does not match {@link #lessThanOrEqual(Comparable)}.
+ * <p>Note that value comparison is preconditioned on target leaf existence. If the leaf does not exist any total
+ * ordering checks will not match it -- thus a non-existent leaf does not match {@link #greaterThan(Comparable)} and at
+ * the same time it does not match {@link #lessThanOrEqual(Comparable)}.
  *
  * @param <T> query result type
  * @param <V> value type

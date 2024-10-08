@@ -37,12 +37,11 @@ public interface DOMStoreThreePhaseCommitCohort {
     /**
      * Initiates a pre-commit phase of associated transaction on datastore.
      *
-     * <p>
-     * This message is valid only and only if the participant responded
-     * on {@link #canCommit()} call with positive response.
+     * <p>This message is valid only and only if the participant responded on {@link #canCommit()} call with positive
+     * response.
      *
-     * @return ListenableFuture representing acknowledgment for participant
-     *        that pre-commit message was received and processed.
+     * @return ListenableFuture representing acknowledgment for participant that pre-commit message was received and
+     *         processed.
      */
     ListenableFuture<Empty> preCommit();
 

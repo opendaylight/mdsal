@@ -45,16 +45,14 @@ import org.slf4j.LoggerFactory;
  * Implementation of {@link ServiceGroup} on top of the Entity Ownership Service. Since EOS is atomic
  * in its operation and singleton services incur startup and most notably cleanup, we need to do something smart here.
  *
- * <p>
- * The implementation takes advantage of the fact that EOS provides stable ownership, i.e. owners are not moved as
+ * <p>The implementation takes advantage of the fact that EOS provides stable ownership, i.e. owners are not moved as
  * a result on new candidates appearing. We use two entities:
  * <ol>
  *   <li>service entity, to which all nodes register</li>
  *   <li>cleanup entity, which only the service entity owner registers to</li>
  * </ol>
  *
- * <p>
- * Once the cleanup entity ownership is acquired, services are started. As long as the cleanup entity is registered,
+ * <p>Once the cleanup entity ownership is acquired, services are started. As long as the cleanup entity is registered,
  * it should remain the owner. In case a new service owner emerges, the old owner will start the cleanup process,
  * eventually releasing the cleanup entity. The new owner registers for the cleanup entity -- but will not see it
  * granted until the old owner finishes the cleanup.

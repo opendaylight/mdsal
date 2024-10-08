@@ -27,8 +27,7 @@ public interface ReadOperations {
     /**
      * Reads data from the provided logical data store located at the provided path.
      *
-     * <p>
-     * If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
+     * <p>If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
      * object).
      *
      * @param store Logical data store from which read should occur.
@@ -51,8 +50,7 @@ public interface ReadOperations {
     /**
      * Reads data from the provided logical data store located at the provided path.
      *
-     * <p>
-     * If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
+     * <p>If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
      * object).
      *
      * @param store Logical data store from which read should occur.
@@ -79,8 +77,7 @@ public interface ReadOperations {
     /**
      * Determines if data data exists in the provided logical data store located at the provided path.
      *
-     * <p>
-     * Default implementation just delegates to {@link #read(LogicalDatastoreType, DataObjectIdentifier)}.
+     * <p>Default implementation just delegates to {@link #read(LogicalDatastoreType, DataObjectIdentifier)}.
      * Implementations are recommended to override with a more efficient implementation.
      *
      * @param store Logical data store from which read should occur.
@@ -105,8 +102,7 @@ public interface ReadOperations {
     /**
      * Determines if data data exists in the provided logical data store located at the provided path.
      *
-     * <p>
-     * Default implementation just delegates to {@link #read(LogicalDatastoreType, DataObjectIdentifier)} and throws
+     * <p>Default implementation just delegates to {@link #read(LogicalDatastoreType, DataObjectIdentifier)} and throws
      * if the reference is not a {@link DataObjectIdentifier}. Implementations are recommended to override this method
      * if they supported {@link DataObjectReference} matching.
      *
@@ -137,9 +133,8 @@ public interface ReadOperations {
     /**
      * Determines if data data exists in the provided logical data store located at the provided path.
      *
-     * <p>
-     * Default implementation just delegates to {@link #read(LogicalDatastoreType, InstanceIdentifier)}. Implementations
-     * are recommended to override with a more efficient implementation.
+     * <p>Default implementation just delegates to {@link #read(LogicalDatastoreType, InstanceIdentifier)}.
+     * Implementations are recommended to override with a more efficient implementation.
      *
      * @param store Logical data store from which read should occur.
      * @param path Path which uniquely identifies subtree which client want to read

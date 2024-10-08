@@ -48,9 +48,8 @@ public interface InstanceNotificationPublishService extends BindingService {
      *       specified time if resources are thin.</li>
      * </ul>
      *
-     * <p>
-     * The actual delivery to listeners is asynchronous and implementation-specific. Users of this interface should not
-     * make any assumptions as to whether the notification has or has not been seen.
+     * <p>The actual delivery to listeners is asynchronous and implementation-specific. Users of this interface should
+     * not make any assumptions as to whether the notification has or has not been seen.
      *
      * @param <N> Generated InstanceNotification interface type
      * @param <P> Notification parent type
@@ -82,8 +81,8 @@ public interface InstanceNotificationPublishService extends BindingService {
          * Publishes a notification to subscribed listeners. This initiates the process of sending the notification, but
          * delivery to the listeners can happen asynchronously, potentially after a call to this method returns.
          *
-         * <p>
-         * Still guaranteed not to block. Returns Listenable Future which will complete once the delivery is completed.
+         * <p>Still guaranteed not to block. Returns Listenable Future which will complete once the delivery is
+         * completed.
          *
          * @param path parent path
          * @param notification the notification to publish.

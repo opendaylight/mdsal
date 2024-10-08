@@ -20,9 +20,8 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserException;
  * theme, the definitions are done via {@link SourceReference} and can thus contain locations where a particular
  * source can be located.
  *
- * <p>
- * It is left an implementation detail whether the locations provided are checked or if the SchemaContext is resolved
- * using some other mechanism.
+ * <p>It is left an implementation detail whether the locations provided are checked or if the SchemaContext is
+ * resolved using some other mechanism.
  */
 @Beta
 @NonNullByDefault

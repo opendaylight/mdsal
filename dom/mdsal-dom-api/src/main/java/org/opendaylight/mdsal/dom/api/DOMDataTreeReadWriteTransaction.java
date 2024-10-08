@@ -10,10 +10,9 @@ package org.opendaylight.mdsal.dom.api;
 /**
  * A transaction that provides read/write access to a logical data store.
  *
- * <p>
- * For more information on usage and examples, please see the documentation in {@link DOMDataTreeWriteTransaction}
+ * <p>For more information on usage and examples, please see the documentation in {@link DOMDataTreeWriteTransaction}
  * and {@link DOMDataTreeReadOperations}.
  */
 public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeWriteTransaction, DOMDataTreeReadOperations {
-
+    // Nothing else
 }

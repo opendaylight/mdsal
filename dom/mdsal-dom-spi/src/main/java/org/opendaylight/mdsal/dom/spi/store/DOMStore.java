@@ -10,25 +10,19 @@ package org.opendaylight.mdsal.dom.spi.store;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
- * DOM Data Store
- *
- * <p>
- * DOM Data Store provides transactional tree-like storage for YANG-modeled entities described by YANG schema
- * and represented by {@link NormalizedNode}. Read and write access to stored data is provided only via transactions
- * created using {@link #newReadOnlyTransaction()}, {@link #newWriteOnlyTransaction()} and
+ * DOM Data Store. DOM Data Store provides transactional tree-like storage for YANG-modeled entities described by YANG
+ * schema and represented by {@link NormalizedNode}. Read and write access to stored data is provided only via
+ * transactions created using {@link #newReadOnlyTransaction()}, {@link #newWriteOnlyTransaction()} and
  * {@link #newReadWriteTransaction()}, or via {@link DOMStoreTransactionChain}.
  */
 public interface DOMStore extends DOMStoreTransactionFactory {
     /**
      * Creates new transaction chain.
      *
-     * <p>
-     * Transactions in a chain need to be committed in sequence and each
-     * transaction should see the effects of previous transactions as if they
-     * happened.
+     * <p>Transactions in a chain need to be committed in sequence and each transaction should see the effects of
+     * previous transactions as if they happened.
      *
-     * <p>
-     * See {@link DOMStoreTransactionChain} for more information.
+     * <p>See {@link DOMStoreTransactionChain} for more information.
      *
      * @return Newly created transaction chain.
      */

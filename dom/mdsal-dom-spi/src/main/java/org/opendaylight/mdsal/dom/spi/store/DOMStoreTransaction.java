@@ -12,8 +12,7 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 /**
  * DOM Data Store transaction.
  *
- * <p>
- * See {@link DOMStoreReadTransaction}, {@link DOMStoreWriteTransaction} and {@link DOMStoreReadWriteTransaction}
+ * <p>See {@link DOMStoreReadTransaction}, {@link DOMStoreWriteTransaction} and {@link DOMStoreReadWriteTransaction}
  * for specific transaction types.
  */
 public interface DOMStoreTransaction extends AutoCloseable, Identifiable<Object> {
