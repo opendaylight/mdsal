@@ -173,6 +173,9 @@
         <module>rfc9196-ietf-system-capabilities</module>
         <module>rfc9196-ietf-notification-capabilities</module>
 
+        <!-- RFC9640 YANG Data Types and Groupings for Cryptography -->
+        <module>rfc9640</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
