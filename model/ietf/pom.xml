@@ -192,6 +192,11 @@
         <module>rfc9644-ietf-ssh-common</module>
         <module>rfc9644-ietf-ssh-server</module>
 
+        <!-- RFC9645 YANG Groupings for TLS Clients and TLS Servers -->
+        <module>rfc9645-ietf-tls-client</module>
+        <module>rfc9645-ietf-tls-common</module>
+        <module>rfc9645-ietf-tls-server</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>

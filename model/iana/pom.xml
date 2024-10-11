@@ -42,6 +42,9 @@
         <module>iana-ssh-key-exchange-algs</module>
         <module>iana-ssh-mac-algs</module>
         <module>iana-ssh-public-key-algs</module>
+
+        <!-- RFC9645 and updates -->
+        <module>iana-tls-cipher-suite-algs</module>
     </modules>
 
     <properties>
