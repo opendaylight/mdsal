@@ -25,7 +25,7 @@ public class ForwardingDOMNotificationServiceTest extends ForwardingDOMNotificat
     public DOMNotificationService domNotificationService;
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final DOMNotificationListener domNotificationListener = mock(DOMNotificationListener.class);
 
         doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener);

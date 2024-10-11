@@ -25,16 +25,16 @@ public class ForwardingDOMRpcServiceTest extends ForwardingDOMRpcService {
     public DOMRpcService domRpcService;
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final DOMRpcAvailabilityListener domRpcAvailabilityListener = mock(DOMRpcAvailabilityListener.class);
         final QName id = QName.create("urn:foo", "foo");
 
         doReturn(null).when(domRpcService).invokeRpc(id, null);
-        this.invokeRpc(id, null);
+        invokeRpc(id, null);
         verify(domRpcService).invokeRpc(id, null);
 
         doReturn(null).when(domRpcService).registerRpcListener(domRpcAvailabilityListener);
-        this.registerRpcListener(domRpcAvailabilityListener);
+        registerRpcListener(domRpcAvailabilityListener);
         verify(domRpcService).registerRpcListener(domRpcAvailabilityListener);
     }
 

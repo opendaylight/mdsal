@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 
 public class AbstractRegistrationTreeTest extends AbstractRegistrationTree<Object> {
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final Node<Object> registrationTreeNodeParent = new Node<>(null, pathArgument);
         final Node<Object> registrationTreeNode =
@@ -39,7 +39,7 @@ public class AbstractRegistrationTreeTest extends AbstractRegistrationTree<Objec
     }
 
     @Test
-    public void unlockTest() throws Exception {
+    public void unlockTest() {
         assertThrows(IllegalMonitorStateException.class, this::releaseLock);
     }
 }

@@ -43,7 +43,7 @@ public class DOMForwardedWriteTransactionTest {
     }
 
     @Test
-    public void readyRuntimeExceptionAndCancel() throws InterruptedException {
+    public void readyRuntimeExceptionAndCancel() {
         final RuntimeException thrown = new RuntimeException();
         doThrow(thrown).when(domStoreWriteTransaction).ready();
         final DOMForwardedWriteTransaction<DOMStoreWriteTransaction> domForwardedWriteTransaction =
@@ -59,7 +59,7 @@ public class DOMForwardedWriteTransactionTest {
     }
 
     @Test
-    public void submitRuntimeExceptionAndCancel() throws InterruptedException {
+    public void submitRuntimeExceptionAndCancel() {
         RuntimeException thrown = new RuntimeException();
         doReturn(null).when(domStoreWriteTransaction).ready();
         doThrow(thrown).when(commitImpl).commit(any(), any());

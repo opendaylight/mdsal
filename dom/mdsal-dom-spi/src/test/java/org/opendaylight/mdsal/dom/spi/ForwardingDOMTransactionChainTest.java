@@ -23,7 +23,7 @@ public class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionC
     public DOMTransactionChain domTransactionChain;
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         doReturn(null).when(domTransactionChain).newWriteOnlyTransaction();
         newWriteOnlyTransaction();
         verify(domTransactionChain).newWriteOnlyTransaction();

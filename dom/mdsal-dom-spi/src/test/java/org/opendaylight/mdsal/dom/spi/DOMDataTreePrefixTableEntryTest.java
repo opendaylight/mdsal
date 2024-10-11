@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 
 public class DOMDataTreePrefixTableEntryTest {
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final DOMDataTreePrefixTableEntry<Object> domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<>();
         final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final Object testObject = new Object();
