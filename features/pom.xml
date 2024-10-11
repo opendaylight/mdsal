@@ -122,6 +122,7 @@
         <module>odl-mdsal-model-rfc9196-ietf-notification-capabilities</module>
         <module>odl-mdsal-model-rfc9196-ietf-system-capabilities</module>
         <module>odl-mdsal-model-rfc9640</module>
+        <module>odl-mdsal-model-rfc9641</module>
 
         <!-- IETF drafts -->
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>
