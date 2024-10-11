@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>14.0.3</version>
+        <version>14.0.4-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc8572-ietf-sztp-conveyed-info</artifactId>
-    <version>14.0.3</version>
+    <version>14.0.4-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8572 ietf-sztp-conveyed-info</name>
