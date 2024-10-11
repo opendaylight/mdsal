@@ -179,6 +179,9 @@
         <!-- RFC9641 A YANG Data Model for a Truststore -->
         <module>rfc9641</module>
 
+        <!-- RFC9642 A YANG Data Model for a Keystore -->
+        <module>rfc9642</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
