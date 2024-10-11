@@ -36,6 +36,12 @@
 
         <!-- RFC8348 and updates -->
         <module>iana-hardware</module>
+
+        <!-- RFC9644 and updates -->
+        <module>iana-ssh-encryption-algs</module>
+        <module>iana-ssh-key-exchange-algs</module>
+        <module>iana-ssh-mac-algs</module>
+        <module>iana-ssh-public-key-algs</module>
     </modules>
 
     <properties>

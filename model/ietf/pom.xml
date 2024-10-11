@@ -187,6 +187,11 @@
         <module>rfc9643-ietf-tcp-common</module>
         <module>rfc9643-ietf-tcp-server</module>
 
+        <!-- RFC9644 YANG Groupings for SSH Clients and SSH Servers -->
+        <module>rfc9644-ietf-ssh-client</module>
+        <module>rfc9644-ietf-ssh-common</module>
+        <module>rfc9644-ietf-ssh-server</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>

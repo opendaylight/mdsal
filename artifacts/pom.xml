@@ -838,6 +838,43 @@
                 <version>14.0.3-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC9644 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+                <artifactId>iana-ssh-encryption-algs</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+                <artifactId>iana-ssh-key-exchange-algs</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+                <artifactId>iana-ssh-mac-algs</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+                <artifactId>iana-ssh-public-key-algs</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9644-ietf-ssh-client</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9644-ietf-ssh-common</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9644-ietf-ssh-server</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -1241,6 +1278,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9643</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc9644</artifactId>
                 <version>14.0.3-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
