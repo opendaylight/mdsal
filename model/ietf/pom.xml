@@ -182,6 +182,11 @@
         <!-- RFC9642 A YANG Data Model for a Keystore -->
         <module>rfc9642</module>
 
+        <!-- RFC9643 YANG Groupings for TCP Clients and TCP Servers -->
+        <module>rfc9643-ietf-tcp-client</module>
+        <module>rfc9643-ietf-tcp-common</module>
+        <module>rfc9643-ietf-tcp-server</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
