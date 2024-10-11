@@ -197,6 +197,9 @@
         <module>rfc9645-ietf-tls-common</module>
         <module>rfc9645-ietf-tls-server</module>
 
+        <!-- RFC9648 YANG Data Model for TCP -->
+        <module>rfc9648</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
