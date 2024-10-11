@@ -897,6 +897,18 @@
                 <version>14.0.3-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC9646 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9646-ietf-sztp-csr</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc9646-ietf-ztp-types</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+            </dependency>
+
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -1314,6 +1326,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9645</artifactId>
+                <version>14.0.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc9646</artifactId>
                 <version>14.0.3-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

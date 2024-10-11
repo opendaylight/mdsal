@@ -197,6 +197,11 @@
         <module>rfc9645-ietf-tls-common</module>
         <module>rfc9645-ietf-tls-server</module>
 
+        <!-- RFC9646 Conveying a Certificate Signing Request (CSR) in a Secure Zero-Touch Provisioning (SZTP)
+             Bootstrapping Request -->
+        <module>rfc9646-ietf-sztp-csr</module>
+        <module>rfc9646-ietf-ztp-types</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
