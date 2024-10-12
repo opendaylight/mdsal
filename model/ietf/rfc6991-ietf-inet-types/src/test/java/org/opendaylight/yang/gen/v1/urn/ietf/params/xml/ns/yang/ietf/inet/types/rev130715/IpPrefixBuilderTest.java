@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 class IpPrefixBuilderTest {
     @Test
-    void testGetDefaultInstance() throws Exception {
+    void testGetDefaultInstance() {
         testIpv6("ff00::/8");
         testIpv4("192.0.2.1/24");
     }

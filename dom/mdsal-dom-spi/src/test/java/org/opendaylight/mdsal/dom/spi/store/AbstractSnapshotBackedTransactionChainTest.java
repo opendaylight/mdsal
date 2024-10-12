@@ -28,7 +28,7 @@ public class AbstractSnapshotBackedTransactionChainTest {
     public SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
 
         final var chain = new AbstractSnapshotBackedTransactionChain<>() {

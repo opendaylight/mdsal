@@ -7,21 +7,28 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
-public class SnapshotBackedTransactionsTest {
+@ExtendWith(MockitoExtension.class)
+class SnapshotBackedTransactionsTest {
+    @Mock
+    private DataTreeSnapshot dataTreeSnapshot;
+    @Mock
+    private DataTreeModification dataTreeModification;
+    @Mock
+    private TransactionReadyPrototype<Object> transactionReadyPrototype;
+
     @Test
-    public void basicTest() throws Exception {
-        final DataTreeSnapshot dataTreeSnapshot = mock(DataTreeSnapshot.class);
-        final DataTreeModification dataTreeModification = mock(DataTreeModification.class);
-        final TransactionReadyPrototype<Object> transactionReadyPrototype =  mock(TransactionReadyPrototype.class);
+    void basicTest() {
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
 
         assertNotNull(SnapshotBackedTransactions.newReadTransaction(new Object(), false, dataTreeSnapshot));

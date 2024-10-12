@@ -38,7 +38,7 @@ class ForwardingDOMDataBrokerTest {
     private DOMDataTreeWriteTransaction writeTx;
 
     @Test
-    void basicTest() throws Exception {
+    void basicTest() {
         final var impl = new ForwardingDOMDataBroker() {
             @Override
             protected DOMDataBroker delegate() {

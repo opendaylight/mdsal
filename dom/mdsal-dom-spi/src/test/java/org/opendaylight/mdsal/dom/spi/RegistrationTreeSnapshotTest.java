@@ -26,7 +26,7 @@ class RegistrationTreeSnapshotTest {
     private Lock lock;
 
     @Test
-    void basicTest() throws Exception {
+    void basicTest() {
         final var pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final var registrationTreeNode = new Node<>(null, pathArgument);
         try (var registrationTreeSnapshot = new AbstractRegistrationTree.Snapshot<>(lock, registrationTreeNode)) {

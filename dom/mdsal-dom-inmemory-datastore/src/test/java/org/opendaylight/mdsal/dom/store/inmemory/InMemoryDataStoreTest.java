@@ -344,7 +344,7 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testReadyWithMissingMandatoryData() throws Exception {
+    public void testReadyWithMissingMandatoryData() {
         DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
         var testNode = ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.MANDATORY_DATA_TEST_QNAME))

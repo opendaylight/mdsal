@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 class HostBuilderTest {
     @Test
-    void testGetDefaultInstance() throws Exception {
+    void testGetDefaultInstance() {
         testIpv4("1.1.1.1");
         testIpv4("192.168.155.100");
         testIpv4("1.192.1.221");

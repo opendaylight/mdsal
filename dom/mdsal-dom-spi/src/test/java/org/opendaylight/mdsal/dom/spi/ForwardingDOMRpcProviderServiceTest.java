@@ -8,39 +8,44 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcProviderServiceTest extends ForwardingDOMRpcProviderService {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcProviderServiceTest {
+    @Mock
+    private DOMRpcProviderService delegate;
+    @Mock
+    private DOMRpcImplementation domRpcImplementation;
 
-    @Mock(name = "domRpcProviderService")
-    public DOMRpcProviderService domRpcProviderService;
+    private ForwardingDOMRpcProviderService service;
 
-    @Test
-    public void basicTest() throws Exception {
-        final DOMRpcImplementation domRpcImplementation = mock(DOMRpcImplementation.class);
-
-        doReturn(null).when(domRpcProviderService).registerRpcImplementation(domRpcImplementation);
-        this.registerRpcImplementation(domRpcImplementation);
-        verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation);
-
-        doReturn(null).when(domRpcProviderService).registerRpcImplementation(domRpcImplementation,
-                Collections.emptySet());
-        this.registerRpcImplementation(domRpcImplementation, Collections.emptySet());
-        verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Collections.emptySet());
+    @BeforeEach
+    void beforeEach() {
+        service = new ForwardingDOMRpcProviderService() {
+            @Override
+            protected DOMRpcProviderService delegate() {
+                return delegate;
+            }
+        };
     }
 
-    @Override
-    protected DOMRpcProviderService delegate() {
-        return domRpcProviderService;
+    @Test
+    void basicTest() {
+        doReturn(null).when(delegate).registerRpcImplementation(domRpcImplementation);
+        service.registerRpcImplementation(domRpcImplementation);
+        verify(delegate).registerRpcImplementation(domRpcImplementation);
+
+        doReturn(null).when(delegate).registerRpcImplementation(domRpcImplementation, Set.of());
+        service.registerRpcImplementation(domRpcImplementation, Set.of());
+        verify(delegate).registerRpcImplementation(domRpcImplementation, Set.of());
     }
 }

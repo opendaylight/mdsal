@@ -113,7 +113,7 @@ public class DataBrokerFailuresTest {
     }
 
     @Test
-    public void testFailButCommitAnywayReadWriteTransaction() throws Exception {
+    public void testFailButCommitAnywayReadWriteTransaction() {
         dbFailures.failButCommitAnyway();
         checkCommitFails();
     }

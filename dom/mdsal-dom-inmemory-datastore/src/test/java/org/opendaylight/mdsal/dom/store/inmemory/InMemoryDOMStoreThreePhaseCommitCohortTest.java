@@ -61,7 +61,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void canCommitWithOperationError() throws Exception {
+    public void canCommitWithOperationError() {
         doReturn(modification).when(snapshot).newModification();
         final var operationError = new RuntimeException();
         final var cohort = new InMemoryDOMStoreThreePhaseCommitCohort(dataStore,

@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -20,9 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serial;
 import java.util.Optional;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
@@ -32,7 +32,6 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
 public class SnapshotBackedWriteTransactionTest {
-
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
     private static final TransactionReadyPrototype<Object> TRANSACTION_READY_PROTOTYPE =
@@ -41,10 +40,11 @@ public class SnapshotBackedWriteTransactionTest {
             mock(DOMStoreThreePhaseCommitCohort.class);
     private static final ContainerNode NORMALIZED_NODE = mock(ContainerNode.class);
     private static final Optional<ContainerNode> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
-    private static SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
+
+    private SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
         doNothing().when(DATA_TREE_MODIFICATION).ready();
         doNothing().when(DATA_TREE_MODIFICATION).write(any(), any());
@@ -62,7 +62,7 @@ public class SnapshotBackedWriteTransactionTest {
     }
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
         verify(DATA_TREE_MODIFICATION).write(any(), any());
 
@@ -82,10 +82,10 @@ public class SnapshotBackedWriteTransactionTest {
     }
 
     @Test
-    public void readyTest() throws Exception {
-        SnapshotBackedWriteTransaction<Object> tx = new SnapshotBackedWriteTransaction<>(new Object(), false,
-                DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
-        Assert.assertNotNull(tx.ready());
+    public void readyTest() {
+        final var tx = new SnapshotBackedWriteTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
+            TRANSACTION_READY_PROTOTYPE);
+        assertNotNull(tx.ready());
         verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), eq(null));
         tx.close();
     }
@@ -94,36 +94,39 @@ public class SnapshotBackedWriteTransactionTest {
     public void readyWithException() {
         Exception thrown = new RuntimeException();
         doThrow(thrown).when(DATA_TREE_MODIFICATION).ready();
-        Assert.assertNotNull(snapshotBackedWriteTransaction.ready());
+        assertNotNull(snapshotBackedWriteTransaction.ready());
         verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), same(thrown));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void writeWithException() throws Exception {
+    @Test
+    public void writeWithException() {
         doAnswer(inv -> {
             throw new TestException();
         }).when(DATA_TREE_MODIFICATION).write(any(), any());
-        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
+        assertThrows(IllegalArgumentException.class,
+            () -> snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mergeWithException() throws Exception {
+    @Test
+    public void mergeWithException() {
         doAnswer(inv -> {
             throw new TestException();
         }).when(DATA_TREE_MODIFICATION).merge(any(), any());
-        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE);
+        assertThrows(IllegalArgumentException.class,
+            () -> snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void deleteWithException() throws Exception {
+    @Test
+    public void deleteWithException() {
         doAnswer(inv -> {
             throw new TestException();
         }).when(DATA_TREE_MODIFICATION).delete(any());
-        snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of());
+        assertThrows(IllegalArgumentException.class,
+            () -> snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of()));
     }
 
     private static final class TestException extends Exception {
-        @Serial
+        @java.io.Serial
         private static final long serialVersionUID = 1L;
     }
 }

@@ -11,38 +11,46 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMDataReadOnlyTransactionTest extends ForwardingDOMDataReadOnlyTransaction {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMDataReadOnlyTransactionTest {
     @Mock(name = "domDataTreeReadTransaction")
-    public DOMDataTreeReadTransaction domDataTreeReadTransaction;
+    private DOMDataTreeReadTransaction delegate;
 
-    @Test
-    public void basicTest() throws Exception {
-        doReturn(null).when(domDataTreeReadTransaction).read(null, null);
-        this.read(null, null);
-        verify(domDataTreeReadTransaction).read(null, null);
+    private ForwardingDOMDataReadOnlyTransaction tx;
 
-        doReturn(null).when(domDataTreeReadTransaction).exists(null, null);
-        this.exists(null, null);
-        verify(domDataTreeReadTransaction).exists(null, null);
-
-        doReturn(null).when(domDataTreeReadTransaction).getIdentifier();
-        this.getIdentifier();
-        verify(domDataTreeReadTransaction).getIdentifier();
-
-        doNothing().when(domDataTreeReadTransaction).close();
-        this.close();
-        verify(domDataTreeReadTransaction).close();
+    @BeforeEach
+    void beforeEach() {
+        tx = new ForwardingDOMDataReadOnlyTransaction() {
+            @Override
+            protected DOMDataTreeReadTransaction delegate() {
+                return delegate;
+            }
+        };
     }
 
-    @Override
-    protected DOMDataTreeReadTransaction delegate() {
-        return domDataTreeReadTransaction;
+    @Test
+    void basicTest() {
+        doReturn(null).when(delegate).read(null, null);
+        tx.read(null, null);
+        verify(delegate).read(null, null);
+
+        doReturn(null).when(delegate).exists(null, null);
+        tx.exists(null, null);
+        verify(delegate).exists(null, null);
+
+        doReturn(null).when(delegate).getIdentifier();
+        tx.getIdentifier();
+        verify(delegate).getIdentifier();
+
+        doNothing().when(delegate).close();
+        tx.close();
+        verify(delegate).close();
     }
 }

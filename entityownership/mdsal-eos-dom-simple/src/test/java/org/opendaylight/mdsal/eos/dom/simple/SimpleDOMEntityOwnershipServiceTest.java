@@ -84,7 +84,7 @@ class SimpleDOMEntityOwnershipServiceTest {
     }
 
     @Test
-    void testToString() throws Exception {
+    void testToString() {
         final var uuid = UUID.randomUUID();
         final var expected = String.format("SimpleDOMEntityOwnershipService{uuid=%s, entities={}, listeners={}}", uuid);
         assertEquals(expected, new SimpleDOMEntityOwnershipService(uuid).toString());

@@ -10,37 +10,45 @@ package org.opendaylight.mdsal.dom.spi.store;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMStoreThreePhaseCommitCohortTest extends ForwardingDOMStoreThreePhaseCommitCohort {
-    @Mock(name = "domStoreThreePhaseCommitCohort")
-    public DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMStoreThreePhaseCommitCohortTest {
+    @Mock
+    private DOMStoreThreePhaseCommitCohort delegate;
 
-    @Test
-    public void basicTest() throws Exception {
-        doReturn(null).when(domStoreThreePhaseCommitCohort).canCommit();
-        this.canCommit();
-        verify(domStoreThreePhaseCommitCohort).canCommit();
+    private ForwardingDOMStoreThreePhaseCommitCohort cohort;
 
-        doReturn(null).when(domStoreThreePhaseCommitCohort).preCommit();
-        this.preCommit();
-        verify(domStoreThreePhaseCommitCohort).preCommit();
-
-        doReturn(null).when(domStoreThreePhaseCommitCohort).commit();
-        this.commit();
-        verify(domStoreThreePhaseCommitCohort).commit();
-
-        doReturn(null).when(domStoreThreePhaseCommitCohort).abort();
-        this.abort();
-        verify(domStoreThreePhaseCommitCohort).abort();
+    @BeforeEach
+    void beforeEach() {
+        cohort = new ForwardingDOMStoreThreePhaseCommitCohort() {
+            @Override
+            protected DOMStoreThreePhaseCommitCohort delegate() {
+                return delegate;
+            }
+        };
     }
 
-    @Override
-    protected DOMStoreThreePhaseCommitCohort delegate() {
-        return domStoreThreePhaseCommitCohort;
+    @Test
+    void basicTest() {
+        doReturn(null).when(delegate).canCommit();
+        cohort.canCommit();
+        verify(delegate).canCommit();
+
+        doReturn(null).when(delegate).preCommit();
+        cohort.preCommit();
+        verify(delegate).preCommit();
+
+        doReturn(null).when(delegate).commit();
+        cohort.commit();
+        verify(delegate).commit();
+
+        doReturn(null).when(delegate).abort();
+        cohort.abort();
+        verify(delegate).abort();
     }
 }

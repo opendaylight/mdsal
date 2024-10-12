@@ -11,46 +11,54 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMDataWriteTransactionTest extends ForwardingDOMDataWriteTransaction {
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMDataWriteTransactionTest {
     @Mock(name = "domDataTreeWriteTransaction")
-    public DOMDataTreeWriteTransaction domDataTreeWriteTransaction;
+    private DOMDataTreeWriteTransaction delegate;
 
-    @Test
-    public void basicTest() throws Exception {
-        doReturn(null).when(domDataTreeWriteTransaction).getIdentifier();
-        this.getIdentifier();
-        verify(domDataTreeWriteTransaction).getIdentifier();
+    private ForwardingDOMDataWriteTransaction tx;
 
-        doNothing().when(domDataTreeWriteTransaction).put(null, null, null);
-        this.put(null, null, null);
-        verify(domDataTreeWriteTransaction).put(null, null, null);
-
-        doNothing().when(domDataTreeWriteTransaction).merge(null, null, null);
-        this.merge(null, null, null);
-        verify(domDataTreeWriteTransaction).merge(null, null, null);
-
-        doNothing().when(domDataTreeWriteTransaction).delete(null, null);
-        this.delete(null, null);
-        verify(domDataTreeWriteTransaction).delete(null, null);
-
-        doReturn(null).when(domDataTreeWriteTransaction).commit();
-        this.commit();
-        verify(domDataTreeWriteTransaction).commit();
-
-        doReturn(false).when(domDataTreeWriteTransaction).cancel();
-        this.cancel();
-        verify(domDataTreeWriteTransaction).cancel();
+    @BeforeEach
+    void beforeEach() {
+        tx = new ForwardingDOMDataWriteTransaction() {
+            @Override
+            protected DOMDataTreeWriteTransaction delegate() {
+                return delegate;
+            }
+        };
     }
 
-    @Override
-    protected DOMDataTreeWriteTransaction delegate() {
-        return domDataTreeWriteTransaction;
+    @Test
+    void basicTest() {
+        doReturn(null).when(delegate).getIdentifier();
+        tx.getIdentifier();
+        verify(delegate).getIdentifier();
+
+        doNothing().when(delegate).put(null, null, null);
+        tx.put(null, null, null);
+        verify(delegate).put(null, null, null);
+
+        doNothing().when(delegate).merge(null, null, null);
+        tx.merge(null, null, null);
+        verify(delegate).merge(null, null, null);
+
+        doNothing().when(delegate).delete(null, null);
+        tx.delete(null, null);
+        verify(delegate).delete(null, null);
+
+        doReturn(null).when(delegate).commit();
+        tx.commit();
+        verify(delegate).commit();
+
+        doReturn(false).when(delegate).cancel();
+        tx.cancel();
+        verify(delegate).cancel();
     }
 }

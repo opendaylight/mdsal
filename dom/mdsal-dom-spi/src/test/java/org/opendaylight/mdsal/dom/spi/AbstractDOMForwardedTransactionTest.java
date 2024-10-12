@@ -32,7 +32,7 @@ public class AbstractDOMForwardedTransactionTest {
     public DOMStoreTransaction operationalTx;
 
     @Test
-    public void closeSubtransactionsTest() throws Exception {
+    public void closeSubtransactionsTest() {
         doThrow(UnsupportedOperationException.class).when(configTx).close();
 
         final var forwardedTx = new DOMForwardedTransactionTestImpl("test",
