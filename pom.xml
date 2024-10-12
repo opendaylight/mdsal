@@ -23,8 +23,8 @@
     <packaging>pom</packaging>
     <name>md-sal</name> <!-- Used by Sonar to set project name -->
     <description>
-        Model-Driven Service Abstraction Layer. Provides YANG-centric code generation tools and supporting
-        APIs to allow building applications which operate on and interchange YANG-modeled data.
+        Model-Driven Service Abstraction Layer. Provides YANG-centric APIs for building applications which interchange
+        YANG-modeled data.
     </description>
 
     <modules>
