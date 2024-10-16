@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommitCohort {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreThreePhaseCommitCohort.class);
-    private static final ListenableFuture<Empty> SUCCESSFUL_FUTURE = Futures.immediateFuture(Empty.value());
     private static final ListenableFuture<Boolean> CAN_COMMIT_FUTURE = Futures.immediateFuture(Boolean.TRUE);
 
     private final SnapshotBackedWriteTransaction<String> transaction;
@@ -96,7 +95,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     public final ListenableFuture<Empty> preCommit() {
         try {
             candidate = store.prepare(modification);
-            return SUCCESSFUL_FUTURE;
+            return Empty.immediateFuture();
         } catch (Exception e) {
             LOG.warn("Unexpected failure in pre-commit phase", e);
             return Futures.immediateFailedFuture(e);
@@ -106,7 +105,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     @Override
     public final ListenableFuture<Empty> abort() {
         candidate = null;
-        return SUCCESSFUL_FUTURE;
+        return Empty.immediateFuture();
     }
 
     protected final SnapshotBackedWriteTransaction<String> getTransaction() {

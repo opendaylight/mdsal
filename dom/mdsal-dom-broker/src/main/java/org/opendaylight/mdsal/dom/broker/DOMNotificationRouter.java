@@ -118,7 +118,7 @@ public class DOMNotificationRouter implements AutoCloseable {
         @Override
         public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification) {
             final var subscribers = listeners.get(notification.getType());
-            return subscribers.isEmpty() ? NO_LISTENERS : publish(notification, subscribers);
+            return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
         }
 
         @Override
@@ -126,7 +126,7 @@ public class DOMNotificationRouter implements AutoCloseable {
                 final long timeout, final TimeUnit unit) throws InterruptedException {
             final var subscribers = listeners.get(notification.getType());
             if (subscribers.isEmpty()) {
-                return NO_LISTENERS;
+                return Empty.immediateFuture();
             }
             // Attempt to perform a non-blocking publish first
             final var noBlock = publish(notification, subscribers);
@@ -204,7 +204,6 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
-    private static final @NonNull ListenableFuture<?> NO_LISTENERS = Futures.immediateFuture(Empty.value());
 
     private final EqualityQueuedNotificationManager<Reg, DOMNotificationRouterEvent> queueNotificationManager;
     private final @NonNull DOMNotificationPublishService notificationPublishService = new PublishFacade();
@@ -280,7 +279,7 @@ public class DOMNotificationRouter implements AutoCloseable {
     @NonNull ListenableFuture<? extends Object> putNotificationImpl(final DOMNotification notification)
             throws InterruptedException {
         final var subscribers = listeners.get(notification.getType());
-        return subscribers.isEmpty() ? NO_LISTENERS : publish(notification, subscribers);
+        return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
     }
 
     @VisibleForTesting
