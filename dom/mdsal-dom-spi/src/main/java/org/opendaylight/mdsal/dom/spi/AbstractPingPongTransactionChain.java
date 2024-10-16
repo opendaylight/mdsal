@@ -281,9 +281,9 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         if (nextTx == null) {
             final PingPongTransaction local = shutdownTx;
             if (local != null) {
+                shutdownTx = null;
                 processTransaction(local);
                 delegate.close();
-                shutdownTx = null;
             }
         } else {
             processTransaction(nextTx);
