@@ -410,7 +410,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         // Force allocations on slow path, picking up a potentially-outstanding transaction
         final var tx = acquireReadyTx();
         if (tx != null) {
-            // We have one more transaction, which needs to be processed somewhere. If we do not
+            // We have one more transaction, which needs to be processed somewhere. If we do not have
             // a transaction in-flight, we need to push it down ourselves.
             // If there is an in-flight transaction we will schedule this last one into a dedicated
             // slot. Allocation slow path will check its presence and fail, the in-flight path will
