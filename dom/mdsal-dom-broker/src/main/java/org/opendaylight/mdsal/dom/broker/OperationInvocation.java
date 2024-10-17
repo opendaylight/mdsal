@@ -45,22 +45,23 @@ final class OperationInvocation {
         return invokeAction(impls.get(0), type, path, input);
     }
 
-    static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
+    static ListenableFuture<? extends DOMRpcResult> invoke(final DOMRpcRoutingTableEntry entry,
             final ContainerNode input) {
-        if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
-            return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException(
-                "%s is not resolved to an RPC", entry.getType()));
-        } else if (entry instanceof RoutedDOMRpcRoutingTableEntry routed) {
-            return invokeRoutedRpc(routed, input);
-        } else if (entry instanceof GlobalDOMRpcRoutingTableEntry global) {
-            return invokeGlobalRpc(global, input);
-        }
-
-        return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException("Unsupported RPC entry."));
+        return switch (entry) {
+            case GlobalDOMRpcRoutingTableEntry global -> invokeGlobalRpc(global, input);
+            case RoutedDOMRpcRoutingTableEntry routed -> invokeRoutedRpc(routed, input);
+            case UnknownDOMRpcRoutingTableEntry unknown -> Futures.immediateFailedFuture(
+                new DOMRpcImplementationNotAvailableException("%s is not resolved to an RPC", entry.getType()));
+        };
     }
 
-    private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(
-            final RoutedDOMRpcRoutingTableEntry entry, final ContainerNode input) {
+    private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
+            final ContainerNode input) {
+        return invokeRpc(entry.getImplementations(YangInstanceIdentifier.of()).get(0), entry.getRpcId(), input);
+    }
+
+    private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
+            final ContainerNode input) {
         final var maybeKey = NormalizedNodes.findNode(input, entry.getRpcId().getContextReference());
 
         // Routing key is present, attempt to deliver as a routed RPC
@@ -94,11 +95,6 @@ final class OperationInvocation {
 
         return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException(
             "No implementation of RPC %s available", entry.getType()));
-    }
-
-    private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
-            final GlobalDOMRpcRoutingTableEntry entry, final ContainerNode input) {
-        return invokeRpc(entry.getImplementations(YangInstanceIdentifier.of()).get(0), entry.getRpcId(), input);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")

@@ -24,21 +24,21 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
 final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier, YangInstanceIdentifier,
-        DOMRpcImplementation, DOMRpcAvailabilityListener, QName, AbstractDOMRpcRoutingTableEntry> {
+        DOMRpcImplementation, DOMRpcAvailabilityListener, QName, DOMRpcRoutingTableEntry> {
     static final DOMRpcRoutingTable EMPTY = new DOMRpcRoutingTable(ImmutableMap.of(), null);
 
-    private DOMRpcRoutingTable(final Map<QName, AbstractDOMRpcRoutingTableEntry> rpcs,
+    private DOMRpcRoutingTable(final Map<QName, DOMRpcRoutingTableEntry> rpcs,
             final EffectiveModelContext schemaContext) {
         super(rpcs, schemaContext);
     }
 
     boolean contains(final DOMRpcIdentifier input) {
-        final AbstractDOMRpcRoutingTableEntry contexts = (AbstractDOMRpcRoutingTableEntry) getEntry(input.getType());
+        final DOMRpcRoutingTableEntry contexts = (DOMRpcRoutingTableEntry) getEntry(input.getType());
         return contexts != null && contexts.containsContext(input.getContextReference());
     }
 
     @Override
-    protected DOMRpcRoutingTable newInstance(final Map<QName, AbstractDOMRpcRoutingTableEntry> operations,
+    protected DOMRpcRoutingTable newInstance(final Map<QName, DOMRpcRoutingTableEntry> operations,
             final EffectiveModelContext schemaContext) {
         return new DOMRpcRoutingTable(operations, schemaContext);
     }
@@ -53,7 +53,7 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     }
 
     @Override
-    AbstractDOMRpcRoutingTableEntry createOperationEntry(final EffectiveModelContext context, final QName key,
+    DOMRpcRoutingTableEntry createOperationEntry(final EffectiveModelContext context, final QName key,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
         final var rpcDef = findRpcDefinition(context, key);
         if (rpcDef == null) {
