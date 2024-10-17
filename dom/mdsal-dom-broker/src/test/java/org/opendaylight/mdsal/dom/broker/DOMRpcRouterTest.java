@@ -12,6 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -41,10 +42,12 @@ import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -114,8 +117,25 @@ public class DOMRpcRouterTest {
     @Test
     public void testFailedInvokeRpc() {
         try (var rpcRouter = rpcsRouter()) {
-            final ListenableFuture<?> future = rpcRouter.rpcService().invokeRpc(Rpcs.FOO, null);
-            final Throwable cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+            final var input = ImmutableNodes.newContainerBuilder()
+                .withNodeIdentifier(new NodeIdentifier(Actions.INPUT))
+                .build();
+            final var thrown = new RuntimeException("mumble-mumble");
+
+            try (var reg = rpcRouter.rpcProviderService().registerRpcImplementation((rpc, unused) -> {
+                    throw thrown;
+                }, DOMRpcIdentifier.create(Rpcs.FOO))) {
+
+                final var future = rpcRouter.rpcService().invokeRpc(Rpcs.FOO, input);
+                final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+                assertThat(cause, instanceOf(DefaultDOMRpcException.class));
+                assertEquals("RPC implementation failed: java.lang.RuntimeException: mumble-mumble",
+                    cause.getMessage());
+                assertSame(thrown, cause.getCause());
+            }
+
+            final var future = rpcRouter.rpcService().invokeRpc(Rpcs.FOO, input);
+            final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
             assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
             assertEquals("No implementation of RPC (rpcs)foo available", cause.getMessage());
         }
@@ -228,6 +248,31 @@ public class DOMRpcRouterTest {
 
             assertUnavailable(actionConsumer, BAZ_PATH_BAD);
             assertUnavailable(actionConsumer, BAZ_PATH_GOOD);
+        }
+    }
+
+    @Test
+    public void testActionInstanceThrowing() throws ExecutionException {
+        try (var rpcRouter = actionsRouter()) {
+            final var actionProvider = rpcRouter.actionProviderService();
+            assertNotNull(actionProvider);
+            final var actionConsumer = rpcRouter.actionService();
+            assertNotNull(actionConsumer);
+
+            final var thrown = new RuntimeException("test-two-three");
+
+            try (var reg = actionProvider.registerActionImplementation(
+                (type, path, input) -> {
+                    throw thrown;
+                }, DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, BAZ_PATH_GOOD))) {
+
+                final var future = invokeBaz(actionConsumer, BAZ_PATH_GOOD);
+                final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+                assertThat(ex, instanceOf(DOMRpcException.class));
+                assertEquals("Action implementation failed: java.lang.RuntimeException: test-two-three",
+                    ex.getMessage());
+                assertSame(thrown, ex.getCause());
+            }
         }
     }
 
