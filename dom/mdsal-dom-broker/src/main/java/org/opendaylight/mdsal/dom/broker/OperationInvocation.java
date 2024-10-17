@@ -9,11 +9,14 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
@@ -39,7 +42,7 @@ final class OperationInvocation {
             }
         }
 
-        return impls.get(0).invokeAction(type, path, input);
+        return invokeAction(impls.get(0), type, path, input);
     }
 
     static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
@@ -68,8 +71,7 @@ final class OperationInvocation {
                 // Find a DOMRpcImplementation for a specific iid
                 final var specificImpls = entry.getImplementations(iid);
                 if (specificImpls != null) {
-                    return specificImpls.get(0)
-                        .invokeRpc(DOMRpcIdentifier.create(entry.getType(), iid), input);
+                    return invokeRpc(specificImpls.get(0), DOMRpcIdentifier.create(entry.getType(), iid), input);
                 }
 
                 LOG.debug("No implementation for context {} found will now look for wildcard id", iid);
@@ -78,10 +80,8 @@ final class OperationInvocation {
                 // implementation this way
                 final var mayBeRemoteImpls = entry.getImplementations(YangInstanceIdentifier.of());
                 if (mayBeRemoteImpls != null) {
-                    return mayBeRemoteImpls.get(0)
-                        .invokeRpc(DOMRpcIdentifier.create(entry.getType(), iid), input);
+                    return invokeRpc(mayBeRemoteImpls.get(0), DOMRpcIdentifier.create(entry.getType(), iid), input);
                 }
-
             } else {
                 LOG.warn("Ignoring wrong context value {}", value);
             }
@@ -89,7 +89,7 @@ final class OperationInvocation {
 
         final var impls = entry.getImplementations(null);
         if (impls != null) {
-            return impls.get(0).invokeRpc(entry.getRpcId(), input);
+            return invokeRpc(impls.get(0), entry.getRpcId(), input);
         }
 
         return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException(
@@ -98,6 +98,28 @@ final class OperationInvocation {
 
     private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
             final GlobalDOMRpcRoutingTableEntry entry, final ContainerNode input) {
-        return entry.getImplementations(YangInstanceIdentifier.of()).get(0).invokeRpc(entry.getRpcId(), input);
+        return invokeRpc(entry.getImplementations(YangInstanceIdentifier.of()).get(0), entry.getRpcId(), input);
+    }
+
+    @SuppressWarnings("checkstyle:illegalCatch")
+    private static ListenableFuture<? extends DOMRpcResult> invokeAction(final DOMActionImplementation impl,
+            final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
+        try {
+            return impl.invokeAction(type, path, input);
+        } catch (Exception e) {
+            LOG.debug("{} failed on {} with {}", impl, path, input.prettyTree(), e);
+            return Futures.immediateFailedFuture(new DefaultDOMRpcException("Action implementation failed: " + e, e));
+        }
+    }
+
+    @SuppressWarnings("checkstyle:illegalCatch")
+    private static ListenableFuture<? extends DOMRpcResult> invokeRpc(final DOMRpcImplementation impl,
+            final DOMRpcIdentifier rpc, final ContainerNode input) {
+        try {
+            return impl.invokeRpc(rpc, input);
+        } catch (Exception e) {
+            LOG.debug("{} failed on {} with {}", impl, rpc, input.prettyTree(), e);
+            return Futures.immediateFailedFuture(new DefaultDOMRpcException("RPC implementation failed: " + e, e));
+        }
     }
 }
