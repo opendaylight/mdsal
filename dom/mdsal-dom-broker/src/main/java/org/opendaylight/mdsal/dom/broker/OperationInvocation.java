@@ -42,7 +42,7 @@ final class OperationInvocation {
             }
         }
 
-        return invokeAction(impls.get(0), type, path, input);
+        return invokeAction(impls.getFirst(), type, path, input);
     }
 
     static ListenableFuture<? extends DOMRpcResult> invoke(final DOMRpcRoutingTableEntry entry,
@@ -57,7 +57,7 @@ final class OperationInvocation {
 
     private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
             final ContainerNode input) {
-        return invokeRpc(entry.getImplementations(YangInstanceIdentifier.of()).get(0), entry.getRpcId(), input);
+        return invokeRpc(entry.getImplementations(YangInstanceIdentifier.of()).getFirst(), entry.getRpcId(), input);
     }
 
     private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
@@ -72,7 +72,7 @@ final class OperationInvocation {
                 // Find a DOMRpcImplementation for a specific iid
                 final var specificImpls = entry.getImplementations(iid);
                 if (specificImpls != null) {
-                    return invokeRpc(specificImpls.get(0), DOMRpcIdentifier.create(entry.getType(), iid), input);
+                    return invokeRpc(specificImpls.getFirst(), DOMRpcIdentifier.create(entry.getType(), iid), input);
                 }
 
                 LOG.debug("No implementation for context {} found will now look for wildcard id", iid);
@@ -81,7 +81,7 @@ final class OperationInvocation {
                 // implementation this way
                 final var mayBeRemoteImpls = entry.getImplementations(YangInstanceIdentifier.of());
                 if (mayBeRemoteImpls != null) {
-                    return invokeRpc(mayBeRemoteImpls.get(0), DOMRpcIdentifier.create(entry.getType(), iid), input);
+                    return invokeRpc(mayBeRemoteImpls.getFirst(), DOMRpcIdentifier.create(entry.getType(), iid), input);
                 }
             } else {
                 LOG.warn("Ignoring wrong context value {}", value);
@@ -90,7 +90,7 @@ final class OperationInvocation {
 
         final var impls = entry.getImplementations(null);
         if (impls != null) {
-            return invokeRpc(impls.get(0), entry.getRpcId(), input);
+            return invokeRpc(impls.getFirst(), entry.getRpcId(), input);
         }
 
         return Futures.immediateFailedFuture(new DOMRpcImplementationNotAvailableException(
