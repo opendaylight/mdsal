@@ -10,12 +10,11 @@ package org.opendaylight.mdsal.dom.broker;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -42,7 +41,7 @@ public final class SerializedDOMDataBroker extends AbstractDOMDataBroker {
     private static final Logger LOG = LoggerFactory.getLogger(SerializedDOMDataBroker.class);
 
     private final DurationStatisticsTracker commitStatsTracker = DurationStatisticsTracker.createConcurrent();
-    private final Executor executor;
+    private final @NonNull Executor executor;
 
     /**
      * Construct DOMDataCommitCoordinator which uses supplied executor to
@@ -79,16 +78,12 @@ public final class SerializedDOMDataBroker extends AbstractDOMDataBroker {
             final DOMStoreThreePhaseCommitCohort cohort) {
         LOG.debug("Tx: {} is submitted for execution.", transaction.getIdentifier());
 
-        final ListenableFuture<CommitInfo> future;
         try {
-            // FIXME: use FluentFutures.submit() once it is available
-            future = Futures.submit(new WithTracker(transaction, cohort, commitStatsTracker), executor);
+            return FluentFutures.submit(new WithTracker(transaction, cohort, commitStatsTracker), executor);
         } catch (RejectedExecutionException e) {
             LOG.error("The commit executor's queue is full - submit task was rejected. \n{}", executor, e);
             return FluentFutures.immediateFailedFluentFuture(new TransactionCommitFailedException(
                 "Could not submit the commit task - the commit queue capacity has been exceeded.", e));
         }
-
-        return FluentFuture.from(future);
     }
 }
