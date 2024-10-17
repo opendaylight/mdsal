@@ -10,12 +10,12 @@ package org.opendaylight.mdsal.binding.testutils;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,15 +42,16 @@ import org.slf4j.LoggerFactory;
 public class DataBrokerFailuresImpl extends ForwardingDataBroker implements DataBrokerFailures {
     private static final Logger LOG = LoggerFactory.getLogger(DataBrokerFailuresImpl.class);
 
-    private final DataBroker delegate;
-    private volatile @Nullable ReadFailedException readException;
-    private volatile @Nullable TransactionCommitFailedException commitException;
     private final AtomicInteger howManyFailingReads = new AtomicInteger();
     private final AtomicInteger howManyFailingCommits = new AtomicInteger();
+    private final @NonNull DataBroker delegate;
+
+    private volatile @Nullable ReadFailedException readException;
+    private volatile @Nullable TransactionCommitFailedException commitException;
     private boolean commitAndThrowException = false;
 
     public DataBrokerFailuresImpl(final DataBroker delegate) {
-        this.delegate = delegate;
+        this.delegate = requireNonNull(delegate);
     }
 
     @Override
@@ -106,7 +109,8 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         if (howManyFailingCommits.decrementAndGet() == -1) {
             commitException = null;
         }
-        if (commitException == null) {
+        final var local = commitException;
+        if (local == null) {
             return commitMethod.get();
         }
 
@@ -117,7 +121,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                 LOG.warn("Exception while waiting for committed transaction", e);
             }
         }
-        return FluentFuture.from(Futures.immediateFailedFuture(commitException));
+        return FluentFutures.immediateFailedFluentFuture(local);
     }
 
     public <T extends DataObject> FluentFuture<Optional<T>> handleRead(
@@ -126,19 +130,27 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         if (howManyFailingReads.decrementAndGet() == -1) {
             readException = null;
         }
-        if (readException == null) {
+        final var local = readException;
+        if (local == null) {
             return readMethod.apply(store, path);
         }
-        return FluentFuture.from(Futures.immediateFailedFuture(readException));
+        return FluentFutures.immediateFailedFluentFuture(local);
     }
 
     @Override
     public ReadWriteTransaction newReadWriteTransaction() {
         return new ForwardingReadWriteTransaction(delegate.newReadWriteTransaction()) {
             @Override
+            @Deprecated
             public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
                     final InstanceIdentifier<T> path) {
                 return handleRead(super::read, store, path);
+            }
+
+            @Override
+            public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
+                    final DataObjectIdentifier<T> path) {
+                return handleRead(super::read, store, path.toLegacy());
             }
 
             @Override
