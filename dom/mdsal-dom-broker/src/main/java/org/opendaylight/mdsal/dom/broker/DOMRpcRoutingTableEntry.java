@@ -20,11 +20,12 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-abstract class AbstractDOMRpcRoutingTableEntry extends AbstractDOMRoutingTableEntry<YangInstanceIdentifier,
-        DOMRpcImplementation, DOMRpcAvailabilityListener, QName> {
+abstract sealed class DOMRpcRoutingTableEntry extends AbstractDOMRoutingTableEntry<YangInstanceIdentifier,
+        DOMRpcImplementation, DOMRpcAvailabilityListener, QName>
+        permits GlobalDOMRpcRoutingTableEntry, RoutedDOMRpcRoutingTableEntry, UnknownDOMRpcRoutingTableEntry {
     private final DOMRpcIdentifier rpcId;
 
-    AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId,
+    DOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
         super(rpcId.getType(), implementations);
         this.rpcId = requireNonNull(rpcId);
