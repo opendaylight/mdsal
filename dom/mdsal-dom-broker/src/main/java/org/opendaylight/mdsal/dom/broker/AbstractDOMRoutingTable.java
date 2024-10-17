@@ -9,24 +9,20 @@ package org.opendaylight.mdsal.dom.broker;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -42,8 +38,8 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
  * @param <E> routing entry type of RPC or Acton
  * @param <K> routing key type
  */
-@Beta
-abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRoutingTableEntry<D, M, L, K>> {
+abstract sealed class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRoutingTableEntry<D, M, L, K>>
+        permits DOMActionRoutingTable, DOMRpcRoutingTable {
     private final Map<K, E> operations;
     private final EffectiveModelContext schemaContext;
 
@@ -52,58 +48,58 @@ abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRouti
         this.schemaContext = schemaContext;
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, K, E> setSchemaContext(final EffectiveModelContext context) {
-        final Builder<K, E> b = ImmutableMap.builder();
+    final AbstractDOMRoutingTable<I, D, M, L, K, E> setSchemaContext(final EffectiveModelContext context) {
+        final var builder = ImmutableMap.<K, E>builder();
 
-        for (Entry<K, E> e : operations.entrySet()) {
-            final E entry = createOperationEntry(context, e.getKey(), e.getValue().getImplementations());
+        for (var oper : operations.entrySet()) {
+            final var entry = createOperationEntry(context, oper.getKey(), oper.getValue().getImplementations());
             if (entry != null) {
-                b.put(e.getKey(), entry);
+                builder.put(oper.getKey(), entry);
             }
         }
 
-        return newInstance(b.build(), context);
+        return newInstance(builder.build(), context);
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, K, E> add(final M implementation, final Set<I> oprsToAdd) {
+    final AbstractDOMRoutingTable<I, D, M, L, K, E> add(final M implementation, final Set<I> oprsToAdd) {
         if (oprsToAdd.isEmpty()) {
             return this;
         }
 
         // First decompose the identifiers to a multimap
-        final ListMultimap<K, D> toAdd = decomposeIdentifiers(oprsToAdd);
+        final var toAdd = decomposeIdentifiers(oprsToAdd);
 
-        final Builder<K, E> mb = ImmutableMap.builder();
+        final var builder = ImmutableMap.<K, E>builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
-        for (Entry<K, E> re : operations.entrySet()) {
-            List<D> newOperations = new ArrayList<>(toAdd.removeAll(re.getKey()));
+        for (var re : operations.entrySet()) {
+            final var newOperations = new ArrayList<>(toAdd.removeAll(re.getKey()));
             if (!newOperations.isEmpty()) {
-                final E ne = (E) re.getValue().add(implementation, newOperations);
-                mb.put(re.getKey(), ne);
+                final var ne = (E) re.getValue().add(implementation, newOperations);
+                builder.put(re.getKey(), ne);
             } else {
-                mb.put(re);
+                builder.put(re);
             }
         }
 
         // Finally add whatever is left in the decomposed multimap
-        for (Entry<K, Collection<D>> e : toAdd.asMap().entrySet()) {
-            final Builder<D, List<M>> vb = ImmutableMap.builder();
-            final List<M> v = ImmutableList.of(implementation);
-            for (D i : e.getValue()) {
+        for (var e : toAdd.asMap().entrySet()) {
+            final var vb = ImmutableMap.<D, List<M>>builder();
+            final var v = ImmutableList.of(implementation);
+            for (var i : e.getValue()) {
                 vb.put(i, v);
             }
 
-            final E entry = createOperationEntry(schemaContext, e.getKey(), vb.build());
+            final var entry = createOperationEntry(schemaContext, e.getKey(), vb.build());
             if (entry != null) {
-                mb.put(e.getKey(), entry);
+                builder.put(e.getKey(), entry);
             }
         }
 
-        return newInstance(mb.build(), schemaContext);
+        return newInstance(builder.build(), schemaContext);
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, K, E> addAll(final ImmutableTable<K, D, M> impls) {
+    final AbstractDOMRoutingTable<I, D, M, L, K, E> addAll(final ImmutableTable<K, D, M> impls) {
         if (impls.isEmpty()) {
             return this;
         }
@@ -113,7 +109,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRouti
         final var mb = ImmutableMap.<K, E>builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
-        for (Entry<K, E> re : operations.entrySet()) {
+        for (var re : operations.entrySet()) {
             final var newImpls = toAdd.rowMap().remove(re.getKey());
             if (newImpls == null) {
                 mb.put(re);
@@ -130,8 +126,8 @@ abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRouti
         }
 
         // Finally add whatever is left in the decomposed multimap
-        for (Entry<K, Map<D, M>> e : toAdd.rowMap().entrySet()) {
-            final E entry = createOperationEntry(schemaContext, e.getKey(), ImmutableMap.copyOf(
+        for (var e : toAdd.rowMap().entrySet()) {
+            final var entry = createOperationEntry(schemaContext, e.getKey(), ImmutableMap.copyOf(
                 Maps.<D, M, List<M>>transformValues(e.getValue(), ImmutableList::of)));
             if (entry != null) {
                 mb.put(e.getKey(), entry);
@@ -141,33 +137,33 @@ abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRouti
         return newInstance(mb.build(), schemaContext);
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, K, E> remove(final M implementation, final Set<I> instances) {
+    final AbstractDOMRoutingTable<I, D, M, L, K, E> remove(final M implementation, final Set<I> instances) {
         if (instances.isEmpty()) {
             return this;
         }
 
         // First decompose the identifiers to a multimap
-        final ListMultimap<K, D> toRemove = decomposeIdentifiers(instances);
+        final var toRemove = decomposeIdentifiers(instances);
 
         // Now iterate over existing entries, modifying them as appropriate...
-        final Builder<K, E> b = ImmutableMap.builder();
-        for (Entry<K, E> e : operations.entrySet()) {
-            final List<D> removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
+        final var builder = ImmutableMap.<K, E>builder();
+        for (var e : operations.entrySet()) {
+            final var removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
             if (!removed.isEmpty()) {
                 final E ne = (E) e.getValue().remove(implementation, removed);
                 if (ne != null) {
-                    b.put(e.getKey(), ne);
+                    builder.put(e.getKey(), ne);
                 }
             } else {
-                b.put(e);
+                builder.put(e);
             }
         }
 
         // All done, whatever is in toRemove, was not there in the first place
-        return newInstance(b.build(), schemaContext);
+        return newInstance(builder.build(), schemaContext);
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, K, E> removeAll(final ImmutableTable<K, D, M> impls) {
+    final AbstractDOMRoutingTable<I, D, M, L, K, E> removeAll(final ImmutableTable<K, D, M> impls) {
         if (impls.isEmpty()) {
             return this;
         }
@@ -177,7 +173,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRouti
         final var mb = ImmutableMap.<K, E>builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
-        for (Entry<K, E> re : operations.entrySet()) {
+        for (var re : operations.entrySet()) {
             final var oldImpls = toRemove.rowMap().remove(re.getKey());
             if (oldImpls == null) {
                 mb.put(re);
@@ -210,23 +206,22 @@ abstract class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractDOMRouti
     }
 
     @VisibleForTesting
-    Map<K, Set<D>> getOperations() {
+    final Map<K, Set<D>> getOperations() {
         return Maps.transformValues(operations, AbstractDOMRoutingTableEntry::registeredIdentifiers);
     }
 
-    Map<K, Set<D>> getOperations(final L listener) {
-        final Map<K, Set<D>> ret = new HashMap<>(operations.size());
-        for (Entry<K, E> e : operations.entrySet()) {
-            final Set<D> ids = e.getValue().registeredIdentifiers(listener);
+    final Map<K, Set<D>> getOperations(final L listener) {
+        final var ret = new HashMap<K, Set<D>>(operations.size());
+        for (var e : operations.entrySet()) {
+            final var ids = e.getValue().registeredIdentifiers(listener);
             if (!ids.isEmpty()) {
                 ret.put(e.getKey(), ids);
             }
         }
-
         return ret;
     }
 
-    @Nullable AbstractDOMRoutingTableEntry<D, M, L, K> getEntry(final @NonNull K type) {
+    final @Nullable AbstractDOMRoutingTableEntry<D, M, L, K> getEntry(final @NonNull K type) {
         return operations.get(type);
     }
 
