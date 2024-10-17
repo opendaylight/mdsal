@@ -15,7 +15,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntry {
+final class RoutedDOMRpcRoutingTableEntry extends DOMRpcRoutingTableEntry {
     private RoutedDOMRpcRoutingTableEntry(final DOMRpcIdentifier routedRpcId,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
         super(routedRpcId, impls);

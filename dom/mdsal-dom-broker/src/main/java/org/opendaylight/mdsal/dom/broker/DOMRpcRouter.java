@@ -449,7 +449,7 @@ public final class DOMRpcRouter extends AbstractRegistration {
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
         public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
-            final var entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
+            final var entry = (DOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
                 return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));

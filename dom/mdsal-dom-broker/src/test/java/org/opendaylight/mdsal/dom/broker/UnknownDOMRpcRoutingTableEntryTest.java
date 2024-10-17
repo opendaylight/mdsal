@@ -48,9 +48,9 @@ public class UnknownDOMRpcRoutingTableEntryTest {
         addList1.add(YangInstanceIdentifier.of(TestModel.TEST_QNAME));
         addList2.add(YangInstanceIdentifier.of(TestModel.TEST2_QNAME));
 
-        final AbstractDOMRpcRoutingTableEntry tst = (AbstractDOMRpcRoutingTableEntry) test.add(testClass, addList1);
-        final AbstractDOMRpcRoutingTableEntry tst1 = (AbstractDOMRpcRoutingTableEntry) tst.add(testClass, addList2);
-        final AbstractDOMRpcRoutingTableEntry tst2 = (AbstractDOMRpcRoutingTableEntry) tst1.remove(testClass, addList1);
+        final DOMRpcRoutingTableEntry tst = (DOMRpcRoutingTableEntry) test.add(testClass, addList1);
+        final DOMRpcRoutingTableEntry tst1 = (DOMRpcRoutingTableEntry) tst.add(testClass, addList2);
+        final DOMRpcRoutingTableEntry tst2 = (DOMRpcRoutingTableEntry) tst1.remove(testClass, addList1);
 
         assertEquals(1, test.getImplementations().size());
         assertEquals(2, tst.getImplementations().size());
