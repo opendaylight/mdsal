@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "144cd6e0_43dd6715",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2024-11-15T12:05:16Z",
+      "side": 1,
+      "message": "We are not going to branch mdsal for Titanium",
+      "revId": "84b3585fffefea41095b33fb2fe96ebe2cce1106",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
