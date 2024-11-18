@@ -1,3 +1,4 @@
+
 module iana-ssh-encryption-algs {
   yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:iana-ssh-encryption-algs";
@@ -16,12 +17,12 @@ module iana-ssh-encryption-algs {
 
   description
     "This module defines enumerations for the encryption algorithms
-     defined in the 'Encryption Algorithm Names' sub-registry of the
-     'Secure Shell (SSH) Protocol Parameters' registry maintained
-     by IANA.
+     defined in the 'Encryption Algorithm Names' registry of the
+     'Secure Shell (SSH) Protocol Parameters' registry group
+     maintained by IANA.
 
      Copyright (c) 2024 IETF Trust and the persons identified as
-     authors of the code. All rights reserved.
+     authors of the code.  All rights reserved.
 
      Redistribution and use in source and binary forms, with
      or without modification, is permitted pursuant to, and
@@ -30,20 +31,20 @@ module iana-ssh-encryption-algs {
      Legal Provisions Relating to IETF Documents
      (https://trustee.ietf.org/license-info).
 
-     The initial version of this YANG module is part of RFC EEEE
-     (https://www.rfc-editor.org/info/rfcEEEE); see the RFC
+     The initial version of this YANG module is part of RFC 9644
+     (https://www.rfc-editor.org/info/rfc9644); see the RFC
      itself for full legal notices.
 
      All versions of this module are published by IANA at
      https://www.iana.org/assignments/yang-parameters.";
 
-  revision 2024-03-16 {
+  revision 2024-10-16 {
     description
       "This initial version of the module was created using
-       the script defined in RFC EEEE to reflect the contents
+       the script defined in RFC 9644 to reflect the contents
        of the encryption algorithms registry maintained by IANA.";
     reference
-      "RFC EEEE: YANG Groupings for SSH Clients and SSH Servers";
+      "RFC 9644: YANG Groupings for SSH Clients and SSH Servers";
   }
 
   typedef ssh-encryption-algorithm {
@@ -347,6 +348,15 @@ module iana-ssh-encryption-algs {
           "RFC 5647:
              AES Galois Counter Mode for the Secure Shell Transport
              Layer Protocol";
+      }
+
+      enum chacha20-poly1305 {
+        description
+          "Enumeration for the 'chacha20-poly1305' algorithm.";
+        reference
+          "draft-josefsson-ssh-chacha20-poly1305-openssh-01:
+             Secure Shell (SSH) authenticated encryption cipher:
+             chacha20-poly1305";
       }
     }
     description

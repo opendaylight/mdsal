@@ -1,52 +1,53 @@
-module iana-tls-cipher-suite-algs {
-  yang-version 1.1;
-  namespace "urn:ietf:params:xml:ns:yang:iana-tls-cipher-suite-algs";
-  prefix tlscsa;
 
-  organization
+module iana-tls-cipher-suite-algs {
+    yang-version 1.1;
+    namespace "urn:ietf:params:xml:ns:yang:iana-tls-cipher-suite-algs";
+    prefix tlscsa;
+
+    organization
     "Internet Assigned Numbers Authority (IANA)";
 
-  contact
+    contact
     "Postal: ICANN
-             12025 Waterfront Drive, Suite 300
-             Los Angeles, CA  90094-2536
-             United States of America
-     Tel:    +1 310 301 5800
-     Email:  iana@iana.org";
+            12025 Waterfront Drive, Suite 300
+            Los Angeles, CA  90094-2536
+            United States of America
+    Tel:    +1 310 301 5800
+    Email:  <iana@iana.org>";
 
-  description
-    "This module defines enumerations for the Cipher Suite
-     algorithms defined in the 'TLS Cipher Suites' sub-registry
-     of the 'Transport Layer Security (TLS) Parameters' registry
-     maintained by IANA.
-
-     Copyright (c) 2024 IETF Trust and the persons identified as
-     authors of the code. All rights reserved.
-
-     Redistribution and use in source and binary forms, with
-     or without modification, is permitted pursuant to, and
-     subject to the license terms contained in, the Revised
-     BSD License set forth in Section 4.c of the IETF Trust's
-     Legal Provisions Relating to IETF Documents
-     (https://trustee.ietf.org/license-info).
-
-     The initial version of this YANG module is part of RFC FFFF
-     (https://www.rfc-editor.org/info/rfcFFFF); see the RFC
-     itself for full legal notices.
-
-     All versions of this module are published by IANA at
-     https://www.iana.org/assignments/yang-parameters.";
-
-  revision 2024-03-16 {
     description
-      "This initial version of the module was created using
-       the script defined in RFC FFFF to reflect the contents
-       of the cipher-suite algorithms registry maintained by IANA.";
-    reference
-      "RFC FFFF: YANG Groupings for TLS Clients and TLS Servers";
-  }
+    "This module defines enumerations for the cipher suite
+    algorithms defined in the 'TLS Cipher Suites' registry
+    under the 'Transport Layer Security (TLS) Parameters'
+    registry group maintained by IANA.
 
-  typedef tls-cipher-suite-algorithm {
+    Copyright (c) 2024 IETF Trust and the persons identified as
+    authors of the code. All rights reserved.
+
+    Redistribution and use in source and binary forms, with
+    or without modification, is permitted pursuant to, and
+    subject to the license terms contained in, the Revised
+    BSD License set forth in Section 4.c of the IETF Trust's
+    Legal Provisions Relating to IETF Documents
+    (https://trustee.ietf.org/license-info).
+
+    The initial version of this YANG module is part of RFC 9645
+    (https://www.rfc-editor.org/info/rfc9645); see the RFC
+    itself for full legal notices.
+
+    All versions of this module are published by IANA
+    (https://www.iana.org/assignments/yang-parameters).";
+
+    revision 2024-10-16 {
+    description
+        "This initial version of the module was created using
+        the script defined in RFC 9645 to reflect the contents
+        of the cipher-suite algorithms registry maintained by IANA.";
+    reference
+        "RFC 9645: YANG Groupings for TLS Clients and TLS Servers";
+    }
+
+    typedef tls-cipher-suite-algorithm {
     type enumeration {
       enum TLS_NULL_WITH_NULL_NULL {
         status deprecated;
