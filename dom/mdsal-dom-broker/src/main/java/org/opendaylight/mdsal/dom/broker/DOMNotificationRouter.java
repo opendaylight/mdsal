@@ -57,9 +57,7 @@ import org.slf4j.LoggerFactory;
  * Joint implementation of {@link DOMNotificationPublishService} and {@link DOMNotificationService}. Provides
  * routing of notifications from publishers to subscribers.
  *
- *<p>
- * Internal implementation one by using a {@link QueuedNotificationManager}.
- *</p>
+ * <p>Internal implementation one by using a {@link QueuedNotificationManager}.
  */
 @Singleton
 @Component(configurationPid = "org.opendaylight.mdsal.dom.notification", service = DOMNotificationRouter.class)
