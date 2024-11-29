@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>bundle-parent</artifactId>
-        <version>14.0.5-SNAPSHOT</version>
+        <version>14.0.6-SNAPSHOT</version>
         <relativePath>../bundle-parent</relativePath>
     </parent>
 
@@ -521,8 +521,8 @@
                         <link>https://www.slf4j.org/apidocs/</link>
                         <link>https://guava.dev/releases/33.3.1-jre/api/docs/</link>
 
-                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/14.0.4/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/14.0.5/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/14.0.5/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/14.0.6/</link>
                     </links>
                     <groups>
                         <group>
