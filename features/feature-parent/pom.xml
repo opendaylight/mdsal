@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>single-feature-parent</artifactId>
-        <version>14.0.4</version>
+        <version>14.0.5</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>feature-parent</artifactId>
-    <version>14.0.5-SNAPSHOT</version>
+    <version>14.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Feature Parent</name>
@@ -27,14 +27,14 @@
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>14.0.5</version>
+                <version>14.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>bundle-parent</artifactId>
-                <version>14.0.5-SNAPSHOT</version>
+                <version>14.0.6-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
