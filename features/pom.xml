@@ -23,6 +23,7 @@
 
     <modules>
         <module>feature-parent</module>
+        <module>parent</module>
 
         <module>features-mdsal</module>
         <module>features-mdsal-experimental</module>
