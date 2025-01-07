@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.opendaylight.yangtools</groupId>
         <artifactId>bnd-parent</artifactId>
-        <version>14.0.7</version>
+        <version>14.0.8</version>
         <relativePath/>
     </parent>
 
@@ -38,6 +38,18 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.gaul</groupId>
+                    <artifactId>modernizer-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</connection>
