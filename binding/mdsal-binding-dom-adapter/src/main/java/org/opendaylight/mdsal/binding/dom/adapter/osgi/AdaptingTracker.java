@@ -9,9 +9,8 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.Maps;
 import java.util.Dictionary;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingService;
@@ -104,9 +103,9 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
     }
 
     static Dictionary<String, Object> referenceProperties(final ServiceReference<?> ref, final BindingService service) {
-        final String[] keys = ref.getPropertyKeys();
-        final Map<String, Object> props = Maps.newHashMapWithExpectedSize(keys.length + 1);
-        for (String key : keys) {
+        final var keys = ref.getPropertyKeys();
+        final var props = HashMap.<String, Object>newHashMap(keys.length + 1);
+        for (var key : keys) {
             // Ignore properties with our prefix: we are not exporting those
             if (!key.startsWith(ServiceProperties.PREFIX)) {
                 final Object value = ref.getProperty(key);
@@ -117,11 +116,11 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
         }
 
         // Second phase: apply any our properties
-        for (String key : keys) {
+        for (var key : keys) {
             if (key.startsWith(ServiceProperties.OVERRIDE_PREFIX)) {
-                final Object value = ref.getProperty(key);
+                final var value = ref.getProperty(key);
                 if (value != null) {
-                    final String newKey = key.substring(ServiceProperties.OVERRIDE_PREFIX.length());
+                    final var newKey = key.substring(ServiceProperties.OVERRIDE_PREFIX.length());
                     if (!newKey.isEmpty()) {
                         LOG.debug("Overriding property {}", newKey);
                         props.put(newKey, value);
