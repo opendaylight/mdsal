@@ -522,7 +522,7 @@
                         <link>https://guava.dev/releases/33.3.1-jre/api/docs/</link>
 
                         <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/14.0.5/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/14.0.6/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/14.0.7/</link>
                     </links>
                     <groups>
                         <group>
