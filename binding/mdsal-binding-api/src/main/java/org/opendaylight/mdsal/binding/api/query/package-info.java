@@ -8,4 +8,5 @@
 /**
  * Simple type-safe query language based on YANG concepts as manifested by its Java Bindings.
  */
+@org.osgi.annotation.bundle.Export
 package org.opendaylight.mdsal.binding.api.query;

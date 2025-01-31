@@ -15,6 +15,7 @@ module org.opendaylight.mdsal.binding.api {
     requires org.opendaylight.yangtools.util;
 
     // Annotations
-    requires static transitive org.eclipse.jdt.annotation;
     requires static com.github.spotbugs.annotations;
+    requires static transitive org.eclipse.jdt.annotation;
+    requires static org.osgi.annotation.bundle;
 }
