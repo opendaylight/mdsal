@@ -12,7 +12,7 @@ import org.opendaylight.yangtools.binding.Rpc;
 
 /**
  * Provides access to registered Remote Procedure Call (RPC) service implementations. The RPCs are defined in YANG
- * models. {@link RpcProviderService} is this inferface's counterpart allowing registering RPC implementations.
+ * models. {@link RpcProviderService} is this inferface's counterpart allowing registration of RPC implementations.
  */
 public interface RpcService extends BindingService {
     /**
