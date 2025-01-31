@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 import java.util.Dictionary;
 import java.util.Map;
@@ -30,17 +31,23 @@ import org.slf4j.LoggerFactory;
  *
  * @param <D> DOMService type
  * @param <B> BindingService type
- * @author Robert Varga
  */
 final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService>
-        extends ServiceTracker<D, AdaptingTracker.ComponentHolder<B>> {
-    static final class ComponentHolder<B extends BindingService> {
-        final B binding;
-        ComponentInstance<? extends B> component;
+        extends ServiceTracker<D, AdaptingTracker.AdaptedService<B>> {
+    // Visible because of use in containing class type declaration
+    static final class AdaptedService<B extends BindingService> {
+        private final B delegate;
 
-        ComponentHolder(final B binding, final ComponentInstance<? extends B> component) {
-            this.binding = requireNonNull(binding);
+        private ComponentInstance<? extends B> component;
+
+        private AdaptedService(final B delegate, final ComponentInstance<? extends B> component) {
+            this.delegate = requireNonNull(delegate);
             this.component = requireNonNull(component);
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this).add("delegate", delegate).toString();
         }
     }
 
@@ -66,7 +73,7 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
     }
 
     @Override
-    public ComponentHolder<B> addingService(final ServiceReference<D> reference) {
+    public AdaptedService<B> addingService(final ServiceReference<D> reference) {
         if (reference == null) {
             LOG.debug("Null reference for {}, ignoring it", bindingClass.getName());
             return null;
@@ -76,30 +83,30 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
             return null;
         }
 
-        final D dom = context.getService(reference);
+        final var dom = context.getService(reference);
         if (dom == null) {
             LOG.debug("Could not get {} service from {}, ignoring it", bindingClass.getName(), reference);
             return null;
         }
 
-        final B binding = bindingFactory.apply(dom);
-        return new ComponentHolder<>(binding, componentFactory.newInstance(referenceProperties(reference, binding)));
+        final var binding = bindingFactory.apply(dom);
+        return new AdaptedService<>(binding, componentFactory.newInstance(referenceProperties(reference, binding)));
     }
 
     @Override
-    public void modifiedService(final ServiceReference<D> reference, final ComponentHolder<B> service) {
+    public void modifiedService(final ServiceReference<D> reference, final AdaptedService<B> service) {
         if (service != null && reference != null) {
             service.component.dispose();
-            service.component = componentFactory.newInstance(referenceProperties(reference, service.binding));
+            service.component = componentFactory.newInstance(referenceProperties(reference, service.delegate));
         }
     }
 
     @Override
-    public void removedService(final ServiceReference<D> reference, final ComponentHolder<B> service) {
+    public void removedService(final ServiceReference<D> reference, final AdaptedService<B> service) {
         if (service != null) {
             context.ungetService(reference);
             service.component.dispose();
-            LOG.debug("Unregistered service {}", service);
+            LOG.debug("Unregistered {}", service);
         }
     }
 
@@ -109,7 +116,7 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
         for (String key : keys) {
             // Ignore properties with our prefix: we are not exporting those
             if (!key.startsWith(ServiceProperties.PREFIX)) {
-                final Object value = ref.getProperty(key);
+                final var value = ref.getProperty(key);
                 if (value != null) {
                     props.put(key, value);
                 }
