@@ -73,6 +73,13 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
     }
 
     @Override
+    public void close() {
+        LOG.debug("Stopping tracker for {}", bindingClass.getName());
+        super.close();
+        LOG.debug("Tracker for {} stopped", bindingClass.getName());
+    }
+
+    @Override
     public AdaptedService<B> addingService(final ServiceReference<D> reference) {
         if (reference == null) {
             LOG.debug("Null reference for {}, ignoring it", bindingClass.getName());
@@ -90,14 +97,19 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
         }
 
         final var binding = bindingFactory.apply(dom);
-        return new AdaptedService<>(binding, componentFactory.newInstance(referenceProperties(reference, binding)));
+        final var service = new AdaptedService<>(binding,
+            componentFactory.newInstance(referenceProperties(reference, binding)));
+        LOG.debug("Registered {}", service);
+        return service;
     }
 
     @Override
     public void modifiedService(final ServiceReference<D> reference, final AdaptedService<B> service) {
         if (service != null && reference != null) {
+            LOG.debug("Restarting {}", service);
             service.component.dispose();
             service.component = componentFactory.newInstance(referenceProperties(reference, service.delegate));
+            LOG.debug("Restarted {}", service);
         }
     }
 
@@ -108,6 +120,11 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
             service.component.dispose();
             LOG.debug("Unregistered {}", service);
         }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("bindingClass", bindingClass.getName()).toString();
     }
 
     static Dictionary<String, Object> referenceProperties(final ServiceReference<?> ref, final BindingService service) {
