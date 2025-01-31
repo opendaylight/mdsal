@@ -115,8 +115,8 @@ final class AdaptingTracker<D extends DOMService<?, ?>, B extends BindingService
     @Override
     public void removedService(final ServiceReference<D> reference, final AdaptedService<B> service) {
         if (service != null) {
-            context.ungetService(reference);
             service.component.dispose();
+            context.ungetService(reference);
             LOG.debug("Unregistered {}", service);
         }
     }
