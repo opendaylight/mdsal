@@ -42,23 +42,23 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         final var delegate = getDelegate();
         final var domPath = normalized.path();
 
-        if (normalized instanceof AugmentationResult augment) {
-            // Augmentation: put() child nodes provided with augmentation, delete() those having no data
-            final var putIds = new HashSet<YangInstanceIdentifier.PathArgument>();
-            for (var child : augment.children()) {
-                final var childId = child.name();
-                delegate.put(store, domPath.node(childId), child);
-                putIds.add(childId);
-            }
-            for (var childId : augment.possibleChildren()) {
-                if (!putIds.contains(childId)) {
-                    delegate.delete(store, domPath.node(childId));
+        switch (normalized) {
+            case AugmentationResult augment -> {
+                // Augmentation: put() child nodes provided with augmentation, delete() those having no data
+                final var putIds = new HashSet<YangInstanceIdentifier.PathArgument>();
+                for (var child : augment.children()) {
+                    final var childId = child.name();
+                    delegate.put(store, domPath.node(childId), child);
+                    putIds.add(childId);
+                }
+                for (var childId : augment.possibleChildren()) {
+                    if (!putIds.contains(childId)) {
+                        delegate.delete(store, domPath.node(childId));
+                    }
                 }
             }
-        } else if (normalized instanceof NodeResult node) {
-            delegate.put(store, domPath, node.node());
-        } else {
-            throw new VerifyException("Unhandled result " + normalized);
+            case NodeResult node -> delegate.put(store, domPath, node.node());
+            default -> throw new VerifyException("Unhandled result " + normalized);
         }
     }
 
@@ -73,8 +73,8 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     }
 
     @Override
-    public final <D extends DataObject> void merge(final LogicalDatastoreType store,
-            final DataObjectIdentifier<D> path, final D data) {
+    public final <D extends DataObject> void merge(final LogicalDatastoreType store, final DataObjectIdentifier<D> path,
+            final D data) {
         merge(store, toNormalized("merge", path, data));
     }
 
@@ -82,15 +82,15 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         final var delegate = getDelegate();
         final var domPath = normalized.path();
 
-        if (normalized instanceof AugmentationResult augment) {
-            // Augmentation: merge individual children
-            for (var child : augment.children()) {
-                delegate.merge(store, domPath.node(child.name()), child);
+        switch (normalized) {
+            case AugmentationResult augment -> {
+                // Augmentation: merge individual children
+                for (var child : augment.children()) {
+                    delegate.merge(store, domPath.node(child.name()), child);
+                }
             }
-        } else if (normalized instanceof NodeResult node) {
-            delegate.merge(store, domPath, node.node());
-        } else {
-            throw new VerifyException("Unhandled result " + normalized);
+            case NodeResult node -> delegate.merge(store, domPath, node.node());
+            default -> throw new VerifyException("Unhandled result " + normalized);
         }
     }
 

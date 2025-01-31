@@ -33,7 +33,6 @@ import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -75,17 +74,16 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     public <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>>
             Registration registerImplementation(final ActionSpec<A, P> spec, final A implementation,
                 final LogicalDatastoreType datastore, final Set<? extends DataObjectIdentifier<P>> validNodes) {
-        final CurrentAdapterSerializer serializer = currentSerializer();
-        final Absolute actionPath = serializer.getActionPath(spec);
-        final Impl impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);
-        final DOMActionInstance instance = validNodes.isEmpty()
+        final var serializer = currentSerializer();
+        final var actionPath = serializer.getActionPath(spec);
+        final var impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);
+        final var instance = validNodes.isEmpty()
             // Register on the entire datastore
             ? DOMActionInstance.of(actionPath, DOMDataTreeIdentifier.of(datastore, YangInstanceIdentifier.of()))
-                // Register on specific instances
-                : DOMActionInstance.of(actionPath, validNodes.stream()
-                    .map(node -> DOMDataTreeIdentifier.of(datastore, serializer.toYangInstanceIdentifier(node)))
-                    .collect(Collectors.toUnmodifiableSet()));
-
+            // Register on specific instances
+            : DOMActionInstance.of(actionPath, validNodes.stream()
+                .map(node -> DOMDataTreeIdentifier.of(datastore, serializer.toYangInstanceIdentifier(node)))
+                .collect(Collectors.toUnmodifiableSet()));
 
         return getDelegate().registerActionImplementation(impl, instance);
     }
@@ -110,7 +108,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
+            final var codec = adapterContext.currentSerializer();
             final var instance = codec.fromYangInstanceIdentifier(path.path());
             if (instance == null) {
                 // Not representable: return an error
@@ -126,12 +124,12 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
                     "Supplied path does not identify a concrete instance")));
             }
 
-            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance.toIdentifier(),
+            final var userFuture = implementation.invoke(instance.toIdentifier(),
                 codec.fromNormalizedNodeActionInput(actionInterface, input));
-            if (userFuture instanceof BindingOperationFluentFuture) {
+            if (userFuture instanceof BindingOperationFluentFuture bindingFuture) {
                 // If we are looping back through our future we can skip wrapping. This can happen if application
                 // forwards invocations between multiple instantiations of the same action.
-                return (BindingOperationFluentFuture) userFuture;
+                return bindingFuture;
             }
 
             return new BindingOperationFluentFuture(userFuture, actionInterface, outputName, adapterContext);

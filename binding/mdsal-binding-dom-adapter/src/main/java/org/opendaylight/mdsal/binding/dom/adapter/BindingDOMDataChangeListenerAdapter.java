@@ -54,12 +54,12 @@ final class BindingDOMDataChangeListenerAdapter<T extends DataObject> implements
     private @Nullable T deserialize(final CommonDataObjectCodecTreeNode<?> codec, final NormalizedNode data) {
         if (data == null) {
             return null;
-        } else if (codec instanceof BindingDataObjectCodecTreeNode<?> dataObject) {
-            return (T) dataObject.deserialize(data);
-        } else if (codec instanceof BindingAugmentationCodecTreeNode<?> augmentation) {
-            return (T) augmentation.filterFrom(data);
-        } else {
-            throw new IllegalStateException("Unhandled codec " + codec);
         }
+
+        return (T) switch (codec) {
+            case BindingDataObjectCodecTreeNode<?> dataObject -> dataObject.deserialize(data);
+            case BindingAugmentationCodecTreeNode<?> augmentation -> augmentation.filterFrom(data);
+            default -> throw new IllegalStateException("Unhandled codec " + codec);
+        };
     }
 }

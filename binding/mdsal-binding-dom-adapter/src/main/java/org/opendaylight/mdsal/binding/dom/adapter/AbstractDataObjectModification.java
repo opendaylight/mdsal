@@ -109,13 +109,13 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     static @Nullable AbstractDataObjectModification<?, ?> from(final CommonDataObjectCodecTreeNode<?> codec,
             final @NonNull DataTreeCandidateNode current) {
-        if (codec instanceof BindingDataObjectCodecTreeNode<?> childDataObjectCodec) {
-            return new LazyDataObjectModification<>(childDataObjectCodec, current);
-        } else if (codec instanceof BindingAugmentationCodecTreeNode<?> childAugmentationCodec) {
-            return LazyAugmentationModification.forParent(childAugmentationCodec, current);
-        } else {
-            throw new VerifyException("Unhandled codec " + codec);
-        }
+        return switch (codec) {
+            case BindingDataObjectCodecTreeNode<?> childDataObjectCodec ->
+                new LazyDataObjectModification<>(childDataObjectCodec, current);
+            case BindingAugmentationCodecTreeNode<?> childAugmentationCodec ->
+                LazyAugmentationModification.forParent(childAugmentationCodec, current);
+            default -> throw new VerifyException("Unhandled codec " + codec);
+        };
     }
 
     @Override
@@ -333,15 +333,16 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
                      */
                     try {
                         final var childCodec = parentCodec.yangPathArgumentChild(domChildNode.name());
-                        if (childCodec instanceof BindingDataObjectCodecTreeNode<?> childDataObjectCodec) {
-                            populateList(result, type, childDataObjectCodec, domChildNode);
-                        } else if (childCodec instanceof BindingAugmentationCodecTreeNode<?> childAugmentationCodec) {
-                            // Defer creation once we have collected all modified children
-                            augmentChildren.put(childAugmentationCodec, domChildNode);
-                        } else if (childCodec instanceof BindingChoiceCodecTreeNode<?> childChoiceCodec) {
-                            populateList(result, childChoiceCodec, domChildNode, domChildNode.childNodes());
-                        } else {
-                            throw new VerifyException("Unhandled codec %s for type %s".formatted(childCodec, type));
+                        switch (childCodec) {
+                            case BindingDataObjectCodecTreeNode<?> childDataObjectCodec ->
+                                populateList(result, type, childDataObjectCodec, domChildNode);
+                            case BindingAugmentationCodecTreeNode<?> childAugmentationCodec ->
+                                // Defer creation once we have collected all modified children
+                                augmentChildren.put(childAugmentationCodec, domChildNode);
+                            case BindingChoiceCodecTreeNode<?> childChoiceCodec ->
+                                populateList(result, childChoiceCodec, domChildNode, domChildNode.childNodes());
+                            default ->
+                                throw new VerifyException("Unhandled codec %s for type %s".formatted(childCodec, type));
                         }
                     } catch (final IllegalArgumentException e) {
                         if (type == BindingStructuralType.UNKNOWN) {

@@ -51,12 +51,10 @@ final class BindingDOMDataListenerAdapter<T extends DataObject> implements DOMDa
     private T deserialize(final YangInstanceIdentifier path, final @NonNull NormalizedNode data) {
         final var serializer = adapterContext.currentSerializer();
         final var codec = serializer.getSubtreeCodec(serializer.coerceInstanceIdentifier(path));
-        if (codec instanceof BindingDataObjectCodecTreeNode<?> dataObject) {
-            return (T) dataObject.deserialize(data);
-        } else if (codec instanceof BindingAugmentationCodecTreeNode<?> augmentation) {
-            return (T) augmentation.filterFrom(data);
-        } else {
-            throw new IllegalStateException("Unhandled codec " + codec);
-        }
+        return (T) switch (codec) {
+            case BindingDataObjectCodecTreeNode<?> dataObject -> dataObject.deserialize(data);
+            case BindingAugmentationCodecTreeNode<?> augmentation -> augmentation.filterFrom(data);
+            default -> throw new IllegalStateException("Unhandled codec " + codec);
+        };
     }
 }

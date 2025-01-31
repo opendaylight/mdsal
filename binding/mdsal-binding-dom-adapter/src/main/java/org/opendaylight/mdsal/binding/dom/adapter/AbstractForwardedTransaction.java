@@ -83,13 +83,11 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
     @SuppressWarnings("unchecked")
     private static <D extends DataObject> Optional<D> decodeRead(final CommonDataObjectCodecTreeNode<D> codec,
             final @NonNull NormalizedNode data) {
-        if (codec instanceof BindingDataObjectCodecTreeNode<?> dataObject) {
-            return Optional.of((D) dataObject.deserialize(data));
-        } else if (codec instanceof BindingAugmentationCodecTreeNode<?> augment) {
-            return Optional.ofNullable((D) augment.filterFrom(data));
-        } else {
-            throw new VerifyException("Unhandled codec " + codec);
-        }
+        return switch (codec) {
+            case BindingDataObjectCodecTreeNode<?> dataObject -> Optional.of((D) dataObject.deserialize(data));
+            case BindingAugmentationCodecTreeNode<?> augment -> Optional.ofNullable((D) augment.filterFrom(data));
+            default -> throw new VerifyException("Unhandled codec " + codec);
+        };
     }
 
     protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
