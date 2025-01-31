@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -62,5 +63,10 @@ final class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implem
     public void onInitialData() {
         initialSyncDone = true;
         listener.onInitialData();
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("listener", listener).toString();
     }
 }

@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.VerifyException;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener.Component;
@@ -26,15 +27,15 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 final class BindingDOMNotificationListenerAdapter<N extends Notification<N> & DataObject>
         implements DOMNotificationListener {
     private final AdapterContext adapterContext;
-    private final Listener<N> delegate;
+    private final Listener<N> listener;
     private final Executor executor;
     private final Class<N> type;
 
     BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final Class<N> type,
-            final Listener<N> delegate, final Executor executor) {
+            final Listener<N> listener, final Executor executor) {
         this.adapterContext = requireNonNull(adapterContext);
         this.type = requireNonNull(type);
-        this.delegate = requireNonNull(delegate);
+        this.listener = requireNonNull(listener);
         this.executor = requireNonNull(executor);
     }
 
@@ -50,7 +51,12 @@ final class BindingDOMNotificationListenerAdapter<N extends Notification<N> & Da
     @Override
     public void onNotification(final DOMNotification notification) {
         final var binding = type.cast(verifyNotNull(deserialize(notification)));
-        executor.execute(() -> delegate.onNotification(binding));
+        executor.execute(() -> listener.onNotification(binding));
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("listener", listener).toString();
     }
 
     private Notification<?> deserialize(final DOMNotification notification) {
@@ -65,7 +71,9 @@ final class BindingDOMNotificationListenerAdapter<N extends Notification<N> & Da
             ? serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody(),
                 domEvent.getEventInstant())
                 : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
-        verify(result instanceof Notification, "Unexpected codec result %s", result);
-        return (Notification<?>) result;
+        if (result instanceof Notification<?> notif) {
+            return notif;
+        }
+        throw new VerifyException("Unexpected codec result " + result);
     }
 }

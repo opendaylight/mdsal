@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
@@ -65,6 +66,11 @@ final class BindingDOMMountPointListenerAdapter implements Registration, DOMMoun
             return;
         }
         listener.onMountPointRemoved(binding);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("listener", listener).toString();
     }
 
     private @NonNull DataObjectIdentifier<?> toBinding(final YangInstanceIdentifier path)

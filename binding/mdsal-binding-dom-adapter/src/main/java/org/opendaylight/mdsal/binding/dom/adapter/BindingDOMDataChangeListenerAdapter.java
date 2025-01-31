@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
 import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataChangeListener;
@@ -42,6 +43,11 @@ final class BindingDOMDataChangeListenerAdapter<T extends DataObject> implements
     @Override
     public void onInitialData() {
         listener.dataChanged(null, null);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("listener", listener).toString();
     }
 
     @SuppressWarnings("unchecked")
