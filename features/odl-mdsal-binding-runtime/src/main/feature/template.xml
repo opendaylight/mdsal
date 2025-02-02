@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-binding-base">
+    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-binding-codec/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-dom-runtime/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-binding-runtime">
+        <feature version="[14,15)">odl-yangtools-binding-codec</feature>
+        <feature version="{{semVerRange}}">odl-mdsal-dom-runtime</feature>
+    </feature>
+</features>
