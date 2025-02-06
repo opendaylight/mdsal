@@ -19,6 +19,8 @@
 
     <artifactId>mdsal-common-api</artifactId>
     <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>MD-SAL common APIs</description>
 
     <properties>
         <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
