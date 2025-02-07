@@ -10,9 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>feature-parent</artifactId>
+        <artifactId>template-feature-parent</artifactId>
         <version>14.0.9-SNAPSHOT</version>
-        <relativePath>../feature-parent</relativePath>
+        <relativePath>../parent</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-binding-api</artifactId>
@@ -30,6 +30,12 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-common</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-rfc8342</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
