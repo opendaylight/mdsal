@@ -22,7 +22,7 @@
 
     <properties>
         <!-- FIXME: remove this once we can plug in a testing dependency -->
-        <skip.karaf.featureTest>true</skip.karaf.featureTest>
+        <sft.skip>true</sft.skip>
     </properties>
 
     <dependencies>
