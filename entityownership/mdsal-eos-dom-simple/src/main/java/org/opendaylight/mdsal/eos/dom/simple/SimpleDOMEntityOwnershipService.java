@@ -29,7 +29,6 @@ import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
-import org.opendaylight.mdsal.eos.dom.simple.di.LocalDOMEntityOwnershipService;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -40,8 +39,7 @@ import org.slf4j.LoggerFactory;
 
 @Component
 @MetaInfServices
-public sealed class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService
-        permits LocalDOMEntityOwnershipService {
+public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleDOMEntityOwnershipService.class);
 
     @GuardedBy("entities")

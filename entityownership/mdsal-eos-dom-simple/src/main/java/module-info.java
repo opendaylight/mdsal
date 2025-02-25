@@ -11,14 +11,14 @@ import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
 module org.opendaylight.mdsal.eos.dom.simple {
     exports org.opendaylight.mdsal.eos.dom.simple.di;
 
-    requires org.opendaylight.yangtools.concepts;
-    requires org.opendaylight.mdsal.eos.dom.api;
-    requires org.slf4j;
-
     provides DOMEntityOwnershipService with SimpleDOMEntityOwnershipService;
 
+    requires transitive org.opendaylight.mdsal.eos.dom.api;
+    requires org.opendaylight.yangtools.concepts;
+    requires org.slf4j;
+
     // Annotations
-    requires static javax.inject;
+    requires static transitive javax.inject;
     requires static org.eclipse.jdt.annotation;
     requires static org.checkerframework.checker.qual;
     requires static org.kohsuke.metainf_services;
