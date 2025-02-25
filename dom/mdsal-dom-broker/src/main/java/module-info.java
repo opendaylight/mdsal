@@ -24,6 +24,7 @@ module org.opendaylight.mdsal.dom.broker {
     requires static transitive javax.inject;
     requires static org.eclipse.jdt.annotation;
     requires static org.kohsuke.metainf_services;
+    requires static org.osgi.annotation.bundle;
     requires static org.osgi.service.component.annotations;
     requires static org.osgi.service.metatype.annotations;
 }
