@@ -22,7 +22,7 @@
     <name>OpenDaylight :: MD-SAL :: Replicate :: Netty</name>
 
     <properties>
-        <skip.karaf.featureTest>true</skip.karaf.featureTest>
+        <sft.skip>true</sft.skip>
     </properties>
 
     <dependencies>
