@@ -5,6 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+/**
+ * MD-SAL Binding API helper classes.
+ */
 module org.opendaylight.mdsal.binding.spi {
     exports org.opendaylight.mdsal.binding.spi;
 
@@ -12,4 +15,5 @@ module org.opendaylight.mdsal.binding.spi {
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
+    requires static org.osgi.annotation.bundle;
 }
