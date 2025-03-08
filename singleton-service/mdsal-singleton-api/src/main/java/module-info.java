@@ -12,4 +12,5 @@ module org.opendaylight.mdsal.singleton.api {
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
+    requires static org.osgi.annotation.bundle;
 }
