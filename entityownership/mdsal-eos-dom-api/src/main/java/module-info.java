@@ -13,4 +13,5 @@ module org.opendaylight.mdsal.eos.dom.api {
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
+    requires org.osgi.annotation.bundle;
 }
