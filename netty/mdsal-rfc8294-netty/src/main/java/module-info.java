@@ -14,5 +14,6 @@ module org.opendaylight.mdsal.rfc8294.netty {
 
     // Annotations
     requires static org.eclipse.jdt.annotation;
+    requires static org.osgi.annotation.bundle;
 }
 
