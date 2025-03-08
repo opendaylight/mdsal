@@ -13,4 +13,7 @@ module org.opendaylight.mdsal.eos.binding.api {
     requires transitive org.opendaylight.yangtools.binding.spec;
 
     requires org.opendaylight.mdsal.model.general.entity;
+
+    // Annotations
+    requires static org.osgi.annotation.bundle;
 }
