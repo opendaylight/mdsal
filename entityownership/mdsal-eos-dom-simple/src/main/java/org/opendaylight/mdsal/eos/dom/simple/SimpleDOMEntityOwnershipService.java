@@ -37,6 +37,12 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// FIXME: split this out to OSGiEntityOwnershipService and @MetaInf LoaderEntityOwnershipService, both of which inherit
+//        from AbstracEntityOwnershipService, which contains the bulk of the implementation.
+//        Then Use a virtual thread to invoke the callback-on-registration in all of that.
+//        Then rename the remainder to 'ImmediateEntityOwnershipService' with immediate invocation.
+//        Then consider moving ImmediateEntityOwnershipService et al. 'dom.api'.
+//        Then consider hiding LoaderEntityOwnershipService.
 @Component
 @MetaInfServices
 public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService {
