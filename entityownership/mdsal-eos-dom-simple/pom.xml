@@ -23,6 +23,7 @@
     <properties>
         <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
         <doclint>all,-missing</doclint>
+        <odlparent.dependency.enforce>false</odlparent.dependency.enforce>
     </properties>
 
     <dependencies>
@@ -34,6 +35,11 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
