@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
-import org.checkerframework.checker.index.qual.NonNegative;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
@@ -113,6 +112,5 @@ public interface DOMInstanceNotificationPublishService extends
      * @throws IllegalArgumentException if timeout is negative.
      */
     @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMDataTreeIdentifier path,
-        @NonNull DOMNotification notification, @NonNegative long timeout, @NonNull TimeUnit unit)
-            throws InterruptedException;
+        @NonNull DOMNotification notification, long timeout, @NonNull TimeUnit unit) throws InterruptedException;
 }
