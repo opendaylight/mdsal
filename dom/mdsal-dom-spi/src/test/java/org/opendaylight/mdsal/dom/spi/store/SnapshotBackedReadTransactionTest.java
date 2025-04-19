@@ -7,14 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -23,69 +21,78 @@ import static org.mockito.Mockito.mock;
 import com.google.common.util.concurrent.Futures;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
-public class SnapshotBackedReadTransactionTest {
+@ExtendWith(MockitoExtension.class)
+class SnapshotBackedReadTransactionTest {
+    @Mock
+    private DataTreeSnapshot dataTreeSnapshot;
 
-    private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
+    private SnapshotBackedReadTransaction<Object> snapshotBackedReadTransaction;
 
-    private SnapshotBackedReadTransaction<Object> snapshotBackedReadTransaction =
-            new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT, null);
+    @BeforeEach
+    void beforeEach() {
+        snapshotBackedReadTransaction = new SnapshotBackedReadTransaction<>(new Object(), false, dataTreeSnapshot,
+            null);
+    }
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         final var testNode = mock(ContainerNode.class);
         final var optional = Optional.of(testNode);
-        doReturn("testNode").when(testNode).toString();
-        doReturn(Optional.of(testNode)).when(DATA_TREE_SNAPSHOT).readNode(YangInstanceIdentifier.of());
+        doReturn(Optional.of(testNode)).when(dataTreeSnapshot).readNode(YangInstanceIdentifier.of());
         assertTrue(snapshotBackedReadTransaction.exists(YangInstanceIdentifier.of()).get());
 
         assertEquals(optional, snapshotBackedReadTransaction.read(YangInstanceIdentifier.of()).get());
         final var stableSnapshotField = SnapshotBackedReadTransaction.class.getDeclaredField("stableSnapshot");
         stableSnapshotField.setAccessible(true);
 
-        DataTreeSnapshot stableSnapshot = (DataTreeSnapshot) stableSnapshotField.get(snapshotBackedReadTransaction);
-        assertNotNull(stableSnapshot);
+        var stableSnapshot = assertInstanceOf(DataTreeSnapshot.class,
+            stableSnapshotField.get(snapshotBackedReadTransaction));
         snapshotBackedReadTransaction.close();
         stableSnapshot = (DataTreeSnapshot) stableSnapshotField.get(snapshotBackedReadTransaction);
         assertNull(stableSnapshot);
     }
 
     @Test
-    public void readTestWithException() {
+    void readTestWithException() {
         snapshotBackedReadTransaction.close();
         final var future = snapshotBackedReadTransaction.read(YangInstanceIdentifier.of());
-        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-        assertThat(cause, instanceOf(ReadFailedException.class));
+        final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var cause = assertInstanceOf(ReadFailedException.class, ex.getCause());
         assertEquals("Transaction is closed", cause.getMessage());
     }
 
     @Test
-    public void readNodeTestWithException() {
+    void readNodeTestWithException() {
         final var thrown = new NullPointerException("no Node");
-        doThrow(thrown).when(DATA_TREE_SNAPSHOT).readNode(any());
-        snapshotBackedReadTransaction = new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
+        doThrow(thrown).when(dataTreeSnapshot).readNode(any());
+        snapshotBackedReadTransaction = new SnapshotBackedReadTransaction<>(new Object(), false, dataTreeSnapshot,
                 null);
 
         final var future = snapshotBackedReadTransaction.read(YangInstanceIdentifier.of());
-        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-        assertThat(cause, instanceOf(ReadFailedException.class));
+        final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var cause = assertInstanceOf(ReadFailedException.class, ex.getCause());
         assertEquals("Read failed", cause.getMessage());
         assertSame(thrown, cause.getCause());
     }
 
     @Test
-    public void existsTestWithException() {
+    void existsTestWithException() {
         final var thrown = new NullPointerException("no Node");
-        doThrow(thrown).when(DATA_TREE_SNAPSHOT).readNode(any());
+        doThrow(thrown).when(dataTreeSnapshot).readNode(any());
 
         final var future = snapshotBackedReadTransaction.exists(YangInstanceIdentifier.of());
-        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-        assertThat(cause, instanceOf(ReadFailedException.class));
+        final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var cause = assertInstanceOf(ReadFailedException.class, ex.getCause());
         assertEquals("Read failed", cause.getMessage());
         assertSame(thrown, cause.getCause());
     }

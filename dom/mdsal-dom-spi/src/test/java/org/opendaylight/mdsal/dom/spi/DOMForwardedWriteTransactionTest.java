@@ -6,10 +6,9 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -18,32 +17,31 @@ import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATI
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class DOMForwardedWriteTransactionTest {
+@ExtendWith(MockitoExtension.class)
+class DOMForwardedWriteTransactionTest {
     @Mock
     private AbstractDOMForwardedTransactionFactory<?> commitImpl;
-
     @Mock
     private DOMStoreWriteTransaction domStoreWriteTransaction;
 
     private Function<LogicalDatastoreType, DOMStoreWriteTransaction> backingTxFactory;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void beforeEach() {
         backingTxFactory = storeType -> domStoreWriteTransaction;
     }
 
     @Test
-    public void readyRuntimeExceptionAndCancel() {
+    void readyRuntimeExceptionAndCancel() {
         final RuntimeException thrown = new RuntimeException();
         doThrow(thrown).when(domStoreWriteTransaction).ready();
         final DOMForwardedWriteTransaction<DOMStoreWriteTransaction> domForwardedWriteTransaction =
@@ -51,15 +49,14 @@ public class DOMForwardedWriteTransactionTest {
         domForwardedWriteTransaction.getSubtransaction(CONFIGURATION); // ensure backingTx initialized
         ListenableFuture<?> submitFuture = domForwardedWriteTransaction.commit();
 
-        ExecutionException ex = assertThrows(ExecutionException.class, submitFuture::get);
-        Throwable cause = ex.getCause();
-        assertThat(cause, instanceOf(TransactionCommitFailedException.class));
+        final var ex = assertThrows(ExecutionException.class, submitFuture::get);
+        final var cause = assertInstanceOf(TransactionCommitFailedException.class, ex.getCause());
         assertSame(thrown, cause.getCause());
         domForwardedWriteTransaction.cancel();
     }
 
     @Test
-    public void submitRuntimeExceptionAndCancel() {
+    void submitRuntimeExceptionAndCancel() {
         RuntimeException thrown = new RuntimeException();
         doReturn(null).when(domStoreWriteTransaction).ready();
         doThrow(thrown).when(commitImpl).commit(any(), any());
@@ -68,8 +65,7 @@ public class DOMForwardedWriteTransactionTest {
         domForwardedWriteTransaction.getSubtransaction(CONFIGURATION); // ensure backingTx initialized
         ListenableFuture<?> submitFuture = domForwardedWriteTransaction.commit();
         ExecutionException ex = assertThrows(ExecutionException.class, submitFuture::get);
-        Throwable cause = ex.getCause();
-        assertThat(cause, instanceOf(TransactionCommitFailedException.class));
+        final var cause = assertInstanceOf(TransactionCommitFailedException.class, ex.getCause());
         assertSame(thrown, cause.getCause());
         domForwardedWriteTransaction.cancel();
     }
