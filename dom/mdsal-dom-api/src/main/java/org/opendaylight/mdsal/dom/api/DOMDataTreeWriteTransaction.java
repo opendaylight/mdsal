@@ -17,6 +17,7 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.ForwardingOnCommitFutureCallback;
 import org.opendaylight.mdsal.common.api.OnCommitCallback;
+import org.opendaylight.mdsal.common.api.OnCommitFutureCallback;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
@@ -437,9 +438,10 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
      * @throws NullPointerException if any argument is {@code null}
      */
     default void commit(final @NonNull OnCommitCallback callback, final @NonNull Executor executor) {
-        final var compat = new ForwardingOnCommitFutureCallback(callback);
+        final var futureCallback = callback instanceof OnCommitFutureCallback onCommit ? onCommit
+            : new ForwardingOnCommitFutureCallback(callback);
         requireNonNull(executor);
-        commit().addCallback(compat, executor);
+        commit().addCallback(futureCallback, executor);
     }
 
     /**
