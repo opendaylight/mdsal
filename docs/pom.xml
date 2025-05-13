@@ -17,9 +17,12 @@
     </parent>
 
     <artifactId>mdsal-docs</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>MD-SAL documentation</description>
+    <modules>
+        <module>examples/dom-databroker</module>
+    </modules>
 
     <properties>
         <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
