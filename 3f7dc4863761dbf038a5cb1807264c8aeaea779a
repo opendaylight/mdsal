@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0937a6ba_537bd118",
+        "filename": "docs/examples/dom-databroker/src/main/java/org/opendaylight/mdsal/ScalabilityDemo.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2025-05-15T13:11:41Z",
+      "side": 1,
+      "message": "unused?",
+      "revId": "3f7dc4863761dbf038a5cb1807264c8aeaea779a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "645f24e3_033647f0",
+        "filename": "docs/examples/dom-databroker/src/main/java/org/opendaylight/mdsal/ScalabilityDemo.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2025-05-15T13:11:41Z",
+      "side": 1,
+      "message": "make run() static?",
+      "revId": "3f7dc4863761dbf038a5cb1807264c8aeaea779a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb1398e1_677e66b4",
+        "filename": "docs/examples/dom-databroker/src/main/java/org/opendaylight/mdsal/ScalabilityDemo.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2025-05-15T13:11:41Z",
+      "side": 1,
+      "message": "final",
+      "revId": "3f7dc4863761dbf038a5cb1807264c8aeaea779a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b43416d4_e3a75d4d",
+        "filename": "docs/examples/dom-databroker/src/main/java/org/opendaylight/mdsal/StandaloneBrokerFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2025-05-15T13:11:41Z",
+      "side": 1,
+      "message": "final",
+      "revId": "3f7dc4863761dbf038a5cb1807264c8aeaea779a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
