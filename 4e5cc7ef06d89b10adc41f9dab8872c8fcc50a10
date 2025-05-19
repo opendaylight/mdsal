@@ -16,6 +16,24 @@
       "message": "I think you should add some conclusion here?\nlike that in fact all transactions were successful\nmaybe some comparison if possible?",
       "revId": "4e5cc7ef06d89b10adc41f9dab8872c8fcc50a10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1c62c9b_a0d41813",
+        "filename": "docs/examples/dom-databroker-txchain/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-05-19T13:28:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2fce1e75_b71f7ea5",
+      "revId": "4e5cc7ef06d89b10adc41f9dab8872c8fcc50a10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
