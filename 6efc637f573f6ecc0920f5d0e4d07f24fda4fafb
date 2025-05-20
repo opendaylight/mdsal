@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1dec1cdf_f56e5321",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2025-05-20T11:44:41Z",
+      "side": 1,
+      "message": "pls fix trailing spaces in README",
+      "revId": "6efc637f573f6ecc0920f5d0e4d07f24fda4fafb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
