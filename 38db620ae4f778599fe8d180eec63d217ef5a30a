@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4f2cf0c1_d235b9ad",
+        "filename": "docs/examples/dom-databroker-txchain/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2025-05-20T09:08:47Z",
+      "side": 1,
+      "message": "space after .",
+      "range": {
+        "startLine": 4,
+        "startChar": 27,
+        "endLine": 4,
+        "endChar": 30
+      },
+      "revId": "38db620ae4f778599fe8d180eec63d217ef5a30a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ce6ab47a_5c433def",
         "filename": "docs/examples/dom-databroker-txchain/README.md",
         "patchSetId": 3
