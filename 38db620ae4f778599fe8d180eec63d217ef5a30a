@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce6ab47a_5c433def",
+        "filename": "docs/examples/dom-databroker-txchain/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2025-05-20T08:37:46Z",
+      "side": 1,
+      "message": "direct reference can be used",
+      "revId": "38db620ae4f778599fe8d180eec63d217ef5a30a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f97e1d7b_4b8bd1e2",
+        "filename": "docs/examples/dom-databroker-txchain/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2025-05-20T08:37:46Z",
+      "side": 1,
+      "message": "use shorter lines",
+      "revId": "38db620ae4f778599fe8d180eec63d217ef5a30a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
