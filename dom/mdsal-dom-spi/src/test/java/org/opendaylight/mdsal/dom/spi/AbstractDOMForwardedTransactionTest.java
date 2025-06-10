@@ -35,8 +35,8 @@ public class AbstractDOMForwardedTransactionTest {
     public void closeSubtransactionsTest() {
         doThrow(UnsupportedOperationException.class).when(configTx).close();
 
-        final var forwardedTx = new DOMForwardedTransactionTestImpl("test",
-            type -> switch (type) {
+        final var forwardedTx = new DOMForwardedTransactionTestImpl("test", type ->
+            switch (type) {
                 case CONFIGURATION -> configTx;
                 case OPERATIONAL -> operationalTx;
             });
@@ -53,8 +53,8 @@ public class AbstractDOMForwardedTransactionTest {
 
     @Test
     public void datastoreMismatchOnGetSubtransaction() {
-        final var forwardedTx = new DOMForwardedTransactionTestImpl("test",
-            type -> switch (type) {
+        final var forwardedTx = new DOMForwardedTransactionTestImpl("test", type ->
+            switch (type) {
                 case CONFIGURATION -> configTx;
                 case OPERATIONAL -> operationalTx;
             });
