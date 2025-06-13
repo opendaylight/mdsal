@@ -7,12 +7,12 @@
  */
 package org.opendaylight.mdsal.replicate.netty;
 
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 final class NioBootstrapSupport extends AbstractBootstrapSupport {
     NioBootstrapSupport() {
-        super(NioSocketChannel.class, NioServerSocketChannel.class, new NioEventLoopGroup(), new NioEventLoopGroup());
+        super(NioSocketChannel.class, NioServerSocketChannel.class, NioIoHandler.newFactory());
     }
 }
