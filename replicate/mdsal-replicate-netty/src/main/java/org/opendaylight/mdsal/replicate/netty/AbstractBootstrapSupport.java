@@ -13,6 +13,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.IoHandlerFactory;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.socket.ServerSocketChannel;
 import java.util.concurrent.TimeUnit;
@@ -25,12 +27,11 @@ public abstract class AbstractBootstrapSupport implements AutoCloseable, Bootstr
     private final EventLoopGroup workerGroup;
 
     AbstractBootstrapSupport(final Class<? extends Channel> channelClass,
-            final Class<? extends ServerSocketChannel> serverChannelClass, final EventLoopGroup bossGroup,
-            final EventLoopGroup workerGroup) {
+            final Class<? extends ServerSocketChannel> serverChannelClass, final IoHandlerFactory ioHandlerFactory) {
         this.channelClass = requireNonNull(channelClass);
         this.serverChannelClass = requireNonNull(serverChannelClass);
-        this.bossGroup = requireNonNull(bossGroup);
-        this.workerGroup = requireNonNull(workerGroup);
+        bossGroup = new MultiThreadIoEventLoopGroup(ioHandlerFactory);
+        workerGroup = new MultiThreadIoEventLoopGroup(ioHandlerFactory);
     }
 
     public static @NonNull AbstractBootstrapSupport create() {

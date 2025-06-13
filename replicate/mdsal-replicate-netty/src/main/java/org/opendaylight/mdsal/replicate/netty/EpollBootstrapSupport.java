@@ -7,13 +7,12 @@
  */
 package org.opendaylight.mdsal.replicate.netty;
 
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollIoHandler;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 
 final class EpollBootstrapSupport extends AbstractBootstrapSupport {
     EpollBootstrapSupport() {
-        super(EpollSocketChannel.class, EpollServerSocketChannel.class, new EpollEventLoopGroup(),
-            new EpollEventLoopGroup());
+        super(EpollSocketChannel.class, EpollServerSocketChannel.class, EpollIoHandler.newFactory());
     }
 }
