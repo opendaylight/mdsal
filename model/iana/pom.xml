@@ -24,6 +24,11 @@
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
     <modules>
         <!-- RFC7224 and updates -->
         <module>iana-if-type</module>
@@ -46,9 +51,4 @@
         <!-- RFC9645 and updates -->
         <module>iana-tls-cipher-suite-algs</module>
     </modules>
-
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
-    </properties>
 </project>

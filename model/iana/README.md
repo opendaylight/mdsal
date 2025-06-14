@@ -7,6 +7,8 @@ marked as being maintained by IANA. These typically start with `iana-`.
 We package exactly one revision of each model. The revisions of models can be bumped across major and minor versions
 (e.g between 15.0.2 and 15.1.0), but not across minor versions (e.g. between 15.0.2 and 15.0.3).
 
+YANG files included here should always come from the above IANA registry.
+
 Model currently packaged are:
 * [iana-crypt-hash.yang](iana-crypt-hash)
 * [iana-hardware.yang]( iana-hardware)

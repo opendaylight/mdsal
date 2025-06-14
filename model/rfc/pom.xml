@@ -18,11 +18,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
-    <artifactId>model-ietf-aggregator</artifactId>
+    <artifactId>model-rfc-aggregator</artifactId>
     <version>14.0.14-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
 
     <modules>
         <!-- RFC6022 NETCONF Monitoring -->
@@ -199,13 +204,5 @@
 
         <!-- RFC9648 YANG Data Model for TCP -->
         <module>rfc9648</module>
-
-        <!-- Legacy IETF topology models -->
-        <module>ietf-topology</module>
     </modules>
-
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
-    </properties>
 </project>

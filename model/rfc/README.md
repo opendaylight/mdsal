@@ -11,3 +11,5 @@ Each model is packaged in a separate artifact, indicating its lifecycle:
 
 New artifacts may be introduced in minor versions (e.g. between 15.0.2 and 15.0.3), but can only be removed, or changed
 incompatibly in a major version (e.g between 15.x.y and 16.0.0).
+
+YANG files included here should always come from the above IANA registry.
