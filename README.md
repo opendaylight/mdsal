@@ -27,7 +27,7 @@ based on YANG modeling.
 
 The MD-SAL provides two different API types (flavours): +
 
-Binding:: 
+Binding::
   MD-SAL APIs which extensively uses APIs and classes generated
   from YANG models, which provides compile-time safety and allows developers
   to use more natural way to work with data.
@@ -50,3 +50,23 @@ for XML and JSON payload type.
 
 MD-SAL is part of [OpenDaylight Project](https://opendaylight.org), where we
 use [Gerrit](https://git.opendaylight.org) for incoming patch reviews.
+
+## Repository organization
+
+The repository is split into the following logical parts:
+* the [Bill Of Materials](artifacts)
+* the [documentation](docs)
+* [parent pom.xml for modern bundle artifacts](bnd-parent)
+* [parent pom.xml for legacy bundle artifacts](bundle-parent)
+* a library of [YANG models](model)
+* some [Netty integrations](netty)
+* [MD-SAL commons](common)
+* [Binding MD-SAL components](binding)
+* [DOM MD-SAL components](dom)
+* [Entity Ownership Service](entityownership)
+* [Cluster Singleton Service](singleton-service)
+* [Datastore Replication Service](replicate)
+* prototype [DOM MD-SAL tracing implementation](trace)
+* prototype [YANG library implementation](yanglib)
+* [Karaf features](features)
+* [Karaf distribution](karaf) packaging all features
