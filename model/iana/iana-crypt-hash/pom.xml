@@ -13,13 +13,12 @@
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
         <version>14.0.14-SNAPSHOT</version>
-        <relativePath>../../../binding/binding-parent</relativePath>
+        <relativePath>../../../binding/binding-parent/pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
     <artifactId>iana-crypt-hash</artifactId>
-    <version>14.0.14-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>

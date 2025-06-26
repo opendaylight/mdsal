@@ -12,12 +12,11 @@
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
         <version>14.0.14-SNAPSHOT</version>
-        <relativePath>../feature-parent</relativePath>
+        <relativePath>../feature-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc6022</artifactId>
-    <version>14.0.14-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC6022</name>

@@ -14,7 +14,7 @@
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>bundle-parent</artifactId>
         <version>14.0.14-SNAPSHOT</version>
-        <relativePath>../../bundle-parent</relativePath>
+        <relativePath>../../bundle-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>mdsal-yanglib-api</artifactId>
