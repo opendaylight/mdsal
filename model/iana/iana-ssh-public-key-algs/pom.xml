@@ -8,18 +8,16 @@
  and is available at http://www.eclipse.org/legal/epl-v10.html
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
         <version>14.0.14-SNAPSHOT</version>
-        <relativePath>../../../binding/binding-parent</relativePath>
+        <relativePath>../../../binding/binding-parent/pom.xml</relativePath>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
     <artifactId>iana-ssh-public-key-algs</artifactId>
-    <version>14.0.14-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>

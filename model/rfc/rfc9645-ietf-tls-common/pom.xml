@@ -13,12 +13,11 @@
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
         <version>14.0.14-SNAPSHOT</version>
-        <relativePath>../../../binding/binding-parent</relativePath>
+        <relativePath>../../../binding/binding-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
     <artifactId>rfc9645-ietf-tls-common</artifactId>
-    <version>14.0.14-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>

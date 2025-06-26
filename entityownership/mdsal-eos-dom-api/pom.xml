@@ -12,7 +12,7 @@
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>bnd-parent</artifactId>
         <version>14.0.14-SNAPSHOT</version>
-        <relativePath>../../bnd-parent</relativePath>
+        <relativePath>../../bnd-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>mdsal-eos-dom-api</artifactId>
