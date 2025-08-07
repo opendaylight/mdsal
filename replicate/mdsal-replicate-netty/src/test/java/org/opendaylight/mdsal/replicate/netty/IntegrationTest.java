@@ -38,7 +38,7 @@ import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.Entity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -182,7 +182,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
             final EntityKey key = new EntityKey("testEntity" + i);
 
             writeTransaction.put(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.builder(Entity.class, key).build(), new EntityBuilder().withKey(key).build());
+                DataObjectIdentifier.builder(Entity.class, key).build(), new EntityBuilder().withKey(key).build());
             writeTransaction.commit().get();
         }
     }
