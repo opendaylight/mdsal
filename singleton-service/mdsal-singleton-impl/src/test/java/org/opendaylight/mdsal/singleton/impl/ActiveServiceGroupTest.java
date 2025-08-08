@@ -7,11 +7,12 @@
  */
 package org.opendaylight.mdsal.singleton.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -26,13 +27,14 @@ import static org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServicePr
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
@@ -44,26 +46,27 @@ import org.opendaylight.yangtools.concepts.Registration;
 /**
  * Testing {@link ActiveServiceGroup}.
  */
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ActiveServiceGroupTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class ActiveServiceGroupTest {
     private static final String SERVICE_IDENTIFIER = "TestServiceIdent";
     private static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = new ServiceGroupIdentifier(SERVICE_IDENTIFIER);
 
-    public static final @NonNull DOMEntity MAIN_ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
-    public static final @NonNull DOMEntity CLOSE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    private static final @NonNull DOMEntity MAIN_ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    private static final @NonNull DOMEntity CLOSE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
 
     @Mock
-    public ClusterSingletonService mockClusterSingletonService;
+    private ClusterSingletonService mockClusterSingletonService;
     @Mock
-    public ClusterSingletonService mockClusterSingletonServiceSecond;
+    private ClusterSingletonService mockClusterSingletonServiceSecond;
     @Mock
-    public Registration mockEntityCandReg;
+    private Registration mockEntityCandReg;
     @Mock
-    public Registration mockCloseEntityCandReg;
+    private Registration mockCloseEntityCandReg;
     @Mock
-    public DOMEntityOwnershipListener mockEosListener;
+    private DOMEntityOwnershipListener mockEosListener;
     @Mock
-    public DOMEntityOwnershipService mockEosService;
+    private DOMEntityOwnershipService mockEosService;
 
     private ActiveServiceGroup singletonServiceGroup;
     private ServiceRegistration firstReg;
@@ -71,11 +74,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Initialization functionality for every Tests in this suite.
-     *
-     * @throws CandidateAlreadyRegisteredException unexpected exception.
      */
-    @Before
-    public void setup() throws CandidateAlreadyRegisteredException {
+    @BeforeEach
+    void beforeEach() throws Exception {
         doReturn(mockEntityCandReg).when(mockEosService).registerCandidate(MAIN_ENTITY);
         doReturn(mockCloseEntityCandReg).when(mockEosService).registerCandidate(CLOSE_ENTITY);
         doNothing().when(mockEntityCandReg).close();
@@ -106,7 +107,7 @@ public class ActiveServiceGroupTest {
      * Test NULL ServiceIdent input for new ServiceGroup instance.
      */
     @Test
-    public void instantiationClusterSingletonServiceGroupNullIdentTest() {
+    void instantiationClusterSingletonServiceGroupNullIdentTest() {
         assertThrows(NullPointerException.class,
             () -> new ActiveServiceGroup(null, MAIN_ENTITY, CLOSE_ENTITY, mockEosService));
     }
@@ -115,7 +116,7 @@ public class ActiveServiceGroupTest {
      * Test NULL MainEntity input for new ServiceGroup instance.
      */
     @Test
-    public void instantiationClusterSingletonServiceGroupNullMainEntityTest() {
+    void instantiationClusterSingletonServiceGroupNullMainEntityTest() {
         assertThrows(NullPointerException.class,
             () -> new ActiveServiceGroup(SERVICE_GROUP_IDENT, null, CLOSE_ENTITY, mockEosService));
     }
@@ -124,7 +125,7 @@ public class ActiveServiceGroupTest {
      * Test NULL CloseEntity input for new ServiceGroup instance.
      */
     @Test
-    public void instantiationClusterSingletonServiceGroupNullCloseEntityTest() {
+    void instantiationClusterSingletonServiceGroupNullCloseEntityTest() {
         assertThrows(NullPointerException.class,
             () -> new ActiveServiceGroup(SERVICE_GROUP_IDENT, MAIN_ENTITY, null, mockEosService));
     }
@@ -133,7 +134,7 @@ public class ActiveServiceGroupTest {
      * Test NULL EntityOwnershipService input for new ServiceGroup instance.
      */
     @Test
-    public void instantiationClusterSingletonServiceGroupNullEOS_Test() {
+    void instantiationClusterSingletonServiceGroupNullEOS_Test() {
         assertThrows(NullPointerException.class,
             () -> new ActiveServiceGroup(SERVICE_GROUP_IDENT, MAIN_ENTITY, CLOSE_ENTITY, null));
     }
@@ -142,18 +143,16 @@ public class ActiveServiceGroupTest {
      * Test GoldPath for initialization ServiceGroup.
      */
     @Test
-    public void initializationClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void initializationClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
     }
 
     /**
      * Test GoldPath for NO-TO-SLAVE entity Candidate role change.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void initializationSlaveTest() throws CandidateAlreadyRegisteredException {
+    void initializationSlaveTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -164,11 +163,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test GoldPath for NO-TO-SLAVE but without MASTER entity Candidate role change.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void initializationNoMasterTest() throws CandidateAlreadyRegisteredException {
+    void initializationNoMasterTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -179,11 +176,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test GoldPath for InJeopardy entity Candidate role change.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void initializationInJeopardyTest() throws CandidateAlreadyRegisteredException {
+    void initializationInJeopardyTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -198,7 +193,7 @@ public class ActiveServiceGroupTest {
      * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void serviceRegistrationClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void serviceRegistrationClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -210,8 +205,7 @@ public class ActiveServiceGroupTest {
      * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void serviceRegistrationClusterSingletonServiceGroupTwoServiceTest()
-            throws CandidateAlreadyRegisteredException {
+    void serviceRegistrationClusterSingletonServiceGroupTwoServiceTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -221,11 +215,9 @@ public class ActiveServiceGroupTest {
     /**
      * Test GoldPath for unregistration SingletonService don't call closeServiceInstance
      * without mastership and don't remove ServiceGroup from map.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void serviceUnregistrationClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void serviceUnregistrationClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -234,14 +226,11 @@ public class ActiveServiceGroupTest {
     }
 
     /**
-     * Test GoldPath for unregistration SingletonService don't call closeServiceInstance
-     *     without mastership and don't remove ServiceGroup from map.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
+     * Test GoldPath for unregistration SingletonService don't call closeServiceInstance without mastership and don't
+     * remove ServiceGroup from map.
      */
     @Test
-    public void serviceUnregistrationClusterSingletonServiceGroupTwoServicesTest()
-            throws CandidateAlreadyRegisteredException {
+    void serviceUnregistrationClusterSingletonServiceGroupTwoServicesTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -252,11 +241,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test GoldPath get Slave role for registered main entity.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void getSlaveClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void getSlaveClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -266,11 +253,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test GoldPath get Master role for registered main entity.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void tryToTakeLeaderClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void tryToTakeLeaderClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -281,11 +266,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test GoldPath get Master role for registered close entity.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void takeMasterClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void takeMasterClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -297,13 +280,10 @@ public class ActiveServiceGroupTest {
     }
 
     /**
-     * Test GoldPath get Master role for registered entity but initial Slave
-     *     role for closeEntity.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
+     * Test GoldPath get Master role for registered entity but initial Slave role for closeEntity.
      */
     @Test
-    public void waitToTakeMasterClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void waitToTakeMasterClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -317,11 +297,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test inJeopardy validation during wait phase for Master role for closeEntity.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void inJeopardyInWaitPhaseClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void inJeopardyInWaitPhaseClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -335,12 +313,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test inJeopardy validation during wait phase for Master role for closeEntity.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void inJeopardyInWaitPhaseClusterSingletonServiceGroupTwoServiceTest()
-            throws CandidateAlreadyRegisteredException {
+    void inJeopardyInWaitPhaseClusterSingletonServiceGroupTwoServiceTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -355,11 +330,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test inJeopardy validation for holding leadership.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void inJeopardyLeaderClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void inJeopardyLeaderClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -380,11 +353,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test GoldPath for SLAVE-TO-MASTER entity Candidate role change.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void lostLeaderClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
+    void lostLeaderClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -402,18 +373,18 @@ public class ActiveServiceGroupTest {
      *     Not initialized provider has to close and remove all singletonServices from Group and
      *     Group itself remove too.
      */
-    @Test(expected = IllegalStateException.class)
-    public void tryToTakeLeaderForNotInitializedGroupTest() {
-        singletonServiceGroup.registerService(firstReg);
+    @Test
+    void tryToTakeLeaderForNotInitializedGroupTest() {
+        final var ex = assertThrows(IllegalStateException.class, () -> singletonServiceGroup.registerService(firstReg));
+        assertEquals("Service group ServiceGroupIdentifier[value=TestServiceIdent] is not initialized yet",
+            ex.getMessage());
     }
 
     /**
      * Test checks closing processing for close {@link ServiceRegistration}.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void checkClosingRegistrationTest() throws CandidateAlreadyRegisteredException {
+    void checkClosingRegistrationTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -430,12 +401,9 @@ public class ActiveServiceGroupTest {
 
     /**
      * Test checks validation Error processing for MASTER-TO-SLAVE closeEntity Candidate role change.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
      */
     @Test
-    public void checkClosingUnexpectedDoubleEntityForMasterOwnershipChangeRegistrationTest()
-            throws CandidateAlreadyRegisteredException {
+    void checkClosingUnexpectedDoubleEntityForMasterOwnershipChangeRegistrationTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -449,14 +417,11 @@ public class ActiveServiceGroupTest {
     }
 
     /**
-     * Test checks validation Error processing for MASTER-TO-SLAVE closeEntity Candidate role change
-     *     without closeEntity registration.
-     *
-     * @throws CandidateAlreadyRegisteredException - unexpected exception
+     * Test checks validation Error processing for MASTER-TO-SLAVE closeEntity Candidate role change without closeEntity
+     * registration.
      */
     @Test
-    public void checkClosingUnexpectedDoubleEntityForSlaveOwnershipChangeRegistrationTest()
-            throws CandidateAlreadyRegisteredException {
+    void checkClosingUnexpectedDoubleEntityForSlaveOwnershipChangeRegistrationTest() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
@@ -468,8 +433,7 @@ public class ActiveServiceGroupTest {
     }
 
     @Test
-    public void testRegisterCloseShutdown() throws CandidateAlreadyRegisteredException, InterruptedException,
-            ExecutionException {
+    void testRegisterCloseShutdown() throws Exception {
         initializeGroupAndStartService();
 
         assertNotNull(singletonServiceGroup.unregisterService(firstReg));
@@ -489,12 +453,12 @@ public class ActiveServiceGroupTest {
         assertNull(future.get());
     }
 
-    private void initialize() throws CandidateAlreadyRegisteredException {
+    private void initialize() throws Exception {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
     }
 
-    private void initializeGroupAndStartService() throws CandidateAlreadyRegisteredException {
+    private void initializeGroupAndStartService() throws Exception {
         initialize();
         singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(MAIN_ENTITY, LOCAL_OWNERSHIP_GRANTED, false);
