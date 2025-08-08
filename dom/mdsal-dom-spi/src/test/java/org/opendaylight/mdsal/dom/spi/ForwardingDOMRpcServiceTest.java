@@ -7,39 +7,53 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.google.common.util.concurrent.ListenableFuture;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMRpcServiceTest extends ForwardingDOMRpcService {
-    @Mock(name = "domRpcService")
-    public DOMRpcService domRpcService;
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMRpcServiceTest {
+    @Mock
+    private DOMRpcService delegate;
+    @Mock
+    private DOMRpcAvailabilityListener listener;
+    @Mock
+    private ContainerNode input;
+    @Mock
+    private ListenableFuture<?> future;
+    @Mock
+    private Registration registration;
+    @Spy
+    private ForwardingDOMRpcService service;
 
-    @Test
-    public void basicTest() {
-        final DOMRpcAvailabilityListener domRpcAvailabilityListener = mock(DOMRpcAvailabilityListener.class);
-        final QName id = QName.create("urn:foo", "foo");
-
-        doReturn(null).when(domRpcService).invokeRpc(id, null);
-        invokeRpc(id, null);
-        verify(domRpcService).invokeRpc(id, null);
-
-        doReturn(null).when(domRpcService).registerRpcListener(domRpcAvailabilityListener);
-        registerRpcListener(domRpcAvailabilityListener);
-        verify(domRpcService).registerRpcListener(domRpcAvailabilityListener);
+    @BeforeEach
+    void beforeEach() {
+        doReturn(delegate).when(service).delegate();
     }
 
-    @Override
-    protected DOMRpcService delegate() {
-        return domRpcService;
+    @Test
+    void invokeRpcForwards() {
+        final var id = QName.create("urn:foo", "foo");
+
+        doReturn(future).when(delegate).invokeRpc(id, input);
+        assertSame(future, service.invokeRpc(id, input));
+    }
+
+    @Test
+    void registerListenerForwards() {
+        doReturn(registration).when(delegate).registerRpcListener(listener);
+        assertSame(registration, service.registerRpcListener(listener));
     }
 }

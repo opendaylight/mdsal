@@ -7,24 +7,24 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AbstractDOMStoreTransactionTest extends AbstractDOMStoreTransaction<String> {
+class AbstractDOMStoreTransactionTest extends AbstractDOMStoreTransaction<String> {
     private static final String IDENTIFIER = "testIdentifier";
 
-    @Test
-    public void basicTest() {
-        assertEquals(IDENTIFIER, this.getIdentifier());
-        assertTrue(this.toString().contains(IDENTIFIER));
-        assertNull(this.getDebugContext());
+    AbstractDOMStoreTransactionTest() {
+        super(IDENTIFIER);
     }
 
-    public AbstractDOMStoreTransactionTest() {
-        super(IDENTIFIER);
+    @Test
+    void basicTest() {
+        assertEquals(IDENTIFIER, getIdentifier());
+        assertNull(getDebugContext());
+        assertThat(toString()).contains(IDENTIFIER);
     }
 
     @Override

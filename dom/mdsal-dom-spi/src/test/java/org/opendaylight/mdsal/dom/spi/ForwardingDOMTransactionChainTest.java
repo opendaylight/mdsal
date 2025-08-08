@@ -7,38 +7,53 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionChain {
-    @Mock(name = "domTransactionChain")
-    public DOMTransactionChain domTransactionChain;
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMTransactionChainTest {
+    @Mock
+    private DOMTransactionChain delegate;
+    @Mock
+    private DOMDataTreeReadTransaction readTx;
+    @Mock
+    private DOMDataTreeWriteTransaction writeTx;
+    @Spy
+    private ForwardingDOMTransactionChain chain;
 
-    @Test
-    public void basicTest() {
-        doReturn(null).when(domTransactionChain).newWriteOnlyTransaction();
-        newWriteOnlyTransaction();
-        verify(domTransactionChain).newWriteOnlyTransaction();
-
-        doReturn(null).when(domTransactionChain).newReadOnlyTransaction();
-        newReadOnlyTransaction();
-        verify(domTransactionChain).newReadOnlyTransaction();
-
-        doNothing().when(domTransactionChain).close();
-        close();
-        verify(domTransactionChain).close();
+    @BeforeEach
+    void beforeEach() {
+        doReturn(delegate).when(chain).delegate();
     }
 
-    @Override
-    protected DOMTransactionChain delegate() {
-        return domTransactionChain;
+    @Test
+    void writeOnlyForwards() {
+        doReturn(writeTx).when(delegate).newWriteOnlyTransaction();
+        assertSame(writeTx, chain.newWriteOnlyTransaction());
+    }
+
+    @Test
+    void readOnlyForwards() {
+        doReturn(readTx).when(delegate).newReadOnlyTransaction();
+        assertSame(readTx, chain.newReadOnlyTransaction());
+    }
+
+    @Test
+    void closeForwards() {
+        doNothing().when(delegate).close();
+        chain.close();
+        verify(delegate).close();
     }
 }

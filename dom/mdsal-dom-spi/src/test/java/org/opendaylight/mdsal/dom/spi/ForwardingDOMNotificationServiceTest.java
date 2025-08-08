@@ -7,39 +7,45 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.yangtools.concepts.Registration;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ForwardingDOMNotificationServiceTest extends ForwardingDOMNotificationService {
-    @Mock(name = "domNotificationService")
-    public DOMNotificationService domNotificationService;
+@ExtendWith(MockitoExtension.class)
+class ForwardingDOMNotificationServiceTest {
+    @Mock
+    private DOMNotificationService delegate;
+    @Mock
+    private DOMNotificationListener listener;
+    @Mock
+    private Registration registration;
+    @Spy
+    private ForwardingDOMNotificationService service;
 
-    @Test
-    public void basicTest() {
-        final DOMNotificationListener domNotificationListener = mock(DOMNotificationListener.class);
-
-        doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener);
-        this.registerNotificationListener(domNotificationListener);
-        verify(domNotificationService).registerNotificationListener(domNotificationListener);
-
-        doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener,
-                Collections.emptySet());
-        this.registerNotificationListener(domNotificationListener, Collections.emptySet());
-        verify(domNotificationService).registerNotificationListener(domNotificationListener, Collections.emptySet());
+    @BeforeEach
+    void beforeEach() {
+        doReturn(delegate).when(service).delegate();
     }
 
-    @Override
-    protected DOMNotificationService delegate() {
-        return domNotificationService;
+    @Test
+    void registerAllForwards() {
+        doReturn(registration).when(delegate).registerNotificationListener(listener);
+        assertSame(registration, service.registerNotificationListener(listener));
+    }
+
+    @Test
+    void registerSetForwards() {
+        doReturn(registration).when(delegate).registerNotificationListener(listener, Set.of());
+        assertSame(registration, service.registerNotificationListener(listener, Set.of()));
     }
 }

@@ -18,63 +18,68 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.MoreObjects;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
-public class SnapshotBackedWriteTransactionTest {
-    private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
-    private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
-    private static final TransactionReadyPrototype<Object> TRANSACTION_READY_PROTOTYPE =
-            mock(TransactionReadyPrototype.class);
-    private static final DOMStoreThreePhaseCommitCohort DOM_STORE_THREE_PHASE_COMMIT_COHORT =
-            mock(DOMStoreThreePhaseCommitCohort.class);
-    private static final ContainerNode NORMALIZED_NODE = mock(ContainerNode.class);
-    private static final Optional<ContainerNode> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
-
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class SnapshotBackedWriteTransactionTest {
+    @Mock
+    private DataTreeSnapshot dataTreeSnapshot;
+    @Mock
+    private DataTreeModification dataTreeModification;
+    @Mock
+    private TransactionReadyPrototype<Object> transactionReadyPrototype;
+    @Mock
+    private DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
+    @Mock
+    private ContainerNode normalizedNode;
     private SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
-    @Before
-    public void setUp() {
-        doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
-        doNothing().when(DATA_TREE_MODIFICATION).ready();
-        doNothing().when(DATA_TREE_MODIFICATION).write(any(), any());
-        doNothing().when(DATA_TREE_MODIFICATION).merge(any(), any());
-        doNothing().when(DATA_TREE_MODIFICATION).delete(any());
-        doNothing().when(TRANSACTION_READY_PROTOTYPE).transactionAborted(any());
-        doReturn("testDataTreeModification").when(DATA_TREE_MODIFICATION).toString();
-        doReturn("testNormalizedNode").when(NORMALIZED_NODE).toString();
-        doReturn(DOM_STORE_THREE_PHASE_COMMIT_COHORT)
-                .when(TRANSACTION_READY_PROTOTYPE)
-                .transactionReady(any(),any(), any());
-        doReturn(NORMALIZED_NODE_OPTIONAL).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.of());
-        snapshotBackedWriteTransaction = new SnapshotBackedWriteTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
-                TRANSACTION_READY_PROTOTYPE);
+    @BeforeEach
+    void beforeEach() {
+        doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
+        doNothing().when(dataTreeModification).ready();
+        doNothing().when(dataTreeModification).write(any(), any());
+        doNothing().when(dataTreeModification).merge(any(), any());
+        doNothing().when(dataTreeModification).delete(any());
+        doNothing().when(transactionReadyPrototype).transactionAborted(any());
+        doReturn("testDataTreeModification").when(dataTreeModification).toString();
+        doReturn("testNormalizedNode").when(normalizedNode).toString();
+        doReturn(domStoreThreePhaseCommitCohort).when(transactionReadyPrototype).transactionReady(any(),any(), any());
+        doReturn(Optional.of(normalizedNode)).when(dataTreeModification).readNode(YangInstanceIdentifier.of());
+        snapshotBackedWriteTransaction = new SnapshotBackedWriteTransaction<>(new Object(), false, dataTreeSnapshot,
+                transactionReadyPrototype);
     }
 
     @Test
-    public void basicTest() {
-        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE);
-        verify(DATA_TREE_MODIFICATION).write(any(), any());
+    void basicTest() {
+        snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), normalizedNode);
+        verify(dataTreeModification).write(any(), any());
 
-        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE);
-        verify(DATA_TREE_MODIFICATION).merge(any(), any());
+        snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), normalizedNode);
+        verify(dataTreeModification).merge(any(), any());
 
         snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of());
-        verify(DATA_TREE_MODIFICATION).delete(any());
+        verify(dataTreeModification).delete(any());
 
-        assertEquals(NORMALIZED_NODE_OPTIONAL,
+        assertEquals(Optional.of(normalizedNode),
                 snapshotBackedWriteTransaction.readSnapshotNode(YangInstanceIdentifier.of()));
-        verify(DATA_TREE_MODIFICATION).readNode(any());
+        verify(dataTreeModification).readNode(any());
 
         assertTrue(snapshotBackedWriteTransaction.addToStringAttributes(
                 MoreObjects.toStringHelper(this).omitNullValues()).toString().contains("ready"));
@@ -82,45 +87,45 @@ public class SnapshotBackedWriteTransactionTest {
     }
 
     @Test
-    public void readyTest() {
-        final var tx = new SnapshotBackedWriteTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
-            TRANSACTION_READY_PROTOTYPE);
-        assertNotNull(tx.ready());
-        verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), eq(null));
-        tx.close();
+    void readyTest() {
+        try (var tx = new SnapshotBackedWriteTransaction<>(new Object(), false, dataTreeSnapshot,
+            transactionReadyPrototype)) {
+            assertNotNull(tx.ready());
+            verify(transactionReadyPrototype).transactionReady(any(), any(), eq(null));
+        }
     }
 
     @Test
-    public void readyWithException() {
+    void readyWithException() {
         Exception thrown = new RuntimeException();
-        doThrow(thrown).when(DATA_TREE_MODIFICATION).ready();
+        doThrow(thrown).when(dataTreeModification).ready();
         assertNotNull(snapshotBackedWriteTransaction.ready());
-        verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), same(thrown));
+        verify(transactionReadyPrototype).transactionReady(any(), any(), same(thrown));
     }
 
     @Test
-    public void writeWithException() {
+    void writeWithException() {
         doAnswer(inv -> {
             throw new TestException();
-        }).when(DATA_TREE_MODIFICATION).write(any(), any());
+        }).when(dataTreeModification).write(any(), any());
         assertThrows(IllegalArgumentException.class,
-            () -> snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), NORMALIZED_NODE));
+            () -> snapshotBackedWriteTransaction.write(YangInstanceIdentifier.of(), normalizedNode));
     }
 
     @Test
-    public void mergeWithException() {
+    void mergeWithException() {
         doAnswer(inv -> {
             throw new TestException();
-        }).when(DATA_TREE_MODIFICATION).merge(any(), any());
+        }).when(dataTreeModification).merge(any(), any());
         assertThrows(IllegalArgumentException.class,
-            () -> snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), NORMALIZED_NODE));
+            () -> snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.of(), normalizedNode));
     }
 
     @Test
-    public void deleteWithException() {
+    void deleteWithException() {
         doAnswer(inv -> {
             throw new TestException();
-        }).when(DATA_TREE_MODIFICATION).delete(any());
+        }).when(dataTreeModification).delete(any());
         assertThrows(IllegalArgumentException.class,
             () -> snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.of()));
     }

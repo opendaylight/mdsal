@@ -9,26 +9,26 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.mockito.Mockito.doReturn;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class AbstractSnapshotBackedTransactionChainTest {
+@ExtendWith(MockitoExtension.class)
+class AbstractSnapshotBackedTransactionChainTest {
     @Mock
-    public DataTreeSnapshot dataTreeSnapshot;
+    private DataTreeSnapshot dataTreeSnapshot;
     @Mock
-    public DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
+    private DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
     @Mock
-    public DataTreeModification dataTreeModification;
+    private DataTreeModification dataTreeModification;
     @Mock
-    public SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
+    private SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Test
-    public void basicTest() {
+    void basicTest() {
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
 
         final var chain = new AbstractSnapshotBackedTransactionChain<>() {

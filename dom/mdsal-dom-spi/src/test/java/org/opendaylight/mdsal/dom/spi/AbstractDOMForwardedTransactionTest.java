@@ -7,32 +7,31 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
 import java.util.function.Function;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class AbstractDOMForwardedTransactionTest {
+@ExtendWith(MockitoExtension.class)
+class AbstractDOMForwardedTransactionTest {
     @Mock
-    public DOMStoreTransaction configTx;
+    private DOMStoreTransaction configTx;
     @Mock
-    public DOMStoreTransaction operationalTx;
+    private DOMStoreTransaction operationalTx;
 
     @Test
-    public void closeSubtransactionsTest() {
+    void closeSubtransactionsTest() {
         doThrow(UnsupportedOperationException.class).when(configTx).close();
 
         final var forwardedTx = new DOMForwardedTransactionTestImpl("test", type ->
@@ -48,11 +47,11 @@ public class AbstractDOMForwardedTransactionTest {
         final var ex = assertThrows(IllegalStateException.class,
             forwardedTx::closeSubtransactions);
         assertEquals("Uncaught exception occurred during closing transaction", ex.getMessage());
-        assertThat(ex.getCause(), instanceOf(UnsupportedOperationException.class));
+        assertInstanceOf(UnsupportedOperationException.class, ex.getCause());
     }
 
     @Test
-    public void datastoreMismatchOnGetSubtransaction() {
+    void datastoreMismatchOnGetSubtransaction() {
         final var forwardedTx = new DOMForwardedTransactionTestImpl("test", type ->
             switch (type) {
                 case CONFIGURATION -> configTx;
