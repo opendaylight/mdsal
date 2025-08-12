@@ -7,25 +7,23 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.opendaylight.mdsal.dom.api.DOMNotification;
+import org.junit.jupiter.api.Test;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChanged;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChangedBuilder;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
+import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
-public class LazySerializedDOMNotificationTest {
+class LazySerializedDOMNotificationTest {
     @Test
-    public void basicTest() {
-        BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
-        final DOMNotification lazySerializedDOMNotification =
-                new LazySerializedNotification(codec, new TwoLevelListChangedBuilder().build());
-        ContainerNode containerNode = mock(ContainerNode.class);
-        doReturn(containerNode).when(codec).toNormalizedNodeNotification(any());
-        assertEquals(containerNode, lazySerializedDOMNotification.getBody());
+    void basicTest() {
+        final var codec = new BindingCodecContext(BindingRuntimeHelpers.createRuntimeContext());
+        final var notification = new LazySerializedNotification(codec, new TwoLevelListChangedBuilder().build());
+        assertEquals(ImmutableNodes.newContainerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(TwoLevelListChanged.QNAME))
+            .build(), notification.getBody());
     }
 }
