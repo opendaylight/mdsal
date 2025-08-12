@@ -7,9 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.testutils;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -69,7 +68,7 @@ public class DataBrokerFailuresTest {
     private void checkCommitFails() {
         FluentFuture<?> future = dataBroker.newReadWriteTransaction().commit();
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
-        assertThat(ex.getCause(), instanceOf(TransactionCommitFailedException.class));
+        assertInstanceOf(TransactionCommitFailedException.class, ex.getCause());
     }
 
     @Test
@@ -99,7 +98,7 @@ public class DataBrokerFailuresTest {
 
         FluentFuture<?> future = dataBroker.newWriteOnlyTransaction().commit();
         ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
-        assertThat(ex.getCause(), instanceOf(OptimisticLockFailedException.class));
+        assertInstanceOf(OptimisticLockFailedException.class, ex.getCause());
     }
 
     @Test

@@ -17,7 +17,6 @@ import org.junit.Test;
  * @author Michael Vorburger
  */
 public class DataBrokerTestModuleTest {
-
     @Test
     public void ensureDataBrokerTestModuleWorksWithoutException() {
         assertNotNull(DataBrokerTestModule.dataBroker());
