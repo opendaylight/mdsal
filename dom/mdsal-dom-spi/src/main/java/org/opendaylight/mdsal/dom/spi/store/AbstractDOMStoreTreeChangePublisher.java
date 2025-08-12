@@ -185,13 +185,14 @@ public abstract class AbstractDOMStoreTreeChangePublisher
 
         for (var candChild : candNode.childNodes()) {
             if (candChild.modificationType() != ModificationType.UNMODIFIED) {
-                final var regChild = regNode.getExactChild(candChild.name());
+                final var candName = candChild.name();
+                final var regChild = regNode.getExactChild(candName);
                 if (regChild != null) {
-                    notifyNode(path.node(candChild.name()), regChild, candChild, listenerChanges);
+                    notifyNode(path.node(candName), regChild, candChild, listenerChanges);
                 }
 
-                for (var rc : regNode.getInexactChildren(candChild.name())) {
-                    notifyNode(path.node(candChild.name()), rc, candChild, listenerChanges);
+                for (var rc : regNode.getInexactChildren(candName)) {
+                    notifyNode(path.node(candName), rc, candChild, listenerChanges);
                 }
             }
         }
