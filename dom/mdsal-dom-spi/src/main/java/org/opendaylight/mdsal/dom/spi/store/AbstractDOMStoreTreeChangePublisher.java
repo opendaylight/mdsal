@@ -154,7 +154,14 @@ public abstract class AbstractDOMStoreTreeChangePublisher
     private void lookupAndNotify(final List<PathArgument> args, final int offset, final Node<RegImpl> node,
             final DataTreeCandidate candidate, final Map<Reg, List<DataTreeCandidate>> listenerChanges) {
         if (args.size() == offset) {
-            notifyNode(candidate.getRootPath(), node, candidate.getRootNode(), listenerChanges);
+            final var path = candidate.getRootPath();
+            final var candNode = candidate.getRootNode();
+
+            if (candNode.modificationType() == ModificationType.UNMODIFIED) {
+                LOG.debug("Skipping unmodified candidate {}", path);
+            } else {
+                notifyNode(path, node, candNode, listenerChanges);
+            }
             return;
         }
 
@@ -170,11 +177,6 @@ public abstract class AbstractDOMStoreTreeChangePublisher
 
     private void notifyNode(final YangInstanceIdentifier path, final Node<RegImpl> regNode,
             final DataTreeCandidateNode candNode, final Map<Reg, List<DataTreeCandidate>> listenerChanges) {
-        if (candNode.modificationType() == ModificationType.UNMODIFIED) {
-            LOG.debug("Skipping unmodified candidate {}", path);
-            return;
-        }
-
         final var regs = regNode.getRegistrations();
         if (!regs.isEmpty()) {
             final var dataTreeCandidate = DataTreeCandidates.newDataTreeCandidate(path, candNode);
