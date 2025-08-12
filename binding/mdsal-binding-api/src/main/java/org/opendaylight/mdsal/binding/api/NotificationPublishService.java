@@ -7,10 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.Notification;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
@@ -76,4 +81,28 @@ public interface NotificationPublishService extends BindingService {
      */
     @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification<?> notification,
             int timeout, @NonNull TimeUnit unit) throws InterruptedException;
+
+    /**
+     * Register a new {@link DemandMonitor}.monitoring the demand for a particular {@link Notification} type.
+     *
+     * @param <N> notification type
+     * @param type notification type class
+     * @param monitor the {@link DemandMonitor}
+     * @return A {@link Registration}
+     * @throws NullPointerException if {@code listener} is {@code null}
+     * @throws UnsupportedOperationException if this method is not supported
+     */
+    @NonNullByDefault
+    default <N extends Notification<N> & DataObject> Registration registerDemandMonitor(final Class<N> type,
+            final DemandMonitor monitor) {
+        requireNonNull(type);
+        requireNonNull(monitor);
+        throw new UnsupportedOperationException();
+    }
+
+    @NonNullByDefault
+    interface DemandMonitor {
+
+        Registration demandEncountered();
+    }
 }
