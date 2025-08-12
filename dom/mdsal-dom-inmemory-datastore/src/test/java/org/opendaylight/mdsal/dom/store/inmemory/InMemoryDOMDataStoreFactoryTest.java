@@ -34,7 +34,7 @@ class InMemoryDOMDataStoreFactoryTest {
     private AutoCloseable autoCloseable;
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         final String testStoreName = "TestStore";
         doReturn(null).when(domSchemaService).registerSchemaContextListener(any());
 
