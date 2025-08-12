@@ -42,17 +42,20 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     @Override
     public <N extends Notification<N> & DataObject> Registration registerListener(final Class<N> type,
             final Listener<N> listener, final Executor executor) {
+        final var domType = adapterContext.currentSerializer().getNotificationPath(type);
         final var domListener = new BindingDOMNotificationListenerAdapter<>(adapterContext, type, listener, executor);
-        return domNotifService.registerNotificationListener(domListener, Set.of(domListener.schemaPath()));
+        return domNotifService.registerNotificationListener(domListener, domType);
     }
 
     @Override
     public Registration registerCompositeListener(final CompositeListener listener, final Executor executor) {
         final var exec = requireNonNull(executor);
-        final var listeners = new HashMap<Absolute, DOMNotificationListener>();
-        for (var constituent : listener.constituents()) {
-            final var domListener = new BindingDOMNotificationListenerAdapter<>(adapterContext, constituent, exec);
-            listeners.put(domListener.schemaPath(), domListener);
+        final var serializer = adapterContext.currentSerializer();
+        final var constituents = listener.constituents();
+        final var listeners = HashMap.<Absolute, DOMNotificationListener>newHashMap(constituents.size());
+        for (var constituent : constituents) {
+            listeners.put(serializer.getNotificationPath(constituent.type()),
+                new BindingDOMNotificationListenerAdapter<>(adapterContext, constituent, exec));
         }
 
         return domNotifService.registerNotificationListeners(listeners);

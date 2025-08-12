@@ -29,6 +29,7 @@ import org.opendaylight.yangtools.binding.BindingContract;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectReference;
+import org.opendaylight.yangtools.binding.Notification;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yangtools.binding.data.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.yangtools.binding.model.api.JavaTypeName;
@@ -85,6 +86,13 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     @NonNull Absolute getNotificationPath(final @NonNull InstanceNotificationSpec<?, ?> spec) {
         return getSchemaNodeIdentifier(spec.path(), spec.type(), NotificationRuntimeType.class,
             NotificationEffectiveStatement.class);
+    }
+
+    @NonNull Absolute getNotificationPath(final @NonNull Class<? extends Notification<?>> type) {
+        final var typeName = JavaTypeName.create(type.asSubclass(Notification.class));
+        final var runtimeType = (NotificationRuntimeType) getRuntimeContext().getTypes().findSchema(typeName)
+            .orElseThrow(() -> new IllegalArgumentException(typeName + " is not known"));
+        return Absolute.of(runtimeType.statement().argument()).intern();
     }
 
     private <T extends RuntimeType> @NonNull Absolute getSchemaNodeIdentifier(

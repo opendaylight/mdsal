@@ -20,8 +20,9 @@ import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 class LazySerializedDOMNotificationTest {
     @Test
     void basicTest() {
-        final var codec = new BindingCodecContext(BindingRuntimeHelpers.createRuntimeContext());
-        final var notification = new LazySerializedNotification(codec, new TwoLevelListChangedBuilder().build());
+        final var serializer = new CurrentAdapterSerializer(new BindingCodecContext(
+            BindingRuntimeHelpers.createRuntimeContext()));
+        final var notification = new LazySerializedNotification(serializer, new TwoLevelListChangedBuilder().build());
         assertEquals(ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TwoLevelListChanged.QNAME))
             .build(), notification.getBody());
