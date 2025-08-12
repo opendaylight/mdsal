@@ -13,7 +13,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.VerifyException;
 import java.util.concurrent.Executor;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener.Component;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.dom.api.DOMEvent;
@@ -21,8 +20,6 @@ import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.Notification;
-import org.opendaylight.yangtools.binding.reflect.BindingReflections;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class BindingDOMNotificationListenerAdapter<N extends Notification<N> & DataObject>
         implements DOMNotificationListener {
@@ -42,10 +39,6 @@ final class BindingDOMNotificationListenerAdapter<N extends Notification<N> & Da
     BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final Component<N> component,
             final Executor executor) {
         this(adapterContext, component.type(), component.listener(), executor);
-    }
-
-    @NonNull Absolute schemaPath() {
-        return Absolute.of(BindingReflections.findQName(type));
     }
 
     @Override
