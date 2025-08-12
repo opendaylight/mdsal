@@ -50,13 +50,23 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 @Beta
 @VisibleForTesting
 public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecServices {
-    private final LoadingCache<BindingInstanceIdentifier, YangInstanceIdentifier> cache = CacheBuilder.newBuilder()
-            .softValues().build(new CacheLoader<BindingInstanceIdentifier, YangInstanceIdentifier>() {
-                @Override
-                public YangInstanceIdentifier load(final BindingInstanceIdentifier key) {
-                    return getInstanceIdentifierCodec().fromBinding(key);
-                }
-            });
+    private final LoadingCache<BindingInstanceIdentifier, YangInstanceIdentifier> yangInstanceIdentifierCache =
+        CacheBuilder.newBuilder().softValues().build(new CacheLoader<>() {
+            @Override
+            public YangInstanceIdentifier load(final BindingInstanceIdentifier key) {
+                return getInstanceIdentifierCodec().fromBinding(key);
+            }
+        });
+    private final LoadingCache<Class<? extends Notification<?>>, Absolute> notificationPathCache =
+        CacheBuilder.newBuilder().weakKeys().weakValues().build(new CacheLoader<>() {
+            @Override
+            public Absolute load(final Class<? extends Notification<?>> key) {
+                final var typeName = JavaTypeName.create(key);
+                final var runtimeType = (NotificationRuntimeType) getRuntimeContext().getTypes().findSchema(typeName)
+                    .orElseThrow(() -> new IllegalArgumentException(typeName + " is not known"));
+                return Absolute.of(runtimeType.statement().argument()).intern();
+            }
+        });
 
     private final ConcurrentMap<JavaTypeName, ContextReferenceExtractor> extractors = new ConcurrentHashMap<>();
     private final @NonNull BindingDOMCodecServices delegate;
@@ -71,7 +81,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull YangInstanceIdentifier toCachedYangInstanceIdentifier(final @NonNull BindingInstanceIdentifier path) {
-        return cache.getUnchecked(path);
+        return yangInstanceIdentifierCache.getUnchecked(path);
     }
 
     <T extends DataObject> @NonNull DataObjectReference<T> coerceInstanceIdentifier(final YangInstanceIdentifier dom) {
@@ -89,10 +99,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull Absolute getNotificationPath(final @NonNull Class<? extends Notification<?>> type) {
-        final var typeName = JavaTypeName.create(type.asSubclass(Notification.class));
-        final var runtimeType = (NotificationRuntimeType) getRuntimeContext().getTypes().findSchema(typeName)
-            .orElseThrow(() -> new IllegalArgumentException(typeName + " is not known"));
-        return Absolute.of(runtimeType.statement().argument()).intern();
+        return notificationPathCache.getUnchecked(type);
     }
 
     private <T extends RuntimeType> @NonNull Absolute getSchemaNodeIdentifier(
