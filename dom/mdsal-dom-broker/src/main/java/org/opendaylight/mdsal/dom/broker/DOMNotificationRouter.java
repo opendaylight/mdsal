@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -27,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -35,6 +37,12 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationListener;
+import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension;
@@ -47,6 +55,8 @@ import org.opendaylight.yangtools.util.ObjectRegistry;
 import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -205,13 +215,65 @@ public class DOMNotificationRouter implements AutoCloseable {
         }
     }
 
+    private final class InstancePublishFacade implements DOMInstanceNotificationPublishService {
+        @Override
+        public ListenableFuture<? extends Object> putNotification(final DOMDataTreeIdentifier path,
+                final DOMNotification notification) throws InterruptedException {
+            return putNotificationImpl(path, notification);
+        }
+
+        @Override
+        public ListenableFuture<? extends Object> offerNotification(final DOMDataTreeIdentifier path,
+                final DOMNotification notification) {
+            final var subscribers = subscribers(path.datastore(), notification);
+            return subscribers == null ?  Empty.immediateFuture() : publish(path.path(), notification, subscribers);
+        }
+
+        @Override
+        public ListenableFuture<? extends Object> offerNotification(final DOMDataTreeIdentifier path,
+                final DOMNotification notification, long timeout, final TimeUnit unit) throws InterruptedException {
+            final var subscribers = subscribers(path.datastore(), notification);
+            if (subscribers == null) {
+                return Empty.immediateFuture();
+            }
+            // Attempt to perform a non-blocking publish first
+            final var noBlock = publish(path.path(), notification, subscribers);
+            if (!DOMNotificationPublishService.REJECTED.equals(noBlock)) {
+                return noBlock;
+            }
+
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private final class InstanceSubscribeFacade implements DOMInstanceNotificationService {
+        @Override
+        public Registration registerNotificationListener(final DOMDataTreeIdentifier path, final QName type,
+                final DOMInstanceNotificationListener listener, final Executor executor) {
+            // Precludes concurrent modification of instanceListeners
+            synchronized (DOMNotificationRouter.this) {
+
+            }
+
+
+
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
     private static final VarHandle LISTENERS;
+    private static final VarHandle INSTANCE_LISTENERS;
 
     static {
+        final var lookup = MethodHandles.lookup();
+
         try {
-            LISTENERS = MethodHandles.lookup()
-                .findVarHandle(DOMNotificationRouter.class, "listeners", ImmutableMultimap.class);
+            LISTENERS = lookup.findVarHandle(DOMNotificationRouter.class, "listeners", ImmutableMultimap.class);
+            INSTANCE_LISTENERS = lookup
+                .findVarHandle(DOMNotificationRouter.class, "instanceListeners", ImmutableTable.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -220,6 +282,10 @@ public class DOMNotificationRouter implements AutoCloseable {
     private final EqualityQueuedNotificationManager<Reg, DOMNotificationRouterEvent> queueNotificationManager;
     private final @NonNull DOMNotificationPublishService notificationPublishService = new PublishFacade();
     private final @NonNull DOMNotificationService notificationService = new SubscribeFacade();
+    private final @NonNull DOMInstanceNotificationPublishService instanceNotificationPublishService =
+            new InstancePublishFacade();
+    private final @NonNull DOMInstanceNotificationService instanceNotificationService = new InstanceSubscribeFacade();
+
     private final ObjectRegistry<DemandListener> demandListeners =
         ObjectRegistry.createConcurrent("notification demand listeners");
     private final ScheduledThreadPoolExecutor observer;
@@ -228,6 +294,13 @@ public class DOMNotificationRouter implements AutoCloseable {
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD",
         justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile ImmutableMultimap<Absolute, Reg> listeners = ImmutableMultimap.of();
+
+    // FIXME: soo... locking here
+
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD",
+        justification = "https://github.com/spotbugs/spotbugs/issues/2749")
+    private volatile ImmutableTable<LogicalDatastoreType, QName, InstanceNotificationListeners> instanceListeners =
+        ImmutableTable.of();
 
     @Inject
     public DOMNotificationRouter(final int maxQueueCapacity) {
@@ -255,6 +328,14 @@ public class DOMNotificationRouter implements AutoCloseable {
 
     public final @NonNull DOMNotificationPublishService notificationPublishService() {
         return notificationPublishService;
+    }
+
+    public final @NonNull DOMInstanceNotificationService instanceNotificationService() {
+        return instanceNotificationService;
+    }
+
+    public final @NonNull DOMInstanceNotificationPublishService instanceNotificationPublishService() {
+        return instanceNotificationPublishService;
     }
 
     private synchronized void removeRegistration(final SingleReg reg) {
@@ -297,6 +378,13 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     @VisibleForTesting
+    @NonNull ListenableFuture<? extends Object> putNotificationImpl(final DOMDataTreeIdentifier path,
+            final DOMNotification notification) throws InterruptedException {
+        final var subscribers = subscribers(path.datastore(), notification);
+        return subscribers == null ? Empty.immediateFuture() : publish(path.path(), notification, subscribers);
+    }
+
+    @VisibleForTesting
     @NonNull ListenableFuture<?> publish(final DOMNotification notification, final Collection<Reg> subscribers) {
         final var futures = new ArrayList<ListenableFuture<?>>(subscribers.size());
         subscribers.forEach(subscriber -> {
@@ -306,6 +394,13 @@ public class DOMNotificationRouter implements AutoCloseable {
         });
         return Futures.transform(Futures.successfulAsList(futures), ignored -> Empty.value(),
             MoreExecutors.directExecutor());
+    }
+
+    @VisibleForTesting
+    @NonNull ListenableFuture<?> publish(final YangInstanceIdentifier path, final DOMNotification notification,
+            final InstanceNotificationListeners subscribers) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException();
     }
 
     @PreDestroy
@@ -339,6 +434,13 @@ public class DOMNotificationRouter implements AutoCloseable {
 
     private ImmutableCollection<Reg> subscribers(final DOMNotification notification) {
         return listeners().get(notification.getType());
+    }
+
+    private @Nullable InstanceNotificationListeners subscribers(final LogicalDatastoreType dataStore,
+            final DOMNotification notification) {
+        final var local = (ImmutableTable<LogicalDatastoreType, QName, InstanceNotificationListeners>)
+            INSTANCE_LISTENERS.getAcquire(this);
+        return local.get(dataStore, notification.getType().lastNodeIdentifier());
     }
 
     private static void deliverEvents(final Reg reg, final ImmutableList<DOMNotificationRouterEvent> events) {
