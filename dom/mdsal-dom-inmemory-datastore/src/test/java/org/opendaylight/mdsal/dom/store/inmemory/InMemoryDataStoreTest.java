@@ -7,35 +7,34 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -48,33 +47,46 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
-public class InMemoryDataStoreTest {
+@ExtendWith(MockitoExtension.class)
+class InMemoryDataStoreTest {
     private static EffectiveModelContext SCHEMA_CONTEXT;
+
+    @Mock
+    private DataTreeSnapshot mockSnapshot;
+    @Mock
+    private DataTreeModification mockModification;
+    @Mock
+    private TransactionReadyPrototype<String> mockReady;
 
     private InMemoryDOMDataStore domStore;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeAll() {
         SCHEMA_CONTEXT = TestModel.createTestContext();
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterAll() {
         SCHEMA_CONTEXT = null;
     }
 
-    @Before
-    public void setupStore() {
+    @BeforeEach
+    void beforeEach() {
         domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
         domStore.onModelContextUpdated(SCHEMA_CONTEXT);
     }
 
+    @AfterEach
+    void afterEach() {
+        domStore.close();
+    }
+
     @Test
-    public void testTransactionIsolation() throws Exception {
-        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+    void testTransactionIsolation() throws Exception {
+        final var readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        final var writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         /**
@@ -101,9 +113,8 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testTransactionCommit() throws Exception {
-
-        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+    void testTransactionCommit() throws Exception {
+        final var writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         /**
@@ -117,7 +128,7 @@ public class InMemoryDataStoreTest {
          */
         assertEquals(Optional.of(testNode), Futures.getDone(writeTx.read(TestModel.TEST_PATH)));
 
-        DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
+        final var cohort = writeTx.ready();
 
         assertThreePhaseCommit(cohort);
 
@@ -126,9 +137,8 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testDelete() throws Exception {
-
-        DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
+    void testDelete() throws Exception {
+        var writeTx = domStore.newWriteOnlyTransaction();
         assertNotNull(writeTx);
 
         // Write /test and commit
@@ -151,12 +161,11 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testMerge() throws Exception {
-
-        DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
+    void testMerge() throws Exception {
+        var writeTx = domStore.newWriteOnlyTransaction();
         assertNotNull(writeTx);
 
-        ContainerNode containerNode = ImmutableNodes.newContainerBuilder()
+        var containerNode = ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .addChild(ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
@@ -206,12 +215,11 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testExistsForExistingData() throws Exception {
-
-        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+    void testExistsForExistingData() throws Exception {
+        final var writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
-        ContainerNode containerNode = ImmutableNodes.newContainerBuilder()
+        final var containerNode = ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .addChild(ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
@@ -227,29 +235,28 @@ public class InMemoryDataStoreTest {
 
         assertEquals(Boolean.TRUE, Futures.getDone(writeTx.exists(TestModel.TEST_PATH)));
 
-        DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
+        final var ready = writeTx.ready();
 
         ready.preCommit().get();
 
         ready.commit().get();
 
-        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+        final var readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         assertEquals(Boolean.TRUE, Futures.getDone(readTx.exists(TestModel.TEST_PATH)));
     }
 
     @Test
-    public void testExistsForNonExistingData() throws Exception {
-
-        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+    void testExistsForNonExistingData() throws Exception {
+        final var writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         var exists = writeTx.exists(TestModel.TEST_PATH);
 
         assertEquals(Boolean.FALSE, exists.get());
 
-        var readTx = domStore.newReadOnlyTransaction();
+        final var readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         exists = readTx.exists(TestModel.TEST_PATH);
@@ -258,22 +265,22 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testExistsThrowsReadFailedException() {
-        var readTx = domStore.newReadOnlyTransaction();
+    void testExistsThrowsReadFailedException() {
+        final var readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         readTx.close();
 
         final var future = readTx.exists(TestModel.TEST_PATH);
 
-        final var ex = assertThrows(ExecutionException.class, future::get).getCause();
-        assertThat(ex, instanceOf(ReadFailedException.class));
+        final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var rfe = assertInstanceOf(ReadFailedException.class, ee.getCause());
+        assertEquals("Transaction is closed", rfe.getMessage());
     }
 
-
     @Test
-    public void testReadWithReadOnlyTransactionClosed() {
-        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+    void testReadWithReadOnlyTransactionClosed() {
+        final var readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         readTx.close();
@@ -282,20 +289,15 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testReadWithReadOnlyTransactionFailure() {
-        DataTreeSnapshot mockSnapshot = mock(DataTreeSnapshot.class);
-        doThrow(new RuntimeException("mock ex")).when(mockSnapshot)
-            .readNode(any(YangInstanceIdentifier.class));
+    void testReadWithReadOnlyTransactionFailure() {
+        doThrow(new RuntimeException("mock ex")).when(mockSnapshot).readNode(any(YangInstanceIdentifier.class));
 
-        DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadTransaction("1", true, mockSnapshot);
-
-        assertReadThrows(readTx);
+        assertReadThrows(SnapshotBackedTransactions.newReadTransaction("1", true, mockSnapshot));
     }
 
     @Test
-    public void testReadWithReadWriteTransactionClosed() {
-
-        DOMStoreReadTransaction readTx = domStore.newReadWriteTransaction();
+    void testReadWithReadWriteTransactionClosed() {
+        final var readTx = domStore.newReadWriteTransaction();
         assertNotNull(readTx);
 
         readTx.close();
@@ -304,24 +306,17 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testReadWithReadWriteTransactionFailure() {
-        DataTreeSnapshot mockSnapshot = mock(DataTreeSnapshot.class);
-        DataTreeModification mockModification = mock(DataTreeModification.class);
-        doThrow(new RuntimeException("mock ex")).when(mockModification)
-            .readNode(any(YangInstanceIdentifier.class));
+    void testReadWithReadWriteTransactionFailure() {
+        doThrow(new RuntimeException("mock ex")).when(mockModification).readNode(any(YangInstanceIdentifier.class));
         doReturn(mockModification).when(mockSnapshot).newModification();
-        @SuppressWarnings("unchecked")
-        TransactionReadyPrototype<String> mockReady = mock(TransactionReadyPrototype.class);
-        DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadWriteTransaction(
-                "1", false, mockSnapshot, mockReady);
-
+        final var readTx = SnapshotBackedTransactions.newReadWriteTransaction("1", false, mockSnapshot, mockReady);
         assertReadThrows(readTx);
     }
 
     private static void assertReadThrows(final DOMStoreReadTransaction readTx) {
         final var future = readTx.read(TestModel.TEST_PATH);
-        final var cause = assertThrows(ExecutionException.class, future::get).getCause();
-        assertThat(cause, instanceOf(ReadFailedException.class));
+        final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        assertInstanceOf(ReadFailedException.class, ee.getCause());
     }
 
     @Test
@@ -334,7 +329,7 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testReadyWithTransactionAlreadyReady() {
+    void testReadyWithTransactionAlreadyReady() {
         var writeTx = domStore.newWriteOnlyTransaction();
 
         writeTx.ready();
@@ -344,19 +339,19 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testReadyWithMissingMandatoryData() {
-        DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
+    void testReadyWithMissingMandatoryData() {
+        final var writeTx = domStore.newWriteOnlyTransaction();
         var testNode = ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.MANDATORY_DATA_TEST_QNAME))
                 .addChild(ImmutableNodes.leafNode(TestModel.OPTIONAL_QNAME, "data"))
                 .build();
         writeTx.write(TestModel.MANDATORY_DATA_TEST_PATH, testNode);
-        DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
+        final var ready = writeTx.ready();
 
         final var future = ready.canCommit();
-        final var cause = assertThrows(ExecutionException.class, future::get).getCause();
-        assertThat(cause, instanceOf(IllegalArgumentException.class));
-        assertThat(cause.getMessage(), containsString("mandatory-data-test is missing mandatory descendant"));
+        final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var cause = assertInstanceOf(IllegalArgumentException.class, ee.getCause());
+        assertThat(cause.getMessage()).contains("mandatory-data-test is missing mandatory descendant");
     }
 
     @Test
@@ -377,27 +372,27 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    public void testTransactionChain() throws Exception {
-        DOMStoreTransactionChain txChain = domStore.createTransactionChain();
+    void testTransactionChain() throws Exception {
+        final var txChain = domStore.createTransactionChain();
         assertNotNull(txChain);
 
         /**
          * We alocate new read-write transaction and write /test.
          */
-        DOMStoreReadWriteTransaction firstTx = txChain.newReadWriteTransaction();
+        final var firstTx = txChain.newReadWriteTransaction();
         assertTestContainerWrite(firstTx);
 
         /**
          * First transaction is marked as ready, we are able to allocate chained
          * transactions.
          */
-        final DOMStoreThreePhaseCommitCohort firstWriteTxCohort = firstTx.ready();
+        final var firstWriteTxCohort = firstTx.ready();
 
         /**
          * We alocate chained transaction - read transaction, note first one is
          * still not commited to datastore.
          */
-        DOMStoreReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
+        final var secondReadTx = txChain.newReadOnlyTransaction();
 
         /**
          * We test if we are able to read data from tx, read should not fail
@@ -409,7 +404,7 @@ public class InMemoryDataStoreTest {
          * We alocate next transaction, which is still based on first one, but
          * is read-write.
          */
-        DOMStoreReadWriteTransaction thirdDeleteTx = txChain.newReadWriteTransaction();
+        final var thirdDeleteTx = txChain.newReadWriteTransaction();
 
         /**
          * We test existence of /test in third transaction container should
@@ -425,7 +420,7 @@ public class InMemoryDataStoreTest {
         /**
          * third transaction is sealed.
          */
-        DOMStoreThreePhaseCommitCohort thirdDeleteTxCohort = thirdDeleteTx.ready();
+        final var thirdDeleteTxCohort = thirdDeleteTx.ready();
 
         /**
          * We commit first transaction.
@@ -433,8 +428,8 @@ public class InMemoryDataStoreTest {
          */
         assertThreePhaseCommit(firstWriteTxCohort);
 
-        // Alocates store transacion
-        DOMStoreReadTransaction storeReadTx = domStore.newReadOnlyTransaction();
+        // Allocates store transaction
+        final var storeReadTx = domStore.newReadOnlyTransaction();
         /**
          * We verify transaction is commited to store, container should exists
          * in datastore.
@@ -448,10 +443,10 @@ public class InMemoryDataStoreTest {
     }
 
     @Test
-    @Ignore
-    public void testTransactionConflict() throws Exception {
-        DOMStoreReadWriteTransaction txOne = domStore.newReadWriteTransaction();
-        DOMStoreReadWriteTransaction txTwo = domStore.newReadWriteTransaction();
+    @Disabled
+    void testTransactionConflict() throws Exception {
+        final var txOne = domStore.newReadWriteTransaction();
+        final var txTwo = domStore.newReadWriteTransaction();
         assertTestContainerWrite(txOne);
         assertTestContainerWrite(txTwo);
 
@@ -489,8 +484,7 @@ public class InMemoryDataStoreTest {
      */
     private static Optional<NormalizedNode> assertTestContainerExists(final DOMStoreReadTransaction readTx)
             throws Exception {
-
-        ListenableFuture<Optional<NormalizedNode>> writeTxContainer = readTx.read(TestModel.TEST_PATH);
+        final var writeTxContainer = readTx.read(TestModel.TEST_PATH);
         assertTrue(writeTxContainer.get().isPresent());
         return writeTxContainer.get();
     }

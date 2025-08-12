@@ -7,13 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -76,10 +75,10 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         final var cause = new ConflictingModificationAppliedException(YangInstanceIdentifier.of(), "testException");
         doThrow(cause).when(dataStore).validate(any());
 
-        final var ex = assertFailsCanCommit(prepareSimpleCohort());
-        assertThat(ex, instanceOf(OptimisticLockFailedException.class));
+        final var ex = assertInstanceOf(OptimisticLockFailedException.class,
+            assertFailsCanCommit(prepareSimpleCohort()));
         assertSame(cause, ex.getCause());
-        final var errors = ((OptimisticLockFailedException) ex).getErrorList();
+        final var errors = ex.getErrorList();
         assertEquals(1, errors.size());
         final var error = errors.get(0);
         assertEquals(ErrorSeverity.ERROR, error.getSeverity());
@@ -92,10 +91,10 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         final var cause = new DataValidationFailedException(YangInstanceIdentifier.of(), "testException");
         doThrow(cause).when(dataStore).validate(any());
 
-        final var ex = assertFailsCanCommit(prepareSimpleCohort());
-        assertThat(ex, instanceOf(TransactionCommitFailedException.class));
+        final var ex = assertInstanceOf(TransactionCommitFailedException.class,
+            assertFailsCanCommit(prepareSimpleCohort()));
         assertSame(cause, ex.getCause());
-        final var errors = ((TransactionCommitFailedException) ex).getErrorList();
+        final var errors = ex.getErrorList();
         assertEquals(1, errors.size());
         final var error = errors.get(0);
         assertEquals(ErrorSeverity.ERROR, error.getSeverity());
