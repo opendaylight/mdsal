@@ -16,16 +16,14 @@ import java.util.concurrent.ExecutorService;
  *
  * @author Thomas Pantelis
  */
-public class TestDCLExecutorService extends ForwardingExecutorService {
-
+final class TestDCLExecutorService extends ForwardingExecutorService {
     // Start with a same thread executor to avoid timing issues during test setup.
     private volatile ExecutorService currentExecutor = MoreExecutors.newDirectExecutorService();
 
     // The real executor to use when test setup is complete.
     private final ExecutorService postSetupExecutor;
 
-
-    public TestDCLExecutorService(final ExecutorService postSetupExecutor) {
+    TestDCLExecutorService(final ExecutorService postSetupExecutor) {
         this.postSetupExecutor = postSetupExecutor;
     }
 
@@ -34,7 +32,7 @@ public class TestDCLExecutorService extends ForwardingExecutorService {
         return currentExecutor;
     }
 
-    public void afterTestSetup() {
+    void afterTestSetup() {
         // Test setup complete - switch to the real executor.
         currentExecutor = postSetupExecutor;
     }

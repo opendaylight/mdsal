@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
