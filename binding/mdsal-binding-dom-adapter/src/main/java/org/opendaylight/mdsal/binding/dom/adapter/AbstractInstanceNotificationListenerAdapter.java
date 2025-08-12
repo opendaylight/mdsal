@@ -41,10 +41,10 @@ abstract class AbstractInstanceNotificationListenerAdapter<P extends DataObject,
     @Override
     public final void onNotification(final DOMDataTreeIdentifier path, final DOMNotification notification) {
         final var serializer = adapterContext.currentSerializer();
-        final var bindingNotification = notification instanceof DOMEvent
+        final var bindingNotification = notification instanceof DOMEvent domEvent
             ? serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody(),
-                ((DOMEvent) notification).getEventInstant())
-                : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
+                domEvent.getEventInstant())
+            : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
 
         final N castNotification;
         try {
