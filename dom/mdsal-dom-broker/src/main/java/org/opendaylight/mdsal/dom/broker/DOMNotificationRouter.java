@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.broker;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -18,6 +19,9 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,14 +119,14 @@ public class DOMNotificationRouter implements AutoCloseable {
 
         @Override
         public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification) {
-            final var subscribers = listeners.get(notification.getType());
+            final var subscribers = subscribers(notification);
             return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
         }
 
         @Override
         public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification,
                 final long timeout, final TimeUnit unit) throws InterruptedException {
-            final var subscribers = listeners.get(notification.getType());
+            final var subscribers = subscribers(notification);
             if (subscribers.isEmpty()) {
                 return Empty.immediateFuture();
             }
@@ -148,7 +152,7 @@ public class DOMNotificationRouter implements AutoCloseable {
 
         @Override
         public Registration registerDemandListener(final DemandListener listener) {
-            final var initialTypes = listeners.keySet();
+            final var initialTypes = listeners().keySet();
             executor.execute(() -> listener.onDemandUpdated(initialTypes));
             return demandListeners.register(listener);
         }
@@ -163,7 +167,7 @@ public class DOMNotificationRouter implements AutoCloseable {
 
                 if (!types.isEmpty()) {
                     final var b = ImmutableMultimap.<Absolute, Reg>builder();
-                    b.putAll(listeners);
+                    b.putAll(listeners());
 
                     for (var t : types) {
                         b.put(t, reg);
@@ -181,7 +185,7 @@ public class DOMNotificationRouter implements AutoCloseable {
                 final Map<Absolute, DOMNotificationListener> typeToListener) {
             synchronized (DOMNotificationRouter.this) {
                 final var b = ImmutableMultimap.<Absolute, Reg>builder();
-                b.putAll(listeners);
+                b.putAll(listeners());
 
                 final var tmp = new HashMap<DOMNotificationListener, ComponentReg>();
                 for (var e : typeToListener.entrySet()) {
@@ -203,6 +207,17 @@ public class DOMNotificationRouter implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
 
+    private static final VarHandle LISTENERS;
+
+    static {
+        try {
+            LISTENERS = MethodHandles.lookup()
+                .findVarHandle(DOMNotificationRouter.class, "listeners", ImmutableMultimap.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     private final EqualityQueuedNotificationManager<Reg, DOMNotificationRouterEvent> queueNotificationManager;
     private final @NonNull DOMNotificationPublishService notificationPublishService = new PublishFacade();
     private final @NonNull DOMNotificationService notificationService = new SubscribeFacade();
@@ -211,6 +226,8 @@ public class DOMNotificationRouter implements AutoCloseable {
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD",
+        justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile ImmutableMultimap<Absolute, Reg> listeners = ImmutableMultimap.of();
 
     @Inject
@@ -233,20 +250,20 @@ public class DOMNotificationRouter implements AutoCloseable {
         this(config.queueDepth());
     }
 
-    public @NonNull DOMNotificationService notificationService() {
+    public final @NonNull DOMNotificationService notificationService() {
         return notificationService;
     }
 
-    public @NonNull DOMNotificationPublishService notificationPublishService() {
+    public final @NonNull DOMNotificationPublishService notificationPublishService() {
         return notificationPublishService;
     }
 
     private synchronized void removeRegistration(final SingleReg reg) {
-        replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners, input -> input != reg)));
+        replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners(), input -> input != reg)));
     }
 
     private synchronized void removeRegistrations(final List<ComponentReg> regs) {
-        replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners, input -> !regs.contains(input))));
+        replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners(), input -> !regs.contains(input))));
     }
 
     /**
@@ -255,7 +272,7 @@ public class DOMNotificationRouter implements AutoCloseable {
      * @param newListeners is used to notify listenerTypes changed
      */
     private void replaceListeners(final ImmutableMultimap<Absolute, Reg> newListeners) {
-        listeners = newListeners;
+        LISTENERS.setRelease(this, newListeners);
         notifyListenerTypesChanged(newListeners.keySet());
     }
 
@@ -276,7 +293,7 @@ public class DOMNotificationRouter implements AutoCloseable {
     @VisibleForTesting
     @NonNull ListenableFuture<? extends Object> putNotificationImpl(final DOMNotification notification)
             throws InterruptedException {
-        final var subscribers = listeners.get(notification.getType());
+        final var subscribers = subscribers(notification);
         return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
     }
 
@@ -295,30 +312,34 @@ public class DOMNotificationRouter implements AutoCloseable {
     @PreDestroy
     @Deactivate
     @Override
-    public void close() {
+    public final void close() {
         observer.shutdown();
         executor.shutdown();
         LOG.info("DOM Notification Router stopped");
     }
 
     @VisibleForTesting
-    ExecutorService executor() {
+    final ExecutorService executor() {
         return executor;
     }
 
     @VisibleForTesting
-    ExecutorService observer() {
+    final ExecutorService observer() {
         return observer;
     }
 
     @VisibleForTesting
-    ImmutableMultimap<Absolute, ?> listeners() {
-        return listeners;
+    final ImmutableMultimap<Absolute, Reg> listeners() {
+        return (ImmutableMultimap<Absolute, Reg>) LISTENERS.getAcquire(this);
     }
 
     @VisibleForTesting
-    ObjectRegistry<DemandListener> demandListeners() {
+    final ObjectRegistry<DemandListener> demandListeners() {
         return demandListeners;
+    }
+
+    private ImmutableCollection<Reg> subscribers(final DOMNotification notification) {
+        return listeners().get(notification.getType());
     }
 
     private static void deliverEvents(final Reg reg, final ImmutableList<DOMNotificationRouterEvent> events) {
