@@ -7,25 +7,21 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.binding.testutils.DataBrokerFailuresImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
@@ -51,7 +47,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test
     public void testAdaptedWriteTransactionPutsSuccessfully() throws Exception {
-        TopLevelList data = newTestDataObject();
+        final var data = newTestDataObject();
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.OPERATIONAL,
                     TEST_PATH, data)).get();
@@ -60,7 +56,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test
     public void testAdaptedReadWriteTransactionPutsSuccessfully() throws Exception {
-        TopLevelList data = newTestDataObject();
+        final var data = newTestDataObject();
         managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toReadWriteTransaction(writeTx).put(LogicalDatastoreType.OPERATIONAL,
                     TEST_PATH, data)).get();
@@ -69,21 +65,21 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test
     public void testAdaptedWriteTransactionFailsOnInvalidDatastore() throws Exception {
-        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
+        final var future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
                     TEST_PATH, newTestDataObject()));
-        ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
-        assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
+        final var ex = assertThrows(ExecutionException.class, () -> future.get());
+        assertInstanceOf(IllegalArgumentException.class, ex.getCause());
         assertEquals(Optional.empty(), syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testAdaptedReadWriteTransactionFailsOnInvalidDatastore() throws Exception {
-        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
+        final var future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> TransactionAdapter.toReadWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
                 TEST_PATH, newTestDataObject()));
-        ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
-        assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
+        final var ex = assertThrows(ExecutionException.class, () -> future.get());
+        assertInstanceOf(IllegalArgumentException.class, ex.getCause());
         assertEquals(Optional.empty(), syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
@@ -112,14 +108,14 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     }
 
     private static TopLevelList newTestDataObject() {
-        TreeComplexUsesAugment fooAugment = new TreeComplexUsesAugmentBuilder()
+        final var fooAugment = new TreeComplexUsesAugmentBuilder()
             .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build()).build();
         return topLevelList(TOP_FOO_KEY, fooAugment);
     }
 
     private <T extends DataObject> Optional<T> syncReadOptional(final LogicalDatastoreType datastoreType,
             final InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
-        try (ReadTransaction tx = getDataBroker().newReadOnlyTransaction()) {
+        try (var tx = getDataBroker().newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
         }
     }
