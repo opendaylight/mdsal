@@ -187,7 +187,6 @@ public class DOMNotificationRouterTest {
     }
 
     private static class TestRouter extends DOMNotificationRouter {
-
         private boolean triggerRejected = false;
 
         TestRouter(final int queueDepth) {
@@ -195,8 +194,7 @@ public class DOMNotificationRouterTest {
         }
 
         @Override
-        ListenableFuture<? extends Object> publish(final DOMNotification notification,
-                final Collection<Reg> subscribers) {
+        ListenableFuture<?> publish(final DOMNotification notification, final Collection<Reg> subscribers) {
             if (triggerRejected) {
                 return DOMNotificationPublishService.REJECTED;
             }
@@ -206,8 +204,7 @@ public class DOMNotificationRouterTest {
         }
 
         @Override
-        public ListenableFuture<? extends Object> putNotificationImpl(final DOMNotification notification)
-                throws InterruptedException {
+        ListenableFuture<?> putNotificationImpl(final DOMNotification notification) throws InterruptedException {
             Thread.sleep(2000);
             return super.putNotificationImpl(notification);
         }
