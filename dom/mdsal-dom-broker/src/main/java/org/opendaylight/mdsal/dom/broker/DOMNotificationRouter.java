@@ -237,6 +237,10 @@ public class DOMNotificationRouter implements AutoCloseable {
     private volatile ImmutableMultimap<Absolute, Reg> listeners = ImmutableMultimap.of();
 
     @Inject
+    public DOMNotificationRouter() {
+        this(65536);
+    }
+
     public DOMNotificationRouter(final int maxQueueCapacity) {
         observer = new ScheduledThreadPoolExecutor(1, OBSERVER_TF);
         executor = Executors.newCachedThreadPool(LISTENERS_TF);
