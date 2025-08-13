@@ -39,7 +39,6 @@ import javax.inject.Singleton;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
@@ -101,13 +100,83 @@ public final class DOMRpcRouter extends AbstractRegistration {
         }
     }
 
+    private static final class ActionAvailReg extends AbstractRegistration {
+        private final AvailabilityListener listener;
+
+        private Map<Absolute, Set<DOMDataTreeIdentifier>> prevActions;
+        private DOMRpcRouter router;
+
+        ActionAvailReg(final DOMRpcRouter router, final AvailabilityListener listener,
+                final Map<Absolute, Set<DOMDataTreeIdentifier>> actions) {
+            this.listener = requireNonNull(listener);
+            this.router = requireNonNull(router);
+            prevActions = requireNonNull(actions);
+        }
+
+        @Override
+        protected void removeRegistration() {
+            router.removeActionListener(this);
+            router = null;
+        }
+
+        void initialTable() {
+            final var added = new ArrayList<DOMActionInstance>();
+            for (var e : prevActions.entrySet()) {
+                added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
+            }
+            if (!added.isEmpty()) {
+                listener.onActionsChanged(ImmutableSet.of(), ImmutableSet.copyOf(added));
+            }
+        }
+
+        void actionChanged(final DOMActionRoutingTable newTable, final DOMActionImplementation impl) {
+            if (!listener.acceptsImplementation(impl)) {
+                return;
+            }
+
+            final var actions = verifyNotNull(newTable.getOperations(listener));
+            final var diff = Maps.difference(prevActions, actions);
+
+            final var removed = new HashSet<DOMActionInstance>();
+            final var added = new HashSet<DOMActionInstance>();
+
+            for (var le : diff.entriesOnlyOnLeft().entrySet()) {
+                removed.addAll(Collections2.transform(le.getValue(), i -> DOMActionInstance.of(le.getKey(), i)));
+            }
+
+            for (var re : diff.entriesOnlyOnRight().entrySet()) {
+                added.addAll(Collections2.transform(re.getValue(), i -> DOMActionInstance.of(re.getKey(), i)));
+            }
+
+            for (var entry : diff.entriesDiffering().entrySet()) {
+                for (var dti : Sets.difference(entry.getValue().leftValue(), entry.getValue().rightValue())) {
+                    removed.add(DOMActionInstance.of(entry.getKey(), dti));
+                }
+
+                for (var dti : Sets.difference(entry.getValue().rightValue(), entry.getValue().leftValue())) {
+                    added.add(DOMActionInstance.of(entry.getKey(), dti));
+                }
+            }
+
+            prevActions = actions;
+            if (!removed.isEmpty() || !added.isEmpty()) {
+                listener.onActionsChanged(removed, added);
+            }
+        }
+
+        @Override
+        protected ToStringHelper addToStringAttributes(ToStringHelper helper) {
+            return super.addToStringAttributes(helper.add("listener", listener));
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
     private static final ThreadFactory THREAD_FACTORY = Thread.ofPlatform().daemon().name("DOMRpcRouter-listener-", 0)
         .factory();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
     private final @NonNull DOMActionProviderService actionProviderService = new RouterDOMActionProviderService(this);
-    private final @NonNull DOMActionService actionService = new ActionServiceFacade();
+    private final @NonNull DOMActionService actionService = new RouterDOMActionService(this);
     private final @NonNull DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
     private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
 
@@ -148,8 +217,32 @@ public final class DOMRpcRouter extends AbstractRegistration {
         close();
     }
 
+    @Deprecated(since = "14.0.15", forRemoval = true)
     public @NonNull DOMActionService actionService() {
         return actionService;
+    }
+
+    @NonNullByDefault
+    ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type, final DOMDataTreeIdentifier path,
+            final ContainerNode input) {
+        checkArgument(!path.path().isEmpty(), "Action path must not be empty");
+
+        final var entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
+        return entry != null ? OperationInvocation.invoke(entry, type, path, requireNonNull(input))
+            : Futures.immediateFailedFuture(
+                new DOMActionNotAvailableException("No implementation of Action %s available", type));
+    }
+
+    @NonNullByDefault
+    synchronized Registration registerAvailabilityListener(final AvailabilityListener listener) {
+        final var ret = new ActionAvailReg(this, listener, actionRoutingTable.getOperations(listener));
+        actionListeners = ImmutableList.<ActionAvailReg>builder()
+            .addAll(actionListeners)
+            .add(ret)
+            .build();
+
+        listenerNotifier.execute(ret::initialTable);
+        return ret;
     }
 
     @Deprecated(since = "14.0.15", forRemoval = true)
@@ -357,106 +450,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
             prevRpcs = rpcs;
             if (!removed.isEmpty()) {
                 listener.onRpcUnavailable(removed);
-            }
-        }
-    }
-
-    private static final class ActionAvailReg extends AbstractRegistration {
-        private final AvailabilityListener listener;
-
-        private Map<Absolute, Set<DOMDataTreeIdentifier>> prevActions;
-        private DOMRpcRouter router;
-
-        ActionAvailReg(final DOMRpcRouter router, final AvailabilityListener listener,
-                final Map<Absolute, Set<DOMDataTreeIdentifier>> actions) {
-            this.listener = requireNonNull(listener);
-            this.router = requireNonNull(router);
-            prevActions = requireNonNull(actions);
-        }
-
-        @Override
-        protected void removeRegistration() {
-            router.removeActionListener(this);
-            router = null;
-        }
-
-        void initialTable() {
-            final var added = new ArrayList<DOMActionInstance>();
-            for (var e : prevActions.entrySet()) {
-                added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
-            }
-            if (!added.isEmpty()) {
-                listener.onActionsChanged(ImmutableSet.of(), ImmutableSet.copyOf(added));
-            }
-        }
-
-        void actionChanged(final DOMActionRoutingTable newTable, final DOMActionImplementation impl) {
-            if (!listener.acceptsImplementation(impl)) {
-                return;
-            }
-
-            final Map<Absolute, Set<DOMDataTreeIdentifier>> actions = verifyNotNull(newTable.getOperations(listener));
-            final MapDifference<Absolute, Set<DOMDataTreeIdentifier>> diff = Maps.difference(prevActions, actions);
-
-            final Set<DOMActionInstance> removed = new HashSet<>();
-            final Set<DOMActionInstance> added = new HashSet<>();
-
-            for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
-                removed.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
-            }
-
-            for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
-                added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
-            }
-
-            for (Entry<Absolute, ValueDifference<Set<DOMDataTreeIdentifier>>> e : diff.entriesDiffering().entrySet()) {
-                for (DOMDataTreeIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
-                    removed.add(DOMActionInstance.of(e.getKey(), i));
-                }
-
-                for (DOMDataTreeIdentifier i : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
-                    added.add(DOMActionInstance.of(e.getKey(), i));
-                }
-            }
-
-            prevActions = actions;
-            if (!removed.isEmpty() || !added.isEmpty()) {
-                listener.onActionsChanged(removed, added);
-            }
-        }
-    }
-
-    @NonNullByDefault
-    private final class ActionServiceFacade implements DOMActionService, DOMActionAvailabilityExtension {
-        @Override
-        public List<Extension> supportedExtensions() {
-            return List.of(this);
-        }
-
-        @Override
-        public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
-                final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final YangInstanceIdentifier pathRoot = path.path();
-            checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");
-
-            final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
-            return entry != null ? OperationInvocation.invoke(entry, type, path, requireNonNull(input))
-                : Futures.immediateFailedFuture(
-                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
-        }
-
-        @Override
-        public Registration registerAvailabilityListener(final AvailabilityListener listener) {
-            synchronized (DOMRpcRouter.this) {
-                final var ret = new ActionAvailReg(DOMRpcRouter.this, listener,
-                    actionRoutingTable.getOperations(listener));
-                actionListeners = ImmutableList.<ActionAvailReg>builder()
-                    .addAll(actionListeners)
-                    .add(ret)
-                    .build();
-
-                listenerNotifier.execute(ret::initialTable);
-                return ret;
             }
         }
     }
