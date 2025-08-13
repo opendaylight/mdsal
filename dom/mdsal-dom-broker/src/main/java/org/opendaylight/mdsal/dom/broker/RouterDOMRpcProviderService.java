@@ -7,28 +7,41 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
-import org.opendaylight.mdsal.dom.spi.ForwardingDOMRpcProviderService;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @Singleton
-@Component(service = DOMRpcProviderService.class)
-public final class RouterDOMRpcProviderService extends ForwardingDOMRpcProviderService {
-    private final @NonNull DOMRpcProviderService delegate;
+@Component
+@NonNullByDefault
+public final class RouterDOMRpcProviderService implements DOMRpcProviderService {
+    private final DOMRpcRouter router;
 
     @Inject
     @Activate
     public RouterDOMRpcProviderService(@Reference final DOMRpcRouter router) {
-        delegate = router.rpcProviderService();
+        this.router = requireNonNull(router);
     }
 
     @Override
-    protected DOMRpcProviderService delegate() {
-        return delegate;
+    public Registration registerRpcImplementation(final DOMRpcImplementation implementation,
+            final Set<DOMRpcIdentifier> rpcs) {
+        return router.registerRpcImplementation(implementation, rpcs);
+    }
+
+    @Override
+    public Registration registerRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+        return router.registerRpcImplementations(map);
     }
 }

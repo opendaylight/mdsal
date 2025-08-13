@@ -167,6 +167,65 @@ public final class DOMRpcRouter extends AbstractRegistration {
         }
     }
 
+    @NonNullByDefault
+    private final class RpcReg extends AbstractRegistration {
+        private final DOMRpcImplementation implementation;
+        private final ImmutableSet<DOMRpcIdentifier> instances;
+
+        RpcReg(final DOMRpcImplementation implementation, final Set<DOMRpcIdentifier> instances) {
+            this.implementation = requireNonNull(implementation);
+            this.instances = ImmutableSet.copyOf(instances);
+        }
+
+        @Override
+        protected void removeRegistration() {
+            synchronized (DOMRpcRouter.this) {
+                final var oldTable = routingTable;
+                final var newTable = (DOMRpcRoutingTable) oldTable.remove(implementation, instances);
+                routingTable = newTable;
+
+                listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
+            }
+        }
+
+        @Override
+        protected ToStringHelper addToStringAttributes(ToStringHelper helper) {
+            return super.addToStringAttributes(helper
+                .add("implementation", implementation)
+                .add("instances", instances));
+        }
+    }
+
+    @NonNullByDefault
+    private final class RpcsReg extends AbstractRegistration {
+        private final ImmutableTable<QName, YangInstanceIdentifier, DOMRpcImplementation> table;
+
+        RpcsReg(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+            final var builder = ImmutableTable.<QName, YangInstanceIdentifier, DOMRpcImplementation>builder();
+            for (var entry : map.entrySet()) {
+                final var id = entry.getKey();
+                builder.put(id.getType(), id.getContextReference(), entry.getValue());
+            }
+            table = builder.build();
+        }
+
+        @Override
+        protected void removeRegistration() {
+            synchronized (DOMRpcRouter.this) {
+                final var oldTable = routingTable;
+                final var newTable = (DOMRpcRoutingTable) oldTable.removeAll(table);
+                routingTable = newTable;
+
+                listenerNotifier.execute(() -> notifyRemoved(newTable, table.values()));
+            }
+        }
+
+        @Override
+        protected ToStringHelper addToStringAttributes(ToStringHelper helper) {
+            return super.addToStringAttributes(helper.add("table", table));
+        }
+    }
+
     private static final class RpcAvailReg extends AbstractRegistration {
         private final @NonNull DOMRpcAvailabilityListener listener;
 
@@ -257,7 +316,7 @@ public final class DOMRpcRouter extends AbstractRegistration {
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
     private final @NonNull DOMActionProviderService actionProviderService = new RouterDOMActionProviderService(this);
     private final @NonNull DOMActionService actionService = new RouterDOMActionService(this);
-    private final @NonNull DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
+    private final @NonNull DOMRpcProviderService rpcProviderService = new RouterDOMRpcProviderService(this);
     private final @NonNull DOMRpcService rpcService = new RouterDOMRpcService(this);
 
     @GuardedBy("this")
@@ -371,26 +430,43 @@ public final class DOMRpcRouter extends AbstractRegistration {
         return ret;
     }
 
+    @Deprecated(since = "14.0.15", forRemoval = true)
     public @NonNull DOMRpcProviderService rpcProviderService() {
         return rpcProviderService;
     }
 
-    private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation,
+    @NonNullByDefault
+    Registration registerRpcImplementation(final DOMRpcImplementation implementation,
             final Set<DOMRpcIdentifier> rpcs) {
-        final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.remove(implementation, rpcs);
-        routingTable = newTable;
+        final var reg = new RpcReg(implementation, rpcs);
 
-        listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
+        synchronized (this) {
+            final var oldTable = routingTable;
+            final var newTable = (DOMRpcRoutingTable) oldTable.add(implementation, reg.instances);
+            routingTable = newTable;
+
+            listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
+        }
+
+        return reg;
     }
 
-    private synchronized void removeRpcImplementations(
-            final ImmutableTable<QName, YangInstanceIdentifier, DOMRpcImplementation> implTable) {
-        final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.removeAll(implTable);
-        routingTable = newTable;
+    @NonNullByDefault
+    Registration registerRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+        final var reg = new RpcsReg(map);
+        if (reg.table.isEmpty()) {
+            throw new IllegalArgumentException("Implementation map must not be empty");
+        }
 
-        listenerNotifier.execute(() -> notifyRemoved(newTable, implTable.values()));
+        synchronized (this) {
+            final var oldTable = routingTable;
+            final var newTable = (DOMRpcRoutingTable) oldTable.addAll(reg.table);
+            routingTable = newTable;
+
+            listenerNotifier.execute(() -> notifyAdded(newTable, reg.table.values()));
+        }
+
+        return reg;
     }
 
     private synchronized void removeListener(final RpcAvailReg reg) {
@@ -439,13 +515,12 @@ public final class DOMRpcRouter extends AbstractRegistration {
     }
 
     synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
-        final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.setSchemaContext(newModelContext);
+        final var oldTable = routingTable;
+        final var newTable = (DOMRpcRoutingTable) oldTable.setSchemaContext(newModelContext);
         routingTable = newTable;
 
-        final DOMActionRoutingTable oldActionTable = actionRoutingTable;
-        final DOMActionRoutingTable newActionTable =
-                (DOMActionRoutingTable) oldActionTable.setSchemaContext(newModelContext);
+        final var oldActionTable = actionRoutingTable;
+        final var newActionTable = (DOMActionRoutingTable) oldActionTable.setSchemaContext(newModelContext);
         actionRoutingTable = newActionTable;
     }
 
@@ -472,54 +547,5 @@ public final class DOMRpcRouter extends AbstractRegistration {
     @VisibleForTesting
     DOMRpcRoutingTable routingTable() {
         return routingTable;
-    }
-
-    private final class RpcProviderServiceFacade implements DOMRpcProviderService {
-        @Override
-        public Registration registerRpcImplementation(final DOMRpcImplementation implementation,
-                final Set<DOMRpcIdentifier> rpcs) {
-
-            synchronized (DOMRpcRouter.this) {
-                final DOMRpcRoutingTable oldTable = routingTable;
-                final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.add(implementation, rpcs);
-                routingTable = newTable;
-
-                listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
-            }
-
-            return new AbstractRegistration() {
-                @Override
-                protected void removeRegistration() {
-                    removeRpcImplementation(implementation, rpcs);
-                }
-            };
-        }
-
-        @Override
-        public Registration registerRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
-            checkArgument(!map.isEmpty());
-
-            final var builder = ImmutableTable.<QName, YangInstanceIdentifier, DOMRpcImplementation>builder();
-            for (var entry : map.entrySet()) {
-                final var id = entry.getKey();
-                builder.put(id.getType(), id.getContextReference(), entry.getValue());
-            }
-            final var implTable = builder.build();
-
-            synchronized (DOMRpcRouter.this) {
-                final DOMRpcRoutingTable oldTable = routingTable;
-                final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.addAll(implTable);
-                routingTable = newTable;
-
-                listenerNotifier.execute(() -> notifyAdded(newTable, implTable.values()));
-            }
-
-            return new AbstractRegistration() {
-                @Override
-                protected void removeRegistration() {
-                    removeRpcImplementations(implTable);
-                }
-            };
-        }
     }
 }
