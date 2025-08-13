@@ -12,6 +12,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -71,12 +72,41 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Component(service = DOMRpcRouter.class)
 public final class DOMRpcRouter extends AbstractRegistration {
+    @NonNullByDefault
+    private final class ActionReg extends AbstractRegistration {
+        private final DOMActionImplementation implementation;
+        private final ImmutableSet<DOMActionInstance> instances;
+
+        ActionReg(final DOMActionImplementation implementation, final Set<DOMActionInstance> instances) {
+            this.implementation = requireNonNull(implementation);
+            this.instances = ImmutableSet.copyOf(instances);
+        }
+
+        @Override
+        protected void removeRegistration() {
+            synchronized (DOMRpcRouter.this) {
+                final var oldTable = actionRoutingTable;
+                final var newTable = (DOMActionRoutingTable) oldTable.remove(implementation, instances);
+                actionRoutingTable = newTable;
+
+                listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
+            }
+        }
+
+        @Override
+        protected ToStringHelper addToStringAttributes(ToStringHelper helper) {
+            return super.addToStringAttributes(helper
+                .add("implementation", implementation)
+                .add("instances", instances));
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
     private static final ThreadFactory THREAD_FACTORY = Thread.ofPlatform().daemon().name("DOMRpcRouter-listener-", 0)
         .factory();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
-    private final @NonNull DOMActionProviderService actionProviderService = new ActionProviderServiceFacade();
+    private final @NonNull DOMActionProviderService actionProviderService = new RouterDOMActionProviderService(this);
     private final @NonNull DOMActionService actionService = new ActionServiceFacade();
     private final @NonNull DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
     private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
@@ -122,8 +152,28 @@ public final class DOMRpcRouter extends AbstractRegistration {
         return actionService;
     }
 
+    @Deprecated(since = "14.0.15", forRemoval = true)
     public @NonNull DOMActionProviderService actionProviderService() {
         return actionProviderService;
+    }
+
+    @NonNullByDefault
+    Registration registerActionImplementation(final DOMActionImplementation implementation,
+             final Set<DOMActionInstance> instances) {
+        final var reg = new ActionReg(implementation, instances);
+        if (reg.instances.isEmpty()) {
+            throw new IllegalArgumentException("Instances must not be empty");
+        }
+
+        synchronized (this) {
+            final var oldTable = actionRoutingTable;
+            final var newTable = (DOMActionRoutingTable) oldTable.add(implementation, reg.instances);
+            actionRoutingTable = newTable;
+
+            listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
+        }
+
+        return reg;
     }
 
     public @NonNull DOMRpcService rpcService() {
@@ -150,15 +200,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
         routingTable = newTable;
 
         listenerNotifier.execute(() -> notifyRemoved(newTable, implTable.values()));
-    }
-
-    private synchronized void removeActionImplementation(final DOMActionImplementation implementation,
-            final Set<DOMActionInstance> actions) {
-        final DOMActionRoutingTable oldTable = actionRoutingTable;
-        final DOMActionRoutingTable newTable = (DOMActionRoutingTable) oldTable.remove(implementation, actions);
-        actionRoutingTable = newTable;
-
-        listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
     }
 
     private synchronized void removeListener(final RpcAvailReg reg) {
@@ -205,7 +246,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
             l.actionChanged(newTable, impl);
         }
     }
-
 
     synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
         final DOMRpcRoutingTable oldTable = routingTable;
@@ -418,30 +458,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
                 listenerNotifier.execute(ret::initialTable);
                 return ret;
             }
-        }
-    }
-
-    @NonNullByDefault
-    private final class ActionProviderServiceFacade implements DOMActionProviderService {
-        @Override
-        public Registration registerActionImplementation(final DOMActionImplementation implementation,
-                final Set<DOMActionInstance> instances) {
-            checkArgument(!instances.isEmpty(), "Instances must not be empty");
-
-            synchronized (DOMRpcRouter.this) {
-                final DOMActionRoutingTable oldTable = actionRoutingTable;
-                final DOMActionRoutingTable newTable = (DOMActionRoutingTable) oldTable.add(implementation, instances);
-                actionRoutingTable = newTable;
-
-                listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
-            }
-
-            return new AbstractRegistration() {
-                @Override
-                protected void removeRegistration() {
-                    removeActionImplementation(implementation, instances);
-                }
-            };
         }
     }
 

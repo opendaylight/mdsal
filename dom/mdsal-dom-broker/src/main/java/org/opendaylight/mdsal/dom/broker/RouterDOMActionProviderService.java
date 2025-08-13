@@ -7,28 +7,35 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
+import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.spi.ForwardingDOMActionProviderService;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @Singleton
-@Component(service = DOMActionProviderService.class)
-public final class RouterDOMActionProviderService extends ForwardingDOMActionProviderService {
-    private final @NonNull DOMActionProviderService delegate;
+@Component
+@NonNullByDefault
+public final class RouterDOMActionProviderService implements DOMActionProviderService {
+    private final DOMRpcRouter router;
 
     @Inject
     @Activate
     public RouterDOMActionProviderService(@Reference final DOMRpcRouter router) {
-        delegate = router.actionProviderService();
+        this.router = requireNonNull(router);
     }
 
     @Override
-    protected DOMActionProviderService delegate() {
-        return delegate;
+    public Registration registerActionImplementation(final DOMActionImplementation implementation,
+            final Set<DOMActionInstance> instances) {
+        return router.registerActionImplementation(implementation, instances);
     }
 }
