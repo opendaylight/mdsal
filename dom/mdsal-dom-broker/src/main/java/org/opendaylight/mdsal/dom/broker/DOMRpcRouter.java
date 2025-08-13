@@ -17,8 +17,6 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
@@ -28,7 +26,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -170,6 +167,89 @@ public final class DOMRpcRouter extends AbstractRegistration {
         }
     }
 
+    private static final class RpcAvailReg extends AbstractRegistration {
+        private final @NonNull DOMRpcAvailabilityListener listener;
+
+        private Map<QName, Set<YangInstanceIdentifier>> prevRpcs;
+        private DOMRpcRouter router;
+
+        RpcAvailReg(final DOMRpcRouter router, final DOMRpcAvailabilityListener listener,
+                final Map<QName, Set<YangInstanceIdentifier>> rpcs) {
+            this.listener = requireNonNull(listener);
+            this.router = requireNonNull(router);
+            prevRpcs = requireNonNull(rpcs);
+        }
+
+        @Override
+        protected void removeRegistration() {
+            router.removeListener(this);
+            router = null;
+        }
+
+        void initialTable() {
+            final var added = new ArrayList<DOMRpcIdentifier>();
+            for (var e : prevRpcs.entrySet()) {
+                added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
+            }
+            if (!added.isEmpty()) {
+                listener.onRpcAvailable(added);
+            }
+        }
+
+        void addRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
+            if (!listener.acceptsImplementation(impl)) {
+                return;
+            }
+
+            final var rpcs = verifyNotNull(newTable.getOperations(listener));
+            final var diff = Maps.difference(prevRpcs, rpcs);
+
+            final var added = new ArrayList<DOMRpcIdentifier>();
+            for (var e : diff.entriesOnlyOnRight().entrySet()) {
+                added.addAll(Collections2.transform(e.getValue(), ref -> DOMRpcIdentifier.create(e.getKey(), ref)));
+            }
+            for (var e : diff.entriesDiffering().entrySet()) {
+                for (var ref : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
+                    added.add(DOMRpcIdentifier.create(e.getKey(), ref));
+                }
+            }
+
+            prevRpcs = rpcs;
+            if (!added.isEmpty()) {
+                listener.onRpcAvailable(added);
+            }
+        }
+
+        void removeRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
+            if (!listener.acceptsImplementation(impl)) {
+                return;
+            }
+
+            final var rpcs = verifyNotNull(newTable.getOperations(listener));
+            final var diff = Maps.difference(prevRpcs, rpcs);
+
+            final var removed = new ArrayList<DOMRpcIdentifier>();
+            for (var e : diff.entriesOnlyOnLeft().entrySet()) {
+                removed.addAll(Collections2.transform(e.getValue(), ref -> DOMRpcIdentifier.create(e.getKey(), ref)));
+            }
+            for (var e : diff.entriesDiffering().entrySet()) {
+                for (var ref : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
+                    removed.add(DOMRpcIdentifier.create(e.getKey(), ref));
+                }
+            }
+
+            prevRpcs = rpcs;
+            if (!removed.isEmpty()) {
+                listener.onRpcUnavailable(removed);
+            }
+        }
+
+        @Override
+        protected ToStringHelper addToStringAttributes(ToStringHelper helper) {
+            return super.addToStringAttributes(helper.add("listener", listener));
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
     private static final ThreadFactory THREAD_FACTORY = Thread.ofPlatform().daemon().name("DOMRpcRouter-listener-", 0)
         .factory();
@@ -178,7 +258,7 @@ public final class DOMRpcRouter extends AbstractRegistration {
     private final @NonNull DOMActionProviderService actionProviderService = new RouterDOMActionProviderService(this);
     private final @NonNull DOMActionService actionService = new RouterDOMActionService(this);
     private final @NonNull DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
-    private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
+    private final @NonNull DOMRpcService rpcService = new RouterDOMRpcService(this);
 
     @GuardedBy("this")
     private ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
@@ -271,6 +351,23 @@ public final class DOMRpcRouter extends AbstractRegistration {
 
     public @NonNull DOMRpcService rpcService() {
         return rpcService;
+    }
+
+    @NonNullByDefault
+    ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
+        final var entry = (DOMRpcRoutingTableEntry) routingTable.getEntry(type);
+        return entry != null ? OperationInvocation.invoke(entry, requireNonNull(input))
+            : Futures.immediateFailedFuture(
+                new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
+    }
+
+    @NonNullByDefault
+    synchronized Registration registerRpcListener(final DOMRpcAvailabilityListener listener) {
+        final var ret = new RpcAvailReg(this, listener, routingTable.getOperations(listener));
+        listeners = ImmutableList.<RpcAvailReg>builder().addAll(listeners).add(ret).build();
+
+        listenerNotifier.execute(ret::initialTable);
+        return ret;
     }
 
     public @NonNull DOMRpcProviderService rpcProviderService() {
@@ -374,108 +471,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
     @VisibleForTesting
     DOMRpcRoutingTable routingTable() {
         return routingTable;
-    }
-
-    private static final class RpcAvailReg extends AbstractRegistration {
-        private final DOMRpcAvailabilityListener listener;
-
-        private Map<QName, Set<YangInstanceIdentifier>> prevRpcs;
-        private DOMRpcRouter router;
-
-        RpcAvailReg(final DOMRpcRouter router, final DOMRpcAvailabilityListener listener,
-                final Map<QName, Set<YangInstanceIdentifier>> rpcs) {
-            this.listener = requireNonNull(listener);
-            this.router = requireNonNull(router);
-            prevRpcs = requireNonNull(rpcs);
-        }
-
-        @Override
-        protected void removeRegistration() {
-            router.removeListener(this);
-            router = null;
-        }
-
-        void initialTable() {
-            final List<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<QName, Set<YangInstanceIdentifier>> e : prevRpcs.entrySet()) {
-                added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
-            }
-            if (!added.isEmpty()) {
-                listener.onRpcAvailable(added);
-            }
-        }
-
-        void addRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-            if (!listener.acceptsImplementation(impl)) {
-                return;
-            }
-
-            final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(listener));
-            final MapDifference<QName, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
-
-            final List<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<QName, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
-                added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
-            }
-            for (Entry<QName, ValueDifference<Set<YangInstanceIdentifier>>> e : diff.entriesDiffering().entrySet()) {
-                for (YangInstanceIdentifier i : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
-                    added.add(DOMRpcIdentifier.create(e.getKey(), i));
-                }
-            }
-
-            prevRpcs = rpcs;
-            if (!added.isEmpty()) {
-                listener.onRpcAvailable(added);
-            }
-        }
-
-        void removeRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-            if (!listener.acceptsImplementation(impl)) {
-                return;
-            }
-
-            final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(listener));
-            final MapDifference<QName, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
-
-            final List<DOMRpcIdentifier> removed = new ArrayList<>();
-            for (Entry<QName, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
-                removed.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
-            }
-            for (Entry<QName, ValueDifference<Set<YangInstanceIdentifier>>> e : diff.entriesDiffering().entrySet()) {
-                for (YangInstanceIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
-                    removed.add(DOMRpcIdentifier.create(e.getKey(), i));
-                }
-            }
-
-            prevRpcs = rpcs;
-            if (!removed.isEmpty()) {
-                listener.onRpcUnavailable(removed);
-            }
-        }
-    }
-
-    private final class RpcServiceFacade implements DOMRpcService {
-        @Override
-        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
-            final var entry = (DOMRpcRoutingTableEntry) routingTable.getEntry(type);
-            if (entry == null) {
-                return Futures.immediateFailedFuture(
-                    new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
-            }
-
-            return OperationInvocation.invoke(entry, requireNonNull(input));
-        }
-
-        @Override
-        public Registration registerRpcListener(final DOMRpcAvailabilityListener listener) {
-            synchronized (DOMRpcRouter.this) {
-                final var ret = new RpcAvailReg(DOMRpcRouter.this, listener, routingTable.getOperations(listener));
-                listeners = ImmutableList.<RpcAvailReg>builder().addAll(listeners).add(ret).build();
-
-                listenerNotifier.execute(ret::initialTable);
-                return ret;
-            }
-        }
     }
 
     private final class RpcProviderServiceFacade implements DOMRpcProviderService {
