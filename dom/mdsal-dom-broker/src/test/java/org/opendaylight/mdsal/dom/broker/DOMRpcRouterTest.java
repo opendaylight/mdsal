@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
@@ -49,6 +50,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -67,17 +69,22 @@ public class DOMRpcRouterTest {
         (type, path, input) -> Futures.immediateFuture(new DefaultDOMRpcResult(
             ImmutableNodes.newContainerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
 
+    @Mock
+    public DOMSchemaService mockSchemaService;
+
     @Test
     public void registerRpcImplementation() {
         try (var rpcRouter = rpcsRouter()) {
             assertOperationKeys(rpcRouter);
 
-            final var fooReg = rpcRouter.rpcProviderService().registerRpcImplementation(
-                getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
+            final var service = new RouterDOMRpcProviderService(rpcRouter);
+
+            final var fooReg = service.registerRpcImplementation(getTestRpcImplementation(),
+                DOMRpcIdentifier.create(Rpcs.FOO, null));
             assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            final var barReg = rpcRouter.rpcProviderService().registerRpcImplementation(
-                getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.BAR, null));
+            final var barReg = service.registerRpcImplementation(getTestRpcImplementation(),
+                DOMRpcIdentifier.create(Rpcs.BAR, null));
             assertOperationKeys(rpcRouter, Rpcs.FOO, Rpcs.BAR);
 
             fooReg.close();
@@ -92,14 +99,15 @@ public class DOMRpcRouterTest {
         try (var rpcRouter = rpcsRouter()) {
             assertOperationKeys(rpcRouter);
 
-            final var fooReg = rpcRouter.rpcProviderService().registerRpcImplementations(
-                Map.of(DOMRpcIdentifier.create(Rpcs.FOO, null), getTestRpcImplementation()));
+            final var service = new RouterDOMRpcProviderService(rpcRouter);
+
+            final var fooReg = service.registerRpcImplementations(Map.of(
+                DOMRpcIdentifier.create(Rpcs.FOO, null), getTestRpcImplementation()));
             assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            final var barReg = rpcRouter.rpcProviderService().registerRpcImplementations(
-                Map.of(
-                    DOMRpcIdentifier.create(Rpcs.BAR, null), getTestRpcImplementation(),
-                    DOMRpcIdentifier.create(Rpcs.BAZ, null), getTestRpcImplementation()));
+            final var barReg = service.registerRpcImplementations(Map.of(
+                DOMRpcIdentifier.create(Rpcs.BAR, null), getTestRpcImplementation(),
+                DOMRpcIdentifier.create(Rpcs.BAZ, null), getTestRpcImplementation()));
             assertOperationKeys(rpcRouter, Rpcs.FOO, Rpcs.BAR, Rpcs.BAZ);
 
             fooReg.close();
@@ -122,12 +130,15 @@ public class DOMRpcRouterTest {
                 .build();
             final var thrown = new RuntimeException("mumble-mumble");
 
-            try (var reg = rpcRouter.rpcProviderService().registerRpcImplementation(
+            final var providerService = new RouterDOMRpcProviderService(rpcRouter);
+            final var service = new RouterDOMRpcService(rpcRouter);
+
+            try (var reg = providerService.registerRpcImplementation(
                     (rpc, unused) -> {
                         throw thrown;
                     }, DOMRpcIdentifier.create(Rpcs.FOO))) {
 
-                final var future = rpcRouter.rpcService().invokeRpc(Rpcs.FOO, input);
+                final var future = service.invokeRpc(Rpcs.FOO, input);
                 final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
                 assertThat(cause, instanceOf(DefaultDOMRpcException.class));
                 assertEquals("RPC implementation failed: java.lang.RuntimeException: mumble-mumble",
@@ -135,7 +146,7 @@ public class DOMRpcRouterTest {
                 assertSame(thrown, cause.getCause());
             }
 
-            final var future = rpcRouter.rpcService().invokeRpc(Rpcs.FOO, input);
+            final var future = service.invokeRpc(Rpcs.FOO, input);
             final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
             assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
             assertEquals("No implementation of RPC (rpcs)foo available", cause.getMessage());
@@ -144,7 +155,7 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testRpcListener() {
-        try (var rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = new DOMRpcRouter(mockSchemaService)) {
             assertEquals(List.of(), rpcRouter.listeners());
 
             final var listener = mock(DOMRpcAvailabilityListener.class);
@@ -152,11 +163,14 @@ public class DOMRpcRouterTest {
             doNothing().when(listener).onRpcAvailable(any());
             doNothing().when(listener).onRpcUnavailable(any());
 
-            final var reg = rpcRouter.rpcService().registerRpcListener(listener);
+            final var providerService = new RouterDOMRpcProviderService(rpcRouter);
+            final var service = new RouterDOMRpcService(rpcRouter);
+
+            final var reg = service.registerRpcListener(listener);
             assertNotNull(reg);
             assertEquals(List.of(reg), rpcRouter.listeners());
 
-            final var implReg = rpcRouter.rpcProviderService().registerRpcImplementation(
+            final var implReg = providerService.registerRpcImplementation(
                 getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
             verify(listener, timeout(1000)).onRpcAvailable(any());
 
@@ -170,11 +184,12 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testActionListener() {
-        try (var rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = new DOMRpcRouter(mockSchemaService)) {
             assertEquals(List.of(), rpcRouter.actionListeners());
 
+            final var service = new RouterDOMActionService(rpcRouter);
             final var listener = mock(AvailabilityListener.class);
-            final var availability = rpcRouter.actionService().extension(DOMActionAvailabilityExtension.class);
+            final var availability = service.extension(DOMActionAvailabilityExtension.class);
             assertNotNull(availability);
             final var reg = availability.registerAvailabilityListener(listener);
             assertNotNull(reg);
@@ -189,7 +204,7 @@ public class DOMRpcRouterTest {
 
     @Test
     public void onGlobalContextUpdated() {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter(mockSchemaService)) {
             final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
             rpcRouter.onModelContextUpdated(TestModel.createTestContext());
             assertNotEquals(routingTableOriginal, rpcRouter.routingTable());
@@ -206,7 +221,7 @@ public class DOMRpcRouterTest {
         final var rpcRouter = new DOMRpcRouter(schema);
         rpcRouter.close();
 
-        final var svc = rpcRouter.rpcProviderService();
+        final var svc = new RouterDOMRpcProviderService(rpcRouter);
         assertThrows(RejectedExecutionException.class, () -> svc.registerRpcImplementation(getTestRpcImplementation(),
             DOMRpcIdentifier.create(Rpcs.FOO, null)));
     }
@@ -214,10 +229,8 @@ public class DOMRpcRouterTest {
     @Test
     public void testActionInstanceRouting() throws ExecutionException {
         try (var rpcRouter = actionsRouter()) {
-            final var actionProvider = rpcRouter.actionProviderService();
-            assertNotNull(actionProvider);
-            final var actionConsumer = rpcRouter.actionService();
-            assertNotNull(actionConsumer);
+            final var actionProvider = new RouterDOMActionProviderService(rpcRouter);
+            final var actionConsumer = new RouterDOMActionService(rpcRouter);
 
             try (var reg = actionProvider.registerActionImplementation(IMPL,
                 DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, BAZ_PATH_GOOD))) {
@@ -234,10 +247,8 @@ public class DOMRpcRouterTest {
     @Test
     public void testActionDatastoreRouting() throws ExecutionException {
         try (var rpcRouter = actionsRouter()) {
-            final var actionProvider = rpcRouter.actionProviderService();
-            assertNotNull(actionProvider);
-            final var actionConsumer = rpcRouter.actionService();
-            assertNotNull(actionConsumer);
+            final var actionProvider = new RouterDOMActionProviderService(rpcRouter);
+            final var actionConsumer = new RouterDOMActionService(rpcRouter);
 
             try (var reg = actionProvider.registerActionImplementation(IMPL,
                 DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL,
@@ -255,10 +266,8 @@ public class DOMRpcRouterTest {
     @Test
     public void testActionInstanceThrowing() throws ExecutionException {
         try (var rpcRouter = actionsRouter()) {
-            final var actionProvider = rpcRouter.actionProviderService();
-            assertNotNull(actionProvider);
-            final var actionConsumer = rpcRouter.actionService();
-            assertNotNull(actionConsumer);
+            final var actionProvider = new RouterDOMActionProviderService(rpcRouter);
+            final var actionConsumer = new RouterDOMActionService(rpcRouter);
 
             final var thrown = new RuntimeException("test-two-three");
 
@@ -278,15 +287,11 @@ public class DOMRpcRouterTest {
     }
 
     private static DOMRpcRouter actionsRouter() {
-        final DOMRpcRouter router = new DOMRpcRouter();
-        router.onModelContextUpdated(Actions.CONTEXT);
-        return router;
+        return new DOMRpcRouter(new FixedDOMSchemaService(Actions.CONTEXT));
     }
 
     private static DOMRpcRouter rpcsRouter() {
-        final DOMRpcRouter router = new DOMRpcRouter();
-        router.onModelContextUpdated(Rpcs.CONTEXT);
-        return router;
+        return new DOMRpcRouter(new FixedDOMSchemaService(Rpcs.CONTEXT));
     }
 
     private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path)
