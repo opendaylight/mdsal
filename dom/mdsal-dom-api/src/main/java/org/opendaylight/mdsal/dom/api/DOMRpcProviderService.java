@@ -60,5 +60,5 @@ public interface DOMRpcProviderService extends DOMService<DOMRpcProviderService,
      * @throws NullPointerException if map is null or contains a null element
      * @throws IllegalArgumentException if map is empty.
      */
-    @NonNull Registration registerRpcImplementations(Map<DOMRpcIdentifier, DOMRpcImplementation> map);
+    @NonNull Registration registerRpcImplementations(@NonNull Map<DOMRpcIdentifier, DOMRpcImplementation> map);
 }
