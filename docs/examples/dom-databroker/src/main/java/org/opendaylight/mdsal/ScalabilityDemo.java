@@ -10,6 +10,7 @@ package org.opendaylight.mdsal;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,10 +18,13 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.OnCommitCallback;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +32,10 @@ public final class ScalabilityDemo {
     private static final Logger LOG = LoggerFactory.getLogger(ScalabilityDemo.class);
     private static final int ITERATIONS = 1_000;
     private static final QName COUNTER_QNAME = QName.create("urn:test", "2025-05-13", "counter");
+
+    private ScalabilityDemo() {
+        // Hidden on purpose
+    }
 
     public static void main(String[] args) throws InterruptedException {
         final var moduleInfos = BindingRuntimeHelpers.loadModuleInfos();
