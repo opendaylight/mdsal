@@ -35,9 +35,9 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
-import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishDemandExtension.DemandListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -105,106 +105,6 @@ public class DOMNotificationRouter implements AutoCloseable {
         }
     }
 
-    private final class PublishFacade implements DOMNotificationPublishService, DOMNotificationPublishDemandExtension {
-        @Override
-        public List<Extension> supportedExtensions() {
-            return List.of(this);
-        }
-
-        @Override
-        public ListenableFuture<? extends Object> putNotification(final DOMNotification notification)
-                throws InterruptedException {
-            return putNotificationImpl(notification);
-        }
-
-        @Override
-        public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification) {
-            final var subscribers = subscribers(notification);
-            return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
-        }
-
-        @Override
-        public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification,
-                final long timeout, final TimeUnit unit) throws InterruptedException {
-            final var subscribers = subscribers(notification);
-            if (subscribers.isEmpty()) {
-                return Empty.immediateFuture();
-            }
-            // Attempt to perform a non-blocking publish first
-            final var noBlock = publish(notification, subscribers);
-            if (!DOMNotificationPublishService.REJECTED.equals(noBlock)) {
-                return noBlock;
-            }
-
-            try {
-                final var publishThread = Thread.currentThread();
-                final var timerTask = observer.schedule(publishThread::interrupt, timeout, unit);
-                final var withBlock = putNotificationImpl(notification);
-                timerTask.cancel(true);
-                if (observer.getQueue().size() > 50) {
-                    observer.purge();
-                }
-                return withBlock;
-            } catch (InterruptedException e) {
-                return DOMNotificationPublishService.REJECTED;
-            }
-        }
-
-        @Override
-        public Registration registerDemandListener(final DemandListener listener) {
-            final var initialTypes = listeners().keySet();
-            executor.execute(() -> listener.onDemandUpdated(initialTypes));
-            return demandListeners.register(listener);
-        }
-    }
-
-    private final class SubscribeFacade implements DOMNotificationService {
-        @Override
-        public Registration registerNotificationListener(final DOMNotificationListener listener,
-                final Collection<Absolute> types) {
-            synchronized (DOMNotificationRouter.this) {
-                final var reg = new SingleReg(listener);
-
-                if (!types.isEmpty()) {
-                    final var b = ImmutableMultimap.<Absolute, Reg>builder();
-                    b.putAll(listeners());
-
-                    for (var t : types) {
-                        b.put(t, reg);
-                    }
-
-                    replaceListeners(b.build());
-                }
-
-                return reg;
-            }
-        }
-
-        @Override
-        public synchronized Registration registerNotificationListeners(
-                final Map<Absolute, DOMNotificationListener> typeToListener) {
-            synchronized (DOMNotificationRouter.this) {
-                final var b = ImmutableMultimap.<Absolute, Reg>builder();
-                b.putAll(listeners());
-
-                final var tmp = new HashMap<DOMNotificationListener, ComponentReg>();
-                for (var e : typeToListener.entrySet()) {
-                    b.put(e.getKey(), tmp.computeIfAbsent(e.getValue(), ComponentReg::new));
-                }
-                replaceListeners(b.build());
-
-                final var regs = List.copyOf(tmp.values());
-                return new AbstractRegistration() {
-                    @Override
-                    protected void removeRegistration() {
-                        regs.forEach(ComponentReg::close);
-                        removeRegistrations(regs);
-                    }
-                };
-            }
-        }
-    }
-
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
     private static final ThreadFactory LISTENERS_TF = Thread.ofPlatform().daemon()
         .name("DOMNotificationRouter-listeners-", 0)
@@ -225,8 +125,9 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     private final EqualityQueuedNotificationManager<Reg, DOMNotificationRouterEvent> queueNotificationManager;
-    private final @NonNull DOMNotificationPublishService notificationPublishService = new PublishFacade();
-    private final @NonNull DOMNotificationService notificationService = new SubscribeFacade();
+    private final @NonNull DOMNotificationPublishService notificationPublishService =
+        new RouterDOMPublishNotificationService(this);
+    private final @NonNull DOMNotificationService notificationService = new RouterDOMNotificationService(this);
     private final ObjectRegistry<DemandListener> demandListeners =
         ObjectRegistry.createConcurrent("notification demand listeners");
     private final ScheduledThreadPoolExecutor observer;
@@ -254,10 +155,21 @@ public class DOMNotificationRouter implements AutoCloseable {
         this(config.queueDepth());
     }
 
+    @PreDestroy
+    @Deactivate
+    @Override
+    public final void close() {
+        observer.shutdown();
+        executor.shutdown();
+        LOG.info("DOM Notification Router stopped");
+    }
+
+    @Deprecated(since = "14.0.15", forRemoval = true)
     public final @NonNull DOMNotificationService notificationService() {
         return notificationService;
     }
 
+    @Deprecated(since = "14.0.15", forRemoval = true)
     public final @NonNull DOMNotificationPublishService notificationPublishService() {
         return notificationPublishService;
     }
@@ -294,8 +206,8 @@ public class DOMNotificationRouter implements AutoCloseable {
         });
     }
 
-    @VisibleForTesting
-    @NonNull ListenableFuture<? extends Object> putNotificationImpl(final DOMNotification notification)
+    // Non-final for testing
+    @NonNull ListenableFuture<?> putNotificationImpl(final DOMNotification notification)
             throws InterruptedException {
         final var subscribers = subscribers(notification);
         return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
@@ -313,13 +225,86 @@ public class DOMNotificationRouter implements AutoCloseable {
             MoreExecutors.directExecutor());
     }
 
-    @PreDestroy
-    @Deactivate
-    @Override
-    public final void close() {
-        observer.shutdown();
-        executor.shutdown();
-        LOG.info("DOM Notification Router stopped");
+    @NonNullByDefault
+    final ListenableFuture<?> offerNotification(final DOMNotification notification) {
+        final var subscribers = subscribers(notification);
+        return subscribers.isEmpty() ? Empty.immediateFuture() : publish(notification, subscribers);
+    }
+
+    @NonNullByDefault
+    final ListenableFuture<?> offerNotification(final DOMNotification notification, final long timeout,
+            final TimeUnit unit) throws InterruptedException {
+        final var subscribers = subscribers(notification);
+        if (subscribers.isEmpty()) {
+            return Empty.immediateFuture();
+        }
+        // Attempt to perform a non-blocking publish first
+        final var noBlock = publish(notification, subscribers);
+        if (!DOMNotificationPublishService.REJECTED.equals(noBlock)) {
+            return noBlock;
+        }
+
+        try {
+            final var publishThread = Thread.currentThread();
+            final var timerTask = observer.schedule(publishThread::interrupt, timeout, unit);
+            final var withBlock = putNotificationImpl(notification);
+            timerTask.cancel(true);
+            if (observer.getQueue().size() > 50) {
+                observer.purge();
+            }
+            return withBlock;
+        } catch (InterruptedException e) {
+            return DOMNotificationPublishService.REJECTED;
+        }
+    }
+
+    @NonNullByDefault
+    final Registration registerNotificationListener(final DOMNotificationListener listener,
+            final Collection<Absolute> types) {
+        final var reg = new SingleReg(listener);
+
+        if (!types.isEmpty()) {
+            synchronized (this) {
+                final var b = ImmutableMultimap.<Absolute, Reg>builder();
+                b.putAll(listeners());
+
+                for (var t : types) {
+                    b.put(t, reg);
+                }
+
+                replaceListeners(b.build());
+            }
+        }
+
+        return reg;
+    }
+
+    @NonNullByDefault
+    synchronized Registration registerNotificationListeners(
+            final Map<Absolute, DOMNotificationListener> typeToListener) {
+        final var b = ImmutableMultimap.<Absolute, Reg>builder();
+        b.putAll(listeners());
+
+        final var tmp = new HashMap<DOMNotificationListener, ComponentReg>();
+        for (var e : typeToListener.entrySet()) {
+            b.put(e.getKey(), tmp.computeIfAbsent(e.getValue(), ComponentReg::new));
+        }
+        replaceListeners(b.build());
+
+        final var regs = List.copyOf(tmp.values());
+        return new AbstractRegistration() {
+            @Override
+            protected void removeRegistration() {
+                regs.forEach(ComponentReg::close);
+                removeRegistrations(regs);
+            }
+        };
+    }
+
+    final Registration registerDemandListener(final DemandListener listener) {
+        final var initialTypes = listeners().keySet();
+        executor.execute(() -> listener.onDemandUpdated(initialTypes));
+        return demandListeners.register(listener);
     }
 
     @VisibleForTesting
