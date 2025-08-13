@@ -470,11 +470,15 @@ public final class DOMRpcRouter extends AbstractRegistration {
     }
 
     private synchronized void removeListener(final RpcAvailReg reg) {
-        listeners = ImmutableList.copyOf(Collections2.filter(listeners, input -> !reg.equals(input)));
+        listeners = listeners.stream()
+            .filter(input -> !reg.equals(input))
+            .collect(ImmutableList.toImmutableList());
     }
 
     private synchronized void removeActionListener(final ActionAvailReg reg) {
-        actionListeners = ImmutableList.copyOf(Collections2.filter(actionListeners, input -> !reg.equals(input)));
+        actionListeners = actionListeners.stream()
+            .filter(input -> !reg.equals(input))
+            .collect(ImmutableList.toImmutableList());
     }
 
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
