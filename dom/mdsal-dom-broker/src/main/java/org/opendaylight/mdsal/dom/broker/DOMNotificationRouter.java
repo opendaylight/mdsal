@@ -18,7 +18,6 @@ import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
@@ -30,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -206,6 +206,13 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
+    private static final ThreadFactory LISTENERS_TF = Thread.ofPlatform().daemon()
+        .name("DOMNotificationRouter-listeners-", 0)
+        .factory();
+    private static final ThreadFactory OBSERVER_TF = Thread.ofPlatform().daemon()
+        .name("DOMNotificationRouter-observer-", 0)
+        .factory();
+
     private static final VarHandle LISTENERS;
 
     static {
@@ -231,14 +238,8 @@ public class DOMNotificationRouter implements AutoCloseable {
 
     @Inject
     public DOMNotificationRouter(final int maxQueueCapacity) {
-        observer = new ScheduledThreadPoolExecutor(1, new ThreadFactoryBuilder()
-            .setDaemon(true)
-            .setNameFormat("DOMNotificationRouter-observer-%d")
-            .build());
-        executor = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
-            .setDaemon(true)
-            .setNameFormat("DOMNotificationRouter-listeners-%d")
-            .build());
+        observer = new ScheduledThreadPoolExecutor(1, OBSERVER_TF);
+        executor = Executors.newCachedThreadPool(LISTENERS_TF);
         queueNotificationManager = new EqualityQueuedNotificationManager<>("DOMNotificationRouter", executor,
                 maxQueueCapacity, DOMNotificationRouter::deliverEvents);
         LOG.info("DOM Notification Router started");
