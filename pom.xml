@@ -33,6 +33,7 @@
         <module>bundle-parent</module>
         <module>common</module>
         <module>docs</module>
+        <module>docs/examples</module>
         <module>features</module>
         <module>karaf</module>
         <module>dom</module>

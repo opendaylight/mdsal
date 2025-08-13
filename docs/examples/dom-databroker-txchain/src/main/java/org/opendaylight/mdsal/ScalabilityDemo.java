@@ -32,6 +32,10 @@ public final class ScalabilityDemo {
     private static final int ITERATIONS = 1_000;
     private static final QName COUNTER_QNAME = QName.create("urn:test", "2025-05-13", "counter");
 
+    private ScalabilityDemo() {
+        // Hidden on purpose
+    }
+
     public static void main(String[] args) throws InterruptedException {
         final var moduleInfos = BindingRuntimeHelpers.loadModuleInfos();
         final var schema = BindingRuntimeHelpers.createEffectiveModel(moduleInfos);
