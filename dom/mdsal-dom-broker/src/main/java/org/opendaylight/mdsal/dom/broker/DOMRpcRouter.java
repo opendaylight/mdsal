@@ -22,7 +22,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -73,8 +72,8 @@ import org.slf4j.LoggerFactory;
 @Component(service = DOMRpcRouter.class)
 public final class DOMRpcRouter extends AbstractRegistration {
     private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
-    private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
-            "DOMRpcRouter-listener-%s").setDaemon(true).build();
+    private static final ThreadFactory THREAD_FACTORY = Thread.ofPlatform().daemon().name("DOMRpcRouter-listener-", 0)
+        .factory();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
     private final @NonNull DOMActionProviderService actionProviderService = new ActionProviderServiceFacade();
