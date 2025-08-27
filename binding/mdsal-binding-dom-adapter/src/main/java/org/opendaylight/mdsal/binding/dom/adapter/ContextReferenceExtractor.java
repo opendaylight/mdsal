@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -109,6 +110,8 @@ abstract sealed class ContextReferenceExtractor {
     }
 
     @SuppressWarnings("checkstyle:IllegalThrows")
+    @SuppressFBWarnings(value = "THROWS_METHOD_THROWS_CLAUSE_THROWABLE",
+        justification = "https://github.com/spotbugs/spotbugs/issues/3644")
     abstract @Nullable BindingInstanceIdentifier extractImpl(DataObject obj) throws Throwable;
 
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
