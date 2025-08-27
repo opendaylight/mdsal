@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -36,7 +35,6 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     }
 
     @Override
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <D extends Datastore, E extends Exception, R> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(
             final D datastore, final InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
             throws E, InterruptedException {
@@ -46,7 +44,6 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     }
 
     @Override
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(final D datastore,
             final CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E {
         try (var realTx = transactionFactory.newReadOnlyTransaction()) {
@@ -63,7 +60,6 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     }
 
     @Override
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <D extends Datastore, E extends Exception> void callInterruptiblyWithNewReadOnlyTransactionAndClose(
         final D datastore, final InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
             throws E, InterruptedException {
@@ -74,7 +70,6 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     }
 
     @Override
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(final D datastore,
             final CheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E {
         try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
