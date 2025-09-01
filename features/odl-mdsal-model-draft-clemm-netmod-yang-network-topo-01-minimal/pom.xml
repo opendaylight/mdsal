@@ -23,8 +23,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-mdsal-model-rfc6991</artifactId>
+            <groupId>org.opendaylight.ietf</groupId>
+            <artifactId>odl-ietf-model-rfc6991</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
