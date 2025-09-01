@@ -1,3 +1,0 @@
--noextraheaders: true
-Bundle-DocURL: https://github.com/opendaylight/mdsal/
-Bundle-SymbolicName: ${project.groupId}.${project.artifactId}

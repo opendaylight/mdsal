@@ -30,10 +30,10 @@
         <module>l2-types</module>
         <module>yang-ext</module>
 
-        <!-- IETF YANG models -->
-        <module>iana</module>
+        <!-- IETF YANG models moved to ietf repository -->
+        <!-- <module>iana</module> -->
         <module>ietf-topology</module>
-        <module>rfc</module>
+        <!-- <module>rfc</module> -->
     </modules>
 
     <properties>

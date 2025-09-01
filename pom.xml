@@ -28,8 +28,6 @@
     </description>
 
     <modules>
-        <module>artifacts</module>
-        <module>bnd-parent</module>
         <module>bundle-parent</module>
         <module>common</module>
         <module>docs</module>
@@ -38,7 +36,7 @@
         <module>karaf</module>
         <module>dom</module>
         <module>binding</module>
-        <module>model</module>
+        <!-- model module moved to ietf repository -->
         <module>entityownership</module>
         <module>singleton-service</module>
         <module>trace</module>
