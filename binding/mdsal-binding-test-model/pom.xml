@@ -31,7 +31,7 @@
             <artifactId>metainf-services</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <groupId>org.opendaylight.ietf.model</groupId>
             <artifactId>rfc8040-ietf-restconf</artifactId>
         </dependency>
         <dependency>

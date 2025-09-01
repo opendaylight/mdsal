@@ -67,69 +67,6 @@
         <module>odl-mdsal-replicate-common</module>
         <module>odl-mdsal-replicate-netty</module>
 
-        <!-- Models -->
-        <!-- Standards -->
-        <module>odl-mdsal-model-rfc6022</module>
-        <module>odl-mdsal-model-rfc6241</module>
-        <module>odl-mdsal-model-rfc6243</module>
-        <module>odl-mdsal-model-rfc6470</module>
-        <module>odl-mdsal-model-rfc6991</module>
-        <module>odl-mdsal-model-rfc7224</module>
-        <module>odl-mdsal-model-rfc7317-iana-crypt-hash</module>
-        <module>odl-mdsal-model-rfc7317-ietf-system</module>
-        <module>odl-mdsal-model-rfc7407-ietf-snmp</module>
-        <module>odl-mdsal-model-rfc7407-ietf-x509-cert-to-name</module>
-        <module>odl-mdsal-model-rfc7952</module>
-        <module>odl-mdsal-model-rfc8040-ietf-restconf</module>
-        <module>odl-mdsal-model-rfc8040-ietf-restconf-monitoring</module>
-        <module>odl-mdsal-model-rfc8072</module>
-        <module>odl-mdsal-model-rfc8177</module>
-        <module>odl-mdsal-model-rfc8294</module>
-        <module>odl-mdsal-model-rfc8341</module>
-        <module>odl-mdsal-model-rfc8342</module>
-        <module>odl-mdsal-model-rfc8343</module>
-        <module>odl-mdsal-model-rfc8344</module>
-        <module>odl-mdsal-model-rfc8345</module>
-        <module>odl-mdsal-model-rfc8345-non-nmda</module>
-        <module>odl-mdsal-model-rfc8346</module>
-        <module>odl-mdsal-model-rfc8346-non-nmda</module>
-        <module>odl-mdsal-model-rfc8348</module>
-        <module>odl-mdsal-model-rfc8348-non-nmda</module>
-        <module>odl-mdsal-model-rfc8349</module>
-        <module>odl-mdsal-model-rfc8519</module>
-        <module>odl-mdsal-model-rfc8520</module>
-        <module>odl-mdsal-model-rfc8525</module>
-        <module>odl-mdsal-model-rfc8526</module>
-        <module>odl-mdsal-model-rfc8528</module>
-        <module>odl-mdsal-model-rfc8529</module>
-        <module>odl-mdsal-model-rfc8530</module>
-        <module>odl-mdsal-model-rfc8542</module>
-        <module>odl-mdsal-model-rfc8572-ietf-sztp-bootstrap-server</module>
-        <module>odl-mdsal-model-rfc8572-ietf-sztp-conveyed-info</module>
-        <module>odl-mdsal-model-rfc8639</module>
-        <module>odl-mdsal-model-rfc8641</module>
-        <module>odl-mdsal-model-rfc8650</module>
-        <module>odl-mdsal-model-rfc8776</module>
-        <module>odl-mdsal-model-rfc8795</module>
-        <module>odl-mdsal-model-rfc8795-non-nmda</module>
-        <module>odl-mdsal-model-rfc8808</module>
-        <module>odl-mdsal-model-rfc8819</module>
-        <module>odl-mdsal-model-rfc8819-non-nmda</module>
-        <module>odl-mdsal-model-rfc8916</module>
-        <module>odl-mdsal-model-rfc9067</module>
-        <module>odl-mdsal-model-rfc9070</module>
-        <module>odl-mdsal-model-rfc9144</module>
-        <module>odl-mdsal-model-rfc9179</module>
-        <module>odl-mdsal-model-rfc9196-ietf-notification-capabilities</module>
-        <module>odl-mdsal-model-rfc9196-ietf-system-capabilities</module>
-        <module>odl-mdsal-model-rfc9640</module>
-        <module>odl-mdsal-model-rfc9641</module>
-        <module>odl-mdsal-model-rfc9642</module>
-        <module>odl-mdsal-model-rfc9643</module>
-        <module>odl-mdsal-model-rfc9644</module>
-        <module>odl-mdsal-model-rfc9645</module>
-        <module>odl-mdsal-model-rfc9648</module>
-
         <!-- IETF drafts -->
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>
 

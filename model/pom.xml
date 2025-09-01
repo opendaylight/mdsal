@@ -31,9 +31,7 @@
         <module>yang-ext</module>
 
         <!-- IETF YANG models -->
-        <module>iana</module>
         <module>ietf-topology</module>
-        <module>rfc</module>
     </modules>
 
     <properties>
