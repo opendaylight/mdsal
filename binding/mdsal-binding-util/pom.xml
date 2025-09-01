@@ -40,12 +40,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-spi</artifactId>
+            <groupId>org.opendaylight.ietf.model</groupId>
+            <artifactId>rfc8342-ietf-datastores</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8342-ietf-datastores</artifactId>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-spi</artifactId>
         </dependency>
 
         <dependency>
