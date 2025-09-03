@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.spi.ForwardingWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Write transaction which keeps track of writes.
@@ -26,7 +26,7 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
 
     @Override
     @Deprecated
-    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         super.put(store, path, data);
         written = true;
@@ -34,7 +34,7 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
 
     @Override
     @Deprecated
-    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         super.merge(store, path, data);
         written = true;
@@ -42,7 +42,7 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
 
     @Override
     @Deprecated
-    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public void delete(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         super.delete(store, path);
         written = true;
     }

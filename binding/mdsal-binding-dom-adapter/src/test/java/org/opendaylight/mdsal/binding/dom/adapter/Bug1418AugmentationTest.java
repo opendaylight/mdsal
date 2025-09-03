@@ -24,17 +24,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Top> TOP = InstanceIdentifier.create(Top.class);
-    private static final InstanceIdentifier<TopLevelList> TOP_FOO = TOP.child(TopLevelList.class, TOP_FOO_KEY);
-    private static final InstanceIdentifier<TreeLeafOnlyUsesAugment> SIMPLE_AUGMENT =
-            TOP.child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeLeafOnlyUsesAugment.class);
-    private static final InstanceIdentifier<TreeComplexUsesAugment> COMPLEX_AUGMENT =
-            TOP.child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeComplexUsesAugment.class);
+    private static final DataObjectIdentifier<Top> TOP = DataObjectIdentifier.builder(Top.class).build();
+    private static final DataObjectIdentifier<TopLevelList> TOP_FOO = TOP.toBuilder()
+        .child(TopLevelList.class, TOP_FOO_KEY).build();
+    private static final DataObjectIdentifier<TreeLeafOnlyUsesAugment> SIMPLE_AUGMENT = TOP.toBuilder()
+        .child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeLeafOnlyUsesAugment.class).build();
+    private static final DataObjectIdentifier<TreeComplexUsesAugment> COMPLEX_AUGMENT = TOP.toBuilder()
+        .child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeComplexUsesAugment.class).build();
     private static final ListViaUsesKey LIST_VIA_USES_KEY =
             new ListViaUsesKey("list key");
     private static final ListViaUsesKey LIST_VIA_USES_KEY_MOD =

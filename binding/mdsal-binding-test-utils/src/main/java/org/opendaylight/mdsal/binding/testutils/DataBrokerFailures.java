@@ -12,7 +12,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Configures a DataBroker to simulate failures, useful for tests.
@@ -20,12 +20,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Michael Vorburger.ch
  */
 public interface DataBrokerFailures {
-
     /**
      * Fails all future reads.
      *
      * @param exception a {@link ReadFailedException} to throw from a
-     *        {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     *        {@link ReadTransaction#read(LogicalDatastoreType, DataObjectIdentifier)} call.
      */
     void failReads(ReadFailedException exception);
 
@@ -35,7 +34,7 @@ public interface DataBrokerFailures {
      * @param howManyTimes how many times to throw the passed exception, until it resets.
      *
      * @param exception a {@link ReadFailedException} to throw from a
-     *        {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     *        {@link ReadTransaction#read(LogicalDatastoreType, DataObjectIdentifier)} call.
      */
     void failReads(int howManyTimes, ReadFailedException exception);
 

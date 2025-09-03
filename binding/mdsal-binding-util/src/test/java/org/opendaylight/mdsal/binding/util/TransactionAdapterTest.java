@@ -26,14 +26,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Test for {@link TransactionAdapter}.
  */
 @Deprecated
 public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
-    private static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY).toLegacy();
+    private static final DataObjectIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
 
     private ManagedNewTransactionRunner managedNewTransactionRunner;
     private DataBrokerFailuresImpl testableDataBroker;
@@ -114,14 +114,14 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     }
 
     private <T extends DataObject> Optional<T> syncReadOptional(final LogicalDatastoreType datastoreType,
-            final InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
+            final DataObjectIdentifier<T> path) throws ExecutionException, InterruptedException {
         try (var tx = getDataBroker().newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
         }
     }
 
     private <T extends DataObject> T syncRead(final LogicalDatastoreType datastoreType,
-            final InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
+            final DataObjectIdentifier<T> path) throws ExecutionException, InterruptedException {
         return syncReadOptional(datastoreType, path).orElseThrow();
     }
 }

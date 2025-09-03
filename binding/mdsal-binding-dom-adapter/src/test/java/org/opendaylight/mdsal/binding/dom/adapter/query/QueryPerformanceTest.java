@@ -35,6 +35,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.FooBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemKey;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.binding.util.BindingMap;
@@ -78,7 +79,7 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
     protected void setupWithDataBroker(final DataBroker dataBroker) {
         final Stopwatch sw = Stopwatch.createStarted();
         WriteTransaction wtx = dataBroker.newWriteOnlyTransaction();
-        wtx.put(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Foo.class), FOO);
+        wtx.put(LogicalDatastoreType.CONFIGURATION, DataObjectIdentifier.builder(Foo.class).build(), FOO);
         assertCommit(wtx.commit());
         LOG.info("Test data with {} items populated in {}", SYSTEM_COUNT, sw);
     }
@@ -116,7 +117,7 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
         final Stopwatch sw = Stopwatch.createStarted();
         final FluentFuture<Optional<Foo>> future;
         try (ReadTransaction rtx = getDataBroker().newReadOnlyTransaction()) {
-            future = rtx.read(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Foo.class));
+            future = rtx.read(LogicalDatastoreType.CONFIGURATION, DataObjectIdentifier.builder(Foo.class).build());
         }
 
         final Foo haystack = future.get().orElseThrow();
