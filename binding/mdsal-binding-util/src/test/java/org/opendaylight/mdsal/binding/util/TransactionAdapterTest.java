@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 @Deprecated
 public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
-    private static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
+    private static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY).toLegacy();
 
     private ManagedNewTransactionRunner managedNewTransactionRunner;
     private DataBrokerFailuresImpl testableDataBroker;

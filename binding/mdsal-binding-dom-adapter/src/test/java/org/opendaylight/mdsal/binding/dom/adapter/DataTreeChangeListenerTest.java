@@ -39,23 +39,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectStep;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
-
-    private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
-    private static final DataObjectStep<?> TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
-    private static final InstanceIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
-    private static final DataObjectStep<?> FOO_ARGUMENT = Iterables.getLast(FOO_PATH.getPathArguments());
+    private static final DataObjectIdentifier<Top> TOP_PATH = DataObjectIdentifier.builder(Top.class).build();
+    private static final DataObjectStep<?> TOP_ARGUMENT = TOP_PATH.steps().iterator().next();
+    private static final DataObjectIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
+    private static final DataObjectStep<?> FOO_ARGUMENT = Iterables.getLast(FOO_PATH.steps());
     private static final TopLevelList FOO_DATA = topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY));
-    private static final InstanceIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
-    private static final DataObjectStep<?> BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
+    private static final DataObjectIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
+    private static final DataObjectStep<?> BAR_ARGUMENT = Iterables.getLast(BAR_PATH.steps());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
-    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER
-            = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
+    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER =
+        DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
 
@@ -118,8 +117,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     @Test
     public void testWildcardedListListener() throws Exception {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
-        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(
-                LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
+            TOP_PATH.toBuilder().toReferenceBuilder().child(TopLevelList.class).build());
         dataBrokerImpl.registerTreeChangeListener(wildcard, listener);
 
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
@@ -144,12 +143,12 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
-        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(
-                LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
+            TOP_PATH.toBuilder().toReferenceBuilder().child(TopLevelList.class).build());
         dataBrokerImpl.registerTreeChangeListener(wildcard, listener);
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().path());
+        assertEquals(FOO_PATH, fooWriteEvent.path());
         verifyModification(fooWriteEvent.getRootNode(), FOO_ARGUMENT, ModificationType.WRITE);
     }
 
@@ -160,7 +159,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         assertFalse("Non empty collection should be received.",events.isEmpty());
         final DataTreeModification<Top> initialWrite = Iterables.getOnlyElement(events);
         final DataObjectModification<? extends DataObject> initialNode = initialWrite.getRootNode();
-        verifyModification(initialNode,TOP_PATH.getPathArguments().iterator().next(),ModificationType.WRITE);
+        verifyModification(initialNode,TOP_PATH.steps().iterator().next(),ModificationType.WRITE);
         assertEquals(TOP_INITIAL_DATA, initialNode.dataAfter());
     }
 
@@ -171,13 +170,13 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         assertEquals(pathArg, barWrite.step());
     }
 
-    private <T extends DataObject> WriteTransaction putTx(final InstanceIdentifier<T> path, final T data) {
+    private <T extends DataObject> WriteTransaction putTx(final DataObjectIdentifier<T> path, final T data) {
         final WriteTransaction tx = dataBrokerImpl.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, path, data);
         return tx;
     }
 
-    private WriteTransaction deleteTx(final InstanceIdentifier<?> path) {
+    private WriteTransaction deleteTx(final DataObjectIdentifier<?> path) {
         final WriteTransaction tx = dataBrokerImpl.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.OPERATIONAL, path);
         return tx;
