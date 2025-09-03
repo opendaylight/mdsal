@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.spi.ForwardingReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Read-write transaction which keeps track of writes.
@@ -28,7 +28,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
 
     @Override
     @Deprecated
-    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         super.put(store, path, data);
         written = true;
@@ -37,14 +37,14 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     @Override
     @Deprecated
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final T data) {
+            final DataObjectIdentifier<T> path, final T data) {
         super.mergeParentStructurePut(store, path, data);
         written = true;
     }
 
     @Override
     @Deprecated
-    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final DataObjectIdentifier<T> path,
             final T data) {
         super.merge(store, path, data);
         written = true;
@@ -53,14 +53,14 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     @Override
     @Deprecated
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
-            final InstanceIdentifier<T> path, final T data) {
+            final DataObjectIdentifier<T> path, final T data) {
         super.mergeParentStructureMerge(store, path, data);
         written = true;
     }
 
     @Override
     @Deprecated
-    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public void delete(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         super.delete(store, path);
         written = true;
     }

@@ -19,7 +19,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -27,8 +26,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.ListenerTestBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.listener.test.ListItem;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.listener.rev150825.listener.test.ListItemBuilder;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint32;
 
 /**
@@ -46,9 +46,8 @@ class Bug4513Test extends AbstractDataBrokerTest {
     void testDataTreeChangeListener() {
         final var dataBroker = getDataBroker();
 
-        final var wildCard = InstanceIdentifier.builder(ListenerTest.class).child(ListItem.class).build();
-        try (var reg = dataBroker.registerTreeChangeListener(
-                DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, wildCard), listener)) {
+        final var wildCard = DataObjectReference.builder(ListenerTest.class).child(ListItem.class).build();
+        try (var reg = dataBroker.registerTreeChangeListener(LogicalDatastoreType.OPERATIONAL, wildCard, listener)) {
             final var item = writeListItem();
 
             verify(listener, timeout(100)).onDataTreeChanged(captor.capture());
@@ -62,7 +61,7 @@ class Bug4513Test extends AbstractDataBrokerTest {
     private ListItem writeListItem() {
         final var writeTransaction = getDataBroker().newWriteOnlyTransaction();
         final var item = new ListItemBuilder().setSip("name").setOp(Uint32.valueOf(43)).build();
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(ListenerTest.class),
+        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, DataObjectIdentifier.builder(ListenerTest.class).build(),
             new ListenerTestBuilder().setListItem(BindingMap.of(item)).build());
         assertCommit(writeTransaction.commit());
         return item;
