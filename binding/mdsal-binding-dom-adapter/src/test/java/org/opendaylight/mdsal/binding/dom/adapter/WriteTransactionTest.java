@@ -20,15 +20,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class WriteTransactionTest extends AbstractDataBrokerTest {
-    private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
+    private static final DataObjectIdentifier<Top> TOP_PATH = DataObjectIdentifier.builder(Top.class).build();
     private static final TopLevelListKey TOP_LIST_KEY = new TopLevelListKey("foo");
-    private static final InstanceIdentifier<TopLevelList> NODE_PATH = TOP_PATH.child(TopLevelList.class, TOP_LIST_KEY);
-    private static final InstanceIdentifier<TreeLeafOnlyUsesAugment> NODE_AUGMENT_PATH =
-        NODE_PATH.augmentation(TreeLeafOnlyUsesAugment.class);
+    private static final DataObjectIdentifier<TopLevelList> NODE_PATH = TOP_PATH.toBuilder()
+        .child(TopLevelList.class, TOP_LIST_KEY).build();
+    private static final DataObjectIdentifier<TreeLeafOnlyUsesAugment> NODE_AUGMENT_PATH = NODE_PATH.toBuilder()
+        .augmentation(TreeLeafOnlyUsesAugment.class).build();
     private static final TopLevelList NODE = new TopLevelListBuilder().withKey(TOP_LIST_KEY).build();
     private static final TreeLeafOnlyUsesAugment NODE_AUGMENT = new TreeLeafOnlyUsesAugmentBuilder()
         .setLeafFromGrouping("foo")

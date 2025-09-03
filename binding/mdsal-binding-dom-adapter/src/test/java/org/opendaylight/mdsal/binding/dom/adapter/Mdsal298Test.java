@@ -46,6 +46,7 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.wit
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.Addressable;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.AddressableBuilder;
 import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.binding.NodeStep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -56,39 +57,40 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class Mdsal298Test extends AbstractDataBrokerTest {
-    private static final InstanceIdentifier<Container> CONTAINER = InstanceIdentifier.create(Container.class);
-    private static final DataTreeIdentifier<Container> CONTAINER_TID = DataTreeIdentifier.of(CONFIGURATION,
-        CONTAINER);
+    private static final DataObjectIdentifier<Container> CONTAINER =
+        DataObjectIdentifier.builder(Container.class).build();
+    private static final DataTreeIdentifier<Container> CONTAINER_TID =
+        DataTreeIdentifier.of(CONFIGURATION, CONTAINER);
     private static final NodeIdentifier CONTAINER_NID = new NodeIdentifier(Container.QNAME);
     private static final QName FOO_QNAME = QName.create(Container.QNAME, "foo");
     private static final QName BAZ_QNAME = QName.create(UnaddressableCont.QNAME, "baz");
 
-    private static final InstanceIdentifier<WithChoice> CHOICE_CONTAINER = InstanceIdentifier.create(WithChoice.class);
-    private static final DataTreeIdentifier<WithChoice> CHOICE_CONTAINER_TID = DataTreeIdentifier.of(CONFIGURATION,
-        CHOICE_CONTAINER);
+    private static final DataObjectIdentifier<WithChoice> CHOICE_CONTAINER =
+        DataObjectIdentifier.builder(WithChoice.class).build();
+    private static final DataTreeIdentifier<WithChoice> CHOICE_CONTAINER_TID =
+        DataTreeIdentifier.of(CONFIGURATION, CHOICE_CONTAINER);
     private static final NodeIdentifier CHOICE_CONTAINER_NID = new NodeIdentifier(WithChoice.QNAME);
     private static final NodeIdentifier CHOICE_NID = new NodeIdentifier(Foo.QNAME);
-    private static final InstanceIdentifier<Addressable> ADDRESSABLE_CASE = CHOICE_CONTAINER
-            .child((Class)Addressable.class);
+    private static final DataObjectIdentifier<Addressable> ADDRESSABLE_CASE = CHOICE_CONTAINER.toBuilder()
+        .child((Class)Addressable.class).build();
 
-    private static final InstanceIdentifier<AddressableCont> ADDRESSABLE_CONTAINER =
-            InstanceIdentifier.create(AddressableCont.class);
-    private static final DataTreeIdentifier<AddressableCont> ADDRESSABLE_CONTAINER_TID = DataTreeIdentifier.of(
-        CONFIGURATION, ADDRESSABLE_CONTAINER);
+    private static final DataObjectIdentifier<AddressableCont> ADDRESSABLE_CONTAINER =
+        DataObjectIdentifier.builder(AddressableCont.class).build();
+    private static final DataTreeIdentifier<AddressableCont> ADDRESSABLE_CONTAINER_TID =
+        DataTreeIdentifier.of(CONFIGURATION, ADDRESSABLE_CONTAINER);
     private static final NodeIdentifier ADDRESSABLE_CONTAINER_NID = new NodeIdentifier(AddressableCont.QNAME);
 
-    private static final InstanceIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER =
-            InstanceIdentifier.create(UnaddressableCont.class);
-    private static final DataTreeIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER_TID = DataTreeIdentifier.of(
-        CONFIGURATION, UNADDRESSABLE_CONTAINER);
+    private static final DataObjectIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER =
+        DataObjectIdentifier.builder(UnaddressableCont.class).build();
+    private static final DataTreeIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER_TID =
+        DataTreeIdentifier.of(CONFIGURATION, UNADDRESSABLE_CONTAINER);
     private static final NodeIdentifier UNADDRESSABLE_CONTAINER_NID = new NodeIdentifier(UnaddressableCont.QNAME);
 
     @Test
     public void testKeyedDataTreeModification() throws InterruptedException, ExecutionException {
-        final DataTreeChangeListener<Container> listener = assertWrittenContainer(Container.QNAME, Container.class,
-            new ContainerBuilder().build());
+        final var listener = assertWrittenContainer(Container.QNAME, Container.class, new ContainerBuilder().build());
 
-        final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
+        final var domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CONTAINER_NID).node(Keyed.QNAME),
             ImmutableNodes.newUserMapBuilder()
                 .withNodeIdentifier(new NodeIdentifier(Keyed.QNAME))
@@ -212,13 +214,13 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
     @Test
     public void testDataTreeModificationAddressable() throws InterruptedException, ExecutionException {
-        final DataTreeChangeListener<AddressableCont> listener = assertWrittenContainer(AddressableCont.QNAME,
-            AddressableCont.class, new AddressableContBuilder().build());
+        final var listener = assertWrittenContainer(AddressableCont.QNAME, AddressableCont.class,
+            new AddressableContBuilder().build());
 
         doNothing().when(listener).onDataTreeChanged(anyList());
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, ADDRESSABLE_CONTAINER.child(AddressableChild.class),
+        writeTx.put(CONFIGURATION, ADDRESSABLE_CONTAINER.toBuilder().child(AddressableChild.class).build(),
             new AddressableChildBuilder().build());
         writeTx.commit().get();
 
@@ -228,7 +230,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(1, capture.size());
 
         final DataTreeModification<AddressableCont> contChange = capture.iterator().next();
-        assertEquals(ADDRESSABLE_CONTAINER_TID, contChange.getRootPath());
+        assertEquals(ADDRESSABLE_CONTAINER_TID, contChange.path());
         final DataObjectModification<AddressableCont> changedContainer = contChange.getRootNode();
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.modificationType());
         assertEquals(new NodeStep<>(AddressableCont.class), changedContainer.step());
