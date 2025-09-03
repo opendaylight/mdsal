@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectStep;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
@@ -46,7 +47,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
-    private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
+    private static final DataObjectIdentifier<Top> TOP_PATH = DataObjectIdentifier.builder(Top.class).build();
     private static final DataObjectStep<?> TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
     private static final InstanceIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
     private static final DataObjectStep<?> FOO_ARGUMENT = Iterables.getLast(FOO_PATH.getPathArguments());
@@ -54,8 +55,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
     private static final DataObjectStep<?> BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
-    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER
-            = DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
+    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER =
+        DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
 
@@ -171,14 +172,14 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         assertEquals(pathArg, barWrite.step());
     }
 
-    private <T extends DataObject> WriteTransaction putTx(final InstanceIdentifier<T> path, final T data) {
-        final WriteTransaction tx = dataBrokerImpl.newWriteOnlyTransaction();
+    private <T extends DataObject> WriteTransaction putTx(final DataObjectIdentifier<T> path, final T data) {
+        final var tx = dataBrokerImpl.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, path, data);
         return tx;
     }
 
-    private WriteTransaction deleteTx(final InstanceIdentifier<?> path) {
-        final WriteTransaction tx = dataBrokerImpl.newWriteOnlyTransaction();
+    private WriteTransaction deleteTx(final DataObjectIdentifier<?> path) {
+        final var tx = dataBrokerImpl.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.OPERATIONAL, path);
         return tx;
     }

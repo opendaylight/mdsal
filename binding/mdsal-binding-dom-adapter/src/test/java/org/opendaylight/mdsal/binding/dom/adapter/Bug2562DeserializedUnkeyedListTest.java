@@ -16,13 +16,13 @@ import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.RootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.FoorootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.fooroot.BarrootBuilder;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Root> ROOT_PATH = InstanceIdentifier.create(Root.class);
+    private static final DataObjectIdentifier<Root> ROOT_PATH = DataObjectIdentifier.builder(Root.class).build();
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
