@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import java.util.Collections;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -19,7 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.util.BindingMap;
 
 public class Mdsal108Test extends AbstractDataBrokerTest {
     @Test
@@ -27,12 +27,11 @@ public class Mdsal108Test extends AbstractDataBrokerTest {
         DataBroker dataBroker = getDataBroker();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
-        final TopLevelList item = new TopLevelListBuilder().setName("name").build();
-        TopBuilder builder = new TopBuilder().setTopLevelList(Collections.singletonMap(item.key(), item));
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class), builder.build());
+        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, DataObjectIdentifier.builder(Top.class).build(),
+            new TopBuilder().setTopLevelList(BindingMap.of(new TopLevelListBuilder().setName("name").build())).build());
         assertCommit(writeTransaction.commit());
 
-        InstanceIdentifier<TopLevelList> id = InstanceIdentifier.builder(Top.class)
+        final var id = DataObjectIdentifier.builder(Top.class)
                 .child(TopLevelList.class, new TopLevelListKey("name")).build();
 
         ReadWriteTransaction writeTransaction1 = dataBroker.newReadWriteTransaction();

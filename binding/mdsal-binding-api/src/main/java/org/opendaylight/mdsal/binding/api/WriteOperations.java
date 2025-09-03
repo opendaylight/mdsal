@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Write-like operations supported by {@link WriteTransaction} and {@link ReadWriteTransaction}. This interface defines
@@ -36,29 +35,6 @@ public interface WriteOperations {
      */
     <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull DataObjectIdentifier<T> path,
             @NonNull T data);
-
-    /**
-     * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that
-     * whole subtree will be replaced by the specified data.
-     *
-     * <p>If you need to make sure that a parent object exists but you do not want modify its pre-existing state by
-     * using put, consider using {@link #merge} instead.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be written to the specified path
-     * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()}
-     * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is {@code null}
-     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
-     * @throws IllegalArgumentException if {@code path} cannot be converted to {@link DataObjectIdentifier}
-     * @deprecated Use {@link #put(LogicalDatastoreType, DataObjectIdentifier, DataObject)} instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default <T extends DataObject> void put(final @NonNull LogicalDatastoreType store,
-            final @NonNull InstanceIdentifier<T> path, final @NonNull T data) {
-        put(store, LegacyUtils.legacyToIdentifier(path), data);
-    }
 
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
@@ -102,35 +78,6 @@ public interface WriteOperations {
             @NonNull DataObjectIdentifier<T> path, @NonNull T data);
 
     /**
-     * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
-     * subtree will be replaced by the specified data. Unlike
-     * {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)}, this method will attempt to create
-     * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
-     *
-     * <p>If you need to make sure that a parent object exists but you do not want modify its pre-existing state by
-     * using put, consider using {@link #merge} instead.
-     *
-     * <p><b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted
-     * by a previous transaction. It also has a significantly higher cost than
-     * {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)} and should only be used when absolutely
-     * necessary.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be written to the specified path
-     * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()}
-     * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is {@code null}
-     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
-     * @deprecated Use {@link #mergeParentStructurePut(LogicalDatastoreType, DataObjectIdentifier, DataObject)} instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default <T extends DataObject> void mergeParentStructurePut(final @NonNull LogicalDatastoreType store,
-            final @NonNull InstanceIdentifier<T> path, final @NonNull T data) {
-        mergeParentStructurePut(store, LegacyUtils.legacyToIdentifier(path), data);
-    }
-
-    /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
      * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
      *
@@ -145,27 +92,6 @@ public interface WriteOperations {
      */
     <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull DataObjectIdentifier<T> path,
             @NonNull T data);
-
-    /**
-     * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
-     * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
-     *
-     * <p>If you require an explicit replace operation, use {@link #put} instead.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be merged to the specified path
-     * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()}
-     * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is {@code null}
-     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
-     * @deprecated Use {@link #merge(LogicalDatastoreType, DataObjectIdentifier, DataObject)} instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default <T extends DataObject> void merge(final @NonNull LogicalDatastoreType store,
-            final @NonNull InstanceIdentifier<T> path, final @NonNull T data) {
-        merge(store, LegacyUtils.legacyToIdentifier(path), data);
-    }
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -208,34 +134,6 @@ public interface WriteOperations {
             @NonNull DataObjectIdentifier<T> path, @NonNull T data);
 
     /**
-     * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
-     * overwritten will be preserved. This means that if you store a container, its child lists will be merged. Unlike
-     * {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)}, this method will attempt to create
-     * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
-     *
-     * <p>If you require an explicit replace operation, use {@link #put} instead.
-     *
-     * <p><b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted
-     * by a previous transaction. It is not necessary in most scenarios and has a significantly higher cost than
-     * {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)}. It should only be used when absolutely
-     * necessary.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be merged to the specified path
-     * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is {@code null}
-     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
-     * @deprecated Use {@link #mergeParentStructureMerge(LogicalDatastoreType, DataObjectIdentifier, DataObject)}
-     *             instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default <T extends DataObject> void mergeParentStructureMerge(final @NonNull LogicalDatastoreType store,
-            final @NonNull InstanceIdentifier<T> path, final @NonNull T data) {
-        mergeParentStructureMerge(store, LegacyUtils.legacyToIdentifier(path), data);
-    }
-
-    /**
      * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
      *
      * @param store Logical data store which should be modified
@@ -245,21 +143,6 @@ public interface WriteOperations {
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void delete(@NonNull LogicalDatastoreType store, @NonNull DataObjectIdentifier<?> path);
-
-    /**
-     * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
-     *
-     * @param store Logical data store which should be modified
-     * @param path Data object path
-     * @throws IllegalStateException if the transaction was committed or canceled.
-     * @throws NullPointerException if any of the arguments is {@code null}
-     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
-     * @deprecated Use {@link #delete(LogicalDatastoreType, DataObjectIdentifier)} instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default void delete(final @NonNull LogicalDatastoreType store, final @NonNull InstanceIdentifier<?> path) {
-        delete(store, LegacyUtils.legacyToIdentifier(path));
-    }
 
     /**
      * Return a {@link FluentFuture} which completes.

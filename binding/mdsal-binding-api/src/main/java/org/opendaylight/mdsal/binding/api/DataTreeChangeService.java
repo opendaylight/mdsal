@@ -163,35 +163,6 @@ public interface DataTreeChangeService extends BindingService {
     }
 
     /**
-     * Registers a {@link DataTreeChangeListener} to receive notifications when data changes under a given path in the
-     * conceptual data tree.
-     *
-     * <p>You are able to register for notifications  for any node or subtree which can be represented using
-     * {@link DataTreeIdentifier}.
-     *
-     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
-     * {@link Registration#close()} method on the returned object.
-     *
-     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
-     * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
-     * being still registered.
-     *
-     * @implSpec This method provides {@link DataListenerAdapter} as listener during the registration of
-     *           {@link DataTreeChangeListener}. This would allow users to know the last state of data instead of
-     *           getting details about what changed in the entire tree.
-     *
-     * @param treeId Data tree identifier of the subtree which should be watched for changes.
-     * @param listener Listener instance which is being registered
-     * @return Listener registration object, which may be used to unregister your listener using
-     *         {@link Registration#close()} to stop delivery of change events.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default <T extends DataObject> @NonNull Registration registerDataListener(
-            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataListener<T> listener) {
-        return registerDataListener(treeId.datastore(), LegacyUtils.legacyToIdentifier(treeId.path()), listener);
-    }
-
-    /**
      * Registers a {@link DataTreeChangeListener} to receive notifications about the last data state when it changes
      * under a given path in the conceptual data tree.
      *
@@ -218,37 +189,5 @@ public interface DataTreeChangeService extends BindingService {
             final @NonNull LogicalDatastoreType datastore, final @NonNull DataObjectIdentifier<T> path,
             final @NonNull DataChangeListener<T> listener) {
         return registerTreeChangeListener(datastore, path, new DataChangeListenerAdapter<>(listener));
-    }
-
-    /**
-     * Registers a {@link DataTreeChangeListener} to receive notifications about the last data state when it changes
-     * under a given path in the conceptual data tree.
-     *
-     * <p>You are able to register for notifications  for any node or subtree which can be represented using
-     * {@link DataTreeIdentifier}.
-     *
-     * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
-     * {@link Registration#close()} method on the returned object.
-     *
-     * <p>You <b>MUST</b> explicitly unregister your listener when you no longer want to receive notifications. This is
-     * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale listeners
-     * being still registered.
-     *
-     * @implSpec This method provides {@link DataChangeListenerAdapter} as listener during the registration of
-     *           {@link DataTreeChangeListener}, which provides a comparison of before-value and after-value.
-     *
-     * @param treeId Data tree identifier of the subtree which should be watched for changes.
-     * @param listener Listener instance which is being registered
-     * @return Listener registration object, which may be used to unregister your listener using
-     *         {@link Registration#close()} to stop  delivery of change events.
-     * @deprecated Use
-     *             {@link #registerDataChangeListener(LogicalDatastoreType, DataObjectIdentifier, DataChangeListener)}
-     *             instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default <T extends DataObject> @NonNull Registration registerDataChangeListener(
-            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataChangeListener<T> listener) {
-        return registerTreeChangeListener(treeId.datastore(), LegacyUtils.legacyToIdentifier(treeId.path()),
-            new DataChangeListenerAdapter<>(listener));
     }
 }
