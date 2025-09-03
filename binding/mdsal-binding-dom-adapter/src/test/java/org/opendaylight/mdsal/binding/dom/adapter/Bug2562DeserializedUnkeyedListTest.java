@@ -16,14 +16,12 @@ import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.RootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.FoorootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.fooroot.BarrootBuilder;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Root> ROOT_PATH = InstanceIdentifier.create(Root.class);
-
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Root.class));
@@ -31,19 +29,21 @@ public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeLi
 
     @Test
     public void writeListToList2562Root() {
+        final var rootPath = DataObjectIdentifier.builder(Root.class).build();
+
         final var root = new RootBuilder()
             .setFooroot(List.of(new FoorootBuilder()
                 .setBarroot(BindingMap.of(new BarrootBuilder().setType(2).setValue(2).build()))
             .build())).build();
 
-        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, ROOT_PATH)) {
+        try (var collector = createCollector(LogicalDatastoreType.CONFIGURATION, rootPath)) {
             collector.verifyModifications();
 
             final var readWriteTransaction = getDataBroker().newReadWriteTransaction();
-            readWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, ROOT_PATH, root);
+            readWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, rootPath, root);
             assertCommit(readWriteTransaction.commit());
 
-            collector.verifyModifications(added(ROOT_PATH, root));
+            collector.verifyModifications(added(rootPath, root));
         }
     }
 }

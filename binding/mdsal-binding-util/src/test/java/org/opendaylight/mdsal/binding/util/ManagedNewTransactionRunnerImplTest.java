@@ -40,7 +40,7 @@ import org.opendaylight.yangtools.binding.DataObjectIdentifier;
  */
 public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataBrokerTest {
 
-    static final DataObjectIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY).toIdentifier();
+    static final DataObjectIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
 
     DataBrokerFailuresImpl testableDataBroker;
     ManagedNewTransactionRunner managedNewTransactionRunner;
