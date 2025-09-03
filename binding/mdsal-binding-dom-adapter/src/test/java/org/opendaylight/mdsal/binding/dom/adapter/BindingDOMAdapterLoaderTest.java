@@ -70,7 +70,7 @@ public class BindingDOMAdapterLoaderTest {
     public void registerWithException() {
         final var adapter = assertDataBrokerAdapter();
         final var ex = assertThrows(UnsupportedOperationException.class,
-            () -> adapter.registerDataTreeChangeListener(
+            () -> adapter.registerTreeChangeListener(
                 DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class)),
                 mock(DataTreeChangeListener.class)));
         assertEquals("Underlying data broker does not expose DOMDataTreeChangeService.", ex.getMessage());

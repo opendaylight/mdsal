@@ -155,7 +155,7 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
     protected final <T extends DataObject> @NonNull ModificationCollector<T> createCollector(
             final LogicalDatastoreType store, final InstanceIdentifier<T> path) {
         final var listener = new TestListener<T>();
-        final var reg = getDataBroker().registerDataTreeChangeListener(DataTreeIdentifier.of(store, path), listener);
+        final var reg = getDataBroker().registerTreeChangeListener(DataTreeIdentifier.of(store, path), listener);
         listener.awaitSync();
         return new ModificationCollector<>(listener, reg);
     }
