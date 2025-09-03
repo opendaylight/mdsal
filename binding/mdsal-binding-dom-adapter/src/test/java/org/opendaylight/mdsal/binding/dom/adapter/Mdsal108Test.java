@@ -19,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class Mdsal108Test extends AbstractDataBrokerTest {
@@ -32,7 +33,7 @@ public class Mdsal108Test extends AbstractDataBrokerTest {
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class), builder.build());
         assertCommit(writeTransaction.commit());
 
-        InstanceIdentifier<TopLevelList> id = InstanceIdentifier.builder(Top.class)
+        final var id = DataObjectIdentifier.builder(Top.class)
                 .child(TopLevelList.class, new TopLevelListKey("name")).build();
 
         ReadWriteTransaction writeTransaction1 = dataBroker.newReadWriteTransaction();
