@@ -54,48 +54,47 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.valu
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.TinyIntContainerBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.TinyUintContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.TinyUintContainerBuilder;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 public class LeafDefaultValueTest extends AbstractDataBrokerTest {
+    private static final DataObjectIdentifier<TinyIntContainer> TINY_INT_NODE_PATH =
+        DataObjectIdentifier.builder(TinyIntContainer.class).build();
+    private static final DataObjectIdentifier<SmallIntContainer> SMALL_INT_NODE_PATH =
+        DataObjectIdentifier.builder(SmallIntContainer.class).build();
+    private static final DataObjectIdentifier<NormalIntContainer> NORMAL_INT_NODE_PATH =
+        DataObjectIdentifier.builder(NormalIntContainer.class).build();
+    private static final DataObjectIdentifier<BigIntContainer> BIG_INT_NODE_PATH =
+        DataObjectIdentifier.builder(BigIntContainer.class).build();
 
-    private static final InstanceIdentifier<TinyIntContainer> TINY_INT_NODE_PATH
-            = InstanceIdentifier.create(TinyIntContainer.class);
-    private static final InstanceIdentifier<SmallIntContainer> SMALL_INT_NODE_PATH
-            = InstanceIdentifier.create(SmallIntContainer.class);
-    private static final InstanceIdentifier<NormalIntContainer> NORMAL_INT_NODE_PATH
-            = InstanceIdentifier.create(NormalIntContainer.class);
-    private static final InstanceIdentifier<BigIntContainer> BIG_INT_NODE_PATH
-            = InstanceIdentifier.create(BigIntContainer.class);
+    private static final DataObjectIdentifier<TinyUintContainer> TINY_UINT_NODE_PATH =
+        DataObjectIdentifier.builder(TinyUintContainer.class).build();
+    private static final DataObjectIdentifier<SmallUintContainer> SMALL_UINT_NODE_PATH =
+        DataObjectIdentifier.builder(SmallUintContainer.class).build();
+    private static final DataObjectIdentifier<NormalUintContainer> NORMAL_UINT_NODE_PATH =
+        DataObjectIdentifier.builder(NormalUintContainer.class).build();
+    private static final DataObjectIdentifier<BigUintContainer> BIG_UINT_NODE_PATH =
+        DataObjectIdentifier.builder(BigUintContainer.class).build();
 
-    private static final InstanceIdentifier<TinyUintContainer> TINY_UINT_NODE_PATH
-            = InstanceIdentifier.create(TinyUintContainer.class);
-    private static final InstanceIdentifier<SmallUintContainer> SMALL_UINT_NODE_PATH
-            = InstanceIdentifier.create(SmallUintContainer.class);
-    private static final InstanceIdentifier<NormalUintContainer> NORMAL_UINT_NODE_PATH
-            = InstanceIdentifier.create(NormalUintContainer.class);
-    private static final InstanceIdentifier<BigUintContainer> BIG_UINT_NODE_PATH
-            = InstanceIdentifier.create(BigUintContainer.class);
+    private static final DataObjectIdentifier<DecimalContainer> DECIMAL_NODE_PATH =
+        DataObjectIdentifier.builder(DecimalContainer.class).build();
 
-    private static final InstanceIdentifier<DecimalContainer> DECIMAL_NODE_PATH
-            = InstanceIdentifier.create(DecimalContainer.class);
+    private static final DataObjectIdentifier<StringContainer> STRING_NODE_PATH =
+        DataObjectIdentifier.builder(StringContainer.class).build();
 
-    private static final InstanceIdentifier<StringContainer> STRING_NODE_PATH
-            = InstanceIdentifier.create(StringContainer.class);
+    private static final DataObjectIdentifier<BooleanContainer> BOOLEAN_NODE_PATH =
+        DataObjectIdentifier.builder(BooleanContainer.class).build();
 
-    private static final InstanceIdentifier<BooleanContainer> BOOLEAN_NODE_PATH
-            = InstanceIdentifier.create(BooleanContainer.class);
+    private static final DataObjectIdentifier<EnumContainer> ENUM_NODE_PATH =
+        DataObjectIdentifier.builder(EnumContainer.class).build();
 
-    private static final InstanceIdentifier<EnumContainer> ENUM_NODE_PATH
-            = InstanceIdentifier.create(EnumContainer.class);
+    private static final DataObjectIdentifier<BitsContainer> BITS_NODE_PATH =
+        DataObjectIdentifier.builder(BitsContainer.class).build();
 
-    private static final InstanceIdentifier<BitsContainer> BITS_NODE_PATH
-            = InstanceIdentifier.create(BitsContainer.class);
+    private static final DataObjectIdentifier<BinaryContainer> BINARY_NODE_PATH =
+        DataObjectIdentifier.builder(BinaryContainer.class).build();
 
-    private static final InstanceIdentifier<BinaryContainer> BINARY_NODE_PATH
-            = InstanceIdentifier.create(BinaryContainer.class);
-
-    private static final InstanceIdentifier<IdentityrefContainer> IDENTITYREF_NODE_PATH
-            = InstanceIdentifier.create(IdentityrefContainer.class);
+    private static final DataObjectIdentifier<IdentityrefContainer> IDENTITYREF_NODE_PATH =
+        DataObjectIdentifier.builder(IdentityrefContainer.class).build();
 
     @Test
     public void testTinyIntDefaultValue() throws ExecutionException, InterruptedException {
