@@ -25,19 +25,23 @@ import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeLis
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * This testsuite tests explanation for data change scope and data modifications which were described in
  * https://lists.opendaylight.org/pipermail/controller-dev/2014-July/005541.html.
  */
 public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Top> TOP = InstanceIdentifier.create(Top.class);
-    private static final InstanceIdentifier<TopLevelList> WILDCARDED = TOP.child(TopLevelList.class);
-    private static final InstanceIdentifier<TopLevelList> TOP_FOO = TOP.child(TopLevelList.class, TOP_FOO_KEY);
-    private static final InstanceIdentifier<TopLevelList> TOP_BAR = TOP.child(TopLevelList.class, TOP_BAR_KEY);
+    private static final DataObjectIdentifier<Top> TOP = DataObjectIdentifier.builder(Top.class).build();
+    private static final DataObjectReference<TopLevelList> WILDCARDED = TOP.toBuilder().toReferenceBuilder()
+        .child(TopLevelList.class).build();
+    private static final DataObjectIdentifier<TopLevelList> TOP_FOO = TOP.toBuilder()
+        .child(TopLevelList.class, TOP_FOO_KEY).build();
+    private static final DataObjectIdentifier<TopLevelList> TOP_BAR = TOP.toBuilder()
+        .child(TopLevelList.class, TOP_BAR_KEY).build();
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {

@@ -20,13 +20,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.RootBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.root.ListInRoot;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.root.ListInRootBuilder;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Root> ROOT_PATH = InstanceIdentifier.create(Root.class);
+    private static final DataObjectIdentifier<Root> ROOT_PATH = DataObjectIdentifier.builder(Root.class).build();
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {

@@ -21,25 +21,25 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TopBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Regression test suite for Bug 1125 - Can't detect switch disconnection
  * https://bugs.opendaylight.org/show_bug.cgi?id=1125.
  */
 public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
-    private static final InstanceIdentifier<TopLevelList> TOP_FOO_PATH = TOP_PATH
-            .child(TopLevelList.class, TOP_FOO_KEY);
+    private static final DataObjectIdentifier<Top> TOP_PATH = DataObjectIdentifier.builder(Top.class).build();
+    private static final DataObjectIdentifier<TopLevelList> TOP_FOO_PATH = TOP_PATH.toBuilder()
+        .child(TopLevelList.class, TOP_FOO_KEY).build();
 
-    private static final InstanceIdentifier<TreeComplexUsesAugment> FOO_AUGMENT_PATH = TOP_FOO_PATH
-            .augmentation(TreeComplexUsesAugment.class);
+    private static final DataObjectIdentifier<TreeComplexUsesAugment> FOO_AUGMENT_PATH = TOP_FOO_PATH.toBuilder()
+        .augmentation(TreeComplexUsesAugment.class).build();
 
-    private static final InstanceIdentifier<TreeComplexUsesAugment> WILDCARDED_AUGMENT_PATH = TOP_PATH
-            .child(TopLevelList.class).augmentation(
-                    TreeComplexUsesAugment.class);
+    private static final DataObjectReference<TreeComplexUsesAugment> WILDCARDED_AUGMENT_PATH = TOP_PATH.toBuilder()
+        .toReferenceBuilder().child(TopLevelList.class).augmentation(TreeComplexUsesAugment.class).build();
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
@@ -57,7 +57,7 @@ public class Bug1125RegressionTest extends AbstractDataTreeChangeListenerTest {
         deleteAndListenAugment(FOO_AUGMENT_PATH);
     }
 
-    private void deleteAndListenAugment(final InstanceIdentifier<?> path) {
+    private void deleteAndListenAugment(final DataObjectIdentifier<?> path) {
         final var augment = writeInitialState();
         try (var collector = createCollector(LogicalDatastoreType.OPERATIONAL, WILDCARDED_AUGMENT_PATH)) {
             collector.verifyModifications(added(FOO_AUGMENT_PATH, augment));

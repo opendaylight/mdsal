@@ -21,12 +21,12 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Abstract base that provides a DTCL for verification.
@@ -153,43 +153,42 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
     }
 
     protected final <T extends DataObject> @NonNull ModificationCollector<T> createCollector(
-            final LogicalDatastoreType store, final InstanceIdentifier<T> path) {
+            final LogicalDatastoreType store, final DataObjectReference<T> path) {
         final var listener = new TestListener<T>();
-        final var reg = getDataBroker().registerTreeChangeListener(DataTreeIdentifier.of(store, path), listener);
+        final var reg = getDataBroker().registerTreeChangeListener(store, path, listener);
         listener.awaitSync();
         return new ModificationCollector<>(listener, reg);
     }
 
     public static <T extends DataObject> @NonNull Matcher<T> match(final ModificationType type,
-            final InstanceIdentifier<T> path, final DataMatcher<T> checkDataBefore,
+            final DataObjectIdentifier<T> path, final DataMatcher<T> checkDataBefore,
             final DataMatcher<T> checkDataAfter) {
-        return modification -> type == modification.getRootNode().modificationType()
-                && path.equals(modification.getRootPath().path())
+        return modification -> type == modification.getRootNode().modificationType() && path.equals(modification.path())
                 && checkDataBefore.apply(modification.getRootNode().dataBefore())
                 && checkDataAfter.apply(modification.getRootNode().dataAfter());
     }
 
     public static <T extends DataObject> @NonNull Matcher<T> match(final ModificationType type,
-            final InstanceIdentifier<T> path, final T expDataBefore, final T expDataAfter) {
+            final DataObjectIdentifier<T> path, final T expDataBefore, final T expDataAfter) {
         return match(type, path, dataBefore -> Objects.equals(expDataBefore, dataBefore),
             (DataMatcher<T>) dataAfter -> Objects.equals(expDataAfter, dataAfter));
     }
 
-    public static <T extends DataObject> @NonNull Matcher<T> added(final InstanceIdentifier<T> path, final T data) {
+    public static <T extends DataObject> @NonNull Matcher<T> added(final DataObjectIdentifier<T> path, final T data) {
         return match(ModificationType.WRITE, path, null, data);
     }
 
-    public static <T extends DataObject> @NonNull Matcher<T> replaced(final InstanceIdentifier<T> path,
+    public static <T extends DataObject> @NonNull Matcher<T> replaced(final DataObjectIdentifier<T> path,
             final T dataBefore, final T dataAfter) {
         return match(ModificationType.WRITE, path, dataBefore, dataAfter);
     }
 
-    public static <T extends DataObject> @NonNull Matcher<T> deleted(final InstanceIdentifier<T> path,
+    public static <T extends DataObject> @NonNull Matcher<T> deleted(final DataObjectIdentifier<T> path,
             final T dataBefore) {
         return match(ModificationType.DELETE, path, dataBefore, null);
     }
 
-    public static <T extends DataObject> @NonNull Matcher<T> subtreeModified(final InstanceIdentifier<T> path,
+    public static <T extends DataObject> @NonNull Matcher<T> subtreeModified(final DataObjectIdentifier<T> path,
             final T dataBefore, final T dataAfter) {
         return match(ModificationType.SUBTREE_MODIFIED, path, dataBefore, dataAfter);
     }

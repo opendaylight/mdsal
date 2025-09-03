@@ -22,9 +22,10 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * This testsuite tries to replicate bug 1333 and tests regresion of it  using test-model with similar construction as
@@ -33,9 +34,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * <p>See https://bugs.opendaylight.org/show_bug.cgi?id=1333 for Bug Description
  */
 public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
-    private static final InstanceIdentifier<TreeComplexUsesAugment> AUGMENT_WILDCARD =
-            TOP_PATH.child(TopLevelList.class).augmentation(TreeComplexUsesAugment.class);
+    private static final DataObjectIdentifier<Top> TOP_PATH = DataObjectIdentifier.builder(Top.class).build();
+    private static final DataObjectReference<TreeComplexUsesAugment> AUGMENT_WILDCARD = TOP_PATH.toBuilder()
+        .toReferenceBuilder().child(TopLevelList.class).augmentation(TreeComplexUsesAugment.class).build();
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
@@ -47,7 +48,7 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
         return top(topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)));
     }
 
-    public Top writeTopWithListItem(final LogicalDatastoreType store) {
+    private Top writeTopWithListItem(final LogicalDatastoreType store) {
         var tx = getDataBroker().newWriteOnlyTransaction();
         var topItem = topWithListItem();
         tx.put(store, TOP_PATH, topItem);
@@ -55,7 +56,7 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
         return topItem;
     }
 
-    public void deleteItem(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+    public void deleteItem(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
         var tx = getDataBroker().newWriteOnlyTransaction();
         tx.delete(store, path);
         assertCommit(tx.commit());
