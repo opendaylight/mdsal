@@ -91,7 +91,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     @Test
     public void testTopLevelListener() throws Exception {
         final EventCapturingListener<Top> listener = new EventCapturingListener<>();
-        dataBrokerImpl.registerDataTreeChangeListener(TOP_IDENTIFIER, listener);
+        dataBrokerImpl.registerTreeChangeListener(TOP_IDENTIFIER, listener);
 
         createAndVerifyTop(listener);
 
@@ -112,7 +112,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
                 TopLevelList.class, TOP_BAR_KEY);
         verifyModification(barDeleteMod, BAR_ARGUMENT, ModificationType.DELETE);
 
-        dataBrokerImpl.registerDataTreeChangeListener(TOP_IDENTIFIER, listener).close();
+        dataBrokerImpl.registerTreeChangeListener(TOP_IDENTIFIER, listener).close();
     }
 
     @Test
@@ -120,7 +120,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
         final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
-        dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
+        dataBrokerImpl.registerTreeChangeListener(wildcard, listener);
 
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
@@ -146,7 +146,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
         final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.of(
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
-        dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
+        dataBrokerImpl.registerTreeChangeListener(wildcard, listener);
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
         assertEquals(FOO_PATH, fooWriteEvent.getRootPath().path());

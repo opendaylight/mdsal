@@ -45,29 +45,6 @@ public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.E
         // Marker interface
     }
 
-    /**
-     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
-     * no outstanding transaction.
-     *
-     * @return A new transaction chain.
-     */
-    DOMTransactionChain createTransactionChain();
-
-    /**
-     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
-     * no outstanding transaction.
-     *
-     * <p>Unlike {@link #createTransactionChain()}, the transaction chain returned by this method is allowed to merge
-     * individual transactions into larger chunks. When transactions are merged, the results must be indistinguishable
-     * from the result of all operations having been performed on a single transaction.
-     *
-     * <p>When transactions are merged, {@link DOMTransactionChain#newReadOnlyTransaction()} may actually be backed by
-     * a read-write transaction, hence an additional restriction on API use is that multiple read-only transactions
-     * may not be open at the same time.
-     *
-     * @return A new transaction chain.
-     */
-    DOMTransactionChain createMergingTransactionChain();
 
     /**
      * Optional support for allowing a {@link DOMDataTreeCommitCohort} to participate in the process of committing
@@ -120,62 +97,6 @@ public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.E
 
         /**
          * Registers a {@link DOMDataTreeChangeListener} to receive notifications when data changes under a given path
-         * in the conceptual data tree.
-         *
-         * <p>You are able to register for notifications for any node or subtree which can be represented using
-         * {@link DOMDataTreeIdentifier}.
-         *
-         * <p>You are able to register for data change notifications for a subtree or leaf even if it does not exist.
-         * You will receive notification once that node is created.
-         *
-         * <p>If there is any pre-existing data in the data tree for the path for which you are registering, you will
-         * receive an initial data change event, which will contain all pre-existing data, marked as created.
-         *
-         * <p>This method returns a {@link Registration} object. To "unregister" your listener for changes call the
-         * {@link Registration#close()} method on the returned object.
-         *
-         * <p>You MUST explicitly unregister your listener when you no longer want to receive notifications. This is
-         * especially true in OSGi environments, where failure to do so during bundle shutdown can lead to stale
-         * listeners being still registered.
-         *
-         * @param treeId Data tree identifier of the subtree which should be watched for changes.
-         * @param listener Listener instance which is being registered
-         * @return A {@link Registration} object, which may be used to unregister your listener using
-         *         {@link Registration#close()} to stop delivery of change events.
-         * @throws NullPointerException if any of the arguments is {@code null}
-         * @deprecated This interface relies on magic of {@link ClusteredDOMDataTreeChangeListener}. See
-         *             {@link #registerLegacyTreeChangeListener(DOMDataTreeIdentifier, DOMDataTreeChangeListener)} for
-         *             migration guidance.
-         */
-        @Deprecated(since = "13.0.0", forRemoval = true)
-        default Registration registerDataTreeChangeListener(final DOMDataTreeIdentifier treeId,
-                final DOMDataTreeChangeListener listener) {
-            return listener instanceof ClusteredDOMDataTreeChangeListener clustered
-                ? registerDataTreeChangeListener(treeId, clustered)
-                    : registerLegacyTreeChangeListener(treeId, listener);
-        }
-
-        /**
-         * Registers a {@link ClusteredDOMDataTreeChangeListener} to receive notifications when data changes under a
-         * given path in the conceptual data tree. This is a migration shorthand for
-         * {@code registerDataTreeListener(treeId, listener)}.
-         *
-         * @param treeId Data tree identifier of the subtree which should be watched for changes.
-         * @param listener Listener instance which is being registered
-         * @return A {@link Registration} object, which may be used to unregister your listener using
-         *         {@link Registration#close()} to stop delivery of change events.
-         * @throws NullPointerException if any of the arguments is {@code null}
-         * @deprecated Use {@link #registerTreeChangeListener(DOMDataTreeIdentifier, DOMDataTreeChangeListener)}
-         *             instead.
-         */
-        @Deprecated(since = "13.0.0", forRemoval = true)
-        default Registration registerDataTreeChangeListener(final DOMDataTreeIdentifier treeId,
-                final ClusteredDOMDataTreeChangeListener listener) {
-            return registerTreeChangeListener(treeId, listener);
-        }
-
-        /**
-         * Registers a {@link DOMDataTreeChangeListener} to receive notifications when data changes under a given path
          * in the conceptual data tree, with legacy semantics, where no events are delivered if this "cluster node"
          * (further undefined) is a "leader" (also not explicitly undefined).
          *
@@ -196,4 +117,28 @@ public interface DOMDataBroker extends DOMService<DOMDataBroker, DOMDataBroker.E
         @Deprecated(since = "13.0.0", forRemoval = true)
         Registration registerLegacyTreeChangeListener(DOMDataTreeIdentifier treeId, DOMDataTreeChangeListener listener);
     }
+
+    /**
+     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
+     * no outstanding transaction.
+     *
+     * @return A new transaction chain.
+     */
+    DOMTransactionChain createTransactionChain();
+
+    /**
+     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
+     * no outstanding transaction.
+     *
+     * <p>Unlike {@link #createTransactionChain()}, the transaction chain returned by this method is allowed to merge
+     * individual transactions into larger chunks. When transactions are merged, the results must be indistinguishable
+     * from the result of all operations having been performed on a single transaction.
+     *
+     * <p>When transactions are merged, {@link DOMTransactionChain#newReadOnlyTransaction()} may actually be backed by
+     * a read-write transaction, hence an additional restriction on API use is that multiple read-only transactions
+     * may not be open at the same time.
+     *
+     * @return A new transaction chain.
+     */
+    DOMTransactionChain createMergingTransactionChain();
 }
