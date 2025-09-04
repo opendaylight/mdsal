@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
@@ -44,7 +45,7 @@ class BindingDOMDataTreeCommitCohortAdapterTest {
     @Mock
     private BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode;
     @Mock
-    private DataTreeCandidateNode rootNodeNode;
+    private DataTreeCandidateNode rootNode;
 
     @Test
     void canCommitTest() {
@@ -57,9 +58,10 @@ class BindingDOMDataTreeCommitCohortAdapterTest {
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
-        doReturn(rootNodeNode).when(domDataTreeCandidate).getRootNode();
+        doReturn(rootNode).when(domDataTreeCandidate).getRootNode();
         doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
             .deserializePathArgument(null);
+        doReturn(ModificationType.WRITE).when(rootNode).modificationType();
 
         assertNotNull(LazyDataTreeModification.from(adapterContext.currentSerializer(), domDataTreeCandidate, null));
 
