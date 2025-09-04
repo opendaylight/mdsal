@@ -37,6 +37,8 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
+import org.opendaylight.mdsal.dom.broker.RouterDOMNotificationService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMPublishNotificationService;
 import org.opendaylight.mdsal.dom.broker.RouterDOMRpcProviderService;
 import org.opendaylight.mdsal.dom.broker.RouterDOMRpcService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
@@ -178,8 +180,8 @@ public class BindingTestContext implements AutoCloseable {
     public void startBindingNotificationBroker() {
         checkState(executor != null);
         final var router = new DOMNotificationRouter(16);
-        domPublishService = router.notificationPublishService();
-        domListenService = router.notificationService();
+        domPublishService = new RouterDOMPublishNotificationService(router);
+        domListenService = new RouterDOMNotificationService(router);
         publishService = new BindingDOMNotificationPublishServiceAdapter(mockSchemaService, domPublishService);
         listenService = new BindingDOMNotificationServiceAdapter(mockSchemaService, domListenService);
     }
