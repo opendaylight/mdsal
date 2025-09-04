@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.trace.impl;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -87,8 +86,6 @@ class CloseTrackedRegistry<T extends CloseTracked<T>> {
      *         debugContextEnabled is false), and value is the number of open
      *         instances created at that place in the code.
      */
-    // For some reason, FB sees 'map' as useless but it clearly isn't.
-    @SuppressFBWarnings("UC_USELESS_OBJECT")
     public Set<CloseTrackedRegistryReportEntry<T>> getAllUnique() {
         Map<List<StackTraceElement>, Long> map = new HashMap<>();
         Set<CloseTracked<T>> copyOfTracked = new HashSet<>(tracked);
