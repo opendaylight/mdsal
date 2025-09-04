@@ -20,14 +20,37 @@ import org.opendaylight.yangtools.binding.Key;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
- * {@link #getModificationType()}.
+ * {@link #modificationType()}.
  *
  * @param <T> Type of modified object
  */
-public interface DataObjectModification<T extends DataObject> {
+public sealed interface DataObjectModification<T extends DataObject>
+        permits DataObjectModification.WithDataAfter, DataObjectModification.WithDataBefore {
+    /**
+     * A {@link DataObjectModification} after which there is the instance value available.
+     */
+    sealed interface WithDataAfter<T extends DataObject> extends DataObjectModification<T>
+            permits DataObjectModified, DataObjectWritten {
+        @Override
+        @SuppressWarnings("deprecation")
+        @NonNull T dataAfter();
+    }
+
+    /**
+     * A {@link DataObjectModification} after which there is the instance value available.
+     */
+    sealed interface WithDataBefore<T extends DataObject> extends DataObjectModification<T>
+            permits DataObjectDeleted {
+        @Override
+        @NonNull T dataBefore();
+    }
+
     /**
      * Represents type of modification which has occurred.
+     *
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     enum ModificationType {
         /**
          * Child node (direct or indirect) was modified.
@@ -41,11 +64,6 @@ public interface DataObjectModification<T extends DataObject> {
          * Node was deleted.
          */
         DELETE
-    }
-
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull ExactDataObjectStep<T> getIdentifier() {
-        return step();
     }
 
     /**
@@ -65,36 +83,17 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
-     * Returns type of modified object.
-     *
-     * @return type of modified object.
-     * @deprecated Use {@link #dataType()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull Class<T> getDataType() {
-        return dataType();
-    }
-
-    /**
      * Returns type of modification.
      *
      * @return type of performed modification.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     @NonNull ModificationType modificationType();
 
     /**
-     * Returns type of modification.
-     *
-     * @return type Type of performed modification.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull ModificationType getModificationType() {
-        return modificationType();
-    }
-
-    /**
      * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
-     *  state.
+     * state.
      *
      * @return State of object before modification. Null if subtree was not present, or the implementation cannot
      *         provide the state.
@@ -102,35 +101,13 @@ public interface DataObjectModification<T extends DataObject> {
     @Nullable T dataBefore();
 
     /**
-     * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
-     *  state.
-     *
-     * @return State of object before modification. Null if subtree was not present, or the implementation cannot
-     *         provide the state.
-     * @deprecated Use {@link #dataBefore()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @Nullable T getDataBefore() {
-        return dataBefore();
-    }
-
-    /**
      * Returns after-state of top level container.
      *
      * @return State of object after modification. Null if subtree is not present.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     @Nullable T dataAfter();
-
-    /**
-     * Returns after-state of top level container.
-     *
-     * @return State of object after modification. Null if subtree is not present.
-     * @deprecated Use {@link #dataAfter()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @Nullable T getDataAfter() {
-        return dataAfter();
-    }
 
     /**
      * Returns unmodifiable collection of modified direct children.
@@ -138,17 +115,6 @@ public interface DataObjectModification<T extends DataObject> {
      * @return unmodifiable collection of modified direct children.
      */
     @NonNull Collection<? extends DataObjectModification<? extends DataObject>> modifiedChildren();
-
-    /**
-     * Returns unmodifiable collection of modified direct children.
-     *
-     * @return unmodifiable collection of modified direct children.
-     * @deprecated Use {@link #modifiedChildren()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull Collection<? extends DataObjectModification<? extends DataObject>> getModifiedChildren() {
-        return modifiedChildren();
-    }
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -178,7 +144,7 @@ public interface DataObjectModification<T extends DataObject> {
      * Returns container child modification if {@code child} was modified by this modification. This method should be
      * used if the child is defined in a grouping brought into a case inside this object.
      *
-     * <p>For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
+     * <p>For accessing all modified list items consider iterating over {@link #modifiedChildren()}.
      *
      * @param caseType Case type class
      * @param child Type of child - must be only container
@@ -190,10 +156,9 @@ public interface DataObjectModification<T extends DataObject> {
             getModifiedChildContainer(@NonNull Class<H> caseType, @NonNull Class<C> child);
 
     /**
-     * Returns container child modification if {@code child} was modified by this
-     * modification.
+     * Returns container child modification if {@code child} was modified by this modification.
      *
-     * <p>For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
+     * <p>For accessing all modified list items consider iterating over {@link #modifiedChildren()}.
      *
      * @param child Type of child - must be only container
      * @return Modification of {@code child} if {@code child} was modified, null otherwise.
@@ -206,7 +171,7 @@ public interface DataObjectModification<T extends DataObject> {
     /**
      * Returns augmentation child modification if {@code augmentation} was modified by this modification.
      *
-     * <p>For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
+     * <p>For accessing all modified list items consider iterating over {@link #modifiedChildren()}.
      *
      * @param augmentation Type of augmentation - must be only container
      * @return Modification of {@code augmentation} if {@code augmentation} was modified, null otherwise.
@@ -244,10 +209,24 @@ public interface DataObjectModification<T extends DataObject> {
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
      *
-     * @param childArgument {@link ExactDataObjectStep} of child node
+     * @param step {@link ExactDataObjectStep} of child node
      * @return Modification of child identified by {@code childArgument} if {@code childArgument} was modified,
      *         {@code null} otherwise
      * @throws IllegalArgumentException If supplied step is not valid child according to generated model
      */
-    @Nullable DataObjectModification<? extends DataObject> getModifiedChild(ExactDataObjectStep<?> childArgument);
+    @Deprecated(since = "15.0.0", forRemoval = true)
+    default @Nullable DataObjectModification<? extends DataObject> getModifiedChild(final ExactDataObjectStep<?> step) {
+        return modifiedChild(step);
+    }
+
+    /**
+     * Returns a child modification if a node identified by an {@link ExactDataObjectStep} was modified by this
+     * modification.
+     *
+     * @param step the {@link ExactDataObjectStep} of child node
+     * @return Modification of child identified by {@code childArgument} if {@code childArgument} was modified,
+     *         {@code null} otherwise
+     * @throws IllegalArgumentException If supplied step is not valid child according to generated model
+     */
+    @Nullable DataObjectModification<? extends DataObject> modifiedChild(ExactDataObjectStep<?> step);
 }
