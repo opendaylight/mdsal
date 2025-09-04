@@ -60,9 +60,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
         @SuppressWarnings("unchecked")
         final var bindingPath = (InstanceIdentifier<T>) createBindingPath(serializer, domRootPath.path(), augment);
         final var codec = serializer.getSubtreeCodec(bindingPath);
-        @SuppressWarnings("unchecked")
-        final var modification = (DataObjectModification<T>) LazyDataObjectModification.from(codec,
-            candidate.getRootNode());
+        final var modification = LazyDataObjectModification.from(codec, candidate.getRootNode());
         return modification == null ? null
             : new LazyDataTreeModification<>(domRootPath.datastore(), bindingPath.toIdentifier(), modification);
     }
