@@ -40,16 +40,12 @@ import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.Availabilit
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -314,10 +310,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
         .factory();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
-    private final @NonNull DOMActionProviderService actionProviderService = new RouterDOMActionProviderService(this);
-    private final @NonNull DOMActionService actionService = new RouterDOMActionService(this);
-    private final @NonNull DOMRpcProviderService rpcProviderService = new RouterDOMRpcProviderService(this);
-    private final @NonNull DOMRpcService rpcService = new RouterDOMRpcService(this);
 
     @GuardedBy("this")
     private ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
@@ -356,11 +348,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
         close();
     }
 
-    @Deprecated(since = "14.0.15", forRemoval = true)
-    public @NonNull DOMActionService actionService() {
-        return actionService;
-    }
-
     @NonNullByDefault
     ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type, final DOMDataTreeIdentifier path,
             final ContainerNode input) {
@@ -384,11 +371,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
         return ret;
     }
 
-    @Deprecated(since = "14.0.15", forRemoval = true)
-    public @NonNull DOMActionProviderService actionProviderService() {
-        return actionProviderService;
-    }
-
     @NonNullByDefault
     Registration registerActionImplementation(final DOMActionImplementation implementation,
              final Set<DOMActionInstance> instances) {
@@ -408,11 +390,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
         return reg;
     }
 
-    @Deprecated(since = "14.0.15", forRemoval = true)
-    public @NonNull DOMRpcService rpcService() {
-        return rpcService;
-    }
-
     @NonNullByDefault
     ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final ContainerNode input) {
         final var entry = (DOMRpcRoutingTableEntry) routingTable.getEntry(type);
@@ -428,11 +405,6 @@ public final class DOMRpcRouter extends AbstractRegistration {
 
         listenerNotifier.execute(ret::initialTable);
         return ret;
-    }
-
-    @Deprecated(since = "14.0.15", forRemoval = true)
-    public @NonNull DOMRpcProviderService rpcProviderService() {
-        return rpcProviderService;
     }
 
     @NonNullByDefault
