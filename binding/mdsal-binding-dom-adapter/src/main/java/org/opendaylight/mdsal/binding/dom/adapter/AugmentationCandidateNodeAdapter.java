@@ -23,20 +23,20 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
 /**
- * Specialization of {@link AbstractDataObjectModification} for {@link Augmentation}s. Is based on a parent
+ * Specialization of {@link CandidateNodeAdapter} for {@link Augmentation}s. Is based on a parent
  * {@link DataTreeCandidateNode}, but contains only a subset of its modifications.
  */
-final class LazyAugmentationModification<A extends Augmentation<?>>
-        extends AbstractDataObjectModification<A, BindingAugmentationCodecTreeNode<A>> {
+final class AugmentationCandidateNodeAdapter<A extends Augmentation<?>>
+        extends CandidateNodeAdapter<A, BindingAugmentationCodecTreeNode<A>> {
     private final @NonNull ImmutableList<DataTreeCandidateNode> domChildNodes;
 
-    private LazyAugmentationModification(final BindingAugmentationCodecTreeNode<A> codec,
+    private AugmentationCandidateNodeAdapter(final BindingAugmentationCodecTreeNode<A> codec,
             final DataTreeCandidateNode parent, final ImmutableList<DataTreeCandidateNode> domChildNodes) {
         super(parent, codec, (ExactDataObjectStep<A>) codec.deserializePathArgument(null));
         this.domChildNodes = requireNonNull(domChildNodes);
     }
 
-    static <A extends Augmentation<?>> @Nullable LazyAugmentationModification<A> forModifications(
+    static <A extends Augmentation<?>> @Nullable AugmentationCandidateNodeAdapter<A> forModifications(
             final BindingAugmentationCodecTreeNode<A> codec, final DataTreeCandidateNode parent,
             final Collection<DataTreeCandidateNode> children) {
         // Filter out any unmodified children first
@@ -44,10 +44,10 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
             .filter(childMod -> childMod.modificationType() != UNMODIFIED)
             .collect(ImmutableList.toImmutableList());
         // Only return a modification if there is something left
-        return domChildren.isEmpty() ? null : new LazyAugmentationModification<>(codec, parent, domChildren);
+        return domChildren.isEmpty() ? null : new AugmentationCandidateNodeAdapter<>(codec, parent, domChildren);
     }
 
-    static <A extends Augmentation<?>> @Nullable LazyAugmentationModification<A> forParent(
+    static <A extends Augmentation<?>> @Nullable AugmentationCandidateNodeAdapter<A> forParent(
             final BindingAugmentationCodecTreeNode<A> codec, final DataTreeCandidateNode parent) {
         final var builder = ImmutableList.<DataTreeCandidateNode>builder();
         for (var pathArg : codec.childPathArguments()) {
@@ -57,7 +57,7 @@ final class LazyAugmentationModification<A extends Augmentation<?>>
             }
         }
         final var domChildren = builder.build();
-        return domChildren.isEmpty() ? null : new LazyAugmentationModification<>(codec, parent, domChildren);
+        return domChildren.isEmpty() ? null : new AugmentationCandidateNodeAdapter<>(codec, parent, domChildren);
     }
 
     @Override

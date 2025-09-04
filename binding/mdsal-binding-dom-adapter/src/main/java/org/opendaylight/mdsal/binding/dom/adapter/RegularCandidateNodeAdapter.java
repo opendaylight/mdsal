@@ -20,14 +20,14 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 /**
  * Lazily translated {@link DataObjectModification} based on {@link DataTreeCandidateNode}.
  *
- * <p>{@link LazyDataObjectModification} represents Data tree change event, but whole tree is not translated or resolved
+ * <p>{@link RegularCandidateNodeAdapter} represents Data tree change event, but whole tree is not translated or resolved
  * eagerly, but only child nodes which are directly accessed by user of data object modification.
  *
  * @param <T> Type of Binding Data Object
  */
-final class LazyDataObjectModification<T extends DataObject>
-        extends AbstractDataObjectModification<T, BindingDataObjectCodecTreeNode<T>> {
-    LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec, final DataTreeCandidateNode domData) {
+final class RegularCandidateNodeAdapter<T extends DataObject>
+        extends CandidateNodeAdapter<T, BindingDataObjectCodecTreeNode<T>> {
+    RegularCandidateNodeAdapter(final BindingDataObjectCodecTreeNode<T> codec, final DataTreeCandidateNode domData) {
         super(domData, codec, (ExactDataObjectStep<T>) codec.deserializePathArgument(domData.name()));
     }
 

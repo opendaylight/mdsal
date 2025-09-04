@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opendaylight.mdsal.binding.api.DataObjectDeleted;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -24,6 +26,7 @@ import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
 
 @ExtendWith(MockitoExtension.class)
 class LazyDataTreeModificationTest {
@@ -45,10 +48,13 @@ class LazyDataTreeModificationTest {
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
+        doReturn(ModificationType.DELETE).when(rootNode).modificationType();
         doReturn(rootNode).when(domDataTreeCandidate).getRootNode();
         doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
             .deserializePathArgument(null);
 
-        assertNotNull(LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate, null));
+        final var mod = LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate, null);
+        assertNotNull(mod);
+        assertInstanceOf(DataObjectDeleted.class, mod.getRootNode());
     }
 }

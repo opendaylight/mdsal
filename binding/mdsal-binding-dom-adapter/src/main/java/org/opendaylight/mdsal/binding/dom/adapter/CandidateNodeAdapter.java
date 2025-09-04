@@ -24,6 +24,7 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
+import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingAugmentationCodecTreeNode;
@@ -38,20 +39,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Lazily translated {@link DataObjectModification} based on {@link DataTreeCandidateNode}.
- * {@link AbstractDataObjectModification} represents Data tree change event, but whole tree is not translated or
+ * Lazily translated parts of a {@link DataObjectModification} based on {@link DataTreeCandidateNode}.
+ * {@link CandidateNodeAdapter} represents Data tree change event, but whole tree is not translated or
  * resolved eagerly, but only child nodes which are directly accessed by user of data object modification.
  *
- * <p>This class is further specialized as {@link LazyAugmentationModification} and {@link LazyDataObjectModification},
- * as both use different serialization methods.
+ * <p>This class is further specialized as {@link AugmentationCandidateNodeAdapter} and
+ * {@link RegularCandidateNodeAdapter}, as both use different serialization methods.
  *
  * @param <T> Type of Binding {@link DataObject}
  * @param <N> Type of underlying {@link CommonDataObjectCodecTreeNode}
  */
-abstract sealed class AbstractDataObjectModification<T extends DataObject, N extends CommonDataObjectCodecTreeNode<T>>
-        implements DataObjectModification<T>
-        permits LazyAugmentationModification, LazyDataObjectModification {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractDataObjectModification.class);
+abstract sealed class CandidateNodeAdapter<T extends DataObject, N extends CommonDataObjectCodecTreeNode<T>>
+        permits AugmentationCandidateNodeAdapter, RegularCandidateNodeAdapter {
+    private static final Logger LOG = LoggerFactory.getLogger(CandidateNodeAdapter.class);
     private static final @NonNull Object NULL_DATA_OBJECT = new Object();
     private static final VarHandle MODIFICATION_TYPE;
     private static final VarHandle MODIFIED_CHILDREN;
@@ -62,12 +62,12 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         final var lookup = MethodHandles.lookup();
 
         try {
-            MODIFICATION_TYPE = lookup.findVarHandle(AbstractDataObjectModification.class, "modificationType",
+            MODIFICATION_TYPE = lookup.findVarHandle(CandidateNodeAdapter.class, "modificationType",
                 ModificationType.class);
-            MODIFIED_CHILDREN = lookup.findVarHandle(AbstractDataObjectModification.class, "modifiedChildren",
+            MODIFIED_CHILDREN = lookup.findVarHandle(CandidateNodeAdapter.class, "modifiedChildren",
                 ImmutableList.class);
-            DATA_BEFORE = lookup.findVarHandle(AbstractDataObjectModification.class, "dataBefore", Object.class);
-            DATA_AFTER = lookup.findVarHandle(AbstractDataObjectModification.class, "dataAfter", Object.class);
+            DATA_BEFORE = lookup.findVarHandle(CandidateNodeAdapter.class, "dataBefore", Object.class);
+            DATA_AFTER = lookup.findVarHandle(CandidateNodeAdapter.class, "dataAfter", Object.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -78,7 +78,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     final @NonNull N codec;
 
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
-    private volatile ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren;
+    private volatile ImmutableList<DataObjectModification<?>> modifiedChildren;
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile ModificationType modificationType;
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
@@ -86,31 +86,34 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataAfter;
 
-    AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec,
-            final ExactDataObjectStep<T> step) {
+    CandidateNodeAdapter(final DataTreeCandidateNode domData, final N codec, final ExactDataObjectStep<T> step) {
         this.domData = requireNonNull(domData);
         this.step = requireNonNull(step);
         this.codec = requireNonNull(codec);
     }
 
-    static @Nullable AbstractDataObjectModification<?, ?> from(final CommonDataObjectCodecTreeNode<?> codec,
+    static <T extends DataObject> @Nullable DataObjectModification<T> from(final CommonDataObjectCodecTreeNode<T> codec,
             final @NonNull DataTreeCandidateNode current) {
-        return switch (codec) {
+        @SuppressWarnings("unchecked")
+        final var mod = (CandidateNodeAdapter<T, ?>) switch (codec) {
             case BindingDataObjectCodecTreeNode<?> childDataObjectCodec ->
-                new LazyDataObjectModification<>(childDataObjectCodec, current);
+                new RegularCandidateNodeAdapter<>(childDataObjectCodec, current);
             case BindingAugmentationCodecTreeNode<?> childAugmentationCodec ->
-                LazyAugmentationModification.forParent(childAugmentationCodec, current);
+                AugmentationCandidateNodeAdapter.forParent(childAugmentationCodec, current);
             default -> throw new VerifyException("Unhandled codec " + codec);
+        };
+        return mod == null ? null : mod.toModification();
+    }
+
+    final @NonNull DataObjectModification<T> toModification() {
+        return switch (modificationType()) {
+            case DELETE -> new AdaptedDataObjectDeleted<>(this);
+            case SUBTREE_MODIFIED -> new AdaptedDataObjectModified<>(this);
+            case WRITE -> new AdaptedDataObjectWritten<>(this);
         };
     }
 
-    @Override
-    public final ExactDataObjectStep<T> step() {
-        return step;
-    }
-
-    @Override
-    public final ModificationType modificationType() {
+    final ModificationType modificationType() {
         final var local = (ModificationType) MODIFICATION_TYPE.getAcquire(this);
         return local != null ? local : loadModificationType();
     }
@@ -130,8 +133,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         return computed;
     }
 
-    @Override
-    public final T dataBefore() {
+    final @Nullable T dataBefore() {
         final var local = DATA_BEFORE.getAcquire(this);
         return local != null ? unmask(local) : loadDataBefore();
     }
@@ -142,10 +144,13 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         return witness == null ? computed : unmask(witness);
     }
 
-    @Override
-    public final T dataAfter() {
+    final @Nullable T dataAfter() {
         final var local = DATA_AFTER.getAcquire(this);
         return local != null ? unmask(local) : loadDataAfter();
+    }
+
+    final @NonNull T requireDataAfter() {
+        return verifyNotNull(dataAfter());
     }
 
     private @Nullable T loadDataAfter() {
@@ -169,8 +174,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     abstract @Nullable T deserialize(@NonNull NormalizedNode normalized);
 
-    @Override
-    public final <C extends DataObject> DataObjectModification<C> modifiedChild(final ExactDataObjectStep<C> arg) {
+    final <C extends DataObject> DataObjectModification<C> modifiedChild(final ExactDataObjectStep<C> arg) {
         final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
         final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final var toEnter = domArgumentList.iterator();
@@ -193,20 +197,19 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
 
     abstract @Nullable DataTreeCandidateNode firstModifiedChild(YangInstanceIdentifier.PathArgument arg);
 
-    @Override
-    public final ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren() {
-        final var local = (ImmutableList<AbstractDataObjectModification<?, ?>>) MODIFIED_CHILDREN.getAcquire(this);
+    final ImmutableList<DataObjectModification<?>> modifiedChildren() {
+        final var local = (ImmutableList<DataObjectModification<?>>) MODIFIED_CHILDREN.getAcquire(this);
         return local != null ? local : loadModifiedChilden();
     }
 
     @SuppressWarnings("unchecked")
-    private @NonNull ImmutableList<AbstractDataObjectModification<?, ?>> loadModifiedChilden() {
-        final var builder = ImmutableList.<AbstractDataObjectModification<?, ?>>builder();
+    private @NonNull ImmutableList<DataObjectModification<?>> loadModifiedChilden() {
+        final var builder = ImmutableList.<DataObjectModification<?>>builder();
         populateList(builder, codec, domData, domChildNodes());
         final var computed = builder.build();
         // Non-trivial return: use CAS to ensure we reuse concurrent loads
         final var witness = MODIFIED_CHILDREN.compareAndExchangeRelease(this, null, computed);
-        return witness == null ? computed : (ImmutableList<AbstractDataObjectModification<?, ?>>) witness;
+        return witness == null ? computed : (ImmutableList<DataObjectModification<?>>) witness;
     }
 
     @Override
@@ -248,7 +251,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         };
     }
 
-    private static void populateList(final ImmutableList.Builder<AbstractDataObjectModification<?, ?>> result,
+    private static void populateList(final ImmutableList.Builder<DataObjectModification<?>> result,
             final BindingDataContainerCodecTreeNode<?> parentCodec, final DataTreeCandidateNode parent,
             final Collection<DataTreeCandidateNode> children) {
         final var augmentChildren =
@@ -287,15 +290,15 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         }
 
         for (var entry : augmentChildren.asMap().entrySet()) {
-            final var modification = LazyAugmentationModification.forModifications(entry.getKey(), parent,
+            final var modification = AugmentationCandidateNodeAdapter.forModifications(entry.getKey(), parent,
                 entry.getValue());
             if (modification != null) {
-                result.add(modification);
+                result.add(modification.toModification());
             }
         }
     }
 
-    private static void populateList(final ImmutableList.Builder<AbstractDataObjectModification<?, ?>> result,
+    private static void populateList(final ImmutableList.Builder<DataObjectModification<?>> result,
             final BindingStructuralType type, final BindingDataObjectCodecTreeNode<?> childCodec,
             final DataTreeCandidateNode domChildNode) {
         switch (type) {
@@ -306,20 +309,18 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
             case INVISIBLE_CONTAINER:
                 populateList(result, childCodec, domChildNode, domChildNode.childNodes());
                 break;
-            case UNKNOWN:
-            case VISIBLE_CONTAINER:
-                result.add(new LazyDataObjectModification<>(childCodec, domChildNode));
+            case UNKNOWN, VISIBLE_CONTAINER:
+                result.add(new RegularCandidateNodeAdapter<>(childCodec, domChildNode).toModification());
                 break;
             default:
         }
     }
 
-    private static void populateListWithSingleCodec(
-            final ImmutableList.Builder<AbstractDataObjectModification<?, ?>> result,
+    private static void populateListWithSingleCodec(final ImmutableList.Builder<DataObjectModification<?>> result,
             final BindingDataObjectCodecTreeNode<?> codec, final Collection<DataTreeCandidateNode> childNodes) {
         for (var child : childNodes) {
             if (child.modificationType() != UNMODIFIED) {
-                result.add(new LazyDataObjectModification<>(codec, child));
+                result.add(new RegularCandidateNodeAdapter<>(codec, child).toModification());
             }
         }
     }
