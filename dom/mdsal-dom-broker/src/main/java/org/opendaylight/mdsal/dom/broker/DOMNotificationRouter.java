@@ -125,9 +125,6 @@ public class DOMNotificationRouter implements AutoCloseable {
     }
 
     private final EqualityQueuedNotificationManager<Reg, DOMNotificationRouterEvent> queueNotificationManager;
-    private final @NonNull DOMNotificationPublishService notificationPublishService =
-        new RouterDOMPublishNotificationService(this);
-    private final @NonNull DOMNotificationService notificationService = new RouterDOMNotificationService(this);
     private final ObjectRegistry<DemandListener> demandListeners =
         ObjectRegistry.createConcurrent("notification demand listeners");
     private final ScheduledThreadPoolExecutor observer;
@@ -162,16 +159,6 @@ public class DOMNotificationRouter implements AutoCloseable {
         observer.shutdown();
         executor.shutdown();
         LOG.info("DOM Notification Router stopped");
-    }
-
-    @Deprecated(since = "14.0.15", forRemoval = true)
-    public final @NonNull DOMNotificationService notificationService() {
-        return notificationService;
-    }
-
-    @Deprecated(since = "14.0.15", forRemoval = true)
-    public final @NonNull DOMNotificationPublishService notificationPublishService() {
-        return notificationPublishService;
     }
 
     private synchronized void removeRegistration(final SingleReg reg) {
