@@ -37,6 +37,8 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
+import org.opendaylight.mdsal.dom.broker.RouterDOMRpcProviderService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMRpcService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
@@ -63,7 +65,10 @@ public class BindingTestContext implements AutoCloseable {
     private RpcService baConsumerRpc;
 
     private BindingDOMRpcProviderServiceAdapter baProviderRpc;
-    private DOMRpcRouter domRouter;
+    private DOMRpcRouter domRpcRouter;
+
+    private DOMRpcService rpcService;
+    private DOMRpcProviderService rpcProviderService;
 
     private NotificationPublishService publishService;
 
@@ -165,8 +170,10 @@ public class BindingTestContext implements AutoCloseable {
 
     private void startDomBroker() {
         checkState(executor != null);
-        domRouter = new DOMRpcRouter(mockSchemaService);
-    }
+        domRpcRouter = new DOMRpcRouter(mockSchemaService);
+        rpcService = new RouterDOMRpcService(domRpcRouter);
+        rpcProviderService = new RouterDOMRpcProviderService(domRpcRouter);
+   }
 
     public void startBindingNotificationBroker() {
         checkState(executor != null);
@@ -175,7 +182,6 @@ public class BindingTestContext implements AutoCloseable {
         domListenService = router.notificationService();
         publishService = new BindingDOMNotificationPublishServiceAdapter(mockSchemaService, domPublishService);
         listenService = new BindingDOMNotificationServiceAdapter(mockSchemaService, domListenService);
-
     }
 
     public void loadYangSchemaFromClasspath() {
@@ -183,11 +189,11 @@ public class BindingTestContext implements AutoCloseable {
     }
 
     public DOMRpcProviderService getDomRpcRegistry() {
-        return domRouter.rpcProviderService();
+        return rpcProviderService;
     }
 
     public DOMRpcService getDomRpcInvoker() {
-        return domRouter.rpcService();
+        return rpcService;
     }
 
     public RpcProviderService getBindingRpcProviderRegistry() {
