@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.DataObjectChange;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
@@ -48,12 +49,10 @@ import org.slf4j.LoggerFactory;
  * @param <T> Type of Binding {@link DataObject}
  * @param <N> Type of underlying {@link CommonDataObjectCodecTreeNode}
  */
-abstract sealed class AbstractDataObjectModification<T extends DataObject, N extends CommonDataObjectCodecTreeNode<T>>
-        implements DataObjectModification<T>
-        permits LazyAugmentationModification, LazyDataObjectModification {
+final class AbstractDataObjectModification<T extends DataObject, N extends CommonDataObjectCodecTreeNode<T>>
+        implements DataObjectModification<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDataObjectModification.class);
     private static final @NonNull Object NULL_DATA_OBJECT = new Object();
-    private static final VarHandle MODIFICATION_TYPE;
     private static final VarHandle MODIFIED_CHILDREN;
     private static final VarHandle DATA_BEFORE;
     private static final VarHandle DATA_AFTER;
@@ -62,10 +61,8 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         final var lookup = MethodHandles.lookup();
 
         try {
-            MODIFICATION_TYPE = lookup.findVarHandle(AbstractDataObjectModification.class, "modificationType",
-                ModificationType.class);
-            MODIFIED_CHILDREN = lookup.findVarHandle(AbstractDataObjectModification.class, "modifiedChildren",
-                ImmutableList.class);
+            MODIFIED_CHILDREN = lookup
+                .findVarHandle(AbstractDataObjectModification.class, "modifiedChildren", ImmutableList.class);
             DATA_BEFORE = lookup.findVarHandle(AbstractDataObjectModification.class, "dataBefore", Object.class);
             DATA_AFTER = lookup.findVarHandle(AbstractDataObjectModification.class, "dataAfter", Object.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -74,27 +71,28 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     final @NonNull DataTreeCandidateNode domData;
-    final @NonNull ExactDataObjectStep<T> step;
+    final @NonNull DataObjectChange<T> change;
     final @NonNull N codec;
 
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren;
-    @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
-    private volatile ModificationType modificationType;
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataBefore;
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataAfter;
 
     AbstractDataObjectModification(final DataTreeCandidateNode domData, final N codec,
-            final ExactDataObjectStep<T> step) {
+            final DataObjectChange<T> change) {
         this.domData = requireNonNull(domData);
-        this.step = requireNonNull(step);
         this.codec = requireNonNull(codec);
+        this.change = requireNonNull(change);
     }
 
     static @Nullable AbstractDataObjectModification<?, ?> from(final CommonDataObjectCodecTreeNode<?> codec,
             final @NonNull DataTreeCandidateNode current) {
+
+
+
         return switch (codec) {
             case BindingDataObjectCodecTreeNode<?> childDataObjectCodec ->
                 new LazyDataObjectModification<>(childDataObjectCodec, current);
@@ -105,33 +103,27 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final ExactDataObjectStep<T> step() {
-        return step;
+    public DataObjectChange<T> change() {
+        return change;
     }
+
+//    private @NonNull DataObjectChange<T> loadChange() {
+//        final var domModificationType = domModificationType();
+//        final var computed = switch (domModificationType) {
+//            case APPEARED, WRITE -> ModificationType.WRITE;
+//            case DISAPPEARED, DELETE -> ModificationType.DELETE;
+//            case SUBTREE_MODIFIED -> resolveSubtreeModificationType();
+//            default ->
+//                // TODO: Should we lie about modification type instead of exception?
+//                throw new IllegalStateException("Unsupported DOM Modification type " + domModificationType);
+//        };
+//
+//        CHANGE.setRelease(this, computed);
+//        return computed;
+//    }
 
     @Override
-    public final ModificationType modificationType() {
-        final var local = (ModificationType) MODIFICATION_TYPE.getAcquire(this);
-        return local != null ? local : loadModificationType();
-    }
-
-    private @NonNull ModificationType loadModificationType() {
-        final var domModificationType = domModificationType();
-        final var computed = switch (domModificationType) {
-            case APPEARED, WRITE -> ModificationType.WRITE;
-            case DISAPPEARED, DELETE -> ModificationType.DELETE;
-            case SUBTREE_MODIFIED -> resolveSubtreeModificationType();
-            default ->
-                // TODO: Should we lie about modification type instead of exception?
-                throw new IllegalStateException("Unsupported DOM Modification type " + domModificationType);
-        };
-
-        MODIFICATION_TYPE.setRelease(this, computed);
-        return computed;
-    }
-
-    @Override
-    public final T dataBefore() {
+    public T dataBefore() {
         final var local = DATA_BEFORE.getAcquire(this);
         return local != null ? unmask(local) : loadDataBefore();
     }
@@ -143,7 +135,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final T dataAfter() {
+    public T dataAfter() {
         final var local = DATA_AFTER.getAcquire(this);
         return local != null ? unmask(local) : loadDataAfter();
     }
@@ -170,7 +162,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     abstract @Nullable T deserialize(@NonNull NormalizedNode normalized);
 
     @Override
-    public final <C extends DataObject> DataObjectModification<C> modifiedChild(final ExactDataObjectStep<C> arg) {
+    public <C extends DataObject> DataObjectModification<C> modifiedChild(final ExactDataObjectStep<C> arg) {
         final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
         final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final var toEnter = domArgumentList.iterator();
@@ -194,7 +186,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     abstract @Nullable DataTreeCandidateNode firstModifiedChild(YangInstanceIdentifier.PathArgument arg);
 
     @Override
-    public final ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren() {
+    public ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren() {
         final var local = (ImmutableList<AbstractDataObjectModification<?, ?>>) MODIFIED_CHILDREN.getAcquire(this);
         return local != null ? local : loadModifiedChilden();
     }
@@ -210,7 +202,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return addToStringAttributes(MoreObjects.toStringHelper(this)).toString();
     }
 

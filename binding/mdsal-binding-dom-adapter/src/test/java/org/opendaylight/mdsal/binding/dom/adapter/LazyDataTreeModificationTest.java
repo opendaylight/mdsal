@@ -24,6 +24,7 @@ import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
 
 @ExtendWith(MockitoExtension.class)
 class LazyDataTreeModificationTest {
@@ -48,6 +49,7 @@ class LazyDataTreeModificationTest {
         doReturn(rootNode).when(domDataTreeCandidate).getRootNode();
         doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
             .deserializePathArgument(null);
+        doReturn(ModificationType.WRITE).when(rootNode).modificationType();
 
         assertNotNull(LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate, null));
     }

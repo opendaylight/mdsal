@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -15,11 +17,13 @@ import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.binding.Key;
 import org.opendaylight.yangtools.binding.KeyStep;
 import org.opendaylight.yangtools.binding.NodeStep;
+import org.opendaylight.yangtools.concepts.Immutable;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
@@ -27,11 +31,15 @@ import org.opendaylight.yangtools.binding.NodeStep;
  *
  * @param <T> Type of modified object
  */
-public interface DataObjectModification<T extends DataObject> {
+public abstract sealed class DataObjectModification<T extends DataObject> implements Immutable
+        permits DataObjectDeleted, DataObjectModification.WithDataAfter {
     /**
      * Represents type of modification which has occurred.
+     *
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
-    enum ModificationType {
+    @Deprecated(since = "15.0.0")
+    public enum ModificationType {
         /**
          * Child node (direct or indirect) was modified.
          */
@@ -47,27 +55,56 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
-     * Return the {@link ExactDataObjectStep} step this modification corresponds to.
+     * A {@link DataObjectModification} after which there is the instance value available.
      *
-     * @return the {@link ExactDataObjectStep} step this modification corresponds to
+     * @param <T> the {@link DataObject} type
      */
-    @NonNull ExactDataObjectStep<T> step();
+    public abstract static sealed class WithDataAfter<T extends DataObject> extends DataObjectModification<T>
+            permits DataObjectModified, DataObjectWritten {
+        WithDataAfter(final @NonNull ModificationType type, final @NonNull ExactDataObjectStep<T> step) {
+            super(type, step);
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public abstract @NonNull T dataAfter();
+    }
+
+    private final @NonNull ExactDataObjectStep<T> step;
+    private final @NonNull ModificationType type;
+
+    DataObjectModification(final @NonNull ModificationType type, final @NonNull ExactDataObjectStep<T> step) {
+        this.type = requireNonNull(type);
+        this.step = requireNonNull(step);
+    }
 
     /**
      * Returns type of modified object.
      *
      * @return type of modified object.
      */
-    default @NonNull Class<T> dataType() {
-        return step().type();
+    public final @NonNull Class<T> dataType() {
+        return step.type();
+    }
+
+    /**
+     * {@return the {@link ExactDataObjectStep} step along {@link DataObjectIdentifier#steps()} axis this modification
+     * corresponds to}
+     */
+    public final @NonNull ExactDataObjectStep<T> step() {
+        return step;
     }
 
     /**
      * Returns type of modification.
      *
      * @return type of performed modification.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
-    @NonNull ModificationType modificationType();
+    @Deprecated(since = "15.0.0")
+    public final @NonNull ModificationType modificationType() {
+        return type;
+    }
 
     /**
      * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
@@ -76,14 +113,16 @@ public interface DataObjectModification<T extends DataObject> {
      * @return State of object before modification. Null if subtree was not present, or the implementation cannot
      *         provide the state.
      */
-    @Nullable T dataBefore();
+    public abstract @Nullable T dataBefore();
 
     /**
      * Returns after-state of top level container.
      *
      * @return State of object after modification. Null if subtree is not present.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
-    @Nullable T dataAfter();
+    @Deprecated(since = "15.0.0")
+    public abstract @Nullable T dataAfter();
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
@@ -93,12 +132,13 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws NullPointerException if {@code step} is {@code null}
      * @throws IllegalArgumentException if the step does not represent a valid child according to generated model
      */
-    <C extends DataObject> @Nullable DataObjectModification<C> modifiedChild(@NonNull ExactDataObjectStep<C> step);
+    public abstract <C extends DataObject> @Nullable DataObjectModification<C> modifiedChild(
+        @NonNull ExactDataObjectStep<C> step);
 
     /**
      * {@return unmodifiable collection of modified direct children}
      */
-    @NonNull Collection<? extends @NonNull DataObjectModification<?>> modifiedChildren();
+    public abstract @NonNull Collection<? extends @NonNull DataObjectModification<?>> modifiedChildren();
 
     /**
      * Returns a collection of child modifications matching {@code childType}.
@@ -109,7 +149,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws ClassCastException if {@code childType} is not a subclass of {@link ChildOf}
      * @throws IllegalArgumentException if @code childType} class is not valid child according to generated model
      */
-    default <C extends ChildOf<? super T>> @NonNull Collection<DataObjectModification<C>> getModifiedChildren(
+    public final <C extends ChildOf<? super T>> @NonNull Collection<DataObjectModification<C>> getModifiedChildren(
             final @NonNull Class<C> childType) {
         childType.asSubclass(ChildOf.class);
         @SuppressWarnings("unchecked")
@@ -130,7 +170,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if @code childType} class is not valid child according to generated model
      */
-    default <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+    public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             @NonNull Collection<DataObjectModification<C>> getModifiedChildren(final @NonNull Class<H> caseType,
                 final @NonNull Class<C> childType) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
@@ -138,8 +178,8 @@ public interface DataObjectModification<T extends DataObject> {
         @SuppressWarnings("unchecked")
         final var ret = (@NonNull Collection<DataObjectModification<C>>) modifiedChildren().stream()
             .filter(child -> {
-                final var step = child.step();
-                return childType.isAssignableFrom(step.type()) && caseType.equals(step.caseType());
+                final var childStep = child.step();
+                return childType.isAssignableFrom(childStep.type()) && caseType.equals(childStep.caseType());
             })
             .collect(Collectors.toUnmodifiableList());
         return ret;
@@ -158,7 +198,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
-    default <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+    public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             @Nullable DataObjectModification<C> getModifiedChildContainer(final @NonNull Class<H> caseType,
                 final @NonNull Class<C> child) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
@@ -177,7 +217,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws ClassCastException if {@code child} is not actually a subclass of {@link ChildOf}
      * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
-    default <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
+    public final <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
             final @NonNull Class<C> child) {
         child.asSubclass(ChildOf.class);
         return modifiedChild(new NodeStep<>(child));
@@ -195,7 +235,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws IllegalArgumentException if @code augmentation} class is not a valid augmentation according to generated
      *                                  model
      */
-    default <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
+    public final <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
             final @NonNull Class<C> augmentation) {
         augmentation.asSubclass(Augmentation.class);
         return modifiedChild(new NodeStep<>(augmentation));
@@ -211,7 +251,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if @code listItem} is not a valid child according to generated model
      */
-    default <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
+    public final <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
             @Nullable DataObjectModification<N> getModifiedChildListItem(final @NonNull Class<N> listItem,
                 final @NonNull K listKey) {
         listItem.asSubclass(EntryObject.class).asSubclass(ChildOf.class);
@@ -228,7 +268,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if {@code listItem} class is not a valid child according to generated model
      */
-    default <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
+    public final <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
             K extends Key<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
                 final @NonNull Class<H> caseType, final @NonNull Class<C> listItem, final @NonNull K listKey) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
@@ -239,15 +279,15 @@ public interface DataObjectModification<T extends DataObject> {
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
      *
-     * @param step {@link ExactDataObjectStep} of child node
+     * @param childStep {@link ExactDataObjectStep} of child node
      * @return Modification of child identified by {@code childArgument} if {@code childArgument} was modified,
      *         {@code null} otherwise
      * @throws IllegalArgumentException If supplied step is not valid child according to generated model
      * @deprecated Use {@link #modifiedChild(ExactDataObjectStep)} instead
      */
     @Deprecated(since = "15.0.0", forRemoval = true)
-    default <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(
-            final @NonNull ExactDataObjectStep<C> step) {
-        return modifiedChild(step);
+    public final <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(
+            final @NonNull ExactDataObjectStep<C> childStep) {
+        return modifiedChild(childStep);
     }
 }
