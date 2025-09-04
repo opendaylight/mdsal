@@ -22,6 +22,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
+import org.opendaylight.mdsal.dom.broker.RouterDOMNotificationService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMPublishNotificationService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
@@ -58,12 +60,13 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public NotificationService createNotificationService() {
-        return new BindingDOMNotificationServiceAdapter(schemaService, domNotificationRouter.notificationService());
+        return new BindingDOMNotificationServiceAdapter(schemaService,
+            new RouterDOMNotificationService(domNotificationRouter));
     }
 
     public NotificationPublishService createNotificationPublishService() {
         return new BindingDOMNotificationPublishServiceAdapter(schemaService,
-            domNotificationRouter.notificationPublishService());
+            new RouterDOMPublishNotificationService(domNotificationRouter));
     }
 
     public abstract ListeningExecutorService getCommitCoordinatorExecutor();

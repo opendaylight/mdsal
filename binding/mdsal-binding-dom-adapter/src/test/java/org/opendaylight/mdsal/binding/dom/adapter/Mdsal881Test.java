@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.binding.api.NotificationPublishService.DemandMonit
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
+import org.opendaylight.mdsal.dom.broker.RouterDOMNotificationService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMPublishNotificationService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.notification.rev150205.OutOfPixieDustNotification;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChanged;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
@@ -65,9 +67,10 @@ class Mdsal881Test {
     @BeforeEach
     void beforeEach() {
         router = new DOMNotificationRouter(100);
-        notificationService = new BindingDOMNotificationServiceAdapter(() -> SERIALIZER, router.notificationService());
+        notificationService = new BindingDOMNotificationServiceAdapter(() -> SERIALIZER,
+            new RouterDOMNotificationService(router));
         publishService = new BindingDOMNotificationPublishServiceAdapter(() -> SERIALIZER,
-            router.notificationPublishService());
+            new RouterDOMPublishNotificationService(router));
     }
 
     @AfterEach
