@@ -57,4 +57,5 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires static org.gaul.modernizer_maven_annotations;
     requires static org.kohsuke.metainf_services;
     requires static org.osgi.service.component.annotations;
+    requires org.opendaylight.yangtools.yang.data.tree.api;
 }
