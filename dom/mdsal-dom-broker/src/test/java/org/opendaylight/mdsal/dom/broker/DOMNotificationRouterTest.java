@@ -40,13 +40,15 @@ public class DOMNotificationRouterTest {
     @Test
     public void registerNotificationListener() {
         try (var domNotificationRouter = new DOMNotificationRouter(1024)) {
+            final var notifService = new RouterDOMNotificationService(domNotificationRouter);
+
             final var domNotificationListener = mock(DOMNotificationListener.class);
 
-            domNotificationRouter.notificationService().registerNotificationListener(domNotificationListener,
+            notifService.registerNotificationListener(domNotificationListener,
                 List.of(Absolute.of(QName.create("urn:opendaylight:test-listener", "notif1"))));
             assertEquals(1, domNotificationRouter.listeners().size());
 
-            domNotificationRouter.notificationService().registerNotificationListener(domNotificationListener,
+            notifService.registerNotificationListener(domNotificationListener,
                 List.of(Absolute.of(QName.create("urn:opendaylight:test-listener", "notif2")),
                     Absolute.of(QName.create("urn:opendaylight:test-listener", "notif3"))));
             assertEquals(3, domNotificationRouter.listeners().size());
@@ -59,7 +61,7 @@ public class DOMNotificationRouterTest {
             final var domNotificationListener1 = mock(DOMNotificationListener.class);
             final var domNotificationListener2 = mock(DOMNotificationListener.class);
 
-            domNotificationRouter.notificationService().registerNotificationListeners(
+            new RouterDOMNotificationService(domNotificationRouter).registerNotificationListeners(
                 Map.of(Absolute.of(QName.create("urn:opendaylight:test-listener", "notif1")), domNotificationListener1,
                     Absolute.of(QName.create("urn:opendaylight:test-listener", "notif2")), domNotificationListener2));
             assertEquals(2, domNotificationRouter.listeners().size());
@@ -74,8 +76,8 @@ public class DOMNotificationRouterTest {
         final var latch = new CountDownLatch(1);
         final var domNotificationListener = new TestListener(latch);
         final var domNotificationRouter = new DOMNotificationRouter(1024);
-        final var notifService = domNotificationRouter.notificationService();
-        final var notifPubService = domNotificationRouter.notificationPublishService();
+        final var notifService = new RouterDOMNotificationService(domNotificationRouter);
+        final var notifPubService = new RouterDOMPublishNotificationService(domNotificationRouter);
         final var demandExt = notifPubService.extension(DOMNotificationPublishDemandExtension.class);
         assertNotNull(demandExt);
 
@@ -116,7 +118,7 @@ public class DOMNotificationRouterTest {
             doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
             doReturn(TEST_CHILD).when(domNotification).getBody();
 
-            final var notifPubService = domNotificationRouter.notificationPublishService();
+            final var notifPubService = new RouterDOMPublishNotificationService(domNotificationRouter);
             assertNotNull(notifPubService.putNotification(domNotification));
             assertNotNull(notifPubService.offerNotification(domNotification));
             assertNotNull(notifPubService.offerNotification(domNotification, 1, TimeUnit.SECONDS));
@@ -133,8 +135,8 @@ public class DOMNotificationRouterTest {
         doReturn(TEST_CHILD).when(domNotification).getBody();
 
         try (var testRouter = new TestRouter(1)) {
-            final var notifService = testRouter.notificationService();
-            final var notifPubService = testRouter.notificationPublishService();
+            final var notifService = new RouterDOMNotificationService(testRouter);
+            final var notifPubService = new RouterDOMPublishNotificationService(testRouter);
 
             assertNotNull(notifService.registerNotificationListener(testListener,
                 List.of(Absolute.of(TestModel.TEST_QNAME))));
