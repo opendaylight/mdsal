@@ -32,6 +32,7 @@ import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
 
 @ExtendWith(MockitoExtension.class)
 class BindingDOMDataTreeCommitCohortAdapterTest {
@@ -44,7 +45,7 @@ class BindingDOMDataTreeCommitCohortAdapterTest {
     @Mock
     private BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode;
     @Mock
-    private DataTreeCandidateNode rootNodeNode;
+    private DataTreeCandidateNode rootNode;
 
     @Test
     void canCommitTest() {
@@ -57,9 +58,10 @@ class BindingDOMDataTreeCommitCohortAdapterTest {
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
-        doReturn(rootNodeNode).when(domDataTreeCandidate).getRootNode();
+        doReturn(rootNode).when(domDataTreeCandidate).getRootNode();
         doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
             .deserializePathArgument(null);
+        doReturn(ModificationType.WRITE).when(rootNode).modificationType();
 
         assertNotNull(LazyDataTreeModification.from(adapterContext.currentSerializer(), domDataTreeCandidate, null));
 
