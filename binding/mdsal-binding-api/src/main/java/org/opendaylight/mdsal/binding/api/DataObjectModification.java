@@ -27,10 +27,33 @@ import org.opendaylight.yangtools.binding.NodeStep;
  *
  * @param <T> Type of modified object
  */
-public interface DataObjectModification<T extends DataObject> {
+public sealed interface DataObjectModification<T extends DataObject>
+        permits DataObjectModification.WithDataAfter, DataObjectModification.WithDataBefore {
+    /**
+     * A {@link DataObjectModification} after which there is the instance value available.
+     */
+    sealed interface WithDataAfter<T extends DataObject> extends DataObjectModification<T>
+            permits DataObjectModified, DataObjectWritten {
+        @Override
+        @SuppressWarnings("deprecation")
+        @NonNull T dataAfter();
+    }
+
+    /**
+     * A {@link DataObjectModification} after which there is the instance value available.
+     */
+    sealed interface WithDataBefore<T extends DataObject> extends DataObjectModification<T>
+            permits DataObjectDeleted {
+        @Override
+        @NonNull T dataBefore();
+    }
+
     /**
      * Represents type of modification which has occurred.
+     *
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     enum ModificationType {
         /**
          * Child node (direct or indirect) was modified.
@@ -66,7 +89,9 @@ public interface DataObjectModification<T extends DataObject> {
      * Returns type of modification.
      *
      * @return type of performed modification.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     @NonNull ModificationType modificationType();
 
     /**
@@ -82,7 +107,9 @@ public interface DataObjectModification<T extends DataObject> {
      * Returns after-state of top level container.
      *
      * @return State of object after modification. Null if subtree is not present.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     @Nullable T dataAfter();
 
     /**
