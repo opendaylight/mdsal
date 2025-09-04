@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.DataObjectChange.WithDataAfter;
 import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
@@ -30,7 +31,10 @@ import org.opendaylight.yangtools.binding.NodeStep;
 public interface DataObjectModification<T extends DataObject> {
     /**
      * Represents type of modification which has occurred.
+     *
+     * @deprecated Use a enhanced switch over {@link DataObjectChange} type hierarchy instead.
      */
+    @Deprecated(since = "15.0.0")
     enum ModificationType {
         /**
          * Child node (direct or indirect) was modified.
@@ -47,11 +51,9 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
-     * Return the {@link ExactDataObjectStep} step this modification corresponds to.
-     *
-     * @return the {@link ExactDataObjectStep} step this modification corresponds to
+     * {@return the {@code DataObjectChange} this modification reports}
      */
-    @NonNull ExactDataObjectStep<T> step();
+    @NonNull DataObjectChange<T> change();
 
     /**
      * Returns type of modified object.
@@ -63,11 +65,26 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
+     * {@return the {@link ExactDataObjectStep} step this modification corresponds to}
+     */
+    default @NonNull ExactDataObjectStep<T> step() {
+        return change().steo();
+    }
+
+    /**
      * Returns type of modification.
      *
      * @return type of performed modification.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
-    @NonNull ModificationType modificationType();
+    @Deprecated(since = "15.0.0")
+    default @NonNull ModificationType modificationType() {
+        return switch (change()) {
+            case DataObjectDeleted<?> change -> ModificationType.DELETE;
+            case DataObjectModified<?> change -> ModificationType.SUBTREE_MODIFIED;
+            case DataObjectWritten<?> change -> ModificationType.WRITE;
+        };
+    }
 
     /**
      * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
@@ -82,8 +99,15 @@ public interface DataObjectModification<T extends DataObject> {
      * Returns after-state of top level container.
      *
      * @return State of object after modification. Null if subtree is not present.
+     * @deprecated Use a enhanced switch over {@link DataObjectModification} type hierarchy instead.
      */
-    @Nullable T dataAfter();
+    @Deprecated(since = "15.0.0")
+    default @Nullable T dataAfter() {
+        return switch (change()) {
+            case WithDataAfter<T> change -> change.dataAfter();
+            case DataObjectDeleted<?> change -> null;
+        };
+    }
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
