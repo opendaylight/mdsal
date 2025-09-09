@@ -16,6 +16,24 @@
       "message": "Thanks for pushing this, but it needs a release of IETF. I will make the requisite changes to this patch once that is available.",
       "revId": "a6ddcff6be2c4eea863aa6ad7d22b225059bff21",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "528d0e22_b2ac879c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-09-09T09:48:11Z",
+      "side": 1,
+      "message": "We can roll this in with snapshots.",
+      "parentUuid": "77ff50e5_1e2b2547",
+      "revId": "a6ddcff6be2c4eea863aa6ad7d22b225059bff21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
