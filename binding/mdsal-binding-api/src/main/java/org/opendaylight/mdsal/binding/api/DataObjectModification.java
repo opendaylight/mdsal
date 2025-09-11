@@ -158,7 +158,7 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws IllegalArgumentException If supplied {@code childType} class is not valid child according
      *         to generated model.
      */
-    <C extends ChildOf<? super T>> Collection<DataObjectModification<C>> getModifiedChildren(
+    <C extends ChildOf<? super T>> @NonNull Collection<DataObjectModification<C>> getModifiedChildren(
             @NonNull Class<C> childType);
 
     /**
@@ -171,8 +171,9 @@ public interface DataObjectModification<T extends DataObject> {
      * @throws IllegalArgumentException If supplied {@code childType} class is not valid child according
      *         to generated model.
      */
-    <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> Collection<DataObjectModification<C>>
-            getModifiedChildren(@NonNull Class<H> caseType, @NonNull Class<C> childType);
+    <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+        @NonNull Collection<DataObjectModification<C>> getModifiedChildren(@NonNull Class<H> caseType,
+            @NonNull Class<C> childType);
 
     /**
      * Returns container child modification if {@code child} was modified by this modification. This method should be
