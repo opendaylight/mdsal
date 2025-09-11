@@ -144,14 +144,6 @@
             <type>xml</type>
         </dependency>
 
-        <!-- Netty/Routing Types integration -->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-rfc8294-netty</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
-
         <!-- Netty datastore replication -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

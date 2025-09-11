@@ -334,13 +334,6 @@
                 <type>xml</type>
             </dependency>
 
-            <!-- Netty/routing-types bridge -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-rfc8294-netty</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- Replication -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -392,13 +385,6 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>odl-mdsal-rfc8294-netty</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

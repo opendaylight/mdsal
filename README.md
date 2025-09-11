@@ -59,7 +59,6 @@ The repository is split into the following logical parts:
 * [parent pom.xml for modern bundle artifacts](bnd-parent)
 * [parent pom.xml for legacy bundle artifacts](bundle-parent)
 * a library of [YANG models](model)
-* some [Netty integrations](netty)
 * [MD-SAL commons](common)
 * [Binding MD-SAL components](binding)
 * [DOM MD-SAL components](dom)
