@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
@@ -41,14 +40,12 @@ import org.slf4j.LoggerFactory;
 /**
  * A component which watches the OSGi Service Registry for known {@link DOMService}s and publishes corresponding
  * {@link BindingService}s backed by them.
- *
- * @author Robert Varga
  */
 @Component(immediate = true)
 public final class DynamicBindingAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(DynamicBindingAdapter.class);
 
-    private List<AdaptingTracker<?, ?>> trackers = ImmutableList.of();
+    private List<AdaptingTracker<?, ?>> trackers = List.of();
 
     @Reference
     AdapterFactory factory = null;
@@ -71,7 +68,7 @@ public final class DynamicBindingAdapter {
 
     @Activate
     void activate(final BundleContext ctx) {
-        trackers = ImmutableList.of(
+        trackers = List.of(
             new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker,
                     dataBrokerFactory),
             new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
@@ -101,6 +98,6 @@ public final class DynamicBindingAdapter {
             trackers.forEach(AdaptingTracker::close);
             LOG.info("{} DOMService trackers stopped", trackers.size());
         }
-        trackers = ImmutableList.of();
+        trackers = List.of();
     }
 }
