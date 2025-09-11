@@ -43,11 +43,6 @@ public interface DataObjectModification<T extends DataObject> {
         DELETE
     }
 
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull ExactDataObjectStep<T> getIdentifier() {
-        return step();
-    }
-
     /**
      * Return the {@link ExactDataObjectStep} step this modification corresponds to.
      *
@@ -65,17 +60,6 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
-     * Returns type of modified object.
-     *
-     * @return type of modified object.
-     * @deprecated Use {@link #dataType()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull Class<T> getDataType() {
-        return dataType();
-    }
-
-    /**
      * Returns type of modification.
      *
      * @return type of performed modification.
@@ -83,36 +67,13 @@ public interface DataObjectModification<T extends DataObject> {
     @NonNull ModificationType modificationType();
 
     /**
-     * Returns type of modification.
-     *
-     * @return type Type of performed modification.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull ModificationType getModificationType() {
-        return modificationType();
-    }
-
-    /**
      * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
-     *  state.
+     * state.
      *
      * @return State of object before modification. Null if subtree was not present, or the implementation cannot
      *         provide the state.
      */
     @Nullable T dataBefore();
-
-    /**
-     * Returns before-state of top level container. Implementations are encouraged, but not required to provide this
-     *  state.
-     *
-     * @return State of object before modification. Null if subtree was not present, or the implementation cannot
-     *         provide the state.
-     * @deprecated Use {@link #dataBefore()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @Nullable T getDataBefore() {
-        return dataBefore();
-    }
 
     /**
      * Returns after-state of top level container.
@@ -122,33 +83,11 @@ public interface DataObjectModification<T extends DataObject> {
     @Nullable T dataAfter();
 
     /**
-     * Returns after-state of top level container.
-     *
-     * @return State of object after modification. Null if subtree is not present.
-     * @deprecated Use {@link #dataAfter()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @Nullable T getDataAfter() {
-        return dataAfter();
-    }
-
-    /**
      * Returns unmodifiable collection of modified direct children.
      *
      * @return unmodifiable collection of modified direct children.
      */
     @NonNull Collection<? extends DataObjectModification<? extends DataObject>> modifiedChildren();
-
-    /**
-     * Returns unmodifiable collection of modified direct children.
-     *
-     * @return unmodifiable collection of modified direct children.
-     * @deprecated Use {@link #modifiedChildren()} instead.
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    default @NonNull Collection<? extends DataObjectModification<? extends DataObject>> getModifiedChildren() {
-        return modifiedChildren();
-    }
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
