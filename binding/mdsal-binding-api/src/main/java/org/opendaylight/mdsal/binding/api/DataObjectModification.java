@@ -119,18 +119,29 @@ public interface DataObjectModification<T extends DataObject> {
     }
 
     /**
-     * Returns child list item modification if {@code child} was modified by this modification. This method should be
-     * used if the child is defined in a grouping brought into a case inside this object.
+     * Returns a collection of child modifications matching {@code childType}. This method should be used if the child
+     * is defined in a grouping brought into a case inside this object.
      *
      * @param caseType Case type class
-     * @param childType Type of list item - must be list item with key
-     * @return Modification of {@code child} if {@code child} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code childType} class is not valid child according
-     *         to generated model.
+     * @param childType the child type
+     * @return All child modifications matching {@code childType} and {@code caseType}
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws ClassCastException if any argument does not match its declared class bounds
+     * @throws IllegalArgumentException if @code childType} class is not valid child according to generated model
      */
-    <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
-        @NonNull Collection<DataObjectModification<C>> getModifiedChildren(@NonNull Class<H> caseType,
-            @NonNull Class<C> childType);
+    default <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+            @NonNull Collection<DataObjectModification<C>> getModifiedChildren(final @NonNull Class<H> caseType,
+                final @NonNull Class<C> childType) {
+        caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
+        childType.asSubclass(ChildOf.class);
+        return modifiedChildren().stream()
+            .filter(child -> {
+                final var step = child.step();
+                return childType.isAssignableFrom(step.type()) && caseType.equals(step.caseType());
+            })
+            .map(DataObjectModification.class::cast)
+            .collect(Collectors.toUnmodifiableList());
+    }
 
     /**
      * Returns container child modification if {@code child} was modified by this modification. This method should be
