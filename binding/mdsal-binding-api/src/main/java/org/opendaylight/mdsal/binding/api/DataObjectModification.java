@@ -85,6 +85,16 @@ public interface DataObjectModification<T extends DataObject> {
     @Nullable T dataAfter();
 
     /**
+     * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
+     *
+     * @param step {@link ExactDataObjectStep} of child node
+     * @return Modification of child identified by {@code step} if it was modified, {@code null} otherwise
+     * @throws NullPointerException if {@code step} is {@code null}
+     * @throws IllegalArgumentException if the step does not represent a valid child according to generated model
+     */
+    <C extends DataObject> @Nullable DataObjectModification<C> modifiedChild(@NonNull ExactDataObjectStep<C> step);
+
+    /**
      * Returns unmodifiable collection of modified direct children.
      *
      * @return unmodifiable collection of modified direct children.
@@ -134,7 +144,7 @@ public interface DataObjectModification<T extends DataObject> {
                 final @NonNull Class<C> child) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
         child.asSubclass(ChildOf.class);
-        return getModifiedChild(new NodeStep<>(child, caseType));
+        return modifiedChild(new NodeStep<>(child, caseType));
     }
 
     /**
@@ -151,7 +161,7 @@ public interface DataObjectModification<T extends DataObject> {
     default <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
             final @NonNull Class<C> child) {
         child.asSubclass(ChildOf.class);
-        return getModifiedChild(new NodeStep<>(child));
+        return modifiedChild(new NodeStep<>(child));
     }
 
     /**
@@ -169,7 +179,7 @@ public interface DataObjectModification<T extends DataObject> {
     default <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
             final @NonNull Class<C> augmentation) {
         augmentation.asSubclass(Augmentation.class);
-        return getModifiedChild(new NodeStep<>(augmentation));
+        return modifiedChild(new NodeStep<>(augmentation));
     }
 
     /**
@@ -186,7 +196,7 @@ public interface DataObjectModification<T extends DataObject> {
             @Nullable DataObjectModification<N> getModifiedChildListItem(final @NonNull Class<N> listItem,
                 final @NonNull K listKey) {
         listItem.asSubclass(EntryObject.class).asSubclass(ChildOf.class);
-        return getModifiedChild(new KeyStep<>(listItem, listKey));
+        return modifiedChild(new KeyStep<>(listItem, listKey));
     }
 
     /**
@@ -204,16 +214,21 @@ public interface DataObjectModification<T extends DataObject> {
                 final @NonNull Class<H> caseType, final @NonNull Class<C> listItem, final @NonNull K listKey) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
         listItem.asSubclass(EntryObject.class).asSubclass(ChildOf.class);
-        return getModifiedChild(new KeyStep<>(listItem, caseType, listKey));
+        return modifiedChild(new KeyStep<>(listItem, caseType, listKey));
     }
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
      *
-     * @param childArgument {@link ExactDataObjectStep} of child node
+     * @param step {@link ExactDataObjectStep} of child node
      * @return Modification of child identified by {@code childArgument} if {@code childArgument} was modified,
      *         {@code null} otherwise
      * @throws IllegalArgumentException If supplied step is not valid child according to generated model
+     * @deprecated Use {@link #modifiedChild(ExactDataObjectStep)} instead
      */
-    <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(ExactDataObjectStep<C> childArgument);
+    @Deprecated(since = "15.0.0", forRemoval = true)
+    default <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(
+            final @NonNull ExactDataObjectStep<C> step) {
+        return modifiedChild(step);
+    }
 }
