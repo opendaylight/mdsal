@@ -21,14 +21,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
-import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingAugmentationCodecTreeNode;
@@ -204,14 +199,6 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         return local != null ? local : loadModifiedChilden();
     }
 
-    @Override
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
-            List<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType, final Class<C> childType) {
-        return streamModifiedChildren(childType)
-            .filter(child -> caseType.equals(child.step.caseType()))
-            .collect(Collectors.toList());
-    }
-
     @SuppressWarnings("unchecked")
     private @NonNull ImmutableList<AbstractDataObjectModification<?, ?>> loadModifiedChilden() {
         final var builder = ImmutableList.<AbstractDataObjectModification<?, ?>>builder();
@@ -220,14 +207,6 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         // Non-trivial return: use CAS to ensure we reuse concurrent loads
         final var witness = MODIFIED_CHILDREN.compareAndExchangeRelease(this, null, computed);
         return witness == null ? computed : (ImmutableList<AbstractDataObjectModification<?, ?>>) witness;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <C extends DataObject> Stream<LazyDataObjectModification<C>> streamModifiedChildren(
-            final Class<C> childType) {
-        return modifiedChildren().stream()
-            .filter(child -> childType.isAssignableFrom(child.dataType()))
-            .map(child -> (LazyDataObjectModification<C>) child);
     }
 
     @Override
