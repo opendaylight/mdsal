@@ -95,11 +95,9 @@ public interface DataObjectModification<T extends DataObject> {
     <C extends DataObject> @Nullable DataObjectModification<C> modifiedChild(@NonNull ExactDataObjectStep<C> step);
 
     /**
-     * Returns unmodifiable collection of modified direct children.
-     *
-     * @return unmodifiable collection of modified direct children.
+     * {@return unmodifiable collection of modified direct children}
      */
-    @NonNull Collection<? extends DataObjectModification<? extends DataObject>> modifiedChildren();
+    @NonNull Collection<? extends @NonNull DataObjectModification<?>> modifiedChildren();
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
