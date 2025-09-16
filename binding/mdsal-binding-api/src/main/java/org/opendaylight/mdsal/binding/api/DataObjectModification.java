@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.binding.Augmentation;
@@ -100,15 +101,26 @@ public interface DataObjectModification<T extends DataObject> {
     @NonNull Collection<? extends @NonNull DataObjectModification<?>> modifiedChildren();
 
     /**
-     * Returns child list item modification if {@code child} was modified by this modification.
+     * Returns a collection of child modifications matching {@code childType}.
      *
-     * @param childType Type of list item - must be list item with key
-     * @return Modification of {@code child} if {@code child} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code childType} class is not valid child according
-     *         to generated model.
+     * @param childType the child type
+     * @return All child modifications matching {@code childType}
+     * @throws NullPointerException if {@code childType} is null
+     * @throws ClassCastException if {@code childType} is not a subclass of {@link ChildOf}
+     * @throws IllegalArgumentException if @code childType} class is not valid child according to generated model
      */
-    <C extends ChildOf<? super T>> @NonNull Collection<DataObjectModification<C>> getModifiedChildren(
-            @NonNull Class<C> childType);
+    default <C extends ChildOf<? super T>> @NonNull Collection<DataObjectModification<C>> getModifiedChildren(
+            final @NonNull Class<C> childType) {
+        childType.asSubclass(ChildOf.class);
+        return modifiedChildren().stream()
+            .filter(child -> childType.isAssignableFrom(child.dataType()))
+            .map(child -> {
+                @SuppressWarnings("unchecked")
+                final var casted = (DataObjectModification<C>) child;
+                return casted;
+            })
+            .collect(Collectors.toUnmodifiableList());
+    }
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification. This method should be
