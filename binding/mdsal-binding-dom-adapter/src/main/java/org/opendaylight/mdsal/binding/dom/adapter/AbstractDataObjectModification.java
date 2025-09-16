@@ -175,7 +175,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     abstract @Nullable T deserialize(@NonNull NormalizedNode normalized);
 
     @Override
-    public final <C extends DataObject> DataObjectModification<C> getModifiedChild(final ExactDataObjectStep<C> arg) {
+    public final <C extends DataObject> DataObjectModification<C> modifiedChild(final ExactDataObjectStep<C> arg) {
         final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
         final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final var toEnter = domArgumentList.iterator();

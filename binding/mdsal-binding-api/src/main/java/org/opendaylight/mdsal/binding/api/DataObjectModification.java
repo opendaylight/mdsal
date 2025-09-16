@@ -85,6 +85,16 @@ public interface DataObjectModification<T extends DataObject> {
     @Nullable T dataAfter();
 
     /**
+     * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
+     *
+     * @param step {@link ExactDataObjectStep} of child node
+     * @return Modification of child identified by {@code step} if it was modified, {@code null} otherwise
+     * @throws NullPointerException if {@code step} is {@code null}
+     * @throws IllegalArgumentException if the step does not represent a valid child according to generated model
+     */
+    <C extends DataObject> @Nullable DataObjectModification<C> modifiedChild(@NonNull ExactDataObjectStep<C> step);
+
+    /**
      * Returns unmodifiable collection of modified direct children.
      *
      * @return unmodifiable collection of modified direct children.
@@ -211,10 +221,15 @@ public interface DataObjectModification<T extends DataObject> {
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
      *
-     * @param childArgument {@link ExactDataObjectStep} of child node
+     * @param step {@link ExactDataObjectStep} of child node
      * @return Modification of child identified by {@code childArgument} if {@code childArgument} was modified,
      *         {@code null} otherwise
      * @throws IllegalArgumentException If supplied step is not valid child according to generated model
+     * @deprecated Use {@link #modifiedChild(ExactDataObjectStep)} instead
      */
-    <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(ExactDataObjectStep<C> childArgument);
+    @Deprecated(since = "15.0.0", forRemoval = true)
+    default <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(
+            final @NonNull ExactDataObjectStep<C> step) {
+        return modifiedChild(step);
+    }
 }
