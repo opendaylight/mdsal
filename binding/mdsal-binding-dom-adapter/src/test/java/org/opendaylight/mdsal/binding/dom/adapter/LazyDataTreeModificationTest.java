@@ -10,9 +10,11 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -23,20 +25,27 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
-public class LazyDataTreeModificationTest {
+@ExtendWith(MockitoExtension.class)
+class LazyDataTreeModificationTest {
+    @Mock
+    private BindingDOMCodecServices registry;
+    @Mock
+    private DOMDataTreeCandidate domDataTreeCandidate;
+    @Mock
+    private BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode;
+    @Mock
+    private DataTreeCandidateNode candidateNode;
+
     @Test
-    public void basicTest() {
-        final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
-        final AdapterContext codec = new ConstantAdapterContext(registry);
-        final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
-        final DOMDataTreeIdentifier domDataTreeIdentifier =
+    void basicTest() {
+        final var codec = new ConstantAdapterContext(registry);
+        final var domDataTreeIdentifier =
                 DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of());
         final var bindingPath = InstanceIdentifier.create(BooleanContainer.class);
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
-        final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
-        doReturn(mock(DataTreeCandidateNode.class)).when(domDataTreeCandidate).getRootNode();
+        doReturn(candidateNode).when(domDataTreeCandidate).getRootNode();
         doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
             .deserializePathArgument(null);
 
