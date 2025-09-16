@@ -49,6 +49,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -149,7 +150,7 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testRpcListener() {
-        try (var rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = rpcsRouter()) {
             assertEquals(List.of(), rpcRouter.listeners());
 
             final var rpcService = new RouterDOMRpcService(rpcRouter);
@@ -178,7 +179,7 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testActionListener() {
-        try (var rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = actionsRouter()) {
             assertEquals(List.of(), rpcRouter.actionListeners());
             final var actionService = new RouterDOMActionService(rpcRouter);
 
@@ -199,7 +200,7 @@ public class DOMRpcRouterTest {
 
     @Test
     public void onGlobalContextUpdated() {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (var rpcRouter = rpcsRouter()) {
             final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
             rpcRouter.onModelContextUpdated(TestModel.createTestContext());
             assertNotEquals(routingTableOriginal, rpcRouter.routingTable());
@@ -282,15 +283,11 @@ public class DOMRpcRouterTest {
     }
 
     private static DOMRpcRouter actionsRouter() {
-        final DOMRpcRouter router = new DOMRpcRouter();
-        router.onModelContextUpdated(Actions.CONTEXT);
-        return router;
+        return new DOMRpcRouter(new FixedDOMSchemaService(Actions.CONTEXT));
     }
 
     private static DOMRpcRouter rpcsRouter() {
-        final DOMRpcRouter router = new DOMRpcRouter();
-        router.onModelContextUpdated(Rpcs.CONTEXT);
-        return router;
+        return new DOMRpcRouter(new FixedDOMSchemaService(Rpcs.CONTEXT));
     }
 
     private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path)

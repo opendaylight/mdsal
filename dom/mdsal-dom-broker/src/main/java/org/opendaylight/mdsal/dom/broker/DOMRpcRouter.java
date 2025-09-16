@@ -323,23 +323,11 @@ public final class DOMRpcRouter extends AbstractRegistration {
 
     private Registration listenerRegistration;
 
-    @Deprecated
-    @VisibleForTesting
-    // FIXME: 9.0.0: make this constructor package-private
-    public DOMRpcRouter() {
-
-    }
-
     @Inject
     @Activate
     public DOMRpcRouter(@Reference final DOMSchemaService schemaService) {
         listenerRegistration = schemaService.registerSchemaContextListener(this::onModelContextUpdated);
         LOG.info("DOM RPC/Action router started");
-    }
-
-    @Deprecated(forRemoval = true)
-    public static DOMRpcRouter newInstance(final DOMSchemaService schemaService) {
-        return new DOMRpcRouter(schemaService);
     }
 
     @PreDestroy
