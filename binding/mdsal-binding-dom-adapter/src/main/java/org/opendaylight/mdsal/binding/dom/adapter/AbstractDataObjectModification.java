@@ -27,15 +27,10 @@ import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
-import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
-import org.opendaylight.yangtools.binding.Key;
-import org.opendaylight.yangtools.binding.KeyStep;
-import org.opendaylight.yangtools.binding.NodeStep;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingAugmentationCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingChoiceCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataContainerCodecTreeNode;
@@ -239,37 +234,6 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         return modifiedChildren().stream()
             .filter(child -> childType.isAssignableFrom(child.dataType()))
             .map(child -> (LazyDataObjectModification<C>) child);
-    }
-
-    @Override
-    public final <C extends EntryObject<C, K> & ChildOf<? super T>, K extends Key<C>> DataObjectModification<C>
-            getModifiedChildListItem(final Class<C> listItem, final K listKey) {
-        return getModifiedChild(new KeyStep<>(listItem, listKey));
-    }
-
-    @Override
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
-            K extends Key<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
-                    final Class<C> listItem, final K listKey) {
-        return getModifiedChild(new KeyStep<>(listItem, caseType, listKey));
-    }
-
-    @Override
-    public final <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(
-            final Class<C> child) {
-        return getModifiedChild(new NodeStep<>(child));
-    }
-
-    @Override
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
-            getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
-        return getModifiedChild(new NodeStep<>(child, requireNonNull(caseType)));
-    }
-
-    @Override
-    public final <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
-            final Class<C> augmentation) {
-        return getModifiedChild(new NodeStep<>(augmentation));
     }
 
     @Override
