@@ -87,16 +87,12 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     final @NonNull ExactDataObjectStep<T> step;
     final @NonNull N codec;
 
-    @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile ImmutableList<AbstractDataObjectModification<?, ?>> modifiedChildren;
-    @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile ModificationType modificationType;
-    @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataBefore;
-    @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile Object dataAfter;
 
