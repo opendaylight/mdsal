@@ -180,7 +180,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     abstract @Nullable T deserialize(@NonNull NormalizedNode normalized);
 
     @Override
-    public final DataObjectModification<?> getModifiedChild(final ExactDataObjectStep<?> arg) {
+    public final <C extends DataObject> DataObjectModification<C> getModifiedChild(final ExactDataObjectStep<C> arg) {
         final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
         final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final var toEnter = domArgumentList.iterator();
@@ -195,7 +195,10 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
         if (current == null || current.modificationType() == UNMODIFIED) {
             return null;
         }
-        return from(childCodec, current);
+
+        @SuppressWarnings("unchecked")
+        final var ret = (DataObjectModification<C>) from(childCodec, current);
+        return ret;
     }
 
     abstract @Nullable DataTreeCandidateNode firstModifiedChild(YangInstanceIdentifier.PathArgument arg);
@@ -239,39 +242,34 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <C extends EntryObject<C, K> & ChildOf<? super T>, K extends Key<C>> DataObjectModification<C>
             getModifiedChildListItem(final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(new KeyStep<>(listItem, listKey));
+        return getModifiedChild(new KeyStep<>(listItem, listKey));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
             K extends Key<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
                     final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(new KeyStep<>(listItem, caseType, listKey));
+        return getModifiedChild(new KeyStep<>(listItem, caseType, listKey));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(
             final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(child));
+        return getModifiedChild(new NodeStep<>(child));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
             getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(child, requireNonNull(caseType)));
+        return getModifiedChild(new NodeStep<>(child, requireNonNull(caseType)));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
             final Class<C> augmentation) {
-        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(augmentation));
+        return getModifiedChild(new NodeStep<>(augmentation));
     }
 
     @Override

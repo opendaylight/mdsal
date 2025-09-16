@@ -189,5 +189,5 @@ public interface DataObjectModification<T extends DataObject> {
      *         {@code null} otherwise
      * @throws IllegalArgumentException If supplied step is not valid child according to generated model
      */
-    @Nullable DataObjectModification<? extends DataObject> getModifiedChild(ExactDataObjectStep<?> childArgument);
+    <C extends DataObject> @Nullable DataObjectModification<C> getModifiedChild(ExactDataObjectStep<C> childArgument);
 }
