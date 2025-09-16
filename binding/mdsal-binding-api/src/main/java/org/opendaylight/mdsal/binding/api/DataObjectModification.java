@@ -17,6 +17,8 @@ import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyStep;
+import org.opendaylight.yangtools.binding.NodeStep;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
@@ -123,25 +125,34 @@ public interface DataObjectModification<T extends DataObject> {
      * @param caseType Case type class
      * @param child Type of child - must be only container
      * @return Modification of {@code child} if {@code child} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code child} class is not valid child according
-     *         to generated model.
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws ClassCastException if any argument does not match its declared class bounds
+     * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
-    <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> @Nullable DataObjectModification<C>
-            getModifiedChildContainer(@NonNull Class<H> caseType, @NonNull Class<C> child);
+    default <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+            @Nullable DataObjectModification<C> getModifiedChildContainer(final @NonNull Class<H> caseType,
+                final @NonNull Class<C> child) {
+        caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
+        child.asSubclass(ChildOf.class);
+        return getModifiedChild(new NodeStep<>(child, caseType));
+    }
 
     /**
-     * Returns container child modification if {@code child} was modified by this
-     * modification.
+     * Returns container child modification if {@code child} was modified by this modification.
      *
      * <p>For accessing all modified list items consider iterating over {@link #modifiedChildren()}.
      *
      * @param child Type of child - must be only container
      * @return Modification of {@code child} if {@code child} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code child} class is not valid child according
-     *         to generated model.
+     * @throws NullPointerException if {@code child} is {@code null}
+     * @throws ClassCastException if {@code child} is not actually a subclass of {@link ChildOf}
+     * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
-    <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
-            @NonNull Class<C> child);
+    default <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
+            final @NonNull Class<C> child) {
+        child.asSubclass(ChildOf.class);
+        return getModifiedChild(new NodeStep<>(child));
+    }
 
     /**
      * Returns augmentation child modification if {@code augmentation} was modified by this modification.
@@ -150,11 +161,16 @@ public interface DataObjectModification<T extends DataObject> {
      *
      * @param augmentation Type of augmentation - must be only container
      * @return Modification of {@code augmentation} if {@code augmentation} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code augmentation} class is not valid augmentation
-     *         according to generated model.
+     * @throws NullPointerException if {@code augmentation} is {@code null}
+     * @throws ClassCastException if {@code augmentation} is not actually a subclass of {@link Augmentation}
+     * @throws IllegalArgumentException if @code augmentation} class is not a valid augmentation according to generated
+     *                                  model
      */
-    <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
-            @NonNull Class<C> augmentation);
+    default <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
+            final @NonNull Class<C> augmentation) {
+        augmentation.asSubclass(Augmentation.class);
+        return getModifiedChild(new NodeStep<>(augmentation));
+    }
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -162,11 +178,16 @@ public interface DataObjectModification<T extends DataObject> {
      * @param listItem Type of list item - must be list item with key
      * @param listKey List item key
      * @return Modification of {@code child} if {@code child} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
-     *         to generated model.
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws ClassCastException if any argument does not match its declared class bounds
+     * @throws IllegalArgumentException if @code listItem} is not a valid child according to generated model
      */
-    <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
-        @Nullable DataObjectModification<N> getModifiedChildListItem(@NonNull Class<N> listItem, @NonNull K listKey);
+    default <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
+            @Nullable DataObjectModification<N> getModifiedChildListItem(final @NonNull Class<N> listItem,
+                final @NonNull K listKey) {
+        listItem.asSubclass(EntryObject.class).asSubclass(ChildOf.class);
+        return getModifiedChild(new KeyStep<>(listItem, listKey));
+    }
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -174,12 +195,17 @@ public interface DataObjectModification<T extends DataObject> {
      * @param listItem Type of list item - must be list item with key
      * @param listKey List item key
      * @return Modification of {@code child} if {@code child} was modified, null otherwise.
-     * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
-     *         to generated model.
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws ClassCastException if any argument does not match its declared class bounds
+     * @throws IllegalArgumentException if {@code listItem} class is not a valid child according to generated model
      */
-    <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>, K extends Key<C>>
-        @Nullable DataObjectModification<C> getModifiedChildListItem(@NonNull Class<H> caseType,
-            @NonNull Class<C> listItem, @NonNull K listKey);
+    default <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
+            K extends Key<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
+                final @NonNull Class<H> caseType, final @NonNull Class<C> listItem, final @NonNull K listKey) {
+        caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
+        listItem.asSubclass(EntryObject.class).asSubclass(ChildOf.class);
+        return getModifiedChild(new KeyStep<>(listItem, caseType, listKey));
+    }
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
