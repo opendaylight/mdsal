@@ -268,7 +268,7 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     @SuppressWarnings("unchecked")
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
             getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(caseType, child));
+        return (DataObjectModification<C>) getModifiedChild(new NodeStep<>(child, requireNonNull(caseType)));
     }
 
     @Override
