@@ -205,12 +205,6 @@ abstract sealed class AbstractDataObjectModification<T extends DataObject, N ext
     }
 
     @Override
-    public final <C extends ChildOf<? super T>> List<DataObjectModification<C>> getModifiedChildren(
-            final Class<C> childType) {
-        return streamModifiedChildren(childType).collect(Collectors.toList());
-    }
-
-    @Override
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             List<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType, final Class<C> childType) {
         return streamModifiedChildren(childType)
