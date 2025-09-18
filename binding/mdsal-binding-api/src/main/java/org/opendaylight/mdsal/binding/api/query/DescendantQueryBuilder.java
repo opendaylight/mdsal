@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api.query;
 
-import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
@@ -22,8 +21,7 @@ import org.opendaylight.yangtools.binding.Key;
  *
  * @param <T> Query result type
  */
-@Beta
-public interface DescendantQueryBuilder<T extends DataObject> extends StructuralBuilder<QueryExpression<T>> {
+public non-sealed interface DescendantQueryBuilder<T extends DataObject> extends StructuralBuilder<QueryExpression<T>> {
     /**
      * Add a child path component to the specification of what needs to be extracted. This method, along with its
      * alternatives, can be used to specify which object type to select from the root path.
