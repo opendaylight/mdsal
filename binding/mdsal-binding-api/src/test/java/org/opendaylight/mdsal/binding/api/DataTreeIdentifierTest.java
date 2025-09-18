@@ -21,14 +21,15 @@ import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-class DataDataTreeIdentifierTest {
+class DataTreeIdentifierTest {
     private static final DataTreeIdentifier<TestDataObject1> TEST_IDENTIFIER1 = DataTreeIdentifier.of(
-        LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class));
+        LogicalDatastoreType.OPERATIONAL, DataObjectIdentifier.builder(TestDataObject1.class).build());
     private static final DataTreeIdentifier<TestDataObject2> TEST_IDENTIFIER2 = DataTreeIdentifier.of(
-        LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject2.class));
+        LogicalDatastoreType.OPERATIONAL, DataObjectIdentifier.builder(TestDataObject2.class).build());
 
     @Test
     void basicTest() {
