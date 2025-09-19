@@ -7,16 +7,29 @@
  */
 package org.opendaylight.mdsal.binding.api.query;
 
-import com.google.common.annotations.Beta;
+import java.util.ArrayList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.ExactDataObjectStep;
+import org.opendaylight.yangtools.binding.KeylessStep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Primary entry point to creating {@link QueryExpression} instances.
  */
-@Beta
 public interface QueryFactory {
+    /**
+     * Create a new {@link DescendantQueryBuilder} for a specified {@link DataObjectIdentifier}.
+     *
+     * @param <T> Target object type
+     * @param identifier Subtree root
+     * @return a subtree query instance
+     * @throws IllegalArgumentException if rootPath is incorrect
+     * @throws NullPointerException if rootPath is {@code null}
+     */
+    <T extends DataObject> @NonNull InstanceQueryBuilder<T> queryInstance(@NonNull DataObjectIdentifier<T> identifier);
+
     /**
      * Create a new {@link DescendantQueryBuilder} for a specified root path. Root path must be a non-wildcard
      * InstanceIdentifier in general sense. If the target type represents a list, the last path argument may be a
@@ -29,5 +42,34 @@ public interface QueryFactory {
      * @throws IllegalArgumentException if rootPath is incorrect
      * @throws NullPointerException if rootPath is null
      */
-    <T extends DataObject> @NonNull DescendantQueryBuilder<T> querySubtree(InstanceIdentifier<T> rootPath);
+    @Deprecated(since = "15.0.0", forRemoval = true)
+    default <T extends DataObject> @NonNull DescendantQueryBuilder<T> querySubtree(
+            final InstanceIdentifier<T> rootPath) {
+        if (rootPath.isExact()) {
+            return queryInstance(rootPath.toIdentifier());
+        }
+
+        // Slow path, ensuring the spec is decomposed as needed
+        final var steps = new ArrayList<ExactDataObjectStep<?>>();
+        final var it = rootPath.steps().iterator();
+        while (it.hasNext()) {
+            switch (it.next()) {
+                case ExactDataObjectStep<?> step -> steps.add(step);
+                case KeylessStep<?> step -> {
+                    final var identifier = DataObjectIdentifier.ofUnsafeSteps(steps);
+                    if (it.hasNext()) {
+                        throw new IllegalArgumentException("Invalid path " + rootPath + ": cannot follow " + identifier
+                            + " with " + it.next());
+                    }
+
+                    final var query = queryInstance(identifier);
+                    @SuppressWarnings("unchecked")
+                    final var casted = (DescendantQueryBuilder<T>) query.queryAllEntries(step.type());
+                    return casted;
+                }
+            }
+        }
+
+        return (DescendantQueryBuilder<T>) queryInstance(DataObjectIdentifier.ofUnsafeSteps(steps));
+    }
 }
