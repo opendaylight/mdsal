@@ -6,13 +6,10 @@
    * terms of the Eclipse Public License v1.0 which accompanies this distribution,
    * and is available at http://www.eclipse.org/legal/epl-v10.html
 -->
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-dom-api">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-eos-common">
     <repository>mvn:org.opendaylight.yangtools/odl-yangtools-data-api/{{versionAsInProject}}/xml/features</repository>
-    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-common/{{versionAsInProject}}/xml/features</repository>
-    <feature name="odl-mdsal-dom-api">
-        <feature version="{{semVerRange}}">odl-mdsal-common</feature>
+    <feature name="odl-mdsal-eos-common">
         <feature version="{{semVerRange}}">odl-yangtools-data-api</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{versionAsInProject}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{versionAsInProject}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-api/{{versionAsInProject}}</bundle>
     </feature>
 </features>
