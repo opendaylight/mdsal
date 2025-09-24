@@ -11,15 +11,16 @@
 
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>feature-parent</artifactId>
+        <artifactId>template-feature-parent</artifactId>
         <version>15.0.1</version>
-        <relativePath>../feature-parent/pom.xml</relativePath>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-replicate-common</artifactId>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Replicate :: Common</name>
+    <description/>
 
     <dependencies>
         <dependency>
