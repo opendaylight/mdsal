@@ -2,7 +2,7 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-common">
     <repository>mvn:org.opendaylight.yangtools/odl-yangtools-common/{{versionAsInProject}}/xml/features</repository>
     <feature name="odl-mdsal-common">
-        <feature version="[14,15)">odl-yangtools-common</feature>
+        <feature version="{{semVerRange}}">odl-yangtools-common</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-common-api/{{versionAsInProject}}</bundle>
     </feature>
 </features>

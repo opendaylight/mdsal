@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-eos-common">
+    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-data-api/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-eos-common">
+        <feature version="{{versionAsInProject}}" prerequisite="false" dependency="false">odl-yangtools-data-api</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-api/{{versionAsInProject}}</bundle>
+    </feature>
+</features>

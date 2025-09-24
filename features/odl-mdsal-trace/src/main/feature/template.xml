@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-trace">
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-binding-dom-adapter/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-trace">
+        <feature version="{{versionAsInProject}}" prerequisite="false" dependency="false">odl-mdsal-binding-dom-adapter</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-trace-api/{{versionAsInProject}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-trace-impl/{{versionAsInProject}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-trace-cli/{{versionAsInProject}}</bundle>
+    </feature>
+</features>
