@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>feature-repo-parent</artifactId>
+        <artifactId>template-feature-parent</artifactId>
         <version>14.1.4</version>
         <relativePath/>
     </parent>
@@ -22,6 +22,10 @@
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Experimental Features</name>
     <description>MD-SAL experimental feature repository</description>
+
+    <properties>
+        <sft.skip>true</sft.skip>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
