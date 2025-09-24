@@ -7,10 +7,9 @@
    * and is available at http://www.eclipse.org/legal/epl-v10.html
 -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-binding-base">
-    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-binding-codec/{{versionAsInProject}}/xml/features</repository>
-    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-dom-runtime/{{versionAsInProject}}/xml/features</repository>
-    <feature name="odl-mdsal-binding-runtime">
-        <feature version="{{semVerRange}}">odl-yangtools-binding-codec</feature>
-        <feature version="{{semVerRange}}">odl-mdsal-dom-runtime</feature>
+    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-binding-spec/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-model-odl-l2-types">
+        <feature version="{{semVerRange}}">odl-yangtools-binding-spec</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model/opendaylight-l2-types/{{versionAsInProject}}</bundle>
     </feature>
 </features>
