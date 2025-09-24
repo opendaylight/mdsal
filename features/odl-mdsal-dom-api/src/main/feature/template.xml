@@ -4,7 +4,7 @@
     <repository>mvn:org.opendaylight.mdsal/odl-mdsal-common/{{versionAsInProject}}/xml/features</repository>
     <feature name="odl-mdsal-dom-api">
         <feature version="{{semVerRange}}">odl-mdsal-common</feature>
-        <feature version="[14,15)">odl-yangtools-data-api</feature>
+        <feature version="{{semVerRange}}">odl-yangtools-data-api</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{versionAsInProject}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{versionAsInProject}}</bundle>
     </feature>

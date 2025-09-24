@@ -2,7 +2,7 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-binding-base">
     <repository>mvn:org.opendaylight.yangtools/odl-yangtools-binding-spec/{{versionAsInProject}}/xml/features</repository>
     <feature name="odl-mdsal-binding-base">
-        <feature version="[14,15)">odl-yangtools-binding-spec</feature>
+        <feature version="{{semVerRange}}">odl-yangtools-binding-spec</feature>
         <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{versionAsInProject}}</bundle>
     </feature>
 </features>
