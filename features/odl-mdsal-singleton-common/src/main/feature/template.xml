@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-singleton-common">
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-eos-common/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-singleton-common">
+        <feature version="{{versionAsInProject}}" prerequisite="false" dependency="false">odl-mdsal-eos-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-api/{{versionAsInProject}}</bundle>
+    </feature>
+</features>
