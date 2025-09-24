@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+   * Copyright (c) 2025 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+   *
+   * This program and the accompanying materials are made available under the
+   * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+   * and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-replicate-netty">
+    <repository>mvn:org.opendaylight.odlparent/odl-netty-4/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-codec/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-replicate-common/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-singleton-common/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-dom-broker/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-replicate-netty">
+        <configfile finalname="etc/org.opendaylight.mdsal.replicate.netty.sink.cfg">mvn:org.opendaylight.mdsal/mdsal-replicate-netty/${project.version}/config/sink</configfile>
+        <configfile finalname="etc/org.opendaylight.mdsal.replicate.netty.source.cfg">mvn:org.opendaylight.mdsal/mdsal-replicate-netty/${project.version}/config/source</configfile>
+        <feature version="{{semVerRange}}">odl-netty-4</feature>
+        <feature version="{{semVerRange}}">odl-yangtools-codec</feature>
+        <feature version="{{versionAsInProject}}">odl-mdsal-replicate-common</feature>
+        <feature version="{{versionAsInProject}}">odl-mdsal-singleton-common</feature>
+        <feature version="{{semVerRange}}">odl-mdsal-dom-broker</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-replicate-netty/{{versionAsInProject}}</bundle>
+    </feature>
+</features>
