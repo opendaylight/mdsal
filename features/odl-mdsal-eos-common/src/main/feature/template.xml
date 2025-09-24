@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-eos-common">
+    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-data-api/14.0.17/xml/features</repository>
+    <feature name="odl-mdsal-eos-common" description="OpenDaylight :: MD-SAL :: EOS :: Common" version="15.0.1.SNAPSHOT">
+        <details>Entity Ownership Service common API</details>
+        <feature version="[14,15)">odl-yangtools-data-api</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-api/{{versionAsInProject}}</bundle>
+    </feature>
+</features>

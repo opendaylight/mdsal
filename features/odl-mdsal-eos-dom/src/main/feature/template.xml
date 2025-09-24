@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-eos-dom">
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-eos-common/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-eos-dom" description="OpenDaylight :: MD-SAL :: EOS :: DOM" version="15.0.1.SNAPSHOT">
+        <details>Entity Ownership Service DOM API</details>
+        <feature version="15.0.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-eos-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-dom-simple/{{versionAsInProject}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-dom-api/{{versionAsInProject}}</bundle>
+    </feature>
+</features>

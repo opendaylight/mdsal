@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-replicate-common">
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-dom-api/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-replicate-common" description="OpenDaylight :: MD-SAL :: Replicate :: Common" version="15.0.1.SNAPSHOT">
+        <details>odl-mdsal-replicate-common</details>
+        <feature version="15.0.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-dom-api</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-replicate-common/{{versionAsInProject}}</bundle>
+    </feature>
+</features>

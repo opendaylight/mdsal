@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-exp-yanglib-api">
+    <repository>mvn:org.opendaylight.yangtools/odl-yangtools-data-api/14.0.17/xml/features</repository>
+    <feature name="odl-mdsal-exp-yanglib-api" description="OpenDaylight :: MD-SAL :: YANG (Module) Library API" version="0.20.1.SNAPSHOT">
+        <details>MD-SAL YANG (Module) Library APIs</details>
+        <feature version="[14,15)">odl-yangtools-data-api</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-yanglib-api/{{versionAsInProject}}</bundle>
+    </feature>
+</features>

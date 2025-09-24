@@ -10,9 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>feature-parent</artifactId>
+        <artifactId>template-feature-parent</artifactId>
         <version>15.0.1-SNAPSHOT</version>
-        <relativePath>../feature-parent/pom.xml</relativePath>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-eos-binding</artifactId>
@@ -45,6 +45,10 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-eos-binding-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>general-entity</artifactId>
         </dependency>
     </dependencies>
 </project>

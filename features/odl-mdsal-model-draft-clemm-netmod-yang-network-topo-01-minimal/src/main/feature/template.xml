@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal">
+    <repository>mvn:org.opendaylight.ietf/odl-ietf-model-rfc6991/1.0.0/xml/features</repository>
+    <feature name="odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal" description="OpenDaylight :: MD-SAL :: Model :: draft-clemm-netmod-yang-network-topo-01 :: Minimal" version="15.0.1.SNAPSHOT">
+        <details>Models from draft-clemm-netmod-yang-network-topo-01 (minimal)</details>
+        <feature version="1.0.0" prerequisite="false" dependency="false">odl-ietf-model-rfc6991</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology/2013.10.21.27.1-SNAPSHOT</bundle>
+    </feature>
+</features>

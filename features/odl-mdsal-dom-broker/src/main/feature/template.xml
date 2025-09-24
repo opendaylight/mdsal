@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-dom-broker">
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-dom-runtime/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-dom-broker" description="OpenDaylight :: MD-SAL :: DOM Broker" version="15.0.1.SNAPSHOT">
+        <details>MD-SAL DOM implementation</details>
+        <feature version="15.0.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-dom-runtime</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-broker/{{versionAsInProject}}</bundle>
+    </feature>
+</features>

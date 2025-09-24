@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="features-mdsal-experimental">
+    <repository>mvn:org.opendaylight.mdsal/features-mdsal/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-exp-yanglib-api/0.20.1-SNAPSHOT/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-exp-yanglib-rfc8525/0.20.1-SNAPSHOT/xml/features</repository>
+    <feature name="features-mdsal-experimental" description="OpenDaylight :: MD-SAL :: Experimental Features" version="15.0.1.SNAPSHOT">
+        <details>MD-SAL experimental feature repository</details>
+        <feature version="15.0.1.SNAPSHOT" prerequisite="false" dependency="false">features-mdsal</feature>
+        <feature version="0.20.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-exp-yanglib-api</feature>
+        <feature version="0.20.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-exp-yanglib-rfc8525</feature>
+    </feature>
+</features>

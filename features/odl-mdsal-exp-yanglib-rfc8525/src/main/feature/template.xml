@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="odl-mdsal-exp-yanglib-rfc8525">
+    <repository>mvn:org.opendaylight.ietf/odl-ietf-model-rfc8525/1.0.0/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-exp-yanglib-api/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-binding-runtime/15.0.1-SNAPSHOT/xml/features</repository>
+    <feature name="odl-mdsal-exp-yanglib-rfc8525" description="OpenDaylight :: MD-SAL :: RFC8525 YANG Library" version="0.20.1.SNAPSHOT">
+        <details>MD-SAL YANG Library (RFC8525)</details>
+        <feature version="1.0.0" prerequisite="false" dependency="false">odl-ietf-model-rfc8525</feature>
+        <feature version="0.20.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-exp-yanglib-api</feature>
+        <feature version="15.0.1.SNAPSHOT" prerequisite="false" dependency="false">odl-mdsal-binding-runtime</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-yanglib-rfc8525/{{versionAsInProject}}</bundle>
+    </feature>
+</features>
