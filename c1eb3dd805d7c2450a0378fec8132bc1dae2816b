@@ -16,6 +16,23 @@
       "message": "recheck",
       "revId": "c1eb3dd805d7c2450a0378fec8132bc1dae2816b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4edd3c28_301dd3a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-09-25T09:04:56Z",
+      "side": 1,
+      "message": "I would like to see the \"we want an automated conversion script of some kind\" part of this issue first",
+      "revId": "c1eb3dd805d7c2450a0378fec8132bc1dae2816b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
