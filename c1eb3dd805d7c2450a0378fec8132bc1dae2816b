@@ -33,6 +33,41 @@
       "message": "I would like to see the \"we want an automated conversion script of some kind\" part of this issue first",
       "revId": "c1eb3dd805d7c2450a0378fec8132bc1dae2816b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fc712bd_0f06f4c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-03T08:26:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4edd3c28_301dd3a1",
+      "revId": "c1eb3dd805d7c2450a0378fec8132bc1dae2816b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49d5f6ac_662e1013",
+        "filename": "features/odl-mdsal-eos-binding/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-03T08:26:25Z",
+      "side": 1,
+      "message": "Added manually, based on mvn failed build logs",
+      "revId": "c1eb3dd805d7c2450a0378fec8132bc1dae2816b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
