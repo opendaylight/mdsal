@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -22,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -36,95 +35,96 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class RoutedDOMRpcRoutingTableEntryTest {
-    public static final YangInstanceIdentifier CTX_IN_INPUT =
+@ExtendWith(MockitoExtension.class)
+class RoutedDOMRpcRoutingTableEntryTest {
+    private static final YangInstanceIdentifier CTX_IN_INPUT =
         YangInstanceIdentifier.of(new NodeIdentifier(Rpcs.CTX));
-    public static final YangInstanceIdentifier ONE_PATH = YangInstanceIdentifier.of(
+    private static final YangInstanceIdentifier ONE_PATH = YangInstanceIdentifier.of(
         new NodeIdentifier(Rpcs.BAZ), NodeIdentifierWithPredicates.of(Rpcs.BAZ, Rpcs.NAME, "one"));
-    public static final YangInstanceIdentifier TWO_PATH = YangInstanceIdentifier.of(
+    private static final YangInstanceIdentifier TWO_PATH = YangInstanceIdentifier.of(
         new NodeIdentifier(Rpcs.BAZ), NodeIdentifierWithPredicates.of(Rpcs.BAZ, Rpcs.NAME, "two"));
 
-    public static final ContainerNode ONE_INPUT = ImmutableNodes.newContainerBuilder()
+    private static final ContainerNode ONE_INPUT = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
         .withChild(ImmutableNodes.leafNode(Rpcs.CTX, ONE_PATH))
         .build();
-    public static final ContainerNode TWO_INPUT = ImmutableNodes.newContainerBuilder()
+    private static final ContainerNode TWO_INPUT = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
         .withChild(ImmutableNodes.leafNode(Rpcs.CTX, TWO_PATH))
         .build();
-    public static final ContainerNode GLOBAL_INPUT = ImmutableNodes.newContainerBuilder()
+    private static final ContainerNode GLOBAL_INPUT = ImmutableNodes.newContainerBuilder()
         .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
         // This not covered by schema
         .withChild(ImmutableNodes.leafNode(Rpcs.NAME, "name"))
         .build();
 
     @Mock
-    public DOMRpcImplementation impl;
+    private DOMRpcImplementation impl;
     @Mock
-    public DOMRpcResult result;
-    public RoutedDOMRpcRoutingTableEntry entry;
+    private DOMRpcResult result;
 
-    @Before
-    public void before() {
+    private RoutedDOMRpcRoutingTableEntry entry;
+
+    @BeforeEach
+    void beforeEach() {
         // Note: ImmutableMap.of() allows get(null), Map.of() does not
         entry = new RoutedDOMRpcRoutingTableEntry(Rpcs.BAR, CTX_IN_INPUT, ImmutableMap.of());
     }
 
     @Test
-    public void testNewInstance() {
+    void testNewInstance() {
         final RoutedDOMRpcRoutingTableEntry instance = entry.newInstance(Map.of());
         assertEquals(Rpcs.BAR, entry.getType());
         assertEquals(Map.of(), instance.getImplementations());
     }
 
     @Test
-    public void testUnregistered()  {
+    void testUnregistered()  {
         assertRpcUnavailable(ONE_INPUT);
         assertRpcUnavailable(TWO_INPUT);
         assertRpcUnavailable(GLOBAL_INPUT);
     }
 
     @Test
-    public void testRegisteredGlobal() {
+    void testRegisteredGlobal() {
         setPaths((YangInstanceIdentifier) null);
         assertRpcAvailable(GLOBAL_INPUT);
     }
 
     @Test
-    public void testRegisteredGlobalOne() {
+    void testRegisteredGlobalOne() {
         setPaths((YangInstanceIdentifier) null);
         assertRpcAvailable(ONE_INPUT);
     }
 
     @Test
-    public void testRegisteredGlobalTwo() {
+    void testRegisteredGlobalTwo() {
         setPaths((YangInstanceIdentifier) null);
         assertRpcAvailable(TWO_INPUT);
     }
 
     @Test
-    public void testRegisteredOne() {
+    void testRegisteredOne() {
         setPaths(ONE_PATH);
         assertRpcUnavailable(TWO_INPUT);
         assertRpcAvailable(ONE_INPUT);
     }
 
     @Test
-    public void testRegisteredTwo() {
+    void testRegisteredTwo() {
         setPaths(TWO_PATH);
         assertRpcUnavailable(ONE_INPUT);
         assertRpcAvailable(TWO_INPUT);
     }
 
     @Test
-    public void testRemote() {
+    void testRemote() {
         setPaths(YangInstanceIdentifier.of());
         assertRpcAvailable(ONE_INPUT);
     }
 
     @Test
-    public void testWrongContext() {
+    void testWrongContext() {
         assertRpcUnavailable(ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(Rpcs.INPUT))
             .withChild(ImmutableNodes.leafNode(Rpcs.CTX, "bad type"))
@@ -154,8 +154,8 @@ public class RoutedDOMRpcRoutingTableEntryTest {
 
     private void assertRpcUnavailable(final ContainerNode input) {
         final var future = OperationInvocation.invoke(entry, input);
-        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-        assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
+        final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        final var cause = assertInstanceOf(DOMRpcImplementationNotAvailableException.class, ee.getCause());
         assertEquals("No implementation of RPC (rpcs)bar available", cause.getMessage());
     }
 }
