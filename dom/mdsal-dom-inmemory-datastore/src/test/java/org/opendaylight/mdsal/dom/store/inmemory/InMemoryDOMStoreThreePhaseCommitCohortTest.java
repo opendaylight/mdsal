@@ -20,10 +20,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.ExecutionException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
@@ -39,8 +39,8 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedException;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class InMemoryDOMStoreThreePhaseCommitCohortTest {
+@ExtendWith(MockitoExtension.class)
+class InMemoryDOMStoreThreePhaseCommitCohortTest {
     @Mock
     private InMemoryDOMDataStore dataStore;
     @Mock
@@ -53,14 +53,14 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     private DataTreeModification modification;
 
     @Test
-    public void canCommitTest() throws Exception {
+    void canCommitTest() throws Exception {
         doNothing().when(dataStore).validate(any());
         prepareSimpleCohort().canCommit();
         verify(dataStore).validate(any());
     }
 
     @Test
-    public void canCommitWithOperationError() {
+    void canCommitWithOperationError() {
         doReturn(modification).when(snapshot).newModification();
         final var operationError = new RuntimeException();
         final var cohort = new InMemoryDOMStoreThreePhaseCommitCohort(dataStore,
@@ -71,7 +71,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void canCommitTestWithOptimisticLockFailedException() throws Exception {
+    void canCommitTestWithOptimisticLockFailedException() throws Exception {
         final var cause = new ConflictingModificationAppliedException(YangInstanceIdentifier.of(), "testException");
         doThrow(cause).when(dataStore).validate(any());
 
@@ -87,7 +87,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void canCommitTestWithTransactionCommitFailedException() throws Exception {
+    void canCommitTestWithTransactionCommitFailedException() throws Exception {
         final var cause = new DataValidationFailedException(YangInstanceIdentifier.of(), "testException");
         doThrow(cause).when(dataStore).validate(any());
 
@@ -103,7 +103,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void canCommitTestWithUnknownException() throws Exception {
+    void canCommitTestWithUnknownException() throws Exception {
         final var cause = new UnsupportedOperationException("testException");
         doThrow(cause).when(dataStore).validate(any());
 
@@ -111,14 +111,14 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void preCommitTest() throws Exception {
+    void preCommitTest() throws Exception {
         doReturn(candidate).when(dataStore).prepare(any());
         prepareSimpleCohort().preCommit().get();
         verify(dataStore).prepare(any());
     }
 
     @Test
-    public void preCommitTestWithUnknownException() throws Exception {
+    void preCommitTestWithUnknownException() throws Exception {
         final var cause = new UnsupportedOperationException("testException");
         doThrow(cause).when(dataStore).prepare(any());
 
@@ -128,7 +128,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void abortTest() throws Exception {
+    void abortTest() throws Exception {
         doReturn(candidate).when(dataStore).prepare(any());
 
         final var cohort = prepareSimpleCohort();
@@ -140,7 +140,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     }
 
     @Test
-    public void commitTest() throws Exception {
+    void commitTest() throws Exception {
         doNothing().when(dataStore).commit(any());
         doReturn(candidate).when(dataStore).prepare(any());
 
