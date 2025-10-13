@@ -7,13 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -134,16 +133,16 @@ public class DOMRpcRouterTest {
                     }, DOMRpcIdentifier.create(Rpcs.FOO))) {
 
                 final var future = rpcService.invokeRpc(Rpcs.FOO, input);
-                final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-                assertThat(cause, instanceOf(DefaultDOMRpcException.class));
+                final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+                final var cause = assertInstanceOf(DefaultDOMRpcException.class, ee.getCause());
                 assertEquals("RPC implementation failed: java.lang.RuntimeException: mumble-mumble",
                     cause.getMessage());
                 assertSame(thrown, cause.getCause());
             }
 
             final var future = rpcService.invokeRpc(Rpcs.FOO, input);
-            final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-            assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
+            final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+            final var cause = assertInstanceOf(DOMRpcImplementationNotAvailableException.class, ee.getCause());
             assertEquals("No implementation of RPC (rpcs)foo available", cause.getMessage());
         }
     }
@@ -273,11 +272,11 @@ public class DOMRpcRouterTest {
                 }, DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, BAZ_PATH_GOOD))) {
 
                 final var future = invokeBaz(actionConsumer, BAZ_PATH_GOOD);
-                final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
-                assertThat(ex, instanceOf(DOMRpcException.class));
+                final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+                final var cause = assertInstanceOf(DOMRpcException.class, ee.getCause());
                 assertEquals("Action implementation failed: java.lang.RuntimeException: test-two-three",
-                    ex.getMessage());
-                assertSame(thrown, ex.getCause());
+                    cause.getMessage());
+                assertSame(thrown, cause.getCause());
             }
         }
     }
@@ -298,8 +297,8 @@ public class DOMRpcRouterTest {
 
     private static void assertUnavailable(final DOMActionService actionService, final YangInstanceIdentifier path) {
         final var future = invokeBaz(actionService, path);
-        final var ex = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
-        assertThat(ex.getCause(), instanceOf(DOMActionNotAvailableException.class));
+        final var ee = assertThrows(ExecutionException.class, () -> Futures.getDone(future));
+        assertInstanceOf(DOMActionNotAvailableException.class, ee.getCause());
     }
 
     private static ListenableFuture<? extends DOMRpcResult> invokeBaz(final DOMActionService actionService,
