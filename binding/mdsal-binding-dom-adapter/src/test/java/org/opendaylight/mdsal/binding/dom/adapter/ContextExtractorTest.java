@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.Direct;
 import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.GetValue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
@@ -22,9 +22,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public final class ContextExtractorTest {
+final class ContextExtractorTest {
     public interface Transitive extends DataObject, EncapsulatedRouteInGrouping {
         @Override
         default Class<Transitive> implementedInterface() {
@@ -32,30 +31,30 @@ public final class ContextExtractorTest {
         }
     }
 
-    private static final DataObjectIdentifier<?> TEST_ROUTE = InstanceIdentifier.create(Top.class).toIdentifier();
+    private static final DataObjectIdentifier<?> TEST_ROUTE = DataObjectIdentifier.builder(Top.class).build();
     private static final Transitive TEST_GROUPING = () -> new EncapsulatedRoute(TEST_ROUTE);
 
     @Test
-    public void testNonRoutedExtraction() {
+    void testNonRoutedExtraction() {
         assertNull(ContextReferenceExtractor.of(RockTheHouseInput.class));
     }
 
     @Test
-    public void testRoutedSimpleExtraction() {
+    void testRoutedSimpleExtraction() {
         final var extractor = assertInstanceOf(Direct.class,
             ContextReferenceExtractor.of(RoutedSimpleRouteInput.class));
         assertSame(TEST_ROUTE, extractor.extract(new RoutedSimpleRouteInputBuilder().setRoute(TEST_ROUTE).build()));
     }
 
     @Test
-    public void testRoutedEncapsulatedExtraction() {
+    void testRoutedEncapsulatedExtraction() {
         final var extractor = assertInstanceOf(GetValue.class,
             ContextReferenceExtractor.of(EncapsulatedRouteInGrouping.class));
         assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 
     @Test
-    public void testRoutedEncapsulatedTransitiveExtraction() {
+    void testRoutedEncapsulatedTransitiveExtraction() {
         final var extractor = assertInstanceOf(GetValue.class, ContextReferenceExtractor.of(Transitive.class));
         assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
