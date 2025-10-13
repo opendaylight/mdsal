@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -77,8 +76,7 @@ public class BindingDOMAdapterLoaderTest {
     }
 
     private BindingDOMDataBrokerAdapter assertDataBrokerAdapter() {
-        final var service = bindingDOMAdapterLoader.load(DataBroker.class).orElseThrow();
-        assertThat(service, instanceOf(BindingDOMDataBrokerAdapter.class));
-        return (BindingDOMDataBrokerAdapter) service;
+        return assertInstanceOf(BindingDOMDataBrokerAdapter.class,
+            bindingDOMAdapterLoader.load(DataBroker.class).orElseThrow());
     }
 }

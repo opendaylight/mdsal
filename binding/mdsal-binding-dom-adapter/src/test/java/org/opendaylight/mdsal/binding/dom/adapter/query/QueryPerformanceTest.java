@@ -7,10 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.query;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FluentFuture;
@@ -99,8 +98,8 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
         sw.reset().start();
         final FluentFuture<QueryResult<@NonNull System>> future;
         try (ReadTransaction rtx = getDataBroker().newReadOnlyTransaction()) {
-            assertThat(rtx, instanceOf(QueryReadTransaction.class));
-            future = ((QueryReadTransaction) rtx).execute(LogicalDatastoreType.CONFIGURATION, query);
+            future = assertInstanceOf(QueryReadTransaction.class, rtx)
+                .execute(LogicalDatastoreType.CONFIGURATION, query);
         }
 
         final QueryResult<@NonNull System> result = future.get();

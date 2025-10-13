@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -39,6 +38,35 @@ import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceExcepti
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class CurrentAdapterSerializerTest {
+    private static final class TestingModuleInfoSnapshot implements ModuleInfoSnapshot {
+        static final TestingModuleInfoSnapshot INSTANCE = new TestingModuleInfoSnapshot();
+
+        private TestingModuleInfoSnapshot() {
+            // Hidden on purpose
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T> Class<T> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
+            return (Class<T>) Class.forName(fullyQualifiedName);
+        }
+
+        @Override
+        public YangTextSource yangTextSource(final SourceIdentifier arg0) {
+            return null;
+        }
+
+        @Override
+        public YangTextSource getYangTextSource(final SourceIdentifier sourceId) throws MissingSchemaSourceException {
+            throw new MissingSchemaSourceException(sourceId, "no sources");
+        }
+
+        @Override
+        public EffectiveModelContext modelContext() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     /**
      * Positive test.
      *
@@ -88,7 +116,7 @@ public class CurrentAdapterSerializerTest {
         final Method getVlanId = iface.getDeclaredMethod("getVlanId");
         final InvocationTargetException ex = assertThrows(InvocationTargetException.class,
             () -> getVlanId.invoke(value));
-        assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
+        assertInstanceOf(IllegalArgumentException.class, ex.getCause());
     }
 
     private static ContainerNode prepareData(final EffectiveModelContext schemaCtx, final Object value) {
@@ -109,35 +137,5 @@ public class CurrentAdapterSerializerTest {
         final YangInstanceIdentifier path = YangInstanceIdentifier.of(NodeIdentifier.create(QName.create(
             "urn:test", "2017-01-01", "cont")));
         return codec.fromNormalizedNode(path, data);
-    }
-
-    private static final class TestingModuleInfoSnapshot implements ModuleInfoSnapshot {
-        static final TestingModuleInfoSnapshot INSTANCE = new TestingModuleInfoSnapshot();
-
-        private TestingModuleInfoSnapshot() {
-            // Hidden on purpose
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <T> Class<T> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
-            return (Class<T>) Class.forName(fullyQualifiedName);
-        }
-
-        @Override
-        public YangTextSource yangTextSource(final SourceIdentifier arg0) {
-            return null;
-        }
-
-        @Override
-        public YangTextSource getYangTextSource(final SourceIdentifier sourceId) throws MissingSchemaSourceException {
-            throw new MissingSchemaSourceException(sourceId, "no sources");
-        }
-
-        @Override
-        public EffectiveModelContext modelContext() {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }

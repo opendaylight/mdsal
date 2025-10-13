@@ -7,11 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.Direct;
@@ -27,7 +25,6 @@ import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class ContextExtractorTest {
-
     public interface Transitive extends DataObject, EncapsulatedRouteInGrouping {
         @Override
         default Class<Transitive> implementedInterface() {
@@ -45,25 +42,21 @@ public final class ContextExtractorTest {
 
     @Test
     public void testRoutedSimpleExtraction() {
-        final var extractor = ContextReferenceExtractor.of(RoutedSimpleRouteInput.class);
-        assertNotNull(extractor);
-        assertThat(extractor, instanceOf(Direct.class));
+        final var extractor = assertInstanceOf(Direct.class,
+            ContextReferenceExtractor.of(RoutedSimpleRouteInput.class));
         assertSame(TEST_ROUTE, extractor.extract(new RoutedSimpleRouteInputBuilder().setRoute(TEST_ROUTE).build()));
     }
 
     @Test
     public void testRoutedEncapsulatedExtraction() {
-        final var extractor = ContextReferenceExtractor.of(EncapsulatedRouteInGrouping.class);
-        assertNotNull(extractor);
-        assertThat(extractor, instanceOf(GetValue.class));
+        final var extractor = assertInstanceOf(GetValue.class,
+            ContextReferenceExtractor.of(EncapsulatedRouteInGrouping.class));
         assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 
     @Test
     public void testRoutedEncapsulatedTransitiveExtraction() {
-        final var extractor = ContextReferenceExtractor.of(Transitive.class);
-        assertNotNull(extractor);
-        assertThat(extractor, instanceOf(GetValue.class));
+        final var extractor = assertInstanceOf(GetValue.class, ContextReferenceExtractor.of(Transitive.class));
         assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 }
