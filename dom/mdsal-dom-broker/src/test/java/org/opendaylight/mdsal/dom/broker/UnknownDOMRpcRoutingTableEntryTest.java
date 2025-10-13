@@ -7,9 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CONTAINER;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementation;
 
@@ -17,15 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class UnknownDOMRpcRoutingTableEntryTest {
-    private static final List<DOMRpcImplementation> TEST_LIST = new ArrayList<>();
-
+class UnknownDOMRpcRoutingTableEntryTest {
     @Test
-    public void basicTest() {
+    void basicTest() {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> emptyImpls = new HashMap<>();
         final List<YangInstanceIdentifier> addList1 = new ArrayList<>();
         final List<YangInstanceIdentifier> addList2 = new ArrayList<>();
@@ -33,24 +33,25 @@ public class UnknownDOMRpcRoutingTableEntryTest {
         final UnknownDOMRpcRoutingTableEntry test =
                 new UnknownDOMRpcRoutingTableEntry(TestModel.TEST_QNAME, emptyImpls);
 
-        TEST_LIST.add(testClass);
-        emptyImpls.put(YangInstanceIdentifier.of(), TEST_LIST);
+        final var testList = new ArrayList<DOMRpcImplementation>();
+        testList.add(testClass);
+        emptyImpls.put(YangInstanceIdentifier.of(), testList);
 
         assertNotNull(test);
         assertNotNull(test.newInstance(emptyImpls));
         assertNotNull(OperationInvocation.invoke(test, TEST_CONTAINER));
         assertNotNull(test.getImplementations());
-        assertEquals(test.getImplementations(YangInstanceIdentifier.of()), TEST_LIST);
+        assertEquals(List.of(testClass), test.getImplementations(YangInstanceIdentifier.of()));
         assertTrue(test.containsContext(YangInstanceIdentifier.of()));
-        assertTrue(test.registeredIdentifiers().contains(YangInstanceIdentifier.of()));
+        assertThat(test.registeredIdentifiers()).contains(YangInstanceIdentifier.of());
 
         addList1.add(YangInstanceIdentifier.of());
         addList1.add(YangInstanceIdentifier.of(TestModel.TEST_QNAME));
         addList2.add(YangInstanceIdentifier.of(TestModel.TEST2_QNAME));
 
-        final DOMRpcRoutingTableEntry tst = (DOMRpcRoutingTableEntry) test.add(testClass, addList1);
-        final DOMRpcRoutingTableEntry tst1 = (DOMRpcRoutingTableEntry) tst.add(testClass, addList2);
-        final DOMRpcRoutingTableEntry tst2 = (DOMRpcRoutingTableEntry) tst1.remove(testClass, addList1);
+        final var tst = assertInstanceOf(DOMRpcRoutingTableEntry.class, test.add(testClass, addList1));
+        final var tst1 = assertInstanceOf(DOMRpcRoutingTableEntry.class, tst.add(testClass, addList2));
+        final var tst2 = assertInstanceOf(DOMRpcRoutingTableEntry.class, tst1.remove(testClass, addList1));
 
         assertEquals(1, test.getImplementations().size());
         assertEquals(2, tst.getImplementations().size());
