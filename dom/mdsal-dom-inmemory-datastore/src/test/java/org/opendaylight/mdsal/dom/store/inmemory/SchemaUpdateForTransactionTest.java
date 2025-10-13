@@ -10,22 +10,21 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.ExecutionException;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
-public class SchemaUpdateForTransactionTest {
+class SchemaUpdateForTransactionTest {
     private static final YangInstanceIdentifier TOP_PATH = YangInstanceIdentifier.of(TestModel.TEST_QNAME);
 
     private EffectiveModelContext schemaContext;
     private InMemoryDOMDataStore domStore;
 
-    @Before
-    public void setupStore() {
+    @BeforeEach
+    void beforeEach() {
         domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
         // loadSchemas(RockTheHouseInput.class);
     }
@@ -52,13 +51,10 @@ public class SchemaUpdateForTransactionTest {
      *
      * <p>If transaction between allocation and schema context was unmodified, it is safe to change its schema context
      * to new one (e.g. it will be same as if allocated after schema context update.)
-     *
-     * @throws InterruptedException when this condition met
-     * @throws ExecutionException when execution fails
      */
-    @Ignore
     @Test
-    public void testTransactionSchemaUpdate() throws InterruptedException, ExecutionException {
+    @Disabled
+    void testTransactionSchemaUpdate() throws Exception {
         // FIXME: Rewrite this test to be pure DOM only.
         assertNotNull(domStore);
 
