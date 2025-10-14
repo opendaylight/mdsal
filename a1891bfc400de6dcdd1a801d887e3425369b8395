@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eac81d19_1df99e4b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-10-14T13:22:49Z",
+      "side": 1,
+      "message": "can we host the script in odlparent, as that is where both feature-parents are?",
+      "revId": "a1891bfc400de6dcdd1a801d887e3425369b8395",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
