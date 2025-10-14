@@ -16,6 +16,24 @@
       "message": "copyright",
       "revId": "1a618c03a6ba80a238745eb1855b4aae5f5607ef",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "113d0e5b_28781527",
+        "filename": "features/features-mdsal/src/main/feature/template.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2025-10-14T09:12:29Z",
+      "side": 1,
+      "message": "in all new files",
+      "parentUuid": "41412f93_7f3e4b9c",
+      "revId": "1a618c03a6ba80a238745eb1855b4aae5f5607ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
