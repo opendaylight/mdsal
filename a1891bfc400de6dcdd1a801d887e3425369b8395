@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc24f8c2_41c24fad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-15T21:29:51Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/c/odlparent/+/118629",
+      "parentUuid": "eac81d19_1df99e4b",
+      "revId": "a1891bfc400de6dcdd1a801d887e3425369b8395",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "38f91d4d_a645ed3a",
@@ -31,6 +49,30 @@
       "writtenOn": "2025-10-14T13:24:57Z",
       "side": 1,
       "message": "missing copyright header\nalso it would be nice to have a writeup on how to use it -- odlparent.git/docs/developer-guide.rst seems like a nice place",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 4
+      },
+      "revId": "a1891bfc400de6dcdd1a801d887e3425369b8395",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ab7fb78_226e4f1c",
+        "filename": "migrate-feature.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-15T21:29:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38f91d4d_a645ed3a",
       "range": {
         "startLine": 1,
         "startChar": 0,
