@@ -48,6 +48,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d61bf56d_a6b22a02",
+        "filename": "features/odl-mdsal-replicate-common/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-15T21:38:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cacb67c8_f0eda7f2",
+      "range": {
+        "startLine": 16,
+        "startChar": 9,
+        "endLine": 16,
+        "endChar": 54
+      },
+      "revId": "7779e45debea2d415e1db92c56a4e9cfc2dfee5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1c77089d_ae2ab717",

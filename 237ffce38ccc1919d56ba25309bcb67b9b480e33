@@ -22,6 +22,30 @@
       },
       "revId": "237ffce38ccc1919d56ba25309bcb67b9b480e33",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa4c4fb2_469aeb33",
+        "filename": "features/features-mdsal/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-15T21:38:53Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "86cf342e_93bd44d3",
+      "range": {
+        "startLine": 13,
+        "startChar": 8,
+        "endLine": 13,
+        "endChar": 53
+      },
+      "revId": "237ffce38ccc1919d56ba25309bcb67b9b480e33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
