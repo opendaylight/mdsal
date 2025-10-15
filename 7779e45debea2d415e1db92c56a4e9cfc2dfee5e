@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cacb67c8_f0eda7f2",
+        "filename": "features/odl-mdsal-replicate-common/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-10-15T15:08:25Z",
+      "side": 1,
+      "message": "the point is: \u0027details\u0027 ends up leaking from the parent",
+      "parentUuid": "e0639cb7_860c870a",
+      "range": {
+        "startLine": 16,
+        "startChar": 9,
+        "endLine": 16,
+        "endChar": 54
+      },
+      "revId": "7779e45debea2d415e1db92c56a4e9cfc2dfee5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1c77089d_ae2ab717",
         "filename": "features/odl-mdsal-replicate-common/src/main/feature/template.xml",
         "patchSetId": 7
