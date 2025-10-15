@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>bnd-parent</artifactId>
-        <version>14.0.19</version>
+        <version>14.0.20-SNAPSHOT</version>
         <relativePath>../../bnd-parent/pom.xml</relativePath>
     </parent>
 
