@@ -18,7 +18,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>examples-aggregator</artifactId>
-    <version>15.0.1</version>
+    <version>15.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>

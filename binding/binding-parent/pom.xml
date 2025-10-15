@@ -20,7 +20,7 @@
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
     <packaging>pom</packaging>
-    <version>15.0.1</version>
+    <version>15.0.2-SNAPSHOT</version>
 
     <properties>
         <spotbugs.onlyAnalyze>!org.opendaylight.yang.gen.-,!org.opendaylight.yang.svc.-</spotbugs.onlyAnalyze>
@@ -33,7 +33,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>bnd-parent</artifactId>
-                <version>15.0.1</version>
+                <version>15.0.2-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
