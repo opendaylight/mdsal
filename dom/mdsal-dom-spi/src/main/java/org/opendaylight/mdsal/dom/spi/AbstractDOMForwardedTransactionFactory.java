@@ -105,7 +105,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     }
 
     /**
-     * Creates a new forwarded write-only transaction
+     * Creates a new forwarded write-only transaction.
      *
      * <p>Creates a new write-only transaction backed by single write-only sub-transaction. Target datastore is
      * determined dynamically on first usage.
