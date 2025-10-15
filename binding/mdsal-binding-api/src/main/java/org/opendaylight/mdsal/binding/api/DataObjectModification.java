@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import com.google.common.annotations.Beta;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -17,6 +18,7 @@ import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.ExactDataObjectStep;
 import org.opendaylight.yangtools.binding.Key;
+import org.opendaylight.yangtools.binding.KeyStep;
 
 /**
  * Modified Data Object. Represents a modification of DataObject, which has a few kinds as indicated by
@@ -73,6 +75,45 @@ public interface DataObjectModification<T extends DataObject> {
     @Deprecated(since = "13.0.0", forRemoval = true)
     default @NonNull Class<T> getDataType() {
         return dataType();
+    }
+
+    /**
+     * Returns {@link #step()} as a {@link KeyStep} of specified type.
+     *
+     * @param <E> expected {@link EntryObject} type
+     * @param <K> expected {@link Key} type
+     * @param type the {@link EntryObject} class
+     * @return a {@link KeyStep}
+     * @throws ClassCastException if {@code type} does not represent an {@link EntryObject}
+     * @throws IllegalArgumentException if {@code type} does not match {@code step().type()} or {@code step()} is not
+     *         a {@link KeyStep}.
+     * @since 14.0.19
+     */
+    @Beta
+    // TODO: this method is quite ugly, but necessary for user convenience. We should be providing a better alternative
+    //       in the form of
+    //
+    //       interface EntryObjectModification<E, K> extends DataObjectModification<E> {
+    //           @Override
+    //           ListStep<K, E> step();
+    //       }
+    //
+    //       That requires an similar specialization of DataTreeChangeListener, so that users registering for listening
+    //       on EntryObjects can get this out of the box.
+    default <E extends EntryObject<E, K>, K extends Key<E>> @NonNull KeyStep<K, E> coerceKeyStep(
+            final @NonNull Class<E> type) {
+        final var cast = type.asSubclass(EntryObject.class);
+        final var step = step();
+        if (!(step instanceof KeyStep<?, ?> keyStep)) {
+            throw new IllegalArgumentException("Cannot coerce " + step);
+        }
+        if (!cast.equals(keyStep.type())) {
+            throw new IllegalArgumentException(keyStep + " does not match type " + type.getName());
+        }
+
+        @SuppressWarnings("unchecked")
+        final var ret = (KeyStep<K, E>) keyStep;
+        return ret;
     }
 
     /**
