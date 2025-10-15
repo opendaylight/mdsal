@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0639cb7_860c870a",
+        "filename": "features/odl-mdsal-replicate-common/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-10-15T15:07:35Z",
+      "side": 1,
+      "message": "this also needs \u003cdescription/\u003e, otherwise we get:\n\n--- old/features/odl-mdsal-replicate-common/target/feature/feature.xml  2025-10-15 16:45:44.213204628 +0200\n+++ new/features/odl-mdsal-replicate-common/target/feature/feature.xml  2025-10-15 17:01:38.019791808 +0200\n@@ -2,7 +2,7 @@\n \u003cfeatures xmlns\u003d\"http://karaf.apache.org/xmlns/features/v1.6.0\" name\u003d\"odl-mdsal-replicate-common\"\u003e\n     \u003crepository\u003emvn:org.opendaylight.mdsal/odl-mdsal-dom-api/15.0.1-SNAPSHOT/xml/features\u003c/repository\u003e\n     \u003cfeature name\u003d\"odl-mdsal-replicate-common\" description\u003d\"OpenDaylight :: MD-SAL :: Replicate :: Common\" version\u003d\"15.0.1.SNAPSHOT\"\u003e\n-        \u003cdetails\u003eodl-mdsal-replicate-common\u003c/details\u003e\n+        \u003cdetails\u003eFeature parent (based on template-feature-parent)\u003c/details\u003e\n         \u003cfeature version\u003d\"15.0.1.SNAPSHOT\" prerequisite\u003d\"false\" dependency\u003d\"false\"\u003eodl-mdsal-dom-api\u003c/feature\u003e\n         \u003cbundle\u003emvn:org.opendaylight.mdsal/mdsal-replicate-common/15.0.1-SNAPSHOT\u003c/bundle\u003e\n     \u003c/feature\u003e",
+      "range": {
+        "startLine": 16,
+        "startChar": 9,
+        "endLine": 16,
+        "endChar": 54
+      },
+      "revId": "7779e45debea2d415e1db92c56a4e9cfc2dfee5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c77089d_ae2ab717",
+        "filename": "features/odl-mdsal-replicate-common/src/main/feature/template.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-10-15T15:07:35Z",
+      "side": 1,
+      "message": "these should not be here",
+      "range": {
+        "startLine": 12,
+        "startChar": 50,
+        "endLine": 12,
+        "endChar": 89
+      },
+      "revId": "7779e45debea2d415e1db92c56a4e9cfc2dfee5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
