@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.Collection;
@@ -74,10 +75,10 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
         public abstract @NonNull T dataAfter();
     }
 
-    private final @NonNull ModificationType type;
+    private final @NonNull ModificationType modificationType;
 
-    DataObjectModification(final @NonNull ModificationType type) {
-        this.type = requireNonNull(type);
+    DataObjectModification(final @NonNull ModificationType modificationType) {
+        this.modificationType = requireNonNull(modificationType);
     }
 
     /**
@@ -96,6 +97,45 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
     public abstract @NonNull ExactDataObjectStep<T> step();
 
     /**
+     * Returns {@link #step()} as a {@link KeyStep} of specified type.
+     *
+     * @param <E> expected {@link EntryObject} type
+     * @param <K> expected {@link Key} type
+     * @param type the {@link EntryObject} class
+     * @return a {@link KeyStep}
+     * @throws ClassCastException if {@code type} does not represent an {@link EntryObject}
+     * @throws IllegalArgumentException if {@code type} does not match {@code step().type()} or {@code step()} is not
+     *         a {@link KeyStep}.
+     * @since 14.0.19
+     */
+    @Beta
+    // TODO: this method is quite ugly, but necessary for user convenience. We should be providing a better alternative
+    //       in the form of
+    //
+    //       interface EntryObjectModification<E, K> extends DataObjectModification<E> {
+    //           @Override
+    //           ListStep<K, E> step();
+    //       }
+    //
+    //       That requires an similar specialization of DataTreeChangeListener, so that users registering for listening
+    //       on EntryObjects can get this out of the box.
+    public final <E extends EntryObject<E, K>, K extends Key<E>> @NonNull KeyStep<K, E> coerceKeyStep(
+            final @NonNull Class<E> type) {
+        final var cast = type.asSubclass(EntryObject.class);
+        final var step = step();
+        if (!(step instanceof KeyStep<?, ?> keyStep)) {
+            throw new IllegalArgumentException("Cannot coerce " + step);
+        }
+        if (!cast.equals(keyStep.type())) {
+            throw new IllegalArgumentException(keyStep + " does not match type " + type.getName());
+        }
+
+        @SuppressWarnings("unchecked")
+        final var ret = (KeyStep<K, E>) keyStep;
+        return ret;
+    }
+
+    /**
      * Returns type of modification.
      *
      * @return type of performed modification.
@@ -103,7 +143,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      */
     @Deprecated(since = "15.0.0")
     public final @NonNull ModificationType modificationType() {
-        return type;
+        return modificationType;
     }
 
     /**
