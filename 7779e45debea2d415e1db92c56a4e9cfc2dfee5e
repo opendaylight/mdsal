@@ -93,6 +93,30 @@
       },
       "revId": "7779e45debea2d415e1db92c56a4e9cfc2dfee5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16ffada6_be119e62",
+        "filename": "features/odl-mdsal-replicate-common/src/main/feature/template.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-16T13:21:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c77089d_ae2ab717",
+      "range": {
+        "startLine": 12,
+        "startChar": 50,
+        "endLine": 12,
+        "endChar": 89
+      },
+      "revId": "7779e45debea2d415e1db92c56a4e9cfc2dfee5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
