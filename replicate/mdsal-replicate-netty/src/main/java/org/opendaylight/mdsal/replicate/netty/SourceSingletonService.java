@@ -46,12 +46,11 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
     private final DataTreeChangeExtension dtcs;
     private final int listenPort;
 
-    @GuardedBy("this")
-    private final Collection<SocketChannel> children = new HashSet<>();
+    private final @GuardedBy("this") Collection<SocketChannel> children = new HashSet<>();
     private final Duration keepaliveInterval;
     private final int maxMissedKeepalives;
-    @GuardedBy("this")
-    private Channel serverChannel;
+
+    private @GuardedBy("this") Channel serverChannel;
 
     SourceSingletonService(final BootstrapSupport bootstrapSupport, final DataTreeChangeExtension dtcs,
             final int listenPort, final Duration keepaliveInterval, final int maxMissedKeepalives) {

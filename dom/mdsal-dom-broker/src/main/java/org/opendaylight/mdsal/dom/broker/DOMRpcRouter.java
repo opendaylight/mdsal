@@ -311,16 +311,10 @@ public final class DOMRpcRouter extends AbstractRegistration {
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
 
-    @GuardedBy("this")
-    private ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
-
-    @GuardedBy("this")
-    private ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
-
+    private @GuardedBy("this") ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
+    private @GuardedBy("this") ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
-
     private volatile DOMActionRoutingTable actionRoutingTable = DOMActionRoutingTable.EMPTY;
-
     private Registration listenerRegistration;
 
     @Inject
