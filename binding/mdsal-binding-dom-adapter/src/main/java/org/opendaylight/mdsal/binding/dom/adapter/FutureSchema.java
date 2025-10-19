@@ -75,8 +75,8 @@ abstract class FutureSchema implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FutureSchema.class);
 
-    @GuardedBy("postponedOperations")
-    private final Set<FutureSchemaPredicate> postponedOperations = new LinkedHashSet<>();
+    private final @GuardedBy("postponedOperations") Set<FutureSchemaPredicate> postponedOperations =
+        new LinkedHashSet<>();
     private final long duration;
     private final TimeUnit unit;
 

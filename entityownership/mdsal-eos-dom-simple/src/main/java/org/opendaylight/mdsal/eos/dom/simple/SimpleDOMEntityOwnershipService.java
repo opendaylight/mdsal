@@ -48,11 +48,10 @@ import org.slf4j.LoggerFactory;
 public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleDOMEntityOwnershipService.class);
 
-    @GuardedBy("entities")
-    private final Table<String, YangInstanceIdentifier, DOMEntity> entities = HashBasedTable.create();
-
-    @GuardedBy("listeners")
-    private final Multimap<String, DOMEntityOwnershipListener> listeners = ArrayListMultimap.create(0, 1);
+    private final @GuardedBy("entities") Table<String, YangInstanceIdentifier, DOMEntity> entities =
+        HashBasedTable.create();
+    private final @GuardedBy("listeners") Multimap<String, DOMEntityOwnershipListener> listeners =
+        ArrayListMultimap.create(0, 1);
 
     private final UUID uuid;
 

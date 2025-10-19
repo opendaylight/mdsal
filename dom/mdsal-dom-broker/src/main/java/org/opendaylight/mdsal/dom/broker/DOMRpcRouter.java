@@ -319,16 +319,10 @@ public final class DOMRpcRouter extends AbstractRegistration {
     private final @NonNull DOMRpcProviderService rpcProviderService = new RouterDOMRpcProviderService(this);
     private final @NonNull DOMRpcService rpcService = new RouterDOMRpcService(this);
 
-    @GuardedBy("this")
-    private ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
-
-    @GuardedBy("this")
-    private ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
-
+    private @GuardedBy("this") ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
+    private @GuardedBy("this") ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
-
     private volatile DOMActionRoutingTable actionRoutingTable = DOMActionRoutingTable.EMPTY;
-
     private Registration listenerRegistration;
 
     @Deprecated
