@@ -48,12 +48,12 @@ public final class ActionSpec<A extends Action<? extends DataObjectIdentifier<P>
     }
 
     public static <P extends ChildOf<? extends DataRoot<?>>> @NonNull Builder<P> builder(
-            @NonNull final Class<P> container) {
+            final @NonNull Class<P> container) {
         return new Builder<>(DataObjectReference.builder(container));
     }
 
     public static <C extends ChoiceIn<? extends DataRoot<?>> & DataObject, P extends ChildOf<? super C>>
-            @NonNull Builder<P> builder(final @NonNull Class<C> caze, @NonNull final Class<P> container) {
+            @NonNull Builder<P> builder(final @NonNull Class<C> caze, final @NonNull Class<P> container) {
         return new Builder<>(DataObjectReference.builder(caze, container));
     }
 
@@ -89,25 +89,25 @@ public final class ActionSpec<A extends Action<? extends DataObjectIdentifier<P>
             this.pathBuilder = requireNonNull(pathBuilder);
         }
 
-        public <N extends ChildOf<? super P>> @NonNull Builder<N> withPathChild(@NonNull final Class<N> container) {
+        public <N extends ChildOf<? super P>> @NonNull Builder<N> withPathChild(final @NonNull Class<N> container) {
             pathBuilder.child(container);
             return castThis();
         }
 
         public <C extends ChoiceIn<? super P> & DataObject, N extends ChildOf<? super C>>
-                @NonNull Builder<N> withPathChild(final Class<C> caze, @NonNull final Class<N> container) {
+                @NonNull Builder<N> withPathChild(final Class<C> caze, final @NonNull Class<N> container) {
             pathBuilder.child(caze, container);
             return castThis();
         }
 
         public <A extends Augmentation<? super P>> @NonNull Builder<A> withPathAugmentation(
-                @NonNull final Class<A> augmentation) {
+                final @NonNull Class<A> augmentation) {
             pathBuilder.augmentation(augmentation);
             return castThis();
         }
 
         public <A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> @NonNull ActionSpec<A, P> build(
-                @NonNull final Class<A> type) {
+                final @NonNull Class<A> type) {
             return new ActionSpec<>(type, pathBuilder.build());
         }
 
