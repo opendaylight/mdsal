@@ -49,14 +49,10 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
     private final @NonNull SettableFuture<Empty> future = SettableFuture.create();
     private final @NonNull DOMTransactionChain delegate;
 
-    @GuardedBy("this")
-    private boolean closed;
-    @GuardedBy("this")
-    private boolean failed;
-    @GuardedBy("this")
-    private PingPongTransaction shutdownTx;
-    @GuardedBy("this")
-    private Entry<PingPongTransaction, Throwable> deadTx;
+    private @GuardedBy("this") boolean closed;
+    private @GuardedBy("this") boolean failed;
+    private @GuardedBy("this") PingPongTransaction shutdownTx;
+    private @GuardedBy("this") Entry<PingPongTransaction, Throwable> deadTx;
 
     //  This VarHandle is used to manipulate the "ready" transaction. We perform only atomic get-and-set on it.
     private static final VarHandle READY_TX;
