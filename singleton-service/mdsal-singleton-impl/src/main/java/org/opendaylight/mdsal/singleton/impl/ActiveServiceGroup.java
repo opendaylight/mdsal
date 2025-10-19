@@ -147,25 +147,21 @@ final class ActiveServiceGroup extends ServiceGroup {
      * Service (base) entity registration. This entity selects an owner candidate across nodes. Candidates proceed to
      * acquire {@link #cleanupEntity}.
      */
-    @GuardedBy("this")
-    private Registration serviceEntityReg = null;
+    private @GuardedBy("this") Registration serviceEntityReg = null;
     /**
      * Service (base) entity last reported state.
      */
-    @GuardedBy("this")
-    private EntityState serviceEntityState = EntityState.UNREGISTERED;
+    private @GuardedBy("this") EntityState serviceEntityState = EntityState.UNREGISTERED;
 
     /**
      * Cleanup (owner) entity registration. This entity guards access to service state and coordinates shutdown cleanup
      * and startup.
      */
-    @GuardedBy("this")
-    private Registration cleanupEntityReg;
+    private @GuardedBy("this") Registration cleanupEntityReg;
     /**
      * Cleanup (owner) entity last reported state.
      */
-    @GuardedBy("this")
-    private EntityState cleanupEntityState = EntityState.UNREGISTERED;
+    private @GuardedBy("this") EntityState cleanupEntityState = EntityState.UNREGISTERED;
 
     private volatile boolean initialized;
 

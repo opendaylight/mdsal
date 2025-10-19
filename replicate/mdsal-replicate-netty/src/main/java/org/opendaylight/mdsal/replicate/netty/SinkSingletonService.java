@@ -66,8 +66,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     private final int maxMissedKeepalives;
     private final Duration keepaliveInterval;
 
-    @GuardedBy("this")
-    private ChannelFuture futureChannel;
+    private @GuardedBy("this") ChannelFuture futureChannel;
     private boolean closingInstance;
     private Bootstrap bs;
 
