@@ -44,7 +44,7 @@ public final class InMemoryDOMDataStoreFactory {
      * @return an InMemoryDOMDataStore instance
      */
     public static InMemoryDOMDataStore create(final String name, final InMemoryDOMDataStoreConfigProperties properties,
-            @Nullable final DOMSchemaService schemaService) {
+            final @Nullable DOMSchemaService schemaService) {
         final ExecutorService dataChangeListenerExecutor = createExecutorService(name, properties);
         final InMemoryDOMDataStore dataStore = new InMemoryDOMDataStore(name, dataChangeListenerExecutor,
             properties.getMaxDataChangeListenerQueueSize(), properties.getDebugTransactions());

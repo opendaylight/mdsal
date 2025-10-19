@@ -73,7 +73,7 @@ final class DOMStoreModification implements DataTreeModification {
     }
 
     @Override
-    public void applyToCursor(@NonNull final DataTreeModificationCursor cursor) {
+    public void applyToCursor(final DataTreeModificationCursor cursor) {
         throw new UnsupportedOperationException();
     }
 }

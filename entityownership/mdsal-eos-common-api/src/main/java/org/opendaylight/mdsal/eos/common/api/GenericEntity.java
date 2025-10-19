@@ -42,7 +42,7 @@ public class GenericEntity<T extends HierarchicalIdentifier<T>> implements Seria
     private final @NonNull String type;
     private final @NonNull T id;
 
-    protected GenericEntity(@NonNull final String type, @NonNull final T id) {
+    protected GenericEntity(final @NonNull String type, final @NonNull T id) {
         this.type = requireNonNull(type, "type should not be null");
         this.id = requireNonNull(id, "id should not be null");
     }
