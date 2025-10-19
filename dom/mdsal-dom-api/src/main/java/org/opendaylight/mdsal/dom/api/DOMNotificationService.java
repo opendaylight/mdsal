@@ -56,7 +56,7 @@ public interface DOMNotificationService extends DOMService<DOMNotificationServic
      *         schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if listener is {@code null}
      */
-    default @NonNull Registration registerNotificationListener(@NonNull final DOMNotificationListener listener,
+    default @NonNull Registration registerNotificationListener(final @NonNull DOMNotificationListener listener,
             final Absolute... types) {
         return registerNotificationListener(listener, List.of(types));
     }
