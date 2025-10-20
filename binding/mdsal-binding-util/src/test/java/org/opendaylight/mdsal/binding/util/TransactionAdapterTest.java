@@ -83,28 +83,44 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
         assertEquals(Optional.empty(), syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
-    @Test(expected = ExecutionException.class)
-    public void testAdaptedWriteTransactionCannotCommit() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
-            tx -> TransactionAdapter.toWriteTransaction(tx).commit()).get();
+    @Test
+    public void testAdaptedWriteTransactionCannotCommit() {
+        final var future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
+            tx -> TransactionAdapter.toWriteTransaction(tx).commit());
+
+        final var ee = assertThrows(ExecutionException.class, future::get);
+        final var cause = assertInstanceOf(UnsupportedOperationException.class, ee.getCause());
+        assertEquals("Managed transactions must not be committed", cause.getMessage());
     }
 
-    @Test(expected = ExecutionException.class)
-    public void testAdaptedReadWriteTransactionCannotCommit() throws Exception {
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
-            tx -> TransactionAdapter.toReadWriteTransaction(tx).commit()).get();
+    @Test
+    public void testAdaptedReadWriteTransactionCannotCommit() {
+        final var future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
+            tx -> TransactionAdapter.toReadWriteTransaction(tx).commit());
+
+        final var ee = assertThrows(ExecutionException.class, future::get);
+        final var cause = assertInstanceOf(UnsupportedOperationException.class, ee.getCause());
+        assertEquals("Managed transactions must not be committed", cause.getMessage());
     }
 
-    @Test(expected = ExecutionException.class)
-    public void testAdaptedWriteTransactionCannotCancel() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
-            tx -> TransactionAdapter.toWriteTransaction(tx).cancel()).get();
+    @Test
+    public void testAdaptedWriteTransactionCannotCancel() {
+        final var future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
+            tx -> TransactionAdapter.toWriteTransaction(tx).cancel());
+
+        final var ee = assertThrows(ExecutionException.class, future::get);
+        final var cause = assertInstanceOf(UnsupportedOperationException.class, ee.getCause());
+        assertEquals("Managed transactions must not be cancelled", cause.getMessage());
     }
 
-    @Test(expected = ExecutionException.class)
-    public void testAdaptedReadWriteTransactionCannotCancel() throws Exception {
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
-            tx -> TransactionAdapter.toReadWriteTransaction(tx).cancel()).get();
+    @Test
+    public void testAdaptedReadWriteTransactionCannotCancel() {
+        final var future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
+            tx -> TransactionAdapter.toReadWriteTransaction(tx).cancel());
+
+        final var ee = assertThrows(ExecutionException.class, future::get);
+        final var cause = assertInstanceOf(UnsupportedOperationException.class, ee.getCause());
+        assertEquals("Managed transactions must not be cancelled", cause.getMessage());
     }
 
     private static TopLevelList newTestDataObject() {
