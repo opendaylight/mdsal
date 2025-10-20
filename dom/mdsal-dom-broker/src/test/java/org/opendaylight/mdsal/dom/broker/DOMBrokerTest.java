@@ -7,10 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
@@ -25,7 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -131,11 +133,12 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         assertTrue(afterCommitRead.isPresent());
     }
 
-    @Test(expected = TransactionCommitFailedException.class)
-    @SuppressWarnings({"checkstyle:AvoidHidingCauseException", "checkstyle:IllegalThrows"})
-    public void testRejectedCommit() throws Throwable {
+    @Test
+    public void testRejectedCommit() throws Exception {
         commitExecutor.delegate = Mockito.mock(ExecutorService.class);
-        Mockito.doThrow(new RejectedExecutionException("mock"))
+        final var thrown = new RejectedExecutionException("mock");
+
+        Mockito.doThrow(thrown)
             .when(commitExecutor.delegate).execute(Mockito.any(Runnable.class));
         Mockito.doNothing().when(commitExecutor.delegate).shutdown();
         Mockito.doReturn(Collections.emptyList()).when(commitExecutor.delegate).shutdownNow();
@@ -148,30 +151,15 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .build());
 
-        try {
-            writeTx.commit().get(5, TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+        final var ee = assertThrows(ExecutionException.class, () -> writeTx.commit().get(5, TimeUnit.SECONDS));
+        final var ex = assertInstanceOf(TransactionCommitFailedException.class, ee.getCause());
+        assertEquals("Could not submit the commit task - the commit queue capacity has been exceeded.",
+            ex.getMessage());
+        assertSame(thrown, ex.getCause());
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    AtomicReference<Throwable> submitTxAsync(final DOMDataTreeWriteTransaction writeTx) {
-        final AtomicReference<Throwable> caughtEx = new AtomicReference<>();
-        new Thread(() -> {
-            try {
-                writeTx.commit();
-            } catch (final Throwable e) {
-                caughtEx.set(e);
-            }
-        }).start();
-
-        return caughtEx;
-    }
-
-    @Test(expected = ReadFailedException.class)
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
-    public void basicTests() throws Throwable {
+    @Test
+    public void basicTests() throws Exception {
         final DataContainerChild outerList = ImmutableNodes.newSystemMapBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
             .withChild(TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
@@ -219,13 +207,10 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         readRx.read(OPERATIONAL, TestModel.TEST_PATH).get(); // init backing tx before close
         readRx.close();
 
-        //Expected exception after close call
-
-        try {
-            readRx.read(OPERATIONAL, TestModel.TEST_PATH).get();
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+        final var ee = assertThrows(ExecutionException.class,
+            () -> readRx.read(OPERATIONAL, TestModel.TEST_PATH).get());
+        final var cause = assertInstanceOf(ReadFailedException.class, ee.getCause());
+        assertEquals("Transaction is closed", cause.getMessage());
     }
 
     static class CommitExecutorService extends ForwardingExecutorService {
