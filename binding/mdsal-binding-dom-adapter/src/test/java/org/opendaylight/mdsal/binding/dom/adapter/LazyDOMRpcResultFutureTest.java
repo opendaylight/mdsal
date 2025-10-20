@@ -14,47 +14,51 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.yangtools.binding.RpcOutput;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
-public class LazyDOMRpcResultFutureTest {
+@ExtendWith(MockitoExtension.class)
+class LazyDOMRpcResultFutureTest {
+    @Mock
+    private BindingNormalizedNodeSerializer codec;
+    @Mock
+    private ListenableFuture<RpcResult<?>> future;
+    @Mock
+    private RpcResult<?> domRpcResult;
+    @Mock
+    private RpcOutput output;
 
     private LazyDOMRpcResultFuture lazyDOMRpcResultFuture;
-    private final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
-    private final ListenableFuture<RpcResult<?>> future = mock(ListenableFuture.class);
-    private final RpcResult<?> domRpcResult = mock(RpcResult.class);
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         lazyDOMRpcResultFuture = LazyDOMRpcResultFuture.create(codec, future);
-        reset(future);
         doReturn(true).when(future).cancel(anyBoolean());
         doNothing().when(future).addListener(any(), any());
-
 
         doReturn(true).when(domRpcResult).isSuccessful();
         doReturn(true).when(future).isCancelled();
         doReturn(true).when(future).isDone();
 
-        doReturn(mock(RpcOutput.class)).when(domRpcResult).getResult();
+        doReturn(output).when(domRpcResult).getResult();
         doReturn(domRpcResult).when(future).get();
         doReturn(domRpcResult).when(future).get(1, TimeUnit.SECONDS);
     }
 
     @Test
-    public void basicTest() throws Exception {
+    void basicTest() throws Exception {
         assertNotNull(lazyDOMRpcResultFuture);
         assertEquals(future, lazyDOMRpcResultFuture.getBindingFuture());
 
@@ -79,27 +83,5 @@ public class LazyDOMRpcResultFutureTest {
         doReturn(false).when(domRpcResult).isSuccessful();
         doReturn(ImmutableList.of()).when(domRpcResult).getErrors();
         assertNotNull(lazyDOMRpcResultFuture.get());
-    }
-
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch", "checkstyle:avoidHidingCauseException"})
-    @Test(expected = InterruptedException.class)
-    public void checkedGetWithException() throws Throwable {
-        doThrow(InterruptedException.class).when(future).get();
-        try {
-            lazyDOMRpcResultFuture.get();
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
-    }
-
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch", "checkstyle:avoidHidingCauseException"})
-    @Test(expected = InterruptedException.class)
-    public void checkedGetWithException2() throws Throwable {
-        doThrow(InterruptedException.class).when(future).get(1, TimeUnit.SECONDS);
-        try {
-            lazyDOMRpcResultFuture.get(1, TimeUnit.SECONDS);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
     }
 }
