@@ -30,10 +30,14 @@ import org.opendaylight.yangtools.binding.Notification;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @VisibleForTesting
 public final class BindingDOMNotificationPublishServiceAdapter
         extends AbstractBindingAdapter<DOMNotificationPublishService> implements NotificationPublishService {
+    private static final Logger LOG = LoggerFactory.getLogger(BindingDOMNotificationPublishServiceAdapter.class);
+
     static final Factory<NotificationPublishService> BUILDER_FACTORY = Builder::new;
 
     private final DOMNotificationPublishDemandExtension demandExt;
@@ -47,7 +51,9 @@ public final class BindingDOMNotificationPublishServiceAdapter
 
     @Override
     public void putNotification(final Notification<?> notification) throws InterruptedException {
-        getDelegate().putNotification(toDomNotification(notification));
+        if (getDelegate().putNotification(toDomNotification(notification)) == null) {
+            LOG.warn("Null return");
+        }
     }
 
     @Override
