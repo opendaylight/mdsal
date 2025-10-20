@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -25,6 +26,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,7 +98,10 @@ class PingPongTransactionChainTest {
         final var tx = pingPong.newReadOnlyTransaction();
         assertGetIdentifier(tx);
         assertReadOperations(tx);
-        assertCommit(tx::close);
+
+        doReturn(CommitInfo.emptyFluentFuture()).when(rwTx).commit();
+        tx.close();
+        verify(rwTx).commit();
     }
 
     @Test
@@ -155,9 +160,9 @@ class PingPongTransactionChainTest {
         verify(rwTx).put(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of(), data);
     }
 
-    private void assertCommit(final Runnable commitMethod) {
+    private void assertCommit(final Supplier<? extends FluentFuture<? extends CommitInfo>> commitMethod) {
         doReturn(CommitInfo.emptyFluentFuture()).when(rwTx).commit();
-        commitMethod.run();
+        assertTrue(commitMethod.get().isDone());
         verify(rwTx).commit();
     }
 
