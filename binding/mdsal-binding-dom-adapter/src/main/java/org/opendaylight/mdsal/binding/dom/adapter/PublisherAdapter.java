@@ -20,12 +20,16 @@ import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.InstanceNotification;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of {@link Publisher} backed by a {@link DOMInstanceNotificationPublishService}.
  */
 final class PublisherAdapter<N extends InstanceNotification<N, P>, P extends DataObject>
         extends AbstractBindingAdapter<DOMInstanceNotificationPublishService> implements Publisher<N, P> {
+    private static final Logger LOG = LoggerFactory.getLogger(PublisherAdapter.class);
+
     private final @NonNull Absolute notificationPath;
 
     PublisherAdapter(final AdapterContext adapterContext, final DOMInstanceNotificationPublishService domPublishService,
@@ -37,7 +41,11 @@ final class PublisherAdapter<N extends InstanceNotification<N, P>, P extends Dat
     @Override
     public void putNotification(final DataObjectIdentifier<P> path, final N notification) throws InterruptedException {
         final var serializer = currentSerializer();
-        getDelegate().putNotification(toDomPath(serializer, path), toDomNotification(serializer, notification));
+        final var future = getDelegate()
+            .putNotification(toDomPath(serializer, path), toDomNotification(serializer, notification));
+        if (future == null) {
+            LOG.warn("Anull return from underlay");
+        }
     }
 
     @Override
