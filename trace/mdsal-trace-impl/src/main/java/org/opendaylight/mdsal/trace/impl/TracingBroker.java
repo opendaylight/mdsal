@@ -31,8 +31,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("checkstyle:JavadocStyle")
-//...because otherwise it whines about the elements in the @code block even though it's completely valid Javadoc
 /**
  * TracingBroker logs "write" operations and listener registrations to the md-sal. It logs the instance identifier path,
  * the objects themselves, as well as the stack trace of the call invoking the registration or write operation.
@@ -87,6 +85,8 @@ import org.slf4j.LoggerFactory;
  *     </li>
  * </ul>
  */
+@SuppressWarnings("checkstyle:JavadocStyle")
+//...because otherwise it whines about the elements in the @code block even though it's completely valid Javadoc
 public class TracingBroker implements TracingDOMDataBroker {
     private static final Logger LOG = LoggerFactory.getLogger(TracingBroker.class);
 
