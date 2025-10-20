@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec2d1923_71b655bd",
+        "filename": "features/features-mdsal/pom.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2025-10-20T08:09:41Z",
+      "side": 1,
+      "message": "this is wrong IMO, definitelly",
+      "revId": "e15da9fbb2c51829f7b8ddb118dec12e9939e3cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
