@@ -33,6 +33,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 class LazyDOMRpcResultFutureTest {
     @Mock
     private BindingNormalizedNodeSerializer codec;
+    @SuppressWarnings("DoNotMock")
     @Mock
     private ListenableFuture<RpcResult<?>> future;
     @Mock
