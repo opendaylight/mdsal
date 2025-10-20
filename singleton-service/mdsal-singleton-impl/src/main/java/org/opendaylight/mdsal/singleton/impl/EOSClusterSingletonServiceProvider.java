@@ -177,7 +177,8 @@ public final class EOSClusterSingletonServiceProvider
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
             LOG.debug("Replaced group {} with {}", serviceIdentifier, placeHolder);
 
-            lookup.closeClusterSingletonGroup();
+            @SuppressWarnings({ "FutureReturnValueIgnored", "unused" })
+            final var unused = lookup.closeClusterSingletonGroup();
         }
 
         future.addListener(() -> finishShutdown(placeHolder), MoreExecutors.directExecutor());

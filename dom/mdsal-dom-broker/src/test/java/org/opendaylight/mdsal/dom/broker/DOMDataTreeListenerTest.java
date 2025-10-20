@@ -126,7 +126,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
         final var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.commit();
+        assertNotNull(writeTx.commit());
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -157,7 +157,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         final var listenerReg = dataTreeChangeService.registerTreeChangeListener(ROOT_DATA_TREE_ID, listener);
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER_2);
-        writeTx.commit();
+        assertNotNull(writeTx.commit());
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -196,7 +196,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.delete(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
-        writeTx.commit();
+        assertNotNull(writeTx.commit());
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -235,7 +235,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH, OUTER_LIST_2);
-        writeTx.commit();
+        assertNotNull(writeTx.commit());
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -337,7 +337,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
                 outerListEntry2);
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH.node(outerListEntryId3),
                 outerListEntry3);
-        writeTx.commit();
+        assertNotNull(writeTx.commit());
 
         latch.await(5, TimeUnit.SECONDS);
 

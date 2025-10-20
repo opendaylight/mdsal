@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
@@ -86,7 +87,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void testAdaptedWriteTransactionCannotCommit() {
         final var future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
-            tx -> TransactionAdapter.toWriteTransaction(tx).commit());
+            tx -> assertNotNull(TransactionAdapter.toWriteTransaction(tx).commit()));
 
         final var ee = assertThrows(ExecutionException.class, future::get);
         final var cause = assertInstanceOf(UnsupportedOperationException.class, ee.getCause());
@@ -96,7 +97,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void testAdaptedReadWriteTransactionCannotCommit() {
         final var future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
-            tx -> TransactionAdapter.toReadWriteTransaction(tx).commit());
+            tx -> assertNotNull(TransactionAdapter.toReadWriteTransaction(tx).commit()));
 
         final var ee = assertThrows(ExecutionException.class, future::get);
         final var cause = assertInstanceOf(UnsupportedOperationException.class, ee.getCause());
