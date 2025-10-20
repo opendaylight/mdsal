@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.Futures;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @ExtendWith(MockitoExtension.class)
 class ForwardingDOMRpcImplementationTest {
@@ -26,7 +27,9 @@ class ForwardingDOMRpcImplementationTest {
     @Mock
     private DOMRpcIdentifier domRpcIdentifier;
     @Mock
-    private ListenableFuture<DOMRpcResult> rpcFuture;
+    private ContainerNode input;
+    @Mock
+    private DOMRpcResult result;
 
     @Test
     void basicTest() {
@@ -37,7 +40,8 @@ class ForwardingDOMRpcImplementationTest {
             }
         };
 
-        doReturn(rpcFuture).when(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
-        assertSame(rpcFuture, impl.invokeRpc(domRpcIdentifier, null));
+        var future = Futures.immediateFuture(result);
+        doReturn(future).when(domRpcImplementation).invokeRpc(domRpcIdentifier, input);
+        assertSame(future, impl.invokeRpc(domRpcIdentifier, input));
     }
 }

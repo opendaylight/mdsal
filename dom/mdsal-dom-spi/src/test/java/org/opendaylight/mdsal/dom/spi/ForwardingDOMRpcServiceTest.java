@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.Futures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -32,7 +33,7 @@ class ForwardingDOMRpcServiceTest {
     @Mock
     private ContainerNode input;
     @Mock
-    private ListenableFuture<?> future;
+    private DOMRpcResult result;
     @Mock
     private Registration registration;
     @Spy
@@ -47,6 +48,7 @@ class ForwardingDOMRpcServiceTest {
     void invokeRpcForwards() {
         final var id = QName.create("urn:foo", "foo");
 
+        final var future = Futures.immediateFuture(result);
         doReturn(future).when(delegate).invokeRpc(id, input);
         assertSame(future, service.invokeRpc(id, input));
     }
