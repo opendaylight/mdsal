@@ -39,6 +39,7 @@ public class EntityTest {
     }
 
     @Test
+    @SuppressWarnings("SelfEquals")
     public void testEquals() {
         Entity entity1 = new Entity(ENTITY_TYPE1, ID1);
 

@@ -191,10 +191,10 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      */
     public final <C extends ChildOf<? super T>> @NonNull Collection<DataObjectModification<C>> getModifiedChildren(
             final @NonNull Class<C> childType) {
-        childType.asSubclass(ChildOf.class);
+        final var checkedChild = childType.asSubclass(ChildOf.class);
         @SuppressWarnings("unchecked")
         final var ret = (@NonNull Collection<DataObjectModification<C>>) modifiedChildren().stream()
-            .filter(child -> childType.isAssignableFrom(child.dataType()))
+            .filter(child -> checkedChild.isAssignableFrom(child.dataType()))
             .collect(Collectors.toUnmodifiableList());
         return ret;
     }
@@ -213,13 +213,13 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             @NonNull Collection<DataObjectModification<C>> getModifiedChildren(final @NonNull Class<H> caseType,
                 final @NonNull Class<C> childType) {
-        caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
-        childType.asSubclass(ChildOf.class);
+        final var checkedCase = caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
+        final var checkedChild = childType.asSubclass(ChildOf.class);
         @SuppressWarnings("unchecked")
         final var ret = (@NonNull Collection<DataObjectModification<C>>) modifiedChildren().stream()
             .filter(child -> {
                 final var childStep = child.step();
-                return childType.isAssignableFrom(childStep.type()) && caseType.equals(childStep.caseType());
+                return checkedChild.isAssignableFrom(childStep.type()) && checkedCase.equals(childStep.caseType());
             })
             .collect(Collectors.toUnmodifiableList());
         return ret;
@@ -238,6 +238,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
+    @SuppressWarnings("ReturnValueIgnored")
     public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
             @Nullable DataObjectModification<C> getModifiedChildContainer(final @NonNull Class<H> caseType,
                 final @NonNull Class<C> child) {
@@ -257,6 +258,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if {@code child} is not actually a subclass of {@link ChildOf}
      * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
+    @SuppressWarnings("ReturnValueIgnored")
     public final <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
             final @NonNull Class<C> child) {
         child.asSubclass(ChildOf.class);
@@ -275,6 +277,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws IllegalArgumentException if @code augmentation} class is not a valid augmentation according to generated
      *                                  model
      */
+    @SuppressWarnings("ReturnValueIgnored")
     public final <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
             final @NonNull Class<C> augmentation) {
         augmentation.asSubclass(Augmentation.class);
@@ -291,6 +294,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if @code listItem} is not a valid child according to generated model
      */
+    @SuppressWarnings("ReturnValueIgnored")
     public final <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
             @Nullable DataObjectModification<N> getModifiedChildListItem(final @NonNull Class<N> listItem,
                 final @NonNull K listKey) {
@@ -308,6 +312,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if {@code listItem} class is not a valid child according to generated model
      */
+    @SuppressWarnings("ReturnValueIgnored")
     public final <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
             K extends Key<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
                 final @NonNull Class<H> caseType, final @NonNull Class<C> listItem, final @NonNull K listKey) {
