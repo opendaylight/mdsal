@@ -22,6 +22,30 @@
       },
       "revId": "b3e8f3b3b050087bc5cd619058616128ee1809b2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a55a74da_548bb7c0",
+        "filename": "features/features-mdsal-experimental/pom.xml",
+        "patchSetId": 16
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-10-22T11:56:49Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "de9ad616_7273a2fa",
+      "range": {
+        "startLine": 14,
+        "startChar": 20,
+        "endLine": 14,
+        "endChar": 39
+      },
+      "revId": "b3e8f3b3b050087bc5cd619058616128ee1809b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
