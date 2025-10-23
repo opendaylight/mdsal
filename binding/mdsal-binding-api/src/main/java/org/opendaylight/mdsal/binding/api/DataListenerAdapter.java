@@ -22,7 +22,7 @@ final class DataListenerAdapter<T extends DataObject> extends ForwardingObject i
 
     @Override
     public void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
-        delegate.dataChangedTo(changes.get(changes.size() - 1).getRootNode().dataAfter());
+        delegate.dataChangedTo(changes.getLast().getRootNode().dataAfter());
     }
 
     @Override
