@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ForwardingObject;
 import java.util.List;
+import org.opendaylight.mdsal.binding.api.DataObjectModification.WithDataAfter;
 import org.opendaylight.yangtools.binding.DataObject;
 
 final class DataListenerAdapter<T extends DataObject> extends ForwardingObject implements DataTreeChangeListener<T> {
@@ -22,7 +23,10 @@ final class DataListenerAdapter<T extends DataObject> extends ForwardingObject i
 
     @Override
     public void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
-        delegate.dataChangedTo(changes.getLast().getRootNode().dataAfter());
+        delegate.dataChangedTo(switch(changes.getLast().getRootNode()) {
+            case DataObjectDeleted<T> deleted -> null;
+            case WithDataAfter<T> present -> present.dataAfter();
+        });
     }
 
     @Override
