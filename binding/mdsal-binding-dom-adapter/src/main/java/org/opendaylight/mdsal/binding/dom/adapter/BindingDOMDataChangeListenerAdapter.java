@@ -37,7 +37,7 @@ final class BindingDOMDataChangeListenerAdapter<T extends DataObject> implements
         final var codec = serializer.getSubtreeCodec(serializer.coerceInstanceIdentifier(first.getRootPath()));
 
         listener.dataChanged(deserialize(codec, first.getRootNode().dataBefore()),
-            deserialize(codec, changes.get(changes.size() - 1).getRootNode().dataAfter()));
+            deserialize(codec, changes.getLast().getRootNode().dataAfter()));
     }
 
     @Override
