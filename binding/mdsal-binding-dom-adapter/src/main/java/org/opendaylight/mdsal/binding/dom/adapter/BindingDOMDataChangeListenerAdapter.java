@@ -32,12 +32,12 @@ final class BindingDOMDataChangeListenerAdapter<T extends DataObject> implements
 
     @Override
     public void onDataTreeChanged(final List<DataTreeCandidate> changes) {
-        final var first = changes.get(0);
+        final var first = changes.getFirst();
         final var serializer = adapterContext.currentSerializer();
         final var codec = serializer.getSubtreeCodec(serializer.coerceInstanceIdentifier(first.getRootPath()));
 
         listener.dataChanged(deserialize(codec, first.getRootNode().dataBefore()),
-            deserialize(codec, changes.get(changes.size() - 1).getRootNode().dataAfter()));
+            deserialize(codec, changes.getLast().getRootNode().dataAfter()));
     }
 
     @Override

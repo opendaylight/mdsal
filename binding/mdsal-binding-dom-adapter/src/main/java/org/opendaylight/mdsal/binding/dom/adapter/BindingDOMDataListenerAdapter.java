@@ -32,7 +32,7 @@ final class BindingDOMDataListenerAdapter<T extends DataObject> implements DOMDa
 
     @Override
     public void onDataTreeChanged(final List<DataTreeCandidate> changes) {
-        final var last = changes.get(changes.size() - 1);
+        final var last = changes.getLast();
         final var after = last.getRootNode().dataAfter();
         listener.dataChangedTo(after == null ? null : deserialize(last.getRootPath(), after));
     }
