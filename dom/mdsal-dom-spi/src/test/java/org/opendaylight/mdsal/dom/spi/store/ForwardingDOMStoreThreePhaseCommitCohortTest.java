@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -36,19 +37,19 @@ class ForwardingDOMStoreThreePhaseCommitCohortTest {
     @Test
     void basicTest() {
         doReturn(null).when(delegate).canCommit();
-        cohort.canCommit();
+        assertNotNull(cohort.canCommit());
         verify(delegate).canCommit();
 
         doReturn(null).when(delegate).preCommit();
-        cohort.preCommit();
+        assertNotNull(cohort.preCommit());
         verify(delegate).preCommit();
 
         doReturn(null).when(delegate).commit();
-        cohort.commit();
+        assertNotNull(cohort.commit());
         verify(delegate).commit();
 
         doReturn(null).when(delegate).abort();
-        cohort.abort();
+        assertNotNull(cohort.abort());
         verify(delegate).abort();
     }
 }

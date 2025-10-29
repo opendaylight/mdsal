@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ class ForwardingDOMDataWriteTransactionTest {
         verify(delegate).delete(null, null);
 
         doReturn(null).when(delegate).commit();
-        tx.commit();
+        assertNotNull(tx.commit());
         verify(delegate).commit();
 
         doReturn(false).when(delegate).cancel();

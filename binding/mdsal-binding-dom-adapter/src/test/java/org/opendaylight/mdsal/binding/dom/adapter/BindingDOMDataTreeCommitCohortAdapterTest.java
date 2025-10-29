@@ -72,7 +72,7 @@ class BindingDOMDataTreeCommitCohortAdapterTest {
         final var txId = new Object();
 
         doReturn(PostCanCommitStep.NOOP_SUCCESSFUL_FUTURE).when(cohort).canCommit(any(), any());
-        adapter.canCommit(txId, null, List.of(domDataTreeCandidate, domDataTreeCandidate));
+        assertNotNull(adapter.canCommit(txId, null, List.of(domDataTreeCandidate, domDataTreeCandidate)));
         final var modifications = ArgumentCaptor.forClass(Collection.class);
         verify(cohort).canCommit(eq(txId), modifications.capture());
         assertEquals(2, modifications.getValue().size());
