@@ -23,10 +23,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.ModuleBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.module.SubmoduleBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -40,7 +40,7 @@ final class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy 
 
     LegacyContentBuilder(final YangLibraryContentBuilderImpl delegate, final BindingCodecTree codecTree) {
         this.delegate = requireNonNull(delegate);
-        legacyCodec = codecTree.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
+        legacyCodec = codecTree.getDataObjectCodec(DataObjectIdentifier.builder(ModulesState.class).build());
     }
 
     @Override
