@@ -55,7 +55,7 @@ class InMemoryDOMStoreThreePhaseCommitCohortTest {
     @Test
     void canCommitTest() throws Exception {
         doNothing().when(dataStore).validate(any());
-        prepareSimpleCohort().canCommit();
+        assertNotNull(prepareSimpleCohort().canCommit());
         verify(dataStore).validate(any());
     }
 
@@ -132,10 +132,10 @@ class InMemoryDOMStoreThreePhaseCommitCohortTest {
         doReturn(candidate).when(dataStore).prepare(any());
 
         final var cohort = prepareSimpleCohort();
-        cohort.preCommit();
+        assertNotNull(cohort.preCommit());
         assertNotNull(cohort.candidate);
 
-        cohort.abort();
+        assertNotNull(cohort.abort());
         assertNull(cohort.candidate);
     }
 
@@ -145,8 +145,8 @@ class InMemoryDOMStoreThreePhaseCommitCohortTest {
         doReturn(candidate).when(dataStore).prepare(any());
 
         final var cohort = prepareSimpleCohort();
-        cohort.preCommit();
-        cohort.commit();
+        assertNotNull(cohort.preCommit());
+        assertNotNull(cohort.commit());
         verify(dataStore).commit(any());
     }
 

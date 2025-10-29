@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -38,11 +39,11 @@ class ForwardingDOMDataReadOnlyTransactionTest {
     @Test
     void basicTest() {
         doReturn(null).when(delegate).read(null, null);
-        tx.read(null, null);
+        assertNotNull(tx.read(null, null));
         verify(delegate).read(null, null);
 
         doReturn(null).when(delegate).exists(null, null);
-        tx.exists(null, null);
+        assertNotNull(tx.exists(null, null));
         verify(delegate).exists(null, null);
 
         doReturn(null).when(delegate).getIdentifier();
