@@ -268,7 +268,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         boolean testValue(final @Nullable Object data) {
-            return data instanceof CharSequence && pattern.matcher((CharSequence) data).matches();
+            return data instanceof CharSequence cs && pattern.matcher(cs).matches();
         }
     }
 
@@ -403,7 +403,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         public final boolean test(final @Nullable NormalizedNode data) {
-            return data instanceof LeafNode ? testValue(((LeafNode<?>) data).body()) : testValue(null);
+            return data instanceof LeafNode<?> leaf ? testValue(leaf.body()) : testValue(null);
         }
 
         abstract boolean testValue(@Nullable Object data);
