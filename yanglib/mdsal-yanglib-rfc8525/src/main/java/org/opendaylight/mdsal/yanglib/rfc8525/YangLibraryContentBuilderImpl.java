@@ -28,10 +28,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.ModuleSetBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.ModuleSetKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -48,7 +48,7 @@ final class YangLibraryContentBuilderImpl implements YangLibraryContentBuilder {
 
     YangLibraryContentBuilderImpl(final BindingCodecTree codecTree) {
         this.codecTree = Objects.requireNonNull(codecTree);
-        codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));
+        codec = codecTree.getDataObjectCodec(DataObjectIdentifier.builder(YangLibrary.class).build());
     }
 
     @Override
