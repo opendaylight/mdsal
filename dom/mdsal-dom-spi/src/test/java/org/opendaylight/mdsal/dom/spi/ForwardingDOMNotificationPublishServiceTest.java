@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -28,15 +29,15 @@ class ForwardingDOMNotificationPublishServiceTest extends ForwardingDOMNotificat
     @Test
     void basicTest() throws Exception {
         doReturn(null).when(domNotificationPublishService).putNotification(domNotification);
-        putNotification(domNotification);
+        assertNotNull(putNotification(domNotification));
         verify(domNotificationPublishService).putNotification(domNotification);
 
         doReturn(null).when(domNotificationPublishService).offerNotification(domNotification);
-        this.offerNotification(domNotification);
+        assertNotNull(offerNotification(domNotification));
         verify(domNotificationPublishService).offerNotification(domNotification);
 
         doReturn(null).when(domNotificationPublishService).offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
-        this.offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
+        assertNotNull(offerNotification(domNotification, 1, TimeUnit.MILLISECONDS));
         verify(domNotificationPublishService).offerNotification(domNotification, 1, TimeUnit.MILLISECONDS);
     }
 
