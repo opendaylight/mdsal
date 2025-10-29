@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingIdentityCodec;
@@ -24,7 +25,6 @@ import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.yangtools.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.yangtools.binding.runtime.spi.ModuleInfoSnapshotBuilder;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.MountPointLabel;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.schema.MountPointContextFactory;
@@ -63,8 +63,8 @@ public final class YangLibrarySupport implements YangLibSupport {
             generator.generateTypeMapping(modelContext), snapshot)).tree();
 
         identityCodec = codecTree.getIdentityCodec();
-        codec = codecTree.getDataObjectCodec(InstanceIdentifier.create(YangLibrary.class));
-        legacyCodec = codecTree.getDataObjectCodec(InstanceIdentifier.create(ModulesState.class));
+        codec = codecTree.getDataObjectCodec(DataObjectIdentifier.builder(YangLibrary.class).build());
+        legacyCodec = codecTree.getDataObjectCodec(DataObjectIdentifier.builder(ModulesState.class).build());
     }
 
     @Override
