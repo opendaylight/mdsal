@@ -5,6 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+/**
+ * YANG Library API.
+ */
 module org.opendaylight.mdsal.yanglib.api {
     exports org.opendaylight.mdsal.yanglib.api;
 
@@ -15,4 +18,5 @@ module org.opendaylight.mdsal.yanglib.api {
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
+    requires static org.osgi.annotation.bundle;
 }
