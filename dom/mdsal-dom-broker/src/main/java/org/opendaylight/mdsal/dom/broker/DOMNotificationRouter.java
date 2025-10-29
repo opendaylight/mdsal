@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 @Designate(ocd = DOMNotificationRouter.Config.class)
 // Non-final for testing
 public class DOMNotificationRouter implements AutoCloseable {
-    @ObjectClassDefinition()
+    @ObjectClassDefinition
     public @interface Config {
         @AttributeDefinition(name = "notification-queue-depth")
         int queueDepth() default 65536;

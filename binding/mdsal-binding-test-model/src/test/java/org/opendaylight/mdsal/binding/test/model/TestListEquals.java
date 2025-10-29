@@ -385,7 +385,7 @@ public class TestListEquals {
         return new RootListByUserBuilder()
                 .setName("list1")
                 .setType("type1")
-                .setListByUserLeafListByUser((List.of(val1, val2)))
+                .setListByUserLeafListByUser(List.of(val1, val2))
                 .build();
     }
 
