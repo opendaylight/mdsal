@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.concepts.Mutable;
 
 /**
  * A combination of an {@link Action} class and its corresponding instantiation wildcard, expressed as
- * an {@link DataObjectReference}. This means that {@code list}s are treated exactly as @{code container}s are, e.g.
+ * an {@link DataObjectReference}. This means that {@code list}s are treated exactly as {@code container}s are, e.g.
  * without a key value specification.
  *
  * <p>This glue is required because action interfaces are generated at the place of their definition, most importantly
