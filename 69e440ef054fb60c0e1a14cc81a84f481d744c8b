@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b8c0a53_50c97be1",
+        "filename": "features/odl-mdsal-replicate-common/pom.xml",
+        "patchSetId": 18
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-30T09:13:04Z",
+      "side": 1,
+      "message": "yes https://git.opendaylight.org/gerrit/c/mdsal/+/118356/comment/e0639cb7_860c870a/",
+      "parentUuid": "25c3747d_a17e032b",
+      "revId": "69e440ef054fb60c0e1a14cc81a84f481d744c8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "33465dda_2c9f9f76",
@@ -31,6 +49,24 @@
       "writtenOn": "2025-10-30T08:44:46Z",
       "side": 1,
       "message": "Is this intentional?",
+      "revId": "69e440ef054fb60c0e1a14cc81a84f481d744c8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92baaae4_5c79fc8a",
+        "filename": "features/odl-mdsal-replicate-netty/pom.xml",
+        "patchSetId": 18
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9173
+      },
+      "writtenOn": "2025-10-30T09:13:04Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/c/mdsal/+/118356/comment/e0639cb7_860c870a/",
+      "parentUuid": "33465dda_2c9f9f76",
       "revId": "69e440ef054fb60c0e1a14cc81a84f481d744c8b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
