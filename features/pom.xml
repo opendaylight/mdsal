@@ -22,7 +22,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>feature-parent</module>
         <module>parent</module>
 
         <module>features-mdsal</module>
