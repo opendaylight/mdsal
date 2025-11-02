@@ -20,11 +20,6 @@
     <name>OpenDaylight :: MD-SAL :: EOS :: Binding</name>
     <description>Entity Ownership Service Binding support</description>
 
-    <properties>
-        <!-- FIXME: remove this once we can plug in a testing dependency -->
-        <sft.skip>true</sft.skip>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -49,6 +44,14 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>general-entity</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-eos-single</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
