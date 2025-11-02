@@ -437,7 +437,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         final boolean testValue(final @Nullable Object data) {
-            return data instanceof String && testString((String) data);
+            return data instanceof String str && testString(str);
         }
 
         abstract boolean testString(String str);
