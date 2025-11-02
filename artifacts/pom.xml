@@ -282,6 +282,13 @@
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-eos-single</artifactId>
+                <version>15.0.2-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
 
             <!-- SINGLETON -->
             <dependency>

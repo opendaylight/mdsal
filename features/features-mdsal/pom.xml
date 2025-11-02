@@ -121,6 +121,12 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-eos-simple</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
 
         <!-- Singleton -->
         <dependency>
