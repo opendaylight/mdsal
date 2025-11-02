@@ -133,7 +133,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
 
         @SuppressWarnings({ "checkstyle:hiddenField", "hiding" })
-        public boolean subtreesOverlap(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
+        boolean subtreesOverlap(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
             if (this.store != null && !this.store.equals(store)) {
                 return false;
             }
@@ -143,7 +143,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
 
         @SuppressWarnings({ "checkstyle:hiddenField", "hiding" })
-        public boolean eventIsOfInterest(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
+        boolean eventIsOfInterest(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
             if (this.store != null && !this.store.equals(store)) {
                 return false;
             }
