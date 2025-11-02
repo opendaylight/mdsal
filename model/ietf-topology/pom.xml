@@ -12,13 +12,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>15.0.2</version>
+        <version>15.0.3-SNAPSHOT</version>
         <relativePath>../../binding/binding-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>ietf-topology</artifactId>
-    <version>2013.10.21.27.2</version>
+    <version>2013.10.21.27.3-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>bundle</packaging>
