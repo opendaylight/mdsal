@@ -20,11 +20,6 @@
     <name>OpenDaylight :: MD-SAL :: Singleton :: DOM</name>
     <description>MD-SAL Cluster Singleton Service implementation</description>
 
-    <properties>
-        <!-- FIXME: remove this once we can plug in a testing dependency -->
-        <sft.skip>true</sft.skip>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -47,6 +42,14 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-singleton-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-eos-single</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

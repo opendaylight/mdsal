@@ -48,6 +48,7 @@
         <module>odl-mdsal-eos-binding</module>
         <module>odl-mdsal-eos-common</module>
         <module>odl-mdsal-eos-dom</module>
+        <module>odl-mdsal-eos-single</module>
 
         <!-- Singleton -->
         <module>odl-mdsal-singleton-common</module>
