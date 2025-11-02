@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>template-feature-parent</artifactId>
-        <version>15.0.2-SNAPSHOT</version>
+        <version>15.0.2</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 

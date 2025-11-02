@@ -12,12 +12,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>bnd-parent</artifactId>
-        <version>15.0.2-SNAPSHOT</version>
+        <version>15.0.2</version>
         <relativePath>../../bnd-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>mdsal-yanglib-rfc8525</artifactId>
-    <version>0.20.2-SNAPSHOT</version>
+    <version>0.20.2</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>RFC8525 YANG library implementation</description>
