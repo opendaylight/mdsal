@@ -186,7 +186,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     private synchronized void channelClosed(final ChannelFuture completedFuture, final ScheduledExecutorService group) {
         if (futureChannel != null && futureChannel.channel() == completedFuture.channel() && !closingInstance) {
             LOG.info("Channel {} lost connection to source {}, reconnecting in {}", completedFuture.channel(),
-                sourceAddress, reconnectDelay.getSeconds());
+                sourceAddress, reconnectDelay.toSeconds());
             group.schedule(this::reconnect, reconnectDelay.toNanos(), TimeUnit.NANOSECONDS);
         }
     }
