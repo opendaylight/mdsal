@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fce7b5c_1c19e181",
+        "filename": "features/odl-mdsal-binding-api/src/main/feature/template.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-11-02T10:50:36Z",
+      "side": 1,
+      "message": "this should be a separate patch",
+      "range": {
+        "startLine": 3,
+        "startChar": 5,
+        "endLine": 3,
+        "endChar": 31
+      },
+      "revId": "3d824e970b35735bc43ca5497d413c368b06183f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22edd022_1d4cc57a",
+        "filename": "features/odl-mdsal-binding/src/main/feature/template.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2025-11-02T10:50:36Z",
+      "side": 1,
+      "message": "all these should be semVerRange",
+      "range": {
+        "startLine": 13,
+        "startChar": 28,
+        "endLine": 13,
+        "endChar": 46
+      },
+      "revId": "3d824e970b35735bc43ca5497d413c368b06183f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
