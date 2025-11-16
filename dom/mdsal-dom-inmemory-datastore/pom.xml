@@ -12,13 +12,15 @@
    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>bundle-parent</artifactId>
+        <artifactId>bnd-parent</artifactId>
         <version>15.0.3-SNAPSHOT</version>
-        <relativePath>../../bundle-parent/pom.xml</relativePath>
+        <relativePath>../../bnd-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>In-memory DOMStore implementation</description>
 
     <properties>
         <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
@@ -26,6 +28,14 @@
     </properties>
 
     <dependencies>
+
+        <!-- FIXME: remove this -->
+        <dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>javax.inject</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -100,6 +110,19 @@
             <artifactId>yang-test-util</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <ignoredNonTestScopedDependencies>
+                        <ignoredNonTestScopedDependency>org.opendaylight.yangtools:yang-data-spi</ignoredNonTestScopedDependency>
+                    </ignoredNonTestScopedDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
