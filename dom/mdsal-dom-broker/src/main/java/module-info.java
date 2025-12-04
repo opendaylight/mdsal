@@ -19,10 +19,15 @@ module org.opendaylight.mdsal.dom.broker {
     requires com.google.common;
     requires org.slf4j;
 
+    // Optional Dagger dependencies
+    requires static org.opendaylight.odlparent.dagger;
+
     // Annotations
     requires static transitive java.annotation;
-    requires static transitive javax.inject;
     requires static com.github.spotbugs.annotations;
+    requires static dagger;
+    requires static jakarta.inject;
+    requires static javax.inject;
     requires static org.checkerframework.checker.qual;
     requires static org.eclipse.jdt.annotation;
     requires static org.kohsuke.metainf_services;
