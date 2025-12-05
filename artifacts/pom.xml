@@ -19,7 +19,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-artifacts</artifactId>
-    <version>14.0.20-SNAPSHOT</version>
+    <version>14.0.20</version>
     <packaging>pom</packaging>
 
     <dependencyManagement>
@@ -28,14 +28,14 @@
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>features-mdsal</artifactId>
                 <classifier>features</classifier>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>features-mdsal-experimental</artifactId>
                 <classifier>features</classifier>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <type>xml</type>
             </dependency>
 
@@ -43,38 +43,38 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-common-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-spi</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-broker</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-schema-osgi</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-inmemory-datastore-benchmark</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <scope>test</scope>
             </dependency>
 
@@ -82,105 +82,105 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-model</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-spi</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-util</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-utils</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>yang-ext</artifactId>
-                <version>2013.09.07.26.20-SNAPSHOT</version>
+                <version>2013.09.07.26.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>general-entity</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-simple</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-binding-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-binding-adapter</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-impl</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-cli</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-impl</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- Features -->
@@ -188,35 +188,35 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-base</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-runtime</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-dom-adapter</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -225,28 +225,28 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-api</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-broker</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-runtime</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -255,7 +255,7 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -264,28 +264,28 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-dom</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-binding</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-single</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -294,14 +294,14 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-singleton-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-singleton-dom</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -310,7 +310,7 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-trace</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -319,24 +319,24 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-yanglib-api</artifactId>
-                <version>0.19.20-SNAPSHOT</version>
+                <version>0.19.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-yanglib-rfc8525</artifactId>
-                <version>0.19.20-SNAPSHOT</version>
+                <version>0.19.20</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-exp-yanglib-api</artifactId>
-                <version>0.19.20-SNAPSHOT</version>
+                <version>0.19.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-exp-yanglib-rfc8525</artifactId>
-                <version>0.19.20-SNAPSHOT</version>
+                <version>0.19.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -345,31 +345,31 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-rfc8294-netty</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- Replication -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>mdsal-replicate-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>mdsal-replicate-netty</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-replicate-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-replicate-netty</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -378,964 +378,964 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>opendaylight-l2-types</artifactId>
-                <version>2013.08.27.26.20-SNAPSHOT</version>
+                <version>2013.08.27.26.20</version>
             </dependency>
 
             <!-- RFC6022 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6022</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC6241 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6241</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC6243 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6243</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC6470 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6470</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC6991 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6991-ietf-inet-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6991-ietf-yang-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-type-util</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC7224, updated from: http://www.iana.org/assignments/yang-parameters/ -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-if-type</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC7317 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-crypt-hash</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7317-ietf-system</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC7407 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7407-ietf-snmp</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7407-ietf-x509-cert-to-name</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC7952 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7952</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8040 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8040-ietf-restconf</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8040-ietf-restconf-monitoring</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8072 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8072</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8177 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8177</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8294 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-routing-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8294-ietf-routing-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8341 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8341</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8342 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8342-ietf-datastores</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8342-ietf-origin</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8343 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8343</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8344 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8344</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8345 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network-state</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network-topology</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network-topology-state</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8346 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8346-ietf-l3-unicast-topology</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8346-ietf-l3-unicast-topology-state</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8348 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8348-ietf-hardware</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8348-ietf-hardware-state</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-hardware</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8349 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-routing</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-ipv4-unicast-routing</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-ipv6-unicast-routing</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8519 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8519-ietf-access-control-list</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8519-ietf-ethertypes</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8519-ietf-packet-fields</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8520 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8520-ietf-acldns</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8520-ietf-mud</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8525 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8525</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8526 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8526</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8528 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8528</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8529 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8529</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8530 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8530</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8542 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8542-ietf-dc-fabric-topology</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8542-ietf-dc-fabric-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8572 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8572-ietf-sztp-bootstrap-server</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8572-ietf-sztp-conveyed-info</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8639 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8639</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8641 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8641</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8650 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8650</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8776 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8776-ietf-te-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8776-ietf-te-packet-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8795 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8795-ietf-te-topology</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8795-ietf-te-topology-state</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8808 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8808</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8819 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8819-ietf-module-tags</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8819-ietf-module-tags-state</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC8916 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8916</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9067 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9067</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9070 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9070-ietf-mpls-ldp</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9070-ietf-mpls-ldp-extended</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9144 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9144</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9179 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9179</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9196 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9196-ietf-notification-capabilities</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9196-ietf-system-capabilities</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9640 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9640</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9641 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9641</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9642 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9642</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9643 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9643-ietf-tcp-client</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9643-ietf-tcp-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9643-ietf-tcp-server</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9644 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-ssh-encryption-algs</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-ssh-key-exchange-algs</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-ssh-mac-algs</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-ssh-public-key-algs</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9644-ietf-ssh-client</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9644-ietf-ssh-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9644-ietf-ssh-server</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9645 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-tls-cipher-suite-algs</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9645-ietf-tls-client</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9645-ietf-tls-common</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9645-ietf-tls-server</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- RFC9648 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc9648</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
 
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology</artifactId>
-                <version>2013.10.21.26.20-SNAPSHOT</version>
+                <version>2013.10.21.26.20</version>
             </dependency>
 
             <!-- Features -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6022</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6241</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6243</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6470</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6991</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7224</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7317-iana-crypt-hash</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7317-ietf-system</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7407-ietf-snmp</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7407-ietf-x509-cert-to-name</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7952</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8040-ietf-restconf</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8040-ietf-restconf-monitoring</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8072</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8177</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8294</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8341</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8342</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8343</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8344</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8345</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8345-non-nmda</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8346</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8346-non-nmda</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8348</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8348-non-nmda</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8349</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8519</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8520</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8525</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8526</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8528</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8529</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8530</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8542</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8572-ietf-sztp-bootstrap-server</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8572-ietf-sztp-conveyed-info</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8639</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8641</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8650</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8776</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8795</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8795-non-nmda</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8808</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8819</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8819-non-nmda</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8916</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9067</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9070</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9144</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9179</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9196-ietf-notification-capabilities</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9196-ietf-system-capabilities</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9640</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9641</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9642</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9643</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9644</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9645</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc9648</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -1343,21 +1343,21 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>odl-mdsal-rfc8294-netty</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -1366,7 +1366,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-docs</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.20</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

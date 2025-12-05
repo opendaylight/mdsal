@@ -12,12 +12,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>bundle-parent</artifactId>
-        <version>14.0.20-SNAPSHOT</version>
+        <version>14.0.20</version>
         <relativePath>../../bundle-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>mdsal-yanglib-api</artifactId>
-    <version>0.19.20-SNAPSHOT</version>
+    <version>0.19.20</version>
     <packaging>bundle</packaging>
 
     <properties>
