@@ -71,4 +71,3 @@ abstract sealed class ServiceGroup implements Identifiable<ServiceGroupIdentifie
      */
     abstract ListenableFuture<?> closeClusterSingletonGroup();
 }
-

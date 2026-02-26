@@ -189,8 +189,8 @@ one instance in the entire Cluster.
 Applications packaged as OSGi modules can be viewed as services too. The
 OSGI container can be viewed as an application loader. Every OSGi
 application has its own lifecycle that should be adapted to use EOS. Only
-the application instance that has become the "leader" should be fully 
-loaded and initialized. Basically, we would like to encapsulate 
+the application instance that has become the "leader" should be fully
+loaded and initialized. Basically, we would like to encapsulate
 interactions with the EOS in a cluster-aware ODL application Loader.
 
 .Life cycle of plug-ins in OSGi
@@ -213,7 +213,7 @@ it inside the "ClusterSingletonServiceProvider" implementation. An application
 or a service only needs to implement the relevant interface and register
 itself to the ??? provider.
 
-A simplified sequence diagram (without the double-candidate) is displayed 
+A simplified sequence diagram (without the double-candidate) is displayed
 in the following figure:
 
 .Simply Cluster-wide app instantiation (without double candidate)

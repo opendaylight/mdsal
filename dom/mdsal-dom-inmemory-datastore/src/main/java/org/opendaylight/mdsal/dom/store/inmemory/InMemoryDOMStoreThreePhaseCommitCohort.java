@@ -121,4 +121,3 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
         return CommitInfo.emptyFluentFuture();
     }
 }
-
