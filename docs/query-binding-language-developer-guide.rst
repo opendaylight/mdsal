@@ -5,9 +5,9 @@ MD-SAL Binding Query Language Developer Guide
 
 .. note::
 
-	Reading this section is likely useful as it contains an overview
-	of MD-SAL Binding query language in OpenDaylight and a how-to use it for
-	retrieving data from data storage.
+    Reading this section is likely useful as it contains an overview
+    of MD-SAL Binding query language in OpenDaylight and a how-to use it for
+    retrieving data from data storage.
 
 Retrieving data from storage
 ----------------------------
@@ -21,7 +21,7 @@ The method **read** of ReadTransaction interface.
 
 ::
 
-	<T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store, InstanceIdentifier<T> path);
+    <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store, InstanceIdentifier<T> path);
 
 The method reads data from the provided logical data store located at the provided path.
 If the target is a subtree, then the whole subtree is read (and will be accessible from the returned DataObject).
@@ -44,7 +44,7 @@ So we are getting DataObject which we need to process in code for getting releva
 
 .. note::
 
-	The structure of the Foo container is `here`_.
+    The structure of the Foo container is `here`_.
 
 .. _here: https://github.com/opendaylight/mdsal/blob/master/binding/mdsal-binding-test-model/src/main/yang/mdsal-query.yang
 
@@ -55,7 +55,7 @@ The method **execute** of QueryReadTransaction interface.
 
 ::
 
-	<T extends DataObject> FluentFuture<QueryResult<T>> execute(LogicalDatastoreType store, QueryExpression<T> query);
+    <T extends DataObject> FluentFuture<QueryResult<T>> execute(LogicalDatastoreType store, QueryExpression<T> query);
 
 The method executes a query on the provided logical data store for getting relevant data.
 So we are getting result which we need for future business logic processing.

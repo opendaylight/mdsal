@@ -105,4 +105,3 @@ This expression will retrieve System node with name containing "One" from DOM tr
     List items = result.getItems();
 
 The result of this query expression will be a list of two items - Alarms with Id of ZERO.
-
