@@ -30,3 +30,14 @@ dependency-reduced-pom.xml
 # Sphinx documentation
 .tox/
 docs/_build/
+
+# Pre-commit hooks
+.pre-commit-config.yaml~
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node.js
+node_modules/
