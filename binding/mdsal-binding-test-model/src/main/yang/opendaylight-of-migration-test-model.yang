@@ -139,7 +139,7 @@ module opendaylight-of-migration-test-model {
         }
     }
 
-    augment "/test:top/test:top-level-list/test:nested-list/"  {
+    augment "/test:top/test:top-level-list/test:nested-list"  {
         ext:augment-identifier nested-list-simple-augment;
 
         leaf type {
