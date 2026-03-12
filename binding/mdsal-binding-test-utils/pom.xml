@@ -86,13 +86,20 @@
             <artifactId>junit</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <!-- We are building on top of abstract test classes -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
             <type>test-jar</type>
-            <!-- We are building on top of abstract test classes -->
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-test-util</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-broker</artifactId>

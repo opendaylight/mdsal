@@ -8,12 +8,14 @@
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
 import com.google.common.annotations.Beta;
+import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.IetfYangLibraryData;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
@@ -54,9 +56,12 @@ public final class YangLibrarySupport implements YangLibSupport {
     public YangLibrarySupport(@Reference final YangParserFactory parserFactory,
             @Reference final BindingRuntimeGenerator generator, @Reference final BindingDataCodecFactory codecFactory)
                 throws YangParserException {
-        final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder(parserFactory)
-                .add(YangLibrary.class)
-                .build();
+        final ModuleInfoSnapshot snapshot;
+        try {
+            snapshot = new ModuleInfoSnapshotBuilder(parserFactory).add(IetfYangLibraryData.META).build();
+        } catch (IOException e) {
+            throw new YangParserException("Failed to parse packaged ietf-yang-library", e);
+        }
         modelContext = snapshot.modelContext();
 
         codecTree = codecFactory.newBindingDataCodec(new DefaultBindingRuntimeContext(
