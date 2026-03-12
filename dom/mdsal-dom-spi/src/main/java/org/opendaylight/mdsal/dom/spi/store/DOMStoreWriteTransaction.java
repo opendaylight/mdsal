@@ -7,47 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.mdsal.dom.api.DOMStore.WriteOperations;
 
-public interface DOMStoreWriteTransaction extends DOMStoreTransaction {
-    /**
-     * Store a provided data at specified path. This acts as a add / replace operation, which is to
-     * say that whole subtree will be replaced by specified path.
-     *
-     * <p>If you need add or merge of current object with specified use
-     * {@link #merge(YangInstanceIdentifier, NormalizedNode)}
-     *
-     * @param path YangInstanceIdentifier object to be written
-     * @param data Data object to be written
-     * @throws IllegalStateException if the client code already sealed transaction and invoked
-     *         {@link #ready()}
-     */
-    void write(YangInstanceIdentifier path, NormalizedNode data);
-
-    /**
-     * Store a provided data at specified path. This acts as a add / replace operation, which is to
-     * say that whole subtree will be replaced by specified path.
-     *
-     * <p>If you need add or merge of current object with specified use
-     * {@link #merge(YangInstanceIdentifier, NormalizedNode)}
-     *
-     * @param path YangInstanceIdentifier object to be merged
-     * @param data Data object to be written
-     * @throws IllegalStateException if the client code already sealed transaction and invoked
-     *         {@link #ready()}
-     */
-    void merge(YangInstanceIdentifier path, NormalizedNode data);
-
-    /**
-     * Deletes data and whole subtree located at provided path.
-     *
-     * @param path Path to delete
-     * @throws IllegalStateException if the client code already sealed transaction and invoked
-     *                               {@link #ready()}
-     */
-    void delete(YangInstanceIdentifier path);
-
+public interface DOMStoreWriteTransaction extends DOMStoreTransaction, WriteOperations {
     /**
      * Seals transaction, and returns three-phase commit cohort associated with this transaction and DOM Store to be
      * coordinated by coordinator.
