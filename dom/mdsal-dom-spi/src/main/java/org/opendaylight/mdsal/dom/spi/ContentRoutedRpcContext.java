@@ -38,7 +38,7 @@ public record ContentRoutedRpcContext(@NonNull QName identity, @NonNull QName le
      * @return A {@link ContentRoutedRpcContext}, or {@code null} if the RPC does not contain context information
      */
     public static @Nullable ContentRoutedRpcContext forRpc(final RpcEffectiveStatement rpc) {
-        for (var stmt : rpc.input().effectiveSubstatements()) {
+        for (var stmt : rpc.inputStatement().effectiveSubstatements()) {
             // TODO: LeafEffectiveStatement instead? Because that is what we are promising for #leaf()'s QName
             if (stmt instanceof SchemaTreeEffectiveStatement<?> schemaStmt) {
                 final var context =

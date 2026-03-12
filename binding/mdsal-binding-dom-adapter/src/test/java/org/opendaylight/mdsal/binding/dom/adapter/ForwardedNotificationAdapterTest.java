@@ -21,18 +21,18 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractNotificationBrokerTest;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChanged;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChangedBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
-import org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.YangModuleInfoImpl;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 
 public class ForwardedNotificationAdapterTest extends AbstractNotificationBrokerTest {
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
-        return Set.of(YangModuleInfoImpl.getInstance());
+        return Set.of(OpendaylightMdsalBindingTestData.META.moduleInfo());
     }
 
     @Test
