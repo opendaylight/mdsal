@@ -14,14 +14,14 @@ import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFac
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.dagger.yang.parser.DaggerDefaultYangParserComponent;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 abstract class AbstractYangLibraryTest {
     private static final BindingRuntimeGenerator BINDING_RUNTIME_GENERATOR =
         ServiceLoader.load(BindingRuntimeGenerator.class).findFirst().orElseThrow();
-    private static final YangParserFactory YANG_PARSER_FACTORY = ServiceLoader.load(YangParserFactory.class).findFirst()
-        .orElseThrow();
+    private static final YangParserFactory YANG_PARSER_FACTORY =
+        DaggerDefaultYangParserComponent.create().parserFactory();
     private static final BindingDataCodecFactory CODEC_FACTORY = ServiceLoader.load(BindingDataCodecFactory.class)
         .findFirst().orElseThrow();
 
@@ -31,7 +31,7 @@ abstract class AbstractYangLibraryTest {
     YangLibrarySupport yangLib;
 
     @BeforeEach
-    public void before() throws YangParserException {
+    public void before() throws Exception {
         yangLib = new YangLibrarySupport(YANG_PARSER_FACTORY, BINDING_RUNTIME_GENERATOR, CODEC_FACTORY);
     }
 }
