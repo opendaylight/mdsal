@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bc625bf_008fc298",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMStore.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-03-12T20:38:56Z",
+      "side": 1,
+      "message": "we should be leaving the confinement bits out for now, as it only serves as a distraction",
+      "range": {
+        "startLine": 319,
+        "startChar": 48,
+        "endLine": 319,
+        "endChar": 92
+      },
+      "revId": "4a24fa4d6d57e7a741868edac8777f30fa701cf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
