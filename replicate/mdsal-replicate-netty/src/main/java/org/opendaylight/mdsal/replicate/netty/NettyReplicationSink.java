@@ -7,15 +7,17 @@
  */
 package org.opendaylight.mdsal.replicate.netty;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -50,6 +52,12 @@ public final class NettyReplicationSink {
 
         @AttributeDefinition(name = "max-missed-keepalives")
         int maxMissedKeepalives() default 5;
+
+        @AttributeDefinition(name = "replicate-configuration")
+        boolean replicateConfiguration() default true;
+
+        @AttributeDefinition(name = "replicate-operational")
+        boolean replicateOperational() default false;
     }
 
     private Registration reg;
@@ -57,28 +65,57 @@ public final class NettyReplicationSink {
     @Activate
     public NettyReplicationSink(@Reference final BootstrapSupport bootstrapSupport,
             @Reference final DOMDataBroker dataBroker,
-            @Reference final ClusterSingletonServiceProvider singletonService, final Config config)
+            @Reference final ClusterSingletonServiceProvider singletonService,
+                                final Config config)
                 throws UnknownHostException {
-        reg = createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(),
-            InetAddress.getByName(config.sourceHost()),
-            config.sourcePort(), Duration.ofMillis(config.reconnectDelayMillis()),
-            Duration.ofSeconds(config.keepAliveIntervalSeconds()), config.maxMissedKeepalives());
+
+        reg = new NoOpRegistration();
+
+        if (config.enabled()) {
+            //do not process the rest of the config unless replication is enabled.
+            List<DOMDataTreeIdentifier> trees = addTrees(config);
+
+            if (!trees.isEmpty()) {
+                //config is validating upon creation
+                NettyReplicationConfig nettyReplicationConfig = new NettyReplicationConfig(
+                        bootstrapSupport,
+                        dataBroker,
+                        new InetSocketAddress(config.sourceHost(), config.sourcePort()),
+                        Duration.ofMillis(config.reconnectDelayMillis()),
+                        Duration.ofSeconds(config.keepAliveIntervalSeconds()),
+                        config.maxMissedKeepalives(),
+                        trees);
+
+                reg = createSinkReg(singletonService, nettyReplicationConfig);
+            }
+        }
+    }
+
+    private static List<DOMDataTreeIdentifier> addTrees(Config config) {
+        List<DOMDataTreeIdentifier> trees = new ArrayList<>();
+        if (config.replicateConfiguration()) {
+            final DOMDataTreeIdentifier confTree = DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION,
+                    YangInstanceIdentifier.of());
+            LOG.info("Replicating CONFIGURATION store");
+            trees.add(confTree);
+        }
+        if (config.replicateOperational()) {
+            final DOMDataTreeIdentifier opTree = DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL,
+                    YangInstanceIdentifier.of());
+            LOG.info("Replicating OPERATIONAL store");
+            trees.add(opTree);
+        }
+        return trees;
+    }
+
+    static Registration createSinkReg(final ClusterSingletonServiceProvider singletonService,
+                                      final NettyReplicationConfig config) {
+        return singletonService.registerClusterSingletonService(new SinkSingletonService(config));
     }
 
     @Deactivate
     void deactivate() {
         reg.close();
         reg = null;
-    }
-
-    static Registration createSink(final BootstrapSupport bootstrap, final DOMDataBroker broker,
-            final ClusterSingletonServiceProvider singleton, final boolean enabled,
-            final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay,
-            final Duration keepaliveInterval, final int maxMissedKeepalives) {
-        LOG.debug("Sink {}", enabled ? "enabled" : "disabled");
-        checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
-        return enabled ? singleton.registerClusterSingletonService(new SinkSingletonService(bootstrap,
-                broker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay, keepaliveInterval,
-                maxMissedKeepalives)) : new NoOpRegistration();
     }
 }
