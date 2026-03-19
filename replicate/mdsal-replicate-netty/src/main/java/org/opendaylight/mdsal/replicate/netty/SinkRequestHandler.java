@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
 final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger LOG = LoggerFactory.getLogger(SinkRequestHandler.class);
     private static final ContainerNode EMPTY_ROOT = ImmutableNodes.newContainerBuilder()
-        .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME))
-        .build();
+            .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME))
+            .build();
 
     private final ReusableStreamReceiver receiver = ReusableImmutableNormalizedNodeStreamWriter.create();
     private final List<ByteBuf> chunks = new ArrayList<>();
@@ -76,6 +76,24 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
     }
 
+    @Override
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        releaseChunks();
+        super.channelInactive(ctx);
+    }
+
+    @Override
+    public void handlerRemoved(final ChannelHandlerContext ctx) throws Exception {
+        releaseChunks();
+        super.handlerRemoved(ctx);
+    }
+
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        releaseChunks();
+        super.exceptionCaught(ctx, cause);
+    }
+
     private void handleEmptyData() {
         final var tx = chain.newWriteOnlyTransaction();
 
@@ -96,12 +114,25 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         final DataTreeCandidate candidate;
         try (ByteBufInputStream stream = new ByteBufInputStream(bufs)) {
             candidate = DataTreeCandidateInputOutput.readDataTreeCandidate(NormalizedNodeDataInput.newDataInput(stream),
-                receiver);
+                    receiver);
+        } finally {
+            bufs.release();
         }
 
         final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
         DataTreeCandidateUtils.applyToTransaction(tx, tree.datastore(), candidate);
         commit(tx);
+    }
+
+    private void releaseChunks() {
+        if (chunks.isEmpty()) {
+            return;
+        }
+
+        for (ByteBuf chunk : chunks) {
+            chunk.release();
+        }
+        chunks.clear();
     }
 
     private static void commit(final DOMDataTreeWriteTransaction tx) {
