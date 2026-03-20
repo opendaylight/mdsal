@@ -33,17 +33,17 @@ public final class NettyReplicationSource {
 
     @ObjectClassDefinition
     public @interface Config {
-        @AttributeDefinition(name = "enabled")
+        @AttributeDefinition
         boolean enabled() default false;
 
-        @AttributeDefinition(name = "listen-port")
-        int listenPort() default 9999;
+        @AttributeDefinition
+        int listen$_$port() default 9999;
 
-        @AttributeDefinition(name = "keepalive-interval-seconds")
-        int keepAliveIntervalSeconds() default 10;
+        @AttributeDefinition
+        int keepalive$_$interval$_$seconds() default 10;
 
-        @AttributeDefinition(name = "max-missed-keepalives")
-        int maxMissedKeepalives() default 5;
+        @AttributeDefinition
+        int max$_$missed$_$keepalives() default 5;
     }
 
     private Registration reg;
@@ -52,8 +52,8 @@ public final class NettyReplicationSource {
     public NettyReplicationSource(@Reference final BootstrapSupport bootstrapSupport,
             @Reference final DOMDataBroker dataBroker,
             @Reference final ClusterSingletonServiceProvider singletonService, final Config config) {
-        reg = createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listenPort(),
-            Duration.ofSeconds(config.keepAliveIntervalSeconds()), config.maxMissedKeepalives());
+        reg = createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listen$_$port(),
+            Duration.ofSeconds(config.keepalive$_$interval$_$seconds()), config.max$_$missed$_$keepalives());
     }
 
     @Deactivate
