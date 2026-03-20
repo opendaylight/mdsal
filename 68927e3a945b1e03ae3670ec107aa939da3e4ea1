@@ -41,6 +41,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3dfa2c5b_9cfd58cb",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-03-20T09:54:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ff501c9b_497cc4ca",
+      "range": {
+        "startLine": 60,
+        "startChar": 12,
+        "endLine": 60,
+        "endChar": 41
+      },
+      "revId": "68927e3a945b1e03ae3670ec107aa939da3e4ea1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "691f8f6c_aebaecdf",
@@ -88,6 +112,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b633b95_ca82c512",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-03-20T09:54:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "621a899c_5119c615",
+      "range": {
+        "startLine": 61,
+        "startChar": 8,
+        "endLine": 65,
+        "endChar": 32
+      },
+      "revId": "68927e3a945b1e03ae3670ec107aa939da3e4ea1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "89f550d7_56087fc8",
@@ -125,6 +173,30 @@
       "side": 1,
       "message": "I hear you. I think the pattern where you put long arguments on their own line is much more readable. But I\u0027ll fix it.",
       "parentUuid": "89f550d7_56087fc8",
+      "range": {
+        "startLine": 42,
+        "startChar": 12,
+        "endLine": 42,
+        "endChar": 53
+      },
+      "revId": "68927e3a945b1e03ae3670ec107aa939da3e4ea1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5363fc19_734159f3",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/TreeReplica.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-03-20T09:54:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8867293d_da6974fc",
       "range": {
         "startLine": 42,
         "startChar": 12,
