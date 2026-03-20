@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89f550d7_56087fc8",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/TreeReplica.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-03-20T07:13:09Z",
+      "side": 1,
+      "message": "single line, here and throughout the file: our character limit is 120 per line, there is no point in wasting space",
+      "range": {
+        "startLine": 42,
+        "startChar": 12,
+        "endLine": 42,
+        "endChar": 53
+      },
+      "revId": "68927e3a945b1e03ae3670ec107aa939da3e4ea1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
