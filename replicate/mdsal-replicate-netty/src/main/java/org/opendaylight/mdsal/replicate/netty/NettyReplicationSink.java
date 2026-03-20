@@ -33,23 +33,23 @@ public final class NettyReplicationSink {
 
     @ObjectClassDefinition
     public @interface Config {
-        @AttributeDefinition(name = "enabled")
+        @AttributeDefinition
         boolean enabled() default false;
 
-        @AttributeDefinition(name = "source-host")
-        String sourceHost() default "127.0.0.1";
+        @AttributeDefinition
+        String source$_$host() default "127.0.0.1";
 
-        @AttributeDefinition(name = "source-port")
-        int sourcePort() default 9999;
+        @AttributeDefinition
+        int source$_$port() default 9999;
 
-        @AttributeDefinition(name = "reconnect-delay-millis")
-        int reconnectDelayMillis() default 3000;
+        @AttributeDefinition
+        int reconnect$_$delay$_$millis() default 3000;
 
-        @AttributeDefinition(name = "keepalive-interval-seconds")
-        int keepAliveIntervalSeconds() default 10;
+        @AttributeDefinition
+        int keepalive$_$interval$_$seconds() default 10;
 
-        @AttributeDefinition(name = "max-missed-keepalives")
-        int maxMissedKeepalives() default 5;
+        @AttributeDefinition
+        int max$_$missed$_$keepalives() default 5;
     }
 
     private Registration reg;
@@ -60,9 +60,9 @@ public final class NettyReplicationSink {
             @Reference final ClusterSingletonServiceProvider singletonService, final Config config)
                 throws UnknownHostException {
         reg = createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(),
-            InetAddress.getByName(config.sourceHost()),
-            config.sourcePort(), Duration.ofMillis(config.reconnectDelayMillis()),
-            Duration.ofSeconds(config.keepAliveIntervalSeconds()), config.maxMissedKeepalives());
+            InetAddress.getByName(config.source$_$host()),
+            config.source$_$port(), Duration.ofMillis(config.reconnect$_$delay$_$millis()),
+            Duration.ofSeconds(config.keepalive$_$interval$_$seconds()), config.max$_$missed$_$keepalives());
     }
 
     @Deactivate
