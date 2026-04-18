@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc7b4b5a_2495d959",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 23
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-04-18T09:12:36Z",
+      "side": 1,
+      "message": "We should also consider whether BitsTypeObjects are yang.common.CanonicalValues:\n- we know the bit names and positions\n- hence getDefaultInstance() seems like CanonicalValueSupport.fromString()\n- and then we can differentiate between BTO.toString() and BTO.toCanonicalString()",
+      "revId": "1b241adec26f10e799d936e45b4521d8e9a4fe0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
