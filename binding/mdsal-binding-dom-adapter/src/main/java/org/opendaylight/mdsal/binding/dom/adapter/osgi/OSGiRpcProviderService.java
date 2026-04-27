@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
-import com.google.common.collect.ClassToInstanceMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -53,19 +52,6 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
 
     @Override
     public Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
-            final Set<DataObjectIdentifier<?>> paths) {
-        return delegate.registerRpcImplementations(implementations, paths);
-    }
-
-    @Override
-    @Deprecated(since = "13.0.1")
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
-        return delegate.registerRpcImplementations(implementations);
-    }
-
-    @Override
-    @Deprecated(since = "13.0.1")
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
             final Set<DataObjectIdentifier<?>> paths) {
         return delegate.registerRpcImplementations(implementations, paths);
     }

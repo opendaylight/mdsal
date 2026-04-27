@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
@@ -59,19 +58,6 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             final Set<DataObjectIdentifier<?>> paths) {
         final var serializer = currentSerializer();
         return register(serializer, implementations, toYangInstanceIdentifiers(serializer, paths));
-    }
-
-    @Override
-    @Deprecated(since = "13.0.1")
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations) {
-        return registerRpcImplementations(implementations.values());
-    }
-
-    @Override
-    @Deprecated(since = "13.0.1")
-    public Registration registerRpcImplementations(final ClassToInstanceMap<Rpc<?, ?>> implementations,
-            final Set<DataObjectIdentifier<?>> paths) {
-        return registerRpcImplementations(implementations.values(), paths);
     }
 
     private <T extends Rpc<?, ?>> @NonNull Registration register(final CurrentAdapterSerializer serializer,

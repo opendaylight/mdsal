@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -63,14 +61,10 @@ public interface RpcProviderService extends BindingService {
      * @throws IllegalArgumentException if there are implementations contains {@link Rpc#implementedInterface()}
      *                                  duplicates
      */
-    default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations) {
-        return registerRpcImplementations(indexImplementations(implementations));
-    }
+    @NonNull Registration registerRpcImplementations(Collection<Rpc<?, ?>> implementations);
 
     /**
-     * Register a set of {@link Rpc} implementations on a set of datastore context paths. Note that this method does not
-     * support registering multiple implementations of the same {@link Rpc} and hence we require specifying them through
-     * a {@link ClassToInstanceMap}.
+     * Register a set of {@link Rpc} implementations on a set of datastore context paths.
      *
      * @param implementations implementation objects
      * @return A {@link Registration} controlling unregistration
@@ -78,46 +72,6 @@ public interface RpcProviderService extends BindingService {
      * @throws IllegalArgumentException if there are implementations contains {@link Rpc#implementedInterface()}
      *                                  duplicates
      */
-    default @NonNull Registration registerRpcImplementations(final Collection<Rpc<?, ?>> implementations,
-            final Set<DataObjectIdentifier<?>> paths) {
-        return registerRpcImplementations(indexImplementations(implementations), paths);
-    }
-
-    /**
-     * Register a set of {@link Rpc} implementations. Note that this method does not support registering multiple
-     * implementations of the same {@link Rpc} and hence we require specifying them through a
-     * {@link ClassToInstanceMap}.
-     *
-     * @param implementations implementation objects
-     * @return A {@link Registration} controlling unregistration
-     * @throws NullPointerException if {@code implementations} is {@code null}
-     * @deprecated Use {@link #registerRpcImplementations(Collection)} or {@link #registerRpcImplementations(Rpc...)}
-     *             instead.
-     */
-    @Deprecated(since = "13.0.1")
-    @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations);
-
-    /**
-     * Register a set of {@link Rpc} implementations on a set of datastore context paths. Note that this method does not
-     * support registering multiple implementations of the same {@link Rpc} and hence we require specifying them through
-     * a {@link ClassToInstanceMap}.
-     *
-     * @param implementations implementation objects
-     * @return A {@link Registration} controlling unregistration
-     * @throws NullPointerException if any argument is {@code null}
-     * @deprecated Use {@link #registerRpcImplementations(Collection, Set)} instead
-     */
-    @Deprecated(since = "13.0.1")
-    @NonNull Registration registerRpcImplementations(ClassToInstanceMap<Rpc<?, ?>> implementations,
-        Set<DataObjectIdentifier<?>> paths);
-
-    @SuppressWarnings("unchecked")
-    private static @NonNull ImmutableClassToInstanceMap<Rpc<?, ?>> indexImplementations(
-            final Collection<Rpc<?, ?>> impls) {
-        final var builder = ImmutableClassToInstanceMap.<Rpc<?, ?>>builder();
-        for (var impl : impls) {
-            builder.put((Class<Rpc<?, ?>>) impl.implementedInterface(), impl);
-        }
-        return builder.build();
-    }
+    @NonNull Registration registerRpcImplementations(Collection<Rpc<?, ?>> implementations,
+            Set<DataObjectIdentifier<?>> paths);
 }
