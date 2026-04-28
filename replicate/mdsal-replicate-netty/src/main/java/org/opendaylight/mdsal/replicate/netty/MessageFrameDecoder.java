@@ -11,6 +11,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 final class MessageFrameDecoder extends LengthFieldBasedFrameDecoder {
     MessageFrameDecoder() {
-        super(Constants.LENGTH_FIELD_MAX, 0, Constants.LENGTH_FIELD_LENGTH, 0, Constants.LENGTH_FIELD_LENGTH);
+        super(Constants.LENGTH_FIELD_MAX + Constants.LENGTH_FIELD_LENGTH, 0, Constants.LENGTH_FIELD_LENGTH, 0,
+            Constants.LENGTH_FIELD_LENGTH);
     }
 }
