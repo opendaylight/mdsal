@@ -16,9 +16,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import java.net.Inet4Address;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.OnCommitCallback;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -156,6 +159,44 @@ public class IntegrationTest extends AbstractDataBrokerTest {
                 assertEquals(expectedEntityState, capturedInitialState);
 
                 verify(sinkTx, timeout(2000).times(1)).commit(any(), any());
+            }
+        }
+    }
+
+    /**
+     * Add data larger than {@link Constants#LENGTH_FIELD_MAX} to the datastore, then start replication. Verify that the
+     * Sink receives and commits the initial state, which is sent as full-size chunks.
+     */
+    @Test
+    public void testReplicateLargeInitialState() throws Exception {
+        // Write a single entity whose name alone is larger than LENGTH_FIELD_MAX.
+        final var bigName = "w".repeat(Constants.LENGTH_FIELD_MAX + 1);
+        final var key = new EntityKey(bigName);
+        final var tx = getDataBroker().newWriteOnlyTransaction();
+        tx.put(LogicalDatastoreType.CONFIGURATION, DataObjectIdentifier.builder(Entity.class, key).build(),
+            new EntityBuilder().withKey(key).build());
+        tx.commit().get(2, TimeUnit.SECONDS);
+
+        // Start the source only after the data is written, so the Sink receives it as the initial state.
+        try (var source = NettyReplicationSource.createSource(support, getDomBroker(), css, true, TEST_PORT,
+            Duration.ZERO, 5)) {
+            // ... and give it some time to start up and open up the port.
+            Thread.sleep(1000);
+
+            final var sinkChain = mock(DOMTransactionChain.class);
+            final var sinkTx = mock(DOMDataTreeWriteTransaction.class);
+            doReturn(CommitInfo.emptyFluentFuture()).when(sinkTx).commit();
+            doCallRealMethod().when(sinkTx).commit(any(OnCommitCallback.class), eq(MoreExecutors.directExecutor()));
+            doReturn(sinkTx).when(sinkChain).newWriteOnlyTransaction();
+            final var sinkBroker = mock(DOMDataBroker.class);
+            doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain();
+
+            try (var sink = NettyReplicationSink.createSink(support, sinkBroker, css, true,
+                Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO, Duration.ZERO, 3)) {
+                // A full-size chunk must pass the Sink's frame decoder, otherwise the Sink never commits.
+                verify(sinkTx, timeout(3000).times(1)
+                    .description("Sink never committed the initial state. Check test log for TooLongFrameException"))
+                    .commit(any(OnCommitCallback.class), eq(MoreExecutors.directExecutor()));
             }
         }
     }
