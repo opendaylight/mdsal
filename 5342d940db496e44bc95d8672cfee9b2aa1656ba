@@ -22,6 +22,30 @@
       },
       "revId": "5342d940db496e44bc95d8672cfee9b2aa1656ba",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4033aff_b2b65c58",
+        "filename": ".github/workflows/gerrit-sonar.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 6258
+      },
+      "writtenOn": "2026-05-22T23:02:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4eb49a9e_a212fb30",
+      "range": {
+        "startLine": 59,
+        "startChar": 132,
+        "endLine": 59,
+        "endChar": 133
+      },
+      "revId": "5342d940db496e44bc95d8672cfee9b2aa1656ba",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
