@@ -28,7 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.LstioKey;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -40,7 +40,7 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
     private static final @NonNull Fooio FOOIO = (path, input) -> RpcResultBuilder.success(BINDING_LSTIO_OUTPUT)
         .buildFuture();
     private static final @NonNull QName KEYIO_QNAME = QName.create(Lstio.QNAME, "keyio");
-    private static final String LIST_KEY = "list-key";
+    private static final @NonNull String LIST_KEY = "list-key";
 
     @Mock
     private DOMActionProviderService actionProvider;
@@ -57,7 +57,7 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
     @Test
     public void testInstanceRegistration() {
         adapter.registerImplementation(ActionSpec.builder(Cont.class).build(Foo.class), FOO,
-            LogicalDatastoreType.OPERATIONAL, Set.of(InstanceIdentifier.create(Cont.class).toIdentifier()));
+            LogicalDatastoreType.OPERATIONAL, Set.of(DataObjectIdentifier.builder(Cont.class).build()));
 
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
             LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of(new NodeIdentifier(Cont.QNAME)))));
@@ -65,7 +65,7 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
 
     @Test
     public void testKeyedInstanceRegistration() {
-        final var lstio = InstanceIdentifier.builder(Lstio.class, new LstioKey(LIST_KEY)).build().toIdentifier();
+        final var lstio = DataObjectIdentifier.builder(Lstio.class, new LstioKey(LIST_KEY)).build();
 
         adapter.registerImplementation(ActionSpec.builder(Lstio.class).build(Fooio.class), FOOIO,
                 LogicalDatastoreType.OPERATIONAL, Set.of(lstio));

@@ -23,9 +23,9 @@ import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,17 +47,19 @@ class BindingDOMMountPointServiceAdapterTest {
         final var yiid = YangInstanceIdentifier.of(BooleanContainer.QNAME);
         doReturn(iiCodec).when(registry).getInstanceIdentifierCodec();
         doReturn(yiid).when(iiCodec).fromBinding(any(BindingInstanceIdentifier.class));
-        doReturn(InstanceIdentifier.create(BooleanContainer.class)).when(registry).fromYangInstanceIdentifier(yiid);
+        doReturn(DataObjectIdentifier.builder(BooleanContainer.class).build())
+            .when(registry).fromYangInstanceIdentifier(yiid);
 
         final var adapter = new BindingDOMMountPointServiceAdapter(codec, mountPointService);
 
         doReturn(Optional.empty()).when(mountPointService).getMountPoint(any());
-        assertFalse(adapter.getMountPoint(InstanceIdentifier.create(BooleanContainer.class)).isPresent());
+        assertFalse(adapter.findMountPoint(DataObjectIdentifier.builder(BooleanContainer.class).build()).isPresent());
 
         doReturn(Optional.of(mountPoint)).when(mountPointService).getMountPoint(any());
         doReturn(yiid).when(mountPoint).getIdentifier();
-        assertTrue(adapter.getMountPoint(InstanceIdentifier.create(BooleanContainer.class)).isPresent());
+        assertTrue(adapter.findMountPoint(DataObjectIdentifier.builder(BooleanContainer.class).build()).isPresent());
 
-        assertNotNull(adapter.registerListener(InstanceIdentifier.create(BooleanContainer.class), mountPointListener));
+        assertNotNull(adapter.registerListener(DataObjectIdentifier.builder(BooleanContainer.class).build(),
+            mountPointListener));
     }
 }

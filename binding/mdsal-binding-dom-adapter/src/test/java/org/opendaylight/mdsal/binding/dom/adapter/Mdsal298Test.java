@@ -49,7 +49,6 @@ import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.binding.NodeStep;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -312,7 +311,8 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<T> listener = mock(DataTreeChangeListener.class);
         doNothing().when(listener).onDataTreeChanged(anyList());
 
-        final DataTreeIdentifier<T> dti = DataTreeIdentifier.of(CONFIGURATION, InstanceIdentifier.create(bindingClass));
+        final DataTreeIdentifier<T> dti = DataTreeIdentifier.of(CONFIGURATION,
+            DataObjectIdentifier.builder(bindingClass).build());
         getDataBroker().registerTreeChangeListener(dti, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();

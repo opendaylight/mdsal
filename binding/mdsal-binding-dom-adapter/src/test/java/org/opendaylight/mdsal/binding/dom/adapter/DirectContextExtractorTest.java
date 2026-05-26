@@ -15,11 +15,11 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.Direct;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 public class DirectContextExtractorTest {
     private static final BindingInstanceIdentifier INSTANCE_IDENTIFIER =
-        InstanceIdentifier.create(BooleanContainer.class).toIdentifier();
+        DataObjectIdentifier.builder(BooleanContainer.class).build();
     private static final String EXCEPTION_TEXT = "testException";
 
     @Test

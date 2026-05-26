@@ -42,16 +42,14 @@ import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 public class BindingDOMRpcIntegrationTest {
-    private static final DataObjectIdentifier<TopLevelList> BA_NODE_ID = InstanceIdentifier.create(Top.class)
-            .child(TopLevelList.class, new TopLevelListKey("a"))
-            .toIdentifier();
+    private static final DataObjectIdentifier<TopLevelList> BA_NODE_ID =
+        DataObjectIdentifier.builder(Top.class).child(TopLevelList.class, new TopLevelListKey("a")).build();
 
     private static final QName KNOCK_KNOCK_QNAME = QName.create(KnockKnockOutput.QNAME, "knock-knock");
 

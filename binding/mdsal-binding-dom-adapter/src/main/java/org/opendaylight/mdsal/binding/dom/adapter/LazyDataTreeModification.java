@@ -21,7 +21,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
@@ -58,7 +58,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
             final DOMDataTreeCandidate candidate, final @Nullable Class<T> augment) {
         final var domRootPath = candidate.getRootPath();
         @SuppressWarnings("unchecked")
-        final var bindingPath = (InstanceIdentifier<T>) createBindingPath(serializer, domRootPath.path(), augment);
+        final var bindingPath = (DataObjectReference<T>) createBindingPath(serializer, domRootPath.path(), augment);
         final var codec = serializer.getSubtreeCodec(bindingPath);
         final var modification = RegularCandidateNodeAdapter.from(codec, candidate.getRootNode());
         return modification == null ? null
@@ -83,10 +83,11 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     // important to get the correct codec into the mix -- otherwise we would be operating on the parent container's
     // codec and mis-report what is actually going on.
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static @NonNull InstanceIdentifier<?> createBindingPath(final CurrentAdapterSerializer serializer,
+    private static @NonNull DataObjectReference<?> createBindingPath(final CurrentAdapterSerializer serializer,
             final YangInstanceIdentifier domPath, final @Nullable Class<?> augment) {
-        final var bindingPath = serializer.coerceInstanceIdentifier(domPath).toLegacy();
-        return augment == null ? bindingPath : bindingPath.augmentation((Class) augment.asSubclass(Augmentation.class));
+        final var bindingPath = serializer.coerceInstanceIdentifier(domPath);
+        return augment == null ? bindingPath
+            : bindingPath.toBuilder().augmentation((Class) augment.asSubclass(Augmentation.class)).build();
     }
 
     @Override
@@ -103,7 +104,6 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     public DataObjectModification<T> getRootNode() {
         return rootNode;
     }
-
 
     @Override
     public String toString() {

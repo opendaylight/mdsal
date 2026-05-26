@@ -32,7 +32,7 @@ import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.LstioKey;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
@@ -57,7 +57,7 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
     @Test
     public void testInvocation() throws ExecutionException {
         final var handle = service.getActionHandle(ActionSpec.builder(Cont.class).build(Foo.class));
-        final var future = handle.invoke(InstanceIdentifier.create(Cont.class).toIdentifier(), BINDING_FOO_INPUT);
+        final var future = handle.invoke(DataObjectIdentifier.builder(Cont.class).build(), BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
         domResult.set(new DefaultDOMRpcResult(DOM_FOO_OUTPUT));
@@ -71,7 +71,7 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
     public void testKeyedInvocation() throws ExecutionException {
         final var handle = service.getActionHandle(ActionSpec.builder(Lstio.class).build(Fooio.class));
         final var future = handle.invoke(
-            InstanceIdentifier.builder(Lstio.class, new LstioKey("test")).build().toIdentifier(), BINDING_LSTIO_INPUT);
+            DataObjectIdentifier.builder(Lstio.class, new LstioKey("test")).build(), BINDING_LSTIO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
 

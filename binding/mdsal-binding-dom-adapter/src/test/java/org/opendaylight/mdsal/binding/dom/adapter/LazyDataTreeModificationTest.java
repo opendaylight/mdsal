@@ -21,9 +21,10 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
@@ -44,13 +45,13 @@ class LazyDataTreeModificationTest {
         final var codec = new ConstantAdapterContext(registry);
         final var domDataTreeIdentifier =
                 DOMDataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.of());
-        final var bindingPath = InstanceIdentifier.create(BooleanContainer.class);
+        final var bindingPath = DataObjectIdentifier.builder(BooleanContainer.class).build();
         doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
-        doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
+        doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(DataObjectReference.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
         doReturn(ModificationType.DELETE).when(rootNode).modificationType();
         doReturn(rootNode).when(domDataTreeCandidate).getRootNode();
-        doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
+        doReturn(bindingPath.steps().iterator().next()).when(bindingCodecTreeNode)
             .deserializePathArgument(null);
 
         final var mod = LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate, null);

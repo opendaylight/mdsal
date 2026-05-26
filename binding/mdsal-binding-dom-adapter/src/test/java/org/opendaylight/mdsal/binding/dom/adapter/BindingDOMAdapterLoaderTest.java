@@ -22,13 +22,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.yang.gen.v1.bug8449.rev170516.Top;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMAdapterLoaderTest {
@@ -70,7 +69,7 @@ public class BindingDOMAdapterLoaderTest {
         final var adapter = assertDataBrokerAdapter();
         final var ex = assertThrows(UnsupportedOperationException.class,
             () -> adapter.registerTreeChangeListener(
-                DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class)),
+                LogicalDatastoreType.OPERATIONAL, DataObjectIdentifier.builder(Top.class).build(),
                 mock(DataTreeChangeListener.class)));
         assertEquals("Underlying data broker does not expose DOMDataTreeChangeService.", ex.getMessage());
     }
