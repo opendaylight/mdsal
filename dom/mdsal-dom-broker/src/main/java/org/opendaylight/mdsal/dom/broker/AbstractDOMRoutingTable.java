@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
@@ -119,7 +119,7 @@ abstract sealed class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractD
             var ne = re;
             for (var oper : newImpls.entrySet()) {
                 @SuppressWarnings("unchecked")
-                final E newVal = (E) ne.getValue().add(oper.getValue(), Lists.newArrayList(oper.getKey()));
+                final E newVal = (E) ne.getValue().add(oper.getValue(), newArrayList(oper.getKey()));
                 ne = Map.entry(ne.getKey(), newVal);
             }
             mb.put(ne);
@@ -184,7 +184,7 @@ abstract sealed class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractD
             for (var oper : oldImpls.entrySet()) {
                 if (ne != null) {
                     @SuppressWarnings("unchecked")
-                    final E newVal = (E) ne.getValue().remove(oper.getValue(), Lists.newArrayList(oper.getKey()));
+                    final E newVal = (E) ne.getValue().remove(oper.getValue(), newArrayList(oper.getKey()));
                     if (newVal != null) {
                         ne = Map.entry(ne.getKey(), newVal);
                     } else {
@@ -199,6 +199,13 @@ abstract sealed class AbstractDOMRoutingTable<I, D, M, L, K, E extends AbstractD
 
         // All done, whatever is in toRemove, was not there in the first place
         return newInstance(mb.build(), schemaContext);
+    }
+
+    @NonNullByDefault
+    private static <T> List<T> newArrayList(final T element) {
+        final var ret = new ArrayList<T>(1);
+        ret.add(requireNonNull(element));
+        return ret;
     }
 
     static final <K, V> HashMultimap<V, K> invertImplementationsMap(final Map<K, V> map) {
