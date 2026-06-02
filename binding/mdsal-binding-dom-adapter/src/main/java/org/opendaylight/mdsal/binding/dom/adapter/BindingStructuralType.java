@@ -105,11 +105,11 @@ public enum BindingStructuralType {
                 for (var child : node.childNodes()) {
                     final var childType = recursiveFrom(child);
                     yield switch (childType) {
-                            case INVISIBLE_CONTAINER, INVISIBLE_LIST ->
-                                // Invisible nodes are not addressable
-                                BindingStructuralType.NOT_ADDRESSABLE;
-                            case NOT_ADDRESSABLE, UNKNOWN, VISIBLE_CONTAINER -> childType;
-                        };
+                        case INVISIBLE_CONTAINER, INVISIBLE_LIST ->
+                            // Invisible nodes are not addressable
+                            BindingStructuralType.NOT_ADDRESSABLE;
+                        case NOT_ADDRESSABLE, UNKNOWN, VISIBLE_CONTAINER -> childType;
+                    };
                 }
 
                 yield BindingStructuralType.NOT_ADDRESSABLE;
