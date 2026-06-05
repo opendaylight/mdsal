@@ -126,6 +126,14 @@ jobs:
       GERRIT_PROJECT: ${{ inputs.GERRIT_PROJECT }}
       GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
       TOX_ENVS: '["docs", "docs-linkcheck"]'
+      # Install the plantuml CLI (Java) so sphinxcontrib.plantuml can render
+      # the `.. uml::` diagrams; it is not a pip dependency and is absent on
+      # the stock runner.
+      PRE_BUILD_SCRIPT: |
+        #!/usr/bin/env bash
+        set -euo pipefail
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends plantuml
 
   vote:
     if: ${{ always() }}
