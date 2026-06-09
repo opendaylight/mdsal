@@ -154,6 +154,29 @@
       },
       "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5079700e_4f1b0805",
+        "filename": "replicate/mdsal-replicate-netty/src/main/resources/config/org.opendaylight.mdsal.replicate.netty.sink.cfg",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T17:09:36Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 8,
+        "startChar": 29,
+        "endLine": 8,
+        "endChar": 30
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
