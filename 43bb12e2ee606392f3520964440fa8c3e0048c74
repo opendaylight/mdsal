@@ -16,6 +16,52 @@
       "message": "Removed the cfg files fix in the relation chain since another merged commit fixed it in the more correct way.\n\nRebased on 14.0.x",
       "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52cb1fdd_6f8844bc",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkRequestHandler.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T15:38:50Z",
+      "side": 1,
+      "message": "this seems to an unrelated thing: break it out into a separate patch?",
+      "range": {
+        "startLine": 80,
+        "startChar": 16,
+        "endLine": 80,
+        "endChar": 31
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00c1fc5b_479c2e34",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T15:38:50Z",
+      "side": 1,
+      "message": "follow existing formatting, please",
+      "range": {
+        "startLine": 22,
+        "startChar": 12,
+        "endLine": 22,
+        "endChar": 35
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
