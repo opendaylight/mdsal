@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ce3a0aa_aee85bff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T17:13:57Z",
+      "side": 1,
+      "message": "This patch constitutes a new feature, which are by definition delivered to master first and then backported (if absolutely needed, as per https://openjdk.org/jeps/14 we follow).\n\nRebased to master, where it needs to land first.",
+      "revId": "a789f7cd397fa0f60c3b032432c04920c84913b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
