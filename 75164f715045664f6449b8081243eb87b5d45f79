@@ -69,6 +69,30 @@
       },
       "revId": "75164f715045664f6449b8081243eb87b5d45f79",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a556c63e_6d650ab2",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T17:19:03Z",
+      "side": 0,
+      "message": "to be clear: this is a mirror to https://git.opendaylight.org/gerrit/c/mdsal/+/121706/comment/f22c9f9f_f42431b5/ -- spitting out TreeReplica constitutes a major edit to this file as well and should be properly attributed",
+      "parentUuid": "fcb20da7_9f29868e",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 32
+      },
+      "revId": "75164f715045664f6449b8081243eb87b5d45f79",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
