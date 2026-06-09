@@ -20,6 +20,75 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "521af82e_662860a5",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T15:53:59Z",
+      "side": 1,
+      "message": "why public?",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 6
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52e1b250_555a6714",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T15:53:59Z",
+      "side": 1,
+      "message": "TreeReplicaInvariants would be a better name",
+      "range": {
+        "startLine": 21,
+        "startChar": 14,
+        "endLine": 21,
+        "endChar": 36
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d19d0120_9ba8c321",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T15:53:59Z",
+      "side": 1,
+      "message": "`record` implies `DTO` and this is not a DTO thing to do",
+      "range": {
+        "startLine": 43,
+        "startChar": 47,
+        "endLine": 43,
+        "endChar": 61
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "52cb1fdd_6f8844bc",
         "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkRequestHandler.java",
         "patchSetId": 6
@@ -59,6 +128,29 @@
         "startChar": 12,
         "endLine": 22,
         "endChar": 35
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f22c9f9f_f42431b5",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/TreeReplica.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2026-06-09T15:53:59Z",
+      "side": 1,
+      "message": "majority of the code in this class is coming from, which already has original copyright.\n\nthis code constitutes a movement of that code movement + class rename and hence the original copyright should be retained -- which really is an edit.\n\nyou should just add additional \"Copyright (c) 2026 SmartOptics AS\" copyright line after that -- as documented in https://docs.opendaylight.org/en/latest/contributor-guides/copyright.html#edited-files",
+      "range": {
+        "startLine": 2,
+        "startChar": 3,
+        "endLine": 2,
+        "endChar": 36
       },
       "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
