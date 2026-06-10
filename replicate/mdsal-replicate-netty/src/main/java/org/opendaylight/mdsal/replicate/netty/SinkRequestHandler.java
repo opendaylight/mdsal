@@ -76,6 +76,24 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
     }
 
+    @Override
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        releaseChunks();
+        super.channelInactive(ctx);
+    }
+
+    @Override
+    public void handlerRemoved(final ChannelHandlerContext ctx) throws Exception {
+        releaseChunks();
+        super.handlerRemoved(ctx);
+    }
+
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        releaseChunks();
+        super.exceptionCaught(ctx, cause);
+    }
+
     private void handleEmptyData() {
         final var tx = chain.newWriteOnlyTransaction();
 
@@ -97,11 +115,24 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         try (ByteBufInputStream stream = new ByteBufInputStream(bufs)) {
             candidate = DataTreeCandidateInputOutput.readDataTreeCandidate(NormalizedNodeDataInput.newDataInput(stream),
                 receiver);
+        } finally {
+            bufs.release();
         }
 
         final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
         DataTreeCandidateUtils.applyToTransaction(tx, tree.datastore(), candidate);
         commit(tx);
+    }
+
+    private void releaseChunks() {
+        if (chunks.isEmpty()) {
+            return;
+        }
+
+        for (ByteBuf chunk : chunks) {
+            chunk.release();
+        }
+        chunks.clear();
     }
 
     private static void commit(final DOMDataTreeWriteTransaction tx) {
