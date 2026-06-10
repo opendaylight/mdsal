@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a1d3e3ac_f275b6a0",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationSink.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 0,
+      "message": "Its not really lost, its renamed, and logic has been relocated. \n\nIts the createSinkReg method, with the following changes:\n\nValidation logic has been moved into the nettyReplicationConfig.\nIf replication is enabled is checked in the constructor with the @activate annotation.\n\nFrom this scope the codepath and validations are still the same, but this is to me much better.\n\nThere should be no need to check enabled from a static context, only the instance should check for it.\n\nI could be wrong of course.",
+      "parentUuid": "0f5c87c3_7aa7ff3f",
+      "range": {
+        "startLine": 74,
+        "startChar": 24,
+        "endLine": 74,
+        "endChar": 34
+      },
+      "revId": "75164f715045664f6449b8081243eb87b5d45f79",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6330553e_00376c47",
         "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
         "patchSetId": 6
@@ -85,6 +109,30 @@
       "side": 0,
       "message": "to be clear: this is a mirror to https://git.opendaylight.org/gerrit/c/mdsal/+/121706/comment/f22c9f9f_f42431b5/ -- spitting out TreeReplica constitutes a major edit to this file as well and should be properly attributed",
       "parentUuid": "fcb20da7_9f29868e",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 32
+      },
+      "revId": "75164f715045664f6449b8081243eb87b5d45f79",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81fa8bf3_5fef4019",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 0,
+      "message": "To be honest, I\u0027m not sure which steps I took now to get to this result.\nI\u0027m not sure I can reproduce a step by step patchset for that. \n\nOr maybe I don´t understand?",
+      "parentUuid": "a556c63e_6d650ab2",
       "range": {
         "startLine": 45,
         "startChar": 12,

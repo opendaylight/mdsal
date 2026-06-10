@@ -66,6 +66,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a0b189ed_f61ac535",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 1,
+      "message": "Do you mean you want this to be package protected?",
+      "parentUuid": "521af82e_662860a5",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 6
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3f1c489_718f473e",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 1,
+      "message": "I do not agree with that. I have no idea what treeReplicaInvariants would mean..? And if I don\u0027t know, so would other people. Everybody knows what a config is.\n\nI realize this is sort of a duplicate of the internally wrapped `@ObjectClassDefinition\n    public @interface Config {`\n\nBut I kept it because if you for one reason rather would want it like this.\n\nIf there is a better way, please let me know.",
+      "parentUuid": "52e1b250_555a6714",
+      "range": {
+        "startLine": 21,
+        "startChar": 14,
+        "endLine": 21,
+        "endChar": 36
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d19d0120_9ba8c321",
         "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
         "patchSetId": 6
@@ -77,6 +125,30 @@
       "writtenOn": "2026-06-09T15:53:59Z",
       "side": 1,
       "message": "`record` implies `DTO` and this is not a DTO thing to do",
+      "range": {
+        "startLine": 43,
+        "startChar": 47,
+        "endLine": 43,
+        "endChar": 61
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5e433da_260f12fe",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationConfig.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 1,
+      "message": "I do not agree Record implies DTO.\nA Record has many uses.\n\nThis is to keep the config clean, we don\u0027t want duplicate tree identifiers in the configured trees. This is sanitary and a must.",
+      "parentUuid": "d19d0120_9ba8c321",
       "range": {
         "startLine": 43,
         "startChar": 47,
@@ -112,6 +184,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a57b9c61_b9d57368",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkRequestHandler.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 1,
+      "message": "This is a memory leak bug fix, which releases memory when the channel goes inactive. I guess its independent from the rest of the changes.\n\nI\u0027ll put it in its own patchset.",
+      "parentUuid": "52cb1fdd_6f8844bc",
+      "range": {
+        "startLine": 80,
+        "startChar": 16,
+        "endLine": 80,
+        "endChar": 31
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "00c1fc5b_479c2e34",
         "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
         "patchSetId": 6
@@ -123,6 +219,30 @@
       "writtenOn": "2026-06-09T15:38:50Z",
       "side": 1,
       "message": "follow existing formatting, please",
+      "range": {
+        "startLine": 22,
+        "startChar": 12,
+        "endLine": 22,
+        "endChar": 35
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "371e7dc3_ae04ae3c",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkSingletonService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "00c1fc5b_479c2e34",
       "range": {
         "startLine": 22,
         "startChar": 12,
@@ -146,6 +266,30 @@
       "writtenOn": "2026-06-09T15:53:59Z",
       "side": 1,
       "message": "majority of the code in this class is coming from, which already has original copyright.\n\nthis code constitutes a movement of that code movement + class rename and hence the original copyright should be retained -- which really is an edit.\n\nyou should just add additional \"Copyright (c) 2026 SmartOptics AS\" copyright line after that -- as documented in https://docs.opendaylight.org/en/latest/contributor-guides/copyright.html#edited-files",
+      "range": {
+        "startLine": 2,
+        "startChar": 3,
+        "endLine": 2,
+        "endChar": 36
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "100e4267_9834bf3b",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/TreeReplica.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T06:19:05Z",
+      "side": 1,
+      "message": "I agree. My bad.",
+      "parentUuid": "f22c9f9f_f42431b5",
       "range": {
         "startLine": 2,
         "startChar": 3,
