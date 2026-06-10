@@ -206,6 +206,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7922faed_b4628e16",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkRequestHandler.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T08:17:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a57b9c61_b9d57368",
+      "range": {
+        "startLine": 80,
+        "startChar": 16,
+        "endLine": 80,
+        "endChar": 31
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "00c1fc5b_479c2e34",
@@ -290,6 +314,30 @@
       "side": 1,
       "message": "I agree. My bad.",
       "parentUuid": "f22c9f9f_f42431b5",
+      "range": {
+        "startLine": 2,
+        "startChar": 3,
+        "endLine": 2,
+        "endChar": 36
+      },
+      "revId": "43bb12e2ee606392f3520964440fa8c3e0048c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c915959_dcddb052",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/TreeReplica.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T08:17:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "100e4267_9834bf3b",
       "range": {
         "startLine": 2,
         "startChar": 3,

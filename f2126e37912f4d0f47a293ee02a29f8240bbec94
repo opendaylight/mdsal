@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "669a2c52_f453bd6e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9387
+      },
+      "writtenOn": "2026-06-10T08:17:28Z",
+      "side": 1,
+      "message": "Acked a few formatting tasks.",
+      "revId": "f2126e37912f4d0f47a293ee02a29f8240bbec94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
