@@ -68,7 +68,7 @@ final class InstanceNotificationServiceAdapter implements InstanceNotificationSe
     }
 
     @Override
-    public <P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
+    public <P extends EntryObject<?, P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
             Registration registerListener(final InstanceNotificationSpec<N, P> spec,
                 final DataObjectReference.WithKey<P, K> path, final KeyedListListener<P, N, K> listener,
                 final Executor executor) {
