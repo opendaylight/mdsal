@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,7 +34,6 @@ import java.util.concurrent.ThreadFactory;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
@@ -311,8 +311,10 @@ public final class DOMRpcRouter extends AbstractRegistration {
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
 
-    private @GuardedBy("this") ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
-    private @GuardedBy("this") ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
+    @GuardedBy("this")
+    private ImmutableList<RpcAvailReg> listeners = ImmutableList.of();
+    @GuardedBy("this")
+    private ImmutableList<ActionAvailReg> actionListeners = ImmutableList.of();
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
     private volatile DOMActionRoutingTable actionRoutingTable = DOMActionRoutingTable.EMPTY;
     private Registration listenerRegistration;
