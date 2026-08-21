@@ -35,7 +35,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedException;
-import org.opendaylight.yangtools.yang.data.tree.impl.di.InMemoryDataTreeFactory;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         this.name = requireNonNull(name);
         this.dataChangeListenerExecutor = requireNonNull(dataChangeListenerExecutor);
         this.debugTransactions = debugTransactions;
-        dataTree = new InMemoryDataTreeFactory().create(config);
+        dataTree = ReferenceDataTreeFactoryModule.provideDataTreeFactory().create(config);
         changePublisher = new InMemoryDOMStoreTreeChangePublisher("name", this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
     }
