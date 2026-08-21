@@ -36,11 +36,11 @@ public interface InstanceNotificationService extends BindingService {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
     }
 
-    <P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
+    <P extends EntryObject<?, P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
         @NonNull Registration registerListener(InstanceNotificationSpec<N, P> spec,
             DataObjectReference.WithKey<P, K> path, KeyedListListener<P, N, K> listener, Executor executor);
 
-    default <P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
+    default <P extends EntryObject<?, P, K>, N extends KeyedListNotification<N, P, K>, K extends Key<P>>
             @NonNull Registration registerListener(final InstanceNotificationSpec<N, P> spec,
                 final DataObjectReference.WithKey<P, K> path, final KeyedListListener<P, N, K> listener) {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
@@ -64,7 +64,7 @@ public interface InstanceNotificationService extends BindingService {
      * Interface for listeners on instance (YANG 1.1) notifications defined in a {@code list} with a {@code key}.
      */
     @FunctionalInterface
-    interface KeyedListListener<P extends EntryObject<P, K>, N extends KeyedListNotification<N, P, K>,
+    interface KeyedListListener<P extends EntryObject<?, P, K>, N extends KeyedListNotification<N, P, K>,
             K extends Key<P>> {
         /**
          * Process an instance notification.
