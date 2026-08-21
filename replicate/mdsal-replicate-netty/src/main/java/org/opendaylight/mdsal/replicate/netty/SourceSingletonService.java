@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -21,11 +22,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.api.ServiceGroupIdentifier;
@@ -46,11 +45,13 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
     private final DataTreeChangeExtension dtcs;
     private final int listenPort;
 
-    private final @GuardedBy("this") Collection<SocketChannel> children = new HashSet<>();
+    @GuardedBy("this")
+    private final HashSet<SocketChannel> children = new HashSet<>();
     private final Duration keepaliveInterval;
     private final int maxMissedKeepalives;
 
-    private @GuardedBy("this") Channel serverChannel;
+    @GuardedBy("this")
+    private Channel serverChannel;
 
     SourceSingletonService(final BootstrapSupport bootstrapSupport, final DataTreeChangeExtension dtcs,
             final int listenPort, final Duration keepaliveInterval, final int maxMissedKeepalives) {

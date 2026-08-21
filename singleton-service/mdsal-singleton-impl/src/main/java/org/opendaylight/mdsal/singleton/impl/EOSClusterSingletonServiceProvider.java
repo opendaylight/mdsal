@@ -15,6 +15,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
@@ -149,7 +149,7 @@ public final class EOSClusterSingletonServiceProvider
             services);
     }
 
-    @Holding("this")
+    @GuardedBy("this")
     private void initializeOrRemoveGroup(final ServiceGroup group) throws CandidateAlreadyRegisteredException {
         try {
             group.initialize();

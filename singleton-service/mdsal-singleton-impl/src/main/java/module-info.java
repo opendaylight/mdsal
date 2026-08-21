@@ -18,6 +18,6 @@ module org.opendaylight.mdsal.singleton.impl {
     requires static transitive org.eclipse.jdt.annotation;
     requires static transitive java.annotation;
     requires static transitive javax.inject;
-    requires static org.checkerframework.checker.qual;
+    requires static com.google.errorprone.annotations;
     requires static org.osgi.service.component.annotations;
 }

@@ -51,8 +51,8 @@ module org.opendaylight.mdsal.binding.dom.adapter {
 
     // Annotations
     requires static com.github.spotbugs.annotations;
+    requires static com.google.errorprone.annotations;
     requires static javax.inject;
-    requires static org.checkerframework.checker.qual;
     requires static org.eclipse.jdt.annotation;
     requires static org.gaul.modernizer_maven_annotations;
     requires static org.kohsuke.metainf_services;

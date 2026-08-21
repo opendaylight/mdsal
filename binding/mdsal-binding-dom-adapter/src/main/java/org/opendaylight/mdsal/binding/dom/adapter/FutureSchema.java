@@ -10,15 +10,14 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
-import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.yangtools.binding.Augmentation;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -75,8 +74,8 @@ abstract class FutureSchema implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FutureSchema.class);
 
-    private final @GuardedBy("postponedOperations") Set<FutureSchemaPredicate> postponedOperations =
-        new LinkedHashSet<>();
+    @GuardedBy("postponedOperations")
+    private final LinkedHashSet<FutureSchemaPredicate> postponedOperations = new LinkedHashSet<>();
     private final long duration;
     private final TimeUnit unit;
 

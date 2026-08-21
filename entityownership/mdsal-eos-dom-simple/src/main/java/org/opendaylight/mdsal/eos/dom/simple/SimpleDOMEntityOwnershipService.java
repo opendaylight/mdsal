@@ -15,12 +15,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
@@ -48,10 +46,10 @@ import org.slf4j.LoggerFactory;
 public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleDOMEntityOwnershipService.class);
 
-    private final @GuardedBy("entities") Table<String, YangInstanceIdentifier, DOMEntity> entities =
-        HashBasedTable.create();
-    private final @GuardedBy("listeners") Multimap<String, DOMEntityOwnershipListener> listeners =
-        ArrayListMultimap.create(0, 1);
+    @GuardedBy("entities")
+    private final HashBasedTable<String, YangInstanceIdentifier, DOMEntity> entities = HashBasedTable.create();
+    @GuardedBy("listeners")
+    private final ArrayListMultimap<String, DOMEntityOwnershipListener> listeners = ArrayListMultimap.create(0, 1);
 
     private final UUID uuid;
 

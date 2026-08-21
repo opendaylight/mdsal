@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
@@ -27,8 +28,6 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.checkerframework.checker.lock.qual.Holding;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -66,7 +65,8 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     private final int maxMissedKeepalives;
     private final Duration keepaliveInterval;
 
-    private @GuardedBy("this") ChannelFuture futureChannel;
+    @GuardedBy("this")
+    private ChannelFuture futureChannel;
     private boolean closingInstance;
     private Bootstrap bs;
 
@@ -94,7 +94,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
         doConnect();
     }
 
-    @Holding("this")
+    @GuardedBy("this")
     private void doConnect() {
         LOG.info("Connecting to Source");
         final ScheduledExecutorService group = bs.config().group();

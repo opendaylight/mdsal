@@ -19,8 +19,8 @@ module org.opendaylight.mdsal.eos.dom.simple {
 
     // Annotations
     requires static transitive javax.inject;
+    requires static com.google.errorprone.annotations;
     requires static org.eclipse.jdt.annotation;
-    requires static org.checkerframework.checker.qual;
     requires static org.kohsuke.metainf_services;
     requires static org.osgi.service.component.annotations;
 }

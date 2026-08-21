@@ -21,6 +21,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
-import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipStateChange;
@@ -147,21 +146,25 @@ final class ActiveServiceGroup extends ServiceGroup {
      * Service (base) entity registration. This entity selects an owner candidate across nodes. Candidates proceed to
      * acquire {@link #cleanupEntity}.
      */
-    private @GuardedBy("this") Registration serviceEntityReg = null;
+    @GuardedBy("this")
+    private Registration serviceEntityReg = null;
     /**
      * Service (base) entity last reported state.
      */
-    private @GuardedBy("this") EntityState serviceEntityState = EntityState.UNREGISTERED;
+    @GuardedBy("this")
+    private EntityState serviceEntityState = EntityState.UNREGISTERED;
 
     /**
      * Cleanup (owner) entity registration. This entity guards access to service state and coordinates shutdown cleanup
      * and startup.
      */
-    private @GuardedBy("this") Registration cleanupEntityReg;
+    @GuardedBy("this")
+    private Registration cleanupEntityReg;
     /**
      * Cleanup (owner) entity last reported state.
      */
-    private @GuardedBy("this") EntityState cleanupEntityState = EntityState.UNREGISTERED;
+    @GuardedBy("this")
+    private EntityState cleanupEntityState = EntityState.UNREGISTERED;
 
     private volatile boolean initialized;
 
@@ -325,7 +328,7 @@ final class ActiveServiceGroup extends ServiceGroup {
      *
      * @param ownershipChange reported change
      */
-    @Holding("this")
+    @GuardedBy("this")
     private void lockedOwnershipChanged(final DOMEntity entity, final EntityOwnershipStateChange change,
             final boolean inJeopardy) {
         if (serviceEntity.equals(entity)) {
@@ -339,7 +342,7 @@ final class ActiveServiceGroup extends ServiceGroup {
         }
     }
 
-    @Holding("this")
+    @GuardedBy("this")
     private void cleanupCandidateOwnershipChanged(final EntityOwnershipStateChange state, final boolean jeopardy) {
         if (jeopardy) {
             cleanupEntityState = switch (state) {
@@ -368,7 +371,7 @@ final class ActiveServiceGroup extends ServiceGroup {
         };
     }
 
-    @Holding("this")
+    @GuardedBy("this")
     private void serviceOwnershipChanged(final EntityOwnershipStateChange state, final boolean jeopardy) {
         if (jeopardy) {
             LOG.info("Service group {} service entity ownership uncertain", identifier);
