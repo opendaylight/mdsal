@@ -43,8 +43,8 @@ public interface DOMNotificationPublishService
      * additional information related to the publishing process.
      * Abstract subclasses can refine the return type as returning a promise of a more specific
      * type, e.g.:
-     * public interface DeliveryStatus { int getListenerCount(); } ListenableFuture&lt;? extends
-     * DeliveryStatus&gt;[ putNotification(DOMNotification notification);
+     * public interface DeliveryStatus { int getListenerCount(); } ListenableFuture{@literal <}? extends
+     * DeliveryStatus{@literal >}[ putNotification(DOMNotification notification);
      * Once the Future succeeds, the resulting object can be queried for traits using instanceof,
      * e.g:
      * // Can block when (for example) the implemention's ThreadPool queue is full Object o =
