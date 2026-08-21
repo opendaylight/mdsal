@@ -20,7 +20,6 @@ import com.google.common.cache.LoadingCache;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
@@ -32,7 +31,7 @@ import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.Notification;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yangtools.binding.data.codec.spi.ForwardingBindingDOMCodecServices;
-import org.opendaylight.yangtools.binding.model.api.JavaTypeName;
+import org.opendaylight.yangtools.binding.model.TypeName;
 import org.opendaylight.yangtools.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.yangtools.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.yangtools.binding.runtime.api.NotificationRuntimeType;
@@ -61,14 +60,16 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         CacheBuilder.newBuilder().weakKeys().weakValues().build(new CacheLoader<>() {
             @Override
             public Absolute load(final Class<? extends Notification<?>> key) {
-                final var typeName = JavaTypeName.create(key);
-                final var runtimeType = (NotificationRuntimeType) getRuntimeContext().getTypes().findSchema(typeName)
-                    .orElseThrow(() -> new IllegalArgumentException(typeName + " is not known"));
-                return Absolute.of(runtimeType.statement().argument()).intern();
+                final var typeName = TypeName.ofClass(key);
+                final var runtimeType = getRuntimeContext().getTypes().lookupRuntimeType(typeName);
+                if (runtimeType == null) {
+                    throw new IllegalArgumentException(typeName + " is not known");
+                }
+                return Absolute.of(((NotificationRuntimeType) runtimeType).statement().argument()).intern();
             }
         });
 
-    private final ConcurrentMap<JavaTypeName, ContextReferenceExtractor> extractors = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<TypeName, ContextReferenceExtractor> extractors = new ConcurrentHashMap<>();
     private final @NonNull BindingDOMCodecServices delegate;
 
     public CurrentAdapterSerializer(final BindingDOMCodecServices delegate) {
@@ -106,9 +107,12 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
             final @NonNull DataObjectReference<?> path, final @NonNull Class<? extends BindingContract<?>> type,
             final @NonNull Class<T> expectedRuntime,
             final @NonNull Class<? extends SchemaTreeEffectiveStatement<?>> expectedStatement) {
-        final var typeName = JavaTypeName.create(type);
-        final var runtimeType = getRuntimeContext().getTypes().findSchema(typeName)
-            .orElseThrow(() -> new IllegalArgumentException(typeName + " is not known"));
+        final var typeName = TypeName.ofClass(type);
+        final var runtimeType = getRuntimeContext().getTypes().lookupRuntimeType(typeName);
+        if (runtimeType == null) {
+            throw new IllegalArgumentException(typeName + " is not known");
+        }
+
         final T casted;
         try {
             casted = expectedRuntime.cast(runtimeType);

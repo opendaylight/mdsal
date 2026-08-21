@@ -23,7 +23,6 @@ import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
-import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
@@ -94,14 +93,14 @@ public final class DefaultQueryFactory implements QueryFactory {
     }
 
     @Override
-    public <P extends DataObject, T extends EntryObject<T, ?> & ChildOf<P>> DescendantQueryBuilder<T> querySubtree(
+    public <P extends DataObject, T extends EntryObject<? super P, T, ?>> DescendantQueryBuilder<T> querySubtree(
             final DataObjectIdentifier<P> parentPath, final Class<T> list) {
         // FIXME: implement this
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <T extends EntryObject<T, ?> & ChildOf<? extends DataRoot<?>>> DescendantQueryBuilder<T> querySubtree(
+    public <T extends EntryObject<? extends DataRoot<?>, T, ?>> DescendantQueryBuilder<T> querySubtree(
             final Class<T> list) {
         // FIXME: implement this
         throw new UnsupportedOperationException();
