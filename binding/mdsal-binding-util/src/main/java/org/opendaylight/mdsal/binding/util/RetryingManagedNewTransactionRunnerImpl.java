@@ -23,9 +23,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.
  * ({@link OptimisticLockFailedException} on write transactions and {@link ReadFailedException} on read transactions
  * will cause the operation constructing the transaction to be re-run).
  * This is a package local private internal class; end-users use the {@link RetryingManagedNewTransactionRunner}.
+ *
  * @see RetryingManagedNewTransactionRunner
  *
- * @author Michael Vorburger.ch &amp; Stephen Kitt, with input from Tom Pantelis re. catchingAsync &amp; direct Executor
+ * @author Michael Vorburger.ch and Stephen Kitt, with input from Tom Pantelis re. catchingAsync and direct Executor
  */
 // intentionally package local
 class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRunner {
