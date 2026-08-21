@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
-import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;

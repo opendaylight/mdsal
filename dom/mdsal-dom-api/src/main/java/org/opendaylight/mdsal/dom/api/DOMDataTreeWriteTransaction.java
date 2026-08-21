@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
-import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;

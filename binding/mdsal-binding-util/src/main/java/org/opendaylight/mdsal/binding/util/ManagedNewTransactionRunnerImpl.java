@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import java.util.function.Function;
 import javax.inject.Inject;
 import org.eclipse.jdt.annotation.Nullable;
