@@ -26,6 +26,6 @@ module org.opendaylight.mdsal.dom.spi {
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
     requires static com.github.spotbugs.annotations;
-    requires static org.checkerframework.checker.qual;
+    requires static com.google.errorprone.annotations;
     requires static org.osgi.annotation.bundle;
 }

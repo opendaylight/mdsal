@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
@@ -23,8 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
-import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -49,14 +48,17 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
     private final @NonNull SettableFuture<Empty> future = SettableFuture.create();
     private final @NonNull DOMTransactionChain delegate;
 
-    private @GuardedBy("this") boolean closed;
-    private @GuardedBy("this") boolean failed;
-    private @GuardedBy("this") PingPongTransaction shutdownTx;
-    private @GuardedBy("this") Entry<PingPongTransaction, Throwable> deadTx;
+    @GuardedBy("this")
+    private boolean closed;
+    @GuardedBy("this")
+    private boolean failed;
+    @GuardedBy("this")
+    private PingPongTransaction shutdownTx;
+    @GuardedBy("this")
+    private Entry<PingPongTransaction, Throwable> deadTx;
 
     //  This VarHandle is used to manipulate the "ready" transaction. We perform only atomic get-and-set on it.
     private static final VarHandle READY_TX;
-    @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
     private volatile PingPongTransaction readyTx;
 
@@ -207,7 +209,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
      * This forces allocateTransaction() on a slow path, which has to happen after this method has completed executing.
      * Also inflightTx may be updated outside the lock, hence we need to re-check.
      */
-    @Holding("this")
+    @GuardedBy("this")
     private void processIfReady() {
         if (inflightTx == null) {
             final PingPongTransaction tx = acquireReadyTx();
@@ -222,7 +224,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
      *
      * @param tx Transaction which needs processing.
      */
-    @Holding("this")
+    @GuardedBy("this")
     private void processTransaction(final @NonNull PingPongTransaction tx) {
         if (failed) {
             LOG.debug("Cancelling transaction {}", tx);
