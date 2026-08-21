@@ -219,6 +219,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
     /**
      * Notify the base logic that a previously-submitted transaction has been committed successfully.
+     *
      * @param transaction Transaction which completed successfully.
      */
     protected final void onTransactionCommited(final SnapshotBackedWriteTransaction<T> transaction) {
@@ -248,6 +249,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
     /**
      * Notify the base logic that a previously-submitted transaction has failed.
+     *
      * @param transaction Transaction which failed.
      * @param cause Failure cause
      */
@@ -266,18 +268,21 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
     /**
      * Inquire as to whether transactions should record their allocation context.
+     *
      * @return True if allocation context should be recorded.
      */
     protected abstract boolean getDebugTransactions();
 
     /**
      * Take a fresh {@link DataTreeSnapshot} from the backend.
+     *
      * @return A new snapshot.
      */
     protected abstract DataTreeSnapshot takeSnapshot();
 
     /**
      * Create a cohort for driving the transaction through the commit process.
+     *
      * @param transaction Transaction handle
      * @param modification {@link DataTreeModification} which needs to be applied to the backend
      * @param operationError Any previous error that could be reported through three phase commit

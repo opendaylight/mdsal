@@ -24,6 +24,7 @@ public interface DOMStoreTransactionChain extends DOMStoreTransactionFactory, Au
      * Otherwise read-only transaction presents isolated view as if previous read-write
      * transaction was successful. State which was introduced by other transactions
      * outside this transaction chain after creation of previous transaction is not visible.
+     *
      * @return New transaction in the chain.
      * @throws IllegalStateException
      *             if the previous transaction was not READY or CANCELLED, or
