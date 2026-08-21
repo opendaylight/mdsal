@@ -185,6 +185,7 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     /**
      * Log registrations to this subtree of the md-sal.
+     *
      * @param iidString the iid path of the root of the subtree
      * @param store Which LogicalDataStore? or null for both
      */
@@ -195,6 +196,7 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     /**
      * Log writes to this subtree of the md-sal.
+     *
      * @param iidString the iid path of the root of the subtree
      * @param store Which LogicalDataStore? or null for both
      */
