@@ -17,9 +17,9 @@ import org.opendaylight.yangtools.binding.DataObject;
 @Beta
 @FunctionalInterface
 public interface DataListener<T extends DataObject> {
-
     /**
      * Invoked when there was data change for the supplied path, which was used to register listener.
+     *
      * @param data last state.
      */
     void dataChangedTo(@Nullable T data);

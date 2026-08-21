@@ -70,6 +70,7 @@ public enum EntityOwnershipStateChange {
 
     /**
      * Returns the previous ownership status of the entity for this process instance.
+     *
      * @return true if this process was the owner of the entity at the time this notification was generated
      */
     public boolean wasOwner() {
@@ -78,6 +79,7 @@ public enum EntityOwnershipStateChange {
 
     /**
      * Returns the current ownership status of the entity for this process instance.
+     *
      * @return true if this process is now the owner of the entity
      */
     public boolean isOwner() {
@@ -86,6 +88,7 @@ public enum EntityOwnershipStateChange {
 
     /**
      * Returns the current ownership status of the entity across all process instances.
+     *
      * @return true if the entity has an owner which may or may not be this process. If false, then
      *         the entity has no candidates and thus no owner.
      */

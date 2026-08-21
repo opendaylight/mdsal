@@ -49,6 +49,7 @@ public class GenericEntity<T extends HierarchicalIdentifier<T>> implements Seria
 
     /**
      * Gets the id of the entity.
+     *
      * @return the id.
      */
     @Override
@@ -58,6 +59,7 @@ public class GenericEntity<T extends HierarchicalIdentifier<T>> implements Seria
 
     /**
      * Gets the type of the entity.
+     *
      * @return the type.
      */
     public final @NonNull String getType() {
