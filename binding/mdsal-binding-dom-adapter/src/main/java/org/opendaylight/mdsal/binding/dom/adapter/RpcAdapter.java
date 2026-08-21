@@ -18,7 +18,6 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
 import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.binding.RpcInput;
-import org.opendaylight.yangtools.binding.contract.Naming;
 import org.opendaylight.yangtools.binding.runtime.api.RpcRuntimeType;
 
 final class RpcAdapter implements InvocationHandler {
@@ -50,7 +49,7 @@ final class RpcAdapter implements InvocationHandler {
         final var rpc = rpcType.statement();
         final var contentContext = ContentRoutedRpcContext.forRpc(rpc);
         if (contentContext != null) {
-            final var extractor = serializer.findExtractor(rpcType.input());
+            final var extractor = serializer.findExtractor(rpcType.javaType().input());
             if (extractor != null) {
                 return new ContentRouted(this, rpc.argument(), contentContext.leaf(), extractor);
             }
@@ -61,7 +60,7 @@ final class RpcAdapter implements InvocationHandler {
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         switch (method.getName()) {
-            case Naming.RPC_INVOKE_NAME:
+            case "invoke":
                 if (method.getParameterCount() == 1) {
                     return strategy.invoke((RpcInput) requireNonNull(args[0]));
                 }

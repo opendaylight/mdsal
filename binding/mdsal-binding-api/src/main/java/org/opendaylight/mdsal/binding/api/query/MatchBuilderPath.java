@@ -11,8 +11,8 @@ import com.google.common.annotations.Beta;
 import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.binding.BaseIdentity;
+import org.opendaylight.yangtools.binding.CaseObject;
 import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.Key;
@@ -46,7 +46,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @return This builder
      * @throws NullPointerException if any argument is null
      */
-    <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
+    <C extends CaseObject<? super T, ?, C>, N extends ChildOf<? super C>>
         @NonNull MatchBuilderPath<O, N> extractChild(Class<C> caseClass, Class<N> childClass);
 
     /**
@@ -60,7 +60,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @return This builder
      * @throws NullPointerException if childClass is null
      */
-    <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>> @NonNull MatchBuilderPath<O, N> extractChild(
+    <N extends EntryObject<? super T, N, K>, K extends Key<N>> @NonNull MatchBuilderPath<O, N> extractChild(
         Class<@NonNull N> listItem, K listKey);
 
     /**
