@@ -54,7 +54,7 @@ public final class ListsBindingUtils {
         return path(top).toBuilder().augmentation(TreeComplexUsesAugment.class).child(ListViaUses.class, uses).build();
     }
 
-    public static <T extends DataObject & Augmentation<TopLevelList>> DataObjectIdentifier<T> path(
+    public static <T extends DataObject & Augmentation<TopLevelList, T>> DataObjectIdentifier<T> path(
             final TopLevelListKey key, final Class<T> augmentation) {
         return path(key).toBuilder().augmentation(augmentation).build();
     }
@@ -71,7 +71,7 @@ public final class ListsBindingUtils {
         return new TopLevelListBuilder().withKey(key).build();
     }
 
-    public static TopLevelList topLevelList(final TopLevelListKey key, final Augmentation<TopLevelList> augment) {
+    public static TopLevelList topLevelList(final TopLevelListKey key, final Augmentation<TopLevelList, ?> augment) {
         return new TopLevelListBuilder().withKey(key).addAugmentation(augment).build();
     }
 
