@@ -10,9 +10,7 @@
     <repository>mvn:org.opendaylight.ietf/odl-ietf-model-rfc8342/{{versionAsInProject}}/xml/features</repository>
     <repository>mvn:org.opendaylight.mdsal/odl-mdsal-binding-base/{{versionAsInProject}}/xml/features</repository>
     <repository>mvn:org.opendaylight.mdsal/odl-mdsal-common/{{versionAsInProject}}/xml/features</repository>
-    <repository>mvn:org.opendaylight.odlparent/odl-errorprone/{{versionAsInProject}}/xml/features</repository>
     <feature name="odl-mdsal-binding-api">
-        <feature version="{{semVerRange}}">odl-errorprone</feature>
         <feature version="{{semVerRange}}">odl-ietf-model-rfc8342</feature>
         <feature version="{{semVerRange}}">odl-mdsal-binding-base</feature>
         <feature version="{{semVerRange}}">odl-mdsal-common</feature>
