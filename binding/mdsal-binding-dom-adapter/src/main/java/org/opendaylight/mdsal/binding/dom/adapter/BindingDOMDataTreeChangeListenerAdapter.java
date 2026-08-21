@@ -30,7 +30,7 @@ final class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implem
     private final AdapterContext adapterContext;
     private final DataTreeChangeListener<T> listener;
     private final LogicalDatastoreType store;
-    private final @Nullable Class<? extends Augmentation<?>> augment;
+    private final @Nullable Class<? extends Augmentation<?, ?>> augment;
 
     private boolean initialSyncDone;
 
@@ -43,9 +43,9 @@ final class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implem
     }
 
     @SuppressWarnings("unchecked")
-    private static @Nullable Class<? extends Augmentation<?>> extractAugment(final Class<?> target) {
+    private static @Nullable Class<? extends Augmentation<?, ?>> extractAugment(final Class<?> target) {
         return Augmentation.class.isAssignableFrom(target)
-            ? (Class<? extends Augmentation<?>>) target.asSubclass(Augmentation.class) : null;
+            ? (Class<? extends Augmentation<?, ?>>) target.asSubclass(Augmentation.class) : null;
     }
 
     @Override

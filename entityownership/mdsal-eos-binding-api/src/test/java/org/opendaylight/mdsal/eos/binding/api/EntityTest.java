@@ -13,10 +13,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
-import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.ContainerObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
+import org.opendaylight.yangtools.binding.ItemObject;
 
 /**
  * Unit tests for Entity.
@@ -71,16 +71,16 @@ public class EntityTest {
         assertNotNull("List key not found", keyID);
     }
 
-    interface TestDataObject1 extends ChildOf<DataRoot<?>> {
+    interface TestDataObject1 extends ContainerObject<DataRoot<?>, TestDataObject1> {
         @Override
-        default Class<? extends DataObject> implementedInterface() {
+        default Class<TestDataObject1> implementedInterface() {
             return TestDataObject1.class;
         }
     }
 
-    interface TestDataObject2 extends ChildOf<DataRoot<?>> {
+    interface TestDataObject2 extends ItemObject<DataRoot<?>, TestDataObject2> {
         @Override
-        default Class<? extends DataObject> implementedInterface() {
+        default Class<TestDataObject2> implementedInterface() {
             return TestDataObject2.class;
         }
     }
