@@ -86,7 +86,7 @@ class SimpleDOMEntityOwnershipServiceTest {
     @Test
     void testToString() {
         final var uuid = UUID.randomUUID();
-        final var expected = String.format("SimpleDOMEntityOwnershipService{uuid=%s, entities={}, listeners={}}", uuid);
-        assertEquals(expected, new SimpleDOMEntityOwnershipService(uuid).toString());
+        assertEquals("SimpleDOMEntityOwnershipService{uuid=" + uuid + ", entities={}, listeners={}}",
+            new SimpleDOMEntityOwnershipService(uuid).toString());
     }
 }

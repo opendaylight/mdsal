@@ -30,7 +30,7 @@ final class DiffUtil {
     private static final Joiner JOINER = Joiner.on(System.getProperty("line.separator"));
 
     private DiffUtil() {
-
+        // hidden on purpose
     }
 
     static String diff(final String expectedText, final String actualText) {
@@ -43,7 +43,7 @@ final class DiffUtil {
         String header = "";
         int deltas = patch.getDeltas().size();
         if (deltas > MAX_DIFFS) {
-            header = String.format("(Too many differences (%d); only showing first %d)%n", deltas, MAX_DIFFS);
+            header = "(Too many differences (%d); only showing first %d)%n".formatted(deltas, MAX_DIFFS);
             diff = diff.subList(0, MAX_DIFFS);
         }
         return header + JOINER.join(diff);

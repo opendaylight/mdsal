@@ -19,11 +19,11 @@ public class DOMRpcImplementationNotAvailableException extends DOMRpcException {
     private static final long serialVersionUID = 1L;
 
     public DOMRpcImplementationNotAvailableException(final String format, final Object... args) {
-        super(String.format(format, args));
+        super(format.formatted(args));
     }
 
     public DOMRpcImplementationNotAvailableException(final Throwable cause,
             final String format, final Object... args) {
-        super(String.format(format, args), requireNonNull(cause));
+        super(format.formatted(args), requireNonNull(cause));
     }
 }
