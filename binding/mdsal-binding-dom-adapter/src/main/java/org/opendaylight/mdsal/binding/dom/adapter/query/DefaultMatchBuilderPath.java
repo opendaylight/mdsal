@@ -15,8 +15,8 @@ import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.StringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.yangtools.binding.BaseIdentity;
+import org.opendaylight.yangtools.binding.CaseObject;
 import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.EntryObject;
@@ -50,7 +50,7 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
+    public <C extends CaseObject<? super T, ?, C>, N extends ChildOf<? super C>>
             MatchBuilderPath<O, N> extractChild(final Class<C> caseClass, final Class<N> childClass) {
         target.child(caseClass, childClass);
         return (MatchBuilderPath<O, N>) this;
@@ -58,7 +58,7 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>> MatchBuilderPath<O, N> extractChild(
+    public <N extends EntryObject<? super T, N, K>, K extends Key<N>> MatchBuilderPath<O, N> extractChild(
             final Class<@NonNull N> listItem, final K listKey) {
         target.child(listItem, listKey);
         return (MatchBuilderPath<O, N>) this;

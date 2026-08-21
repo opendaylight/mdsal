@@ -11,8 +11,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
+import org.opendaylight.yangtools.binding.CaseObject;
 import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
@@ -38,15 +38,15 @@ final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataOb
 
     @Override
     @SuppressWarnings("unchecked")
-    public <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
-            DescendantQueryBuilder<N> extractChild(final Class<C> caseClass, final Class<N> childClass) {
+    public <C extends CaseObject<? super T, ?, C>, N extends ChildOf<? super C>> DescendantQueryBuilder<N> extractChild(
+            final Class<C> caseClass, final Class<N> childClass) {
         childPath.child(caseClass, childClass);
         return (DefaultDescendantQueryBuilder<R, N>) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>> DescendantQueryBuilder<N> extractChild(
+    public <N extends EntryObject<? super T, N, K>, K extends Key<N>> DescendantQueryBuilder<N> extractChild(
             final Class<@NonNull N> listItem, final K listKey) {
         childPath.child(listItem, listKey);
         return (DefaultDescendantQueryBuilder<R, N>) this;
