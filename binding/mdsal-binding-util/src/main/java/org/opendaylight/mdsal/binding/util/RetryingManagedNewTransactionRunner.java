@@ -36,7 +36,8 @@ import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
  * <p>If this default is not suitable (e.g. for particularly slow try/retry code), then you can specify
  * another {@link Executor} to be used for the retries by using the alternative constructor.
  *
- * @author Michael Vorburger.ch &amp; Stephen Kitt
+ * @author Michael Vorburger.ch
+ * @author Stephen Kitt
  */
 @Beta
 // Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of
