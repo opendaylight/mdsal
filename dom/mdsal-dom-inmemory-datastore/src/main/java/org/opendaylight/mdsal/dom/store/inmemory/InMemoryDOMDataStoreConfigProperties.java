@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.immutables.value.Generated;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style.ImplementationVisibility;
 
@@ -19,7 +20,9 @@ import org.immutables.value.Value.Style.ImplementationVisibility;
  * @see InMemoryDOMDataStoreFactory
  */
 @Value.Immutable
-@Value.Style(visibility = ImplementationVisibility.PRIVATE, allowedClasspathAnnotations = { SuppressWarnings.class })
+@Value.Style(
+    visibility = ImplementationVisibility.PRIVATE,
+    allowedClasspathAnnotations = { Generated.class, SuppressWarnings.class })
 public abstract class InMemoryDOMDataStoreConfigProperties {
 
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE = 1000;
