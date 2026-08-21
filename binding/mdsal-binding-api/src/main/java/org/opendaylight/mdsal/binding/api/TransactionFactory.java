@@ -40,7 +40,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * consumed by them.
  *
  * @see DataBroker
-*/
+ */
 public interface TransactionFactory {
     /**
      * Allocates a new read-only transaction which provides an immutable snapshot of the data tree. The view of data
