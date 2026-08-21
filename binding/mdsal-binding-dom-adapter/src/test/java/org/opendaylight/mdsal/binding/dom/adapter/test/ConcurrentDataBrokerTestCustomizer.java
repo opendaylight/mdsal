@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 
 /**
  * AbstractDataBrokerTestCustomizer implementation that uses a single-threaded executor for commits.
-
+ *
  * @author Michael Vorburger
  */
 public class ConcurrentDataBrokerTestCustomizer extends AbstractDataBrokerTestCustomizer {
