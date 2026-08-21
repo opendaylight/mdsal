@@ -17,7 +17,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.annotations.RoutingContext;
-import org.opendaylight.yangtools.binding.contract.Naming;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +112,7 @@ abstract sealed class ContextReferenceExtractor {
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         final Method method;
         try {
-            method = type.getMethod(Naming.SCALAR_TYPE_OBJECT_GET_VALUE_NAME);
+            method = type.getMethod("getValue");
         } catch (NoSuchMethodException e) {
             LOG.warn("Value class {} does not comform to Binding Specification v1.", type, e);
             return null;

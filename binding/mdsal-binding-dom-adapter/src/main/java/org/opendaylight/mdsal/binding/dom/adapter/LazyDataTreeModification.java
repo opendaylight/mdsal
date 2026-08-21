@@ -46,7 +46,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <T extends DataObject> @Nullable DataTreeModification<T> from(final CurrentAdapterSerializer serializer,
             final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType,
-            final @Nullable Class<? extends Augmentation<?>> augment) {
+            final @Nullable Class<? extends Augmentation<?, ?>> augment) {
         final var bindingPath = createBindingPath(serializer, domChange.getRootPath(), augment);
         final var codec = serializer.getSubtreeCodec(bindingPath);
         final var modification = RegularCandidateNodeAdapter.from(codec, domChange.getRootNode());
@@ -67,7 +67,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
 
     static <T extends DataObject> @NonNull List<DataTreeModification<T>> from(final CurrentAdapterSerializer codec,
             final List<DataTreeCandidate> domChanges, final LogicalDatastoreType datastoreType,
-            final @Nullable Class<? extends Augmentation<?>> augment) {
+            final @Nullable Class<? extends Augmentation<?, ?>> augment) {
         final var result = new ArrayList<DataTreeModification<T>>(domChanges.size());
         for (var domChange : domChanges) {
             final var bindingChange = LazyDataTreeModification.<T>from(codec, domChange, datastoreType, augment);

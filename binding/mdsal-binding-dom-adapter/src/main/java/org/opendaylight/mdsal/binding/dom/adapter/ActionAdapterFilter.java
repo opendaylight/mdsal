@@ -16,7 +16,6 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.binding.contract.Naming;
 
 final class ActionAdapterFilter implements InvocationHandler {
     private final Set<DataTreeIdentifier<?>> nodes;
@@ -29,7 +28,7 @@ final class ActionAdapterFilter implements InvocationHandler {
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        if (Naming.ACTION_INVOKE_NAME.equals(method.getName()) && args.length == 2) {
+        if ("invoke".equals(method.getName()) && args.length == 2) {
             final var path = (DataObjectIdentifier<?>) requireNonNull(args[0]);
             checkState(nodes.contains(DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path)),
                 "Cannot service %s", path);

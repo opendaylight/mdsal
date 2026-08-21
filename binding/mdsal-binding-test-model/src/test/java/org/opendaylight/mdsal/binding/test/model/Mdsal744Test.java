@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,9 +25,9 @@ public class Mdsal744Test {
 
     static Stream<Arguments> values() {
         return Stream.of(
-            Arguments.of("MyBits{}", false, false),
-            Arguments.of("MyBits{bitOne}", false, true),
-            Arguments.of("MyBits{bitZero}", true, false),
-            Arguments.of("MyBits{bitZero, bitOne}", true, true));
+            arguments("MyBits{}", false, false),
+            arguments("MyBits{bit-one}", false, true),
+            arguments("MyBits{bit-zero}", true, false),
+            arguments("MyBits{bit-zero, bit-one}", true, true));
     }
 }

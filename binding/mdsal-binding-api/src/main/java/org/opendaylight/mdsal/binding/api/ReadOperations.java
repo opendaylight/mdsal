@@ -17,7 +17,6 @@ import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Read-like operations supported by {@link ReadTransaction} and {@link ReadWriteTransaction}. This interface defines
@@ -96,10 +95,9 @@ public interface ReadOperations {
      */
     default @NonNull FluentFuture<Boolean> exists(final @NonNull LogicalDatastoreType store,
             final @NonNull DataObjectReference<?> path) {
-        return switch (path) {
-            case DataObjectIdentifier<?> id -> exists(store, id);
-            case InstanceIdentifier<?> id -> exists(store, id.toReference());
-            default -> throw new IllegalArgumentException("Unsupported reference " + path);
-        };
+        if (path instanceof DataObjectIdentifier<?> id) {
+            return exists(store, id);
+        }
+        throw new IllegalArgumentException("Unsupported reference " + path);
     }
 }
