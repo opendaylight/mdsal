@@ -19,7 +19,7 @@ public interface DOMDataTreeReadOperations {
     /**
      * Reads data from provided logical data store located at the provided path.
      *
-     *<p>If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
+     * <p>If the target is a subtree, then the whole subtree is read (and will be accessible from the returned data
      * object).
      *
      * @param store Logical data store from which read should occur.
