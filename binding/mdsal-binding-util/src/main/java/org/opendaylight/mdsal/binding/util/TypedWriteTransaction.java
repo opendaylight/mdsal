@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
-import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import org.opendaylight.mdsal.binding.api.Transaction;
 import org.opendaylight.mdsal.binding.api.WriteOperations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;

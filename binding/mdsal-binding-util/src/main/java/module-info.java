@@ -16,7 +16,7 @@ module org.opendaylight.mdsal.binding.util {
     requires org.slf4j;
 
     // Annotations
+    requires static transitive com.google.errorprone.annotations;
     requires static transitive org.eclipse.jdt.annotation;
     requires static transitive javax.inject;
-    requires static com.github.spotbugs.annotations;
 }
