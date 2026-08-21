@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.Key;
 import org.opendaylight.yangtools.binding.KeyedListNotification;
 
-final class KeyedInstanceNotificationListenerAdapter<P extends EntryObject<P, K>, K extends Key<P>,
+final class KeyedInstanceNotificationListenerAdapter<P extends EntryObject<?, P, K>, K extends Key<P>,
             N extends KeyedListNotification<N, P, K>>
         extends AbstractInstanceNotificationListenerAdapter<P, N, KeyedListListener<P, N, K>> {
     KeyedInstanceNotificationListenerAdapter(final AdapterContext adapterContext, final Class<N> notificationClass,

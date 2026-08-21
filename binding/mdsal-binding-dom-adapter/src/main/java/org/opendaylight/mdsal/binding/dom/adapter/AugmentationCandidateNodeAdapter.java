@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
  * Specialization of {@link CandidateNodeAdapter} for {@link Augmentation}s. Is based on a parent
  * {@link DataTreeCandidateNode}, but contains only a subset of its modifications.
  */
-final class AugmentationCandidateNodeAdapter<A extends Augmentation<?>>
+final class AugmentationCandidateNodeAdapter<A extends Augmentation<?, A>>
         extends CandidateNodeAdapter<A, BindingAugmentationCodecTreeNode<A>> {
     private final @NonNull ImmutableList<DataTreeCandidateNode> domChildNodes;
 
@@ -36,7 +36,7 @@ final class AugmentationCandidateNodeAdapter<A extends Augmentation<?>>
         this.domChildNodes = requireNonNull(domChildNodes);
     }
 
-    static <A extends Augmentation<?>> @Nullable AugmentationCandidateNodeAdapter<A> forModifications(
+    static <A extends Augmentation<?, A>> @Nullable AugmentationCandidateNodeAdapter<A> forModifications(
             final BindingAugmentationCodecTreeNode<A> codec, final DataTreeCandidateNode parent,
             final Collection<DataTreeCandidateNode> children) {
         // Filter out any unmodified children first
@@ -47,7 +47,7 @@ final class AugmentationCandidateNodeAdapter<A extends Augmentation<?>>
         return domChildren.isEmpty() ? null : new AugmentationCandidateNodeAdapter<>(codec, parent, domChildren);
     }
 
-    static <A extends Augmentation<?>> @Nullable AugmentationCandidateNodeAdapter<A> forParent(
+    static <A extends Augmentation<?, A>> @Nullable AugmentationCandidateNodeAdapter<A> forParent(
             final BindingAugmentationCodecTreeNode<A> codec, final DataTreeCandidateNode parent) {
         final var builder = ImmutableList.<DataTreeCandidateNode>builder();
         for (var pathArg : codec.childPathArguments()) {

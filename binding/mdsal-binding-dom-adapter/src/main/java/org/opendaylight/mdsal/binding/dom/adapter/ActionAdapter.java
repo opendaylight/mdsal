@@ -22,7 +22,6 @@ import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.RpcInput;
-import org.opendaylight.yangtools.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -56,7 +55,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                     return spec.type().getName() + "$Adapter{delegate=" + getDelegate() + "}";
                 }
                 break;
-            case Naming.ACTION_INVOKE_NAME:
+            case "invoke":
                 if (args.length == 2) {
                     final var path = (DataObjectIdentifier<?>) requireNonNull(args[0]);
                     final var input = (RpcInput) requireNonNull(args[1]);
