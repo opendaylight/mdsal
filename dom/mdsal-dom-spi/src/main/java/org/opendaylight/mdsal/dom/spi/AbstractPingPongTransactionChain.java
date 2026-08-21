@@ -161,8 +161,8 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         checkState(shutdownTx == null, "Transaction chain %s has been shut down", this);
 
         if (deadTx != null) {
-            throw new IllegalStateException(String.format(
-                "Transaction chain %s has failed due to transaction %s being canceled", this, deadTx.getKey()),
+            throw new IllegalStateException(
+                "Transaction chain %s has failed due to transaction %s being canceled".formatted(this, deadTx.getKey()),
                 deadTx.getValue());
         }
 
@@ -172,8 +172,7 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         final Object witness = LOCKED_TX.compareAndExchange(this, null, newTx);
         if (witness != null) {
             delegateTx.cancel();
-            throw new IllegalStateException(
-                    String.format("New transaction %s raced with transaction %s", newTx, witness));
+            throw new IllegalStateException("New transaction %s raced with transaction %s".formatted(newTx, witness));
         }
 
         return newTx;
@@ -197,8 +196,8 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
         if (witness != null) {
             // Ouch. Delegate chain has not detected a duplicate transaction allocation. This is the best we can do.
             oldTx.getTransaction().cancel();
-            throw new IllegalStateException(String.format("Reusable transaction %s raced with transaction %s", oldTx,
-                witness));
+            throw new IllegalStateException(
+                "Reusable transaction %s raced with transaction %s".formatted(oldTx, witness));
         }
 
         return oldTx;
