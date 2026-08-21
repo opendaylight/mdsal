@@ -14,8 +14,8 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.CaseObject;
 import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.DataRoot;
@@ -48,7 +48,7 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
         return new Builder<>(DataObjectReference.builder(container));
     }
 
-    public static <C extends ChoiceIn<? extends DataRoot<?>> & DataObject, P extends ChildOf<? super C>>
+    public static <C extends CaseObject<? extends DataRoot<?>, ?, C>, P extends ChildOf<? super C>>
             @NonNull Builder<P> builder(final @NonNull Class<C> caze, final @NonNull Class<P> container) {
         return new Builder<>(DataObjectReference.builder(caze, container));
     }
@@ -90,13 +90,13 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
             return castThis();
         }
 
-        public <C extends ChoiceIn<? super P> & DataObject, N extends ChildOf<? super C>>
+        public <C extends CaseObject<? super P, ?, C>, N extends ChildOf<? super C>>
                 @NonNull Builder<N> withPathChild(final @NonNull Class<C> caze, final @NonNull Class<N> container) {
             pathBuilder.child(caze, container);
             return castThis();
         }
 
-        public <A extends Augmentation<? super P>> @NonNull Builder<A> withPathAugmentation(
+        public <A extends Augmentation<? super P, A>> @NonNull Builder<A> withPathAugmentation(
                 final @NonNull Class<A> augmentation) {
             pathBuilder.augmentation(augmentation);
             return castThis();
