@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.CaseObject;
 import org.opendaylight.yangtools.binding.ChildOf;
-import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.Key;
@@ -46,7 +46,7 @@ public interface DescendantQueryBuilder<T extends DataObject> extends Structural
      * @return This builder
      * @throws NullPointerException if childClass is null
      */
-    <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
+    <N extends EntryObject<? super T, N, K>, K extends Key<N>>
         @NonNull DescendantQueryBuilder<N> extractChild(Class<@NonNull N> listItem, K listKey);
 
     /**
@@ -60,7 +60,7 @@ public interface DescendantQueryBuilder<T extends DataObject> extends Structural
      * @return This builder
      * @throws NullPointerException if any argument is null
      */
-    <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
+    <C extends CaseObject<? super T, ?, C>, N extends ChildOf<? super C>>
         @NonNull DescendantQueryBuilder<N> extractChild(Class<C> caseClass, Class<N> childClass);
 
     /**

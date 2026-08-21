@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
@@ -43,7 +42,7 @@ public interface QueryFactory {
      * @throws IllegalArgumentException if rootPath is incorrect
      * @throws NullPointerException if rootPath is null
      */
-    <P extends DataObject, T extends EntryObject<T, ?> & ChildOf<P>> @NonNull DescendantQueryBuilder<T> querySubtree(
+    <P extends DataObject, T extends EntryObject<? super P, T, ?>> @NonNull DescendantQueryBuilder<T> querySubtree(
         DataObjectIdentifier<P> parentPath, Class<T> list);
 
     /**
@@ -55,6 +54,5 @@ public interface QueryFactory {
      * @throws IllegalArgumentException if rootPath is incorrect
      * @throws NullPointerException if rootPath is null
      */
-    <T extends EntryObject<T, ?> & ChildOf<? extends DataRoot<?>>> @NonNull DescendantQueryBuilder<T> querySubtree(
-        Class<T> list);
+    <T extends EntryObject<? extends DataRoot<?>, T, ?>> @NonNull DescendantQueryBuilder<T> querySubtree(Class<T> list);
 }
