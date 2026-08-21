@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.InstanceNotification;
-import org.opendaylight.yangtools.binding.reflect.BindingReflections;
+import org.opendaylight.yangtools.binding.contract.Naming;
 
 final class InstanceNotificationPublishServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMInstanceNotificationPublishService, InstanceNotificationSpec<?, ?>,
@@ -60,7 +60,7 @@ final class InstanceNotificationPublishServiceAdapter
     @Override
     PublisherAdapter<?, ?> loadAdapter(final InstanceNotificationSpec<?, ?> key) {
         final var type = key.type();
-        checkArgument(BindingReflections.isBindingClass(type));
+        checkArgument(type.getName().startsWith(Naming.PACKAGE_PREFIX));
         checkArgument(type.isInterface(), "Supplied Notification type must be an interface.");
         checkArgument(InstanceNotification.class.isAssignableFrom(type), "Illegal instance notification class %s",
             type);

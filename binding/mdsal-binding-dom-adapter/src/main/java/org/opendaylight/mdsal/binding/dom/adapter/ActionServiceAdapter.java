@@ -23,7 +23,7 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.binding.Action;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.binding.reflect.BindingReflections;
+import org.opendaylight.yangtools.binding.contract.Naming;
 
 @NonNullByDefault
 final class ActionServiceAdapter
@@ -63,7 +63,7 @@ final class ActionServiceAdapter
     @Override
     ActionAdapter loadAdapter(final ActionSpec<?, ?> key) {
         final var type = key.type();
-        checkArgument(BindingReflections.isBindingClass(type));
+        checkArgument(type.getName().startsWith(Naming.PACKAGE_PREFIX));
         checkArgument(type.isInterface(), "Supplied Action type must be an interface.");
         return new ActionAdapter(adapterContext(), getDelegate(), key);
     }

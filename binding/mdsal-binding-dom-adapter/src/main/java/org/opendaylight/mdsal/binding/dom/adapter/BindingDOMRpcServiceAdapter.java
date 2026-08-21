@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.binding.Rpc;
-import org.opendaylight.yangtools.binding.reflect.BindingReflections;
+import org.opendaylight.yangtools.binding.contract.Naming;
 
 @VisibleForTesting
 public final class BindingDOMRpcServiceAdapter
@@ -37,13 +37,12 @@ public final class BindingDOMRpcServiceAdapter
 
     @Override
     RpcAdapter loadAdapter(final Class<?> key) {
-        checkArgument(BindingReflections.isBindingClass(key));
+        checkArgument(key.getName().startsWith(Naming.PACKAGE_PREFIX));
         checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
         if (Rpc.class.isAssignableFrom(key)) {
             return new RpcAdapter(adapterContext(), getDelegate(), key.asSubclass(Rpc.class));
-        } else {
-            throw new IllegalStateException("Unhandled key " + key);
         }
+        throw new IllegalStateException("Unhandled key " + key);
     }
 
     private static final class Builder extends BindingDOMAdapterBuilder<RpcService> {
