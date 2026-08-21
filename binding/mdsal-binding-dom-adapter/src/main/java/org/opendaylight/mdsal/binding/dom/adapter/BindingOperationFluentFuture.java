@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
-final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFuture<DOMRpcResult>
+final class BindingOperationFluentFuture<O extends RpcOutput<O>> extends AbstractFuture<DOMRpcResult>
         implements BindingRpcFutureAware {
     private final ListenableFuture<RpcResult<O>> userFuture;
     private final Class<? extends Action<?, ?, O>> action;

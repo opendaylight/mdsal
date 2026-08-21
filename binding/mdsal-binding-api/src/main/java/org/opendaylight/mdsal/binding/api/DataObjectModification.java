@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.CaseObject;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
@@ -47,14 +48,17 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
         /**
          * Child node (direct or indirect) was modified.
          */
+        @Deprecated(since = "15.0.0")
         SUBTREE_MODIFIED,
         /**
          * Node was explicitly created / overwritten.
          */
+        @Deprecated(since = "15.0.0")
         WRITE,
         /**
          * Node was deleted.
          */
+        @Deprecated(since = "15.0.0")
         DELETE
     }
 
@@ -119,7 +123,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
     //
     //       That requires an similar specialization of DataTreeChangeListener, so that users registering for listening
     //       on EntryObjects can get this out of the box.
-    public final <E extends EntryObject<E, K>, K extends Key<E>> @NonNull KeyStep<K, E> coerceKeyStep(
+    public final <E extends EntryObject<?, E, K>, K extends Key<E>> @NonNull KeyStep<K, E> coerceKeyStep(
             final @NonNull Class<E> type) {
         final var cast = type.asSubclass(EntryObject.class);
         final var step = step();
@@ -210,7 +214,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if @code childType} class is not valid child according to generated model
      */
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+    public final <H extends CaseObject<? super T, ?, H>, C extends ChildOf<? super H>>
             @NonNull Collection<DataObjectModification<C>> getModifiedChildren(final @NonNull Class<H> caseType,
                 final @NonNull Class<C> childType) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
@@ -238,7 +242,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if {@code child} class is not a valid child according to generated model
      */
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+    public final <H extends CaseObject<? super T, ?, H>, C extends ChildOf<? super H>>
             @Nullable DataObjectModification<C> getModifiedChildContainer(final @NonNull Class<H> caseType,
                 final @NonNull Class<C> child) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
@@ -275,8 +279,8 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws IllegalArgumentException if @code augmentation} class is not a valid augmentation according to generated
      *                                  model
      */
-    public final <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
-            final @NonNull Class<C> augmentation) {
+    public final <C extends Augmentation<? extends T, C> & DataObject>
+            @Nullable DataObjectModification<C> getModifiedAugmentation(final @NonNull Class<C> augmentation) {
         augmentation.asSubclass(Augmentation.class);
         return modifiedChild(new NodeStep<>(augmentation));
     }
@@ -291,7 +295,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if @code listItem} is not a valid child according to generated model
      */
-    public final <N extends EntryObject<N, K> & ChildOf<? super T>, K extends Key<N>>
+    public final <N extends EntryObject<? super T, N, K>, K extends Key<N>>
             @Nullable DataObjectModification<N> getModifiedChildListItem(final @NonNull Class<N> listItem,
                 final @NonNull K listKey) {
         listItem.asSubclass(EntryObject.class).asSubclass(ChildOf.class);
@@ -308,7 +312,7 @@ public abstract sealed class DataObjectModification<T extends DataObject> implem
      * @throws ClassCastException if any argument does not match its declared class bounds
      * @throws IllegalArgumentException if {@code listItem} class is not a valid child according to generated model
      */
-    public final <H extends ChoiceIn<? super T> & DataObject, C extends EntryObject<C, K> & ChildOf<? super H>,
+    public final <H extends CaseObject<? super T, ?, H>, C extends EntryObject<? super H, C, K>,
             K extends Key<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
                 final @NonNull Class<H> caseType, final @NonNull Class<C> listItem, final @NonNull K listKey) {
         caseType.asSubclass(ChoiceIn.class).asSubclass(DataObject.class);
