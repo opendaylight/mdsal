@@ -22,7 +22,6 @@ import org.mockito.ArgumentCaptor;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
@@ -58,15 +57,12 @@ import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 public class Mdsal298Test extends AbstractDataBrokerTest {
     private static final DataObjectIdentifier<Container> CONTAINER =
         DataObjectIdentifier.builder(Container.class).build();
-    private static final DataTreeIdentifier<Container> CONTAINER_TID = DataTreeIdentifier.of(CONFIGURATION, CONTAINER);
     private static final NodeIdentifier CONTAINER_NID = new NodeIdentifier(Container.QNAME);
     private static final QName FOO_QNAME = QName.create(Container.QNAME, "foo");
     private static final QName BAZ_QNAME = QName.create(UnaddressableCont.QNAME, "baz");
 
     private static final DataObjectIdentifier<WithChoice> CHOICE_CONTAINER =
         DataObjectIdentifier.builder(WithChoice.class).build();
-    private static final DataTreeIdentifier<WithChoice> CHOICE_CONTAINER_TID =
-        DataTreeIdentifier.of(CONFIGURATION, CHOICE_CONTAINER);
     private static final NodeIdentifier CHOICE_CONTAINER_NID = new NodeIdentifier(WithChoice.QNAME);
     private static final NodeIdentifier CHOICE_NID = new NodeIdentifier(Foo.QNAME);
     private static final DataObjectIdentifier<Addressable> ADDRESSABLE_CASE = CHOICE_CONTAINER.toBuilder()
@@ -74,14 +70,10 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
     private static final DataObjectIdentifier<AddressableCont> ADDRESSABLE_CONTAINER =
         DataObjectIdentifier.builder(AddressableCont.class).build();
-    private static final DataTreeIdentifier<AddressableCont> ADDRESSABLE_CONTAINER_TID =
-        DataTreeIdentifier.of(CONFIGURATION, ADDRESSABLE_CONTAINER);
     private static final NodeIdentifier ADDRESSABLE_CONTAINER_NID = new NodeIdentifier(AddressableCont.QNAME);
 
     private static final DataObjectIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER =
         DataObjectIdentifier.builder(UnaddressableCont.class).build();
-    private static final DataTreeIdentifier<UnaddressableCont> UNADDRESSABLE_CONTAINER_TID =
-        DataTreeIdentifier.of(CONFIGURATION, UNADDRESSABLE_CONTAINER);
     private static final NodeIdentifier UNADDRESSABLE_CONTAINER_NID = new NodeIdentifier(UnaddressableCont.QNAME);
 
     @Test
@@ -109,8 +101,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<Container>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<Container> change = capture.get(0);
-        assertEquals(CONTAINER_TID, change.getRootPath());
+        final DataTreeModification<Container> change = capture.getFirst();
+        assertEquals(CONFIGURATION, change.datastore());
+        assertEquals(CONTAINER, change.path());
         final DataObjectModification<Container> changedContainer = change.getRootNode();
         assertEquals(new NodeStep<>(Container.class), changedContainer.step());
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.modificationType());
@@ -164,8 +157,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<Container>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<Container> change = capture.get(0);
-        assertEquals(CONTAINER_TID, change.getRootPath());
+        final DataTreeModification<Container> change = capture.getFirst();
+        assertEquals(CONFIGURATION, change.datastore());
+        assertEquals(CONTAINER, change.path());
         final DataObjectModification<Container> changedContainer = change.getRootNode();
         assertEquals(new NodeStep<>(Container.class), changedContainer.step());
         assertEquals(ModificationType.WRITE, changedContainer.modificationType());
@@ -196,8 +190,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<WithChoice>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<WithChoice> choiceChange = capture.iterator().next();
-        assertEquals(CHOICE_CONTAINER_TID, choiceChange.getRootPath());
+        final DataTreeModification<WithChoice> choiceChange = capture.getFirst();
+        assertEquals(CONFIGURATION, choiceChange.datastore());
+        assertEquals(CHOICE_CONTAINER, choiceChange.path());
         final DataObjectModification<WithChoice> changedContainer = choiceChange.getRootNode();
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.modificationType());
         assertEquals(new NodeStep<>(WithChoice.class), changedContainer.step());
@@ -228,8 +223,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final List<DataTreeModification<AddressableCont>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<AddressableCont> contChange = capture.iterator().next();
-        assertEquals(ADDRESSABLE_CONTAINER_TID, contChange.getRootPath());
+        final DataTreeModification<AddressableCont> contChange = capture.getFirst();
+        assertEquals(CONFIGURATION, contChange.datastore());
+        assertEquals(ADDRESSABLE_CONTAINER, contChange.path());
         final DataObjectModification<AddressableCont> changedContainer = contChange.getRootNode();
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.modificationType());
         assertEquals(new NodeStep<>(AddressableCont.class), changedContainer.step());
@@ -261,8 +257,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<UnaddressableCont>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<UnaddressableCont> contChange = capture.iterator().next();
-        assertEquals(UNADDRESSABLE_CONTAINER_TID, contChange.getRootPath());
+        final DataTreeModification<UnaddressableCont> contChange = capture.getFirst();
+        assertEquals(CONFIGURATION, contChange.datastore());
+        assertEquals(UNADDRESSABLE_CONTAINER, contChange.path());
         final DataObjectModification<UnaddressableCont> changedContainer = contChange.getRootNode();
         assertEquals(ModificationType.WRITE, changedContainer.modificationType());
         assertEquals(new NodeStep<>(UnaddressableCont.class), changedContainer.step());
@@ -293,8 +290,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<WithChoice>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<WithChoice> choiceChange = capture.get(0);
-        assertEquals(CHOICE_CONTAINER_TID, choiceChange.getRootPath());
+        final DataTreeModification<WithChoice> choiceChange = capture.getFirst();
+        assertEquals(CONFIGURATION, choiceChange.datastore());
+        assertEquals(CHOICE_CONTAINER, choiceChange.path());
         final DataObjectModification<WithChoice> changedContainer = choiceChange.getRootNode();
 
         // Should be write
@@ -311,9 +309,8 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<T> listener = mock(DataTreeChangeListener.class);
         doNothing().when(listener).onDataTreeChanged(anyList());
 
-        final DataTreeIdentifier<T> dti = DataTreeIdentifier.of(CONFIGURATION,
-            DataObjectIdentifier.builder(bindingClass).build());
-        getDataBroker().registerTreeChangeListener(dti, listener);
+        final DataObjectIdentifier<T> doi = DataObjectIdentifier.builder(bindingClass).build();
+        getDataBroker().registerTreeChangeListener(CONFIGURATION, doi, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(new NodeIdentifier(qname)),
@@ -325,8 +322,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<T>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<T> change = capture.iterator().next();
-        assertEquals(dti, change.getRootPath());
+        final DataTreeModification<T> change = capture.getFirst();
+        assertEquals(CONFIGURATION, change.datastore());
+        assertEquals(doi, change.path());
         final DataObjectModification<T> changedContainer = change.getRootNode();
         assertEquals(ModificationType.WRITE, changedContainer.modificationType());
         assertEquals(new NodeStep<>(bindingClass), changedContainer.step());
@@ -346,7 +344,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = mock(DataTreeChangeListener.class);
         doNothing().when(listener).onDataTreeChanged(anyList());
-        getDataBroker().registerTreeChangeListener(CHOICE_CONTAINER_TID, listener);
+        getDataBroker().registerTreeChangeListener(CONFIGURATION, CHOICE_CONTAINER, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.of(CHOICE_CONTAINER_NID), ImmutableNodes.newContainerBuilder()
@@ -360,8 +358,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         List<DataTreeModification<WithChoice>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
-        final DataTreeModification<WithChoice> change = capture.iterator().next();
-        assertEquals(CHOICE_CONTAINER_TID, change.getRootPath());
+        final DataTreeModification<WithChoice> change = capture.getFirst();
+        assertEquals(CONFIGURATION, change.datastore());
+        assertEquals(CHOICE_CONTAINER, change.path());
         final DataObjectModification<WithChoice> changedContainer = change.getRootNode();
         assertEquals(ModificationType.WRITE, changedContainer.modificationType());
         assertEquals(new NodeStep<>(WithChoice.class), changedContainer.step());
