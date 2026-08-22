@@ -65,51 +65,14 @@ public final class DataTreeIdentifier<T extends DataObject>
         return of(datastore, path.toReference());
     }
 
-    /**
-     * Create a new {@link DataTreeIdentifier} with specified datastore and path.
-     *
-     * @param <T> target {@link DataObject} type
-     * @param datastore {@link LogicalDatastoreType} of this identifier
-     * @param path {@link InstanceIdentifier} path of this identifier
-     * @throws NullPointerException if any argument is {@code null}
-     * @deprecated Use {@link #of(LogicalDatastoreType, DataObjectReference)} instead
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    public static <T extends DataObject> @NonNull DataTreeIdentifier<T> create(
-            final @NonNull LogicalDatastoreType datastore, final @NonNull InstanceIdentifier<T> path) {
-        return of(datastore, path);
-    }
-
     @Override
     public LogicalDatastoreType datastore() {
         return datastore;
     }
 
-    /**
-     * Return the logical data store type.
-     *
-     * @return Logical data store type. Guaranteed to be non-null.
-     * @deprecated Use {@link #datastore()} instead
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    public @NonNull LogicalDatastoreType getDatastoreType() {
-        return datastore();
-    }
-
     @Override
     public InstanceIdentifier<T> path() {
         return path.toLegacy();
-    }
-
-    /**
-     * Return the {@link InstanceIdentifier} of the root node.
-     *
-     * @return Instance identifier corresponding to the root node.
-     * @deprecated Use {@link #path()} instead
-     */
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    public @NonNull InstanceIdentifier<T> getRootIdentifier() {
-        return path();
     }
 
     @Override
