@@ -18,7 +18,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -31,7 +31,7 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
         final Lookup lookup = MethodHandles.lookup();
         try {
             OBJECT = lookup.findVarHandle(DefaultQueryResultItem.class, "object", DataObject.class);
-            PATH = lookup.findVarHandle(DefaultQueryResultItem.class, "path", InstanceIdentifier.class);
+            PATH = lookup.findVarHandle(DefaultQueryResultItem.class, "path", DataObjectIdentifier.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -40,12 +40,10 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
     private final Entry<YangInstanceIdentifier, NormalizedNode> domItem;
     private final DefaultQueryResult<T> result;
 
-    @SuppressWarnings("unused")
     @SuppressFBWarnings(
         value = { "NP_STORE_INTO_NONNULL_FIELD", "URF_UNREAD_FIELD" },
         justification = "Ungrokked type annotation. https://github.com/spotbugs/spotbugs/issues/2749")
-    private volatile @Nullable InstanceIdentifier<T> path = null;
-    @SuppressWarnings("unused")
+    private volatile @Nullable DataObjectIdentifier<T> path = null;
     @SuppressFBWarnings(
         value = { "NP_STORE_INTO_NONNULL_FIELD", "URF_UNREAD_FIELD" },
         justification = "Ungrokked type annotation. https://github.com/spotbugs/spotbugs/issues/2749")
@@ -64,8 +62,8 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
     }
 
     @Override
-    public InstanceIdentifier<T> path() {
-        final @Nullable InstanceIdentifier<T> local = (InstanceIdentifier<T>) PATH.getAcquire(this);
+    public DataObjectIdentifier<T> path() {
+        final @Nullable DataObjectIdentifier<T> local = (DataObjectIdentifier<T>) PATH.getAcquire(this);
         return local != null ? local : loadPath();
     }
 
@@ -76,9 +74,9 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
     }
 
     @SuppressWarnings("unchecked")
-    private InstanceIdentifier<T> loadPath() {
-        final var ret = result.createPath(domItem.getKey()).toLegacy();
+    private DataObjectIdentifier<T> loadPath() {
+        final var ret = result.createPath(domItem.getKey()).toIdentifier();
         final var witness = PATH.compareAndExchangeRelease(this, null, ret);
-        return witness == null ? ret : (InstanceIdentifier<T>) witness;
+        return witness == null ? ret : (DataObjectIdentifier<T>) witness;
     }
 }
