@@ -32,18 +32,6 @@ public interface DataTreeModification<T extends DataObject> {
     @NonNull DataObjectIdentifier<T> path();
 
     /**
-     * Get the modification root path. This is the path of the root node relative to the root of InstanceIdentifier
-     * namespace.
-     *
-     * @return absolute path of the root node
-     * @deprecated Use {@link #datastore()} and {@link #path()} instead.
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default @NonNull DataTreeIdentifier<T> getRootPath() {
-        return DataTreeIdentifier.of(datastore(), path().toLegacy());
-    }
-
-    /**
      * Get the modification root node.
      *
      * @return modification root node
