@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Result of executing a {@link QueryExpression}. It is composed of one or more result values, which can be accessed via
@@ -30,18 +30,14 @@ public interface QueryResult<T extends DataObject> extends Iterable<QueryResult.
      */
     interface Item<T extends DataObject> extends Immutable {
         /**
-         * Return the result object.
-         *
-         * @return Result object
+         * {@return Result object}
          */
         T object();
 
         /**
-         * Return the {@link InstanceIdentifier} of the result object. This is guaranteed to be non-wildcard.
-         *
-         * @return InstanceIdentifier of the result object
+         * {@return DataObjectIdentifier of the result object}
          */
-        InstanceIdentifier<T> path();
+        DataObjectIdentifier<T> path();
     }
 
     /**
