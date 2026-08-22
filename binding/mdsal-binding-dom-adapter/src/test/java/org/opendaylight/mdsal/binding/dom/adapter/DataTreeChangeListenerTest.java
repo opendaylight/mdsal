@@ -124,17 +124,17 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().path());
+        assertEquals(FOO_PATH, fooWriteEvent.path());
         verifyModification(fooWriteEvent.getRootNode(), FOO_ARGUMENT, ModificationType.WRITE);
 
         putTx(BAR_PATH, BAR_DATA).commit().get();
         final DataTreeModification<TopLevelList> barWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(BAR_PATH, barWriteEvent.getRootPath().path());
+        assertEquals(BAR_PATH, barWriteEvent.path());
         verifyModification(barWriteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.WRITE);
 
         deleteTx(BAR_PATH).commit().get();
         final DataTreeModification<TopLevelList> barDeleteEvent = Iterables.getOnlyElement(listener.nextEvent());
-        assertEquals(BAR_PATH, barDeleteEvent.getRootPath().path());
+        assertEquals(BAR_PATH, barDeleteEvent.path());
         verifyModification(barDeleteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.DELETE);
     }
 
