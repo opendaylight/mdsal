@@ -66,8 +66,7 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
                 if (!matcher.apply(mod)) {
                     final var rootNode = mod.getRootNode();
                     fail("Received unexpected notification: type: %s, path: %s, before: %s, after: %s".formatted(
-                        rootNode.modificationType(), mod.getRootPath().path(), rootNode.dataBefore(),
-                        rootNode.dataAfter()));
+                        rootNode.modificationType(), mod.path(), rootNode.dataBefore(), rootNode.dataAfter()));
                     return;
                 }
             }

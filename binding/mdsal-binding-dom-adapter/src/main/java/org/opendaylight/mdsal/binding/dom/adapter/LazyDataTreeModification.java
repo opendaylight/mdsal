@@ -107,6 +107,10 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("path", getRootPath()).add("rootNode", rootNode).toString();
+        return MoreObjects.toStringHelper(this)
+            .add("datastore", datastore)
+            .add("path", path)
+            .add("rootNode", rootNode)
+            .toString();
     }
 }
