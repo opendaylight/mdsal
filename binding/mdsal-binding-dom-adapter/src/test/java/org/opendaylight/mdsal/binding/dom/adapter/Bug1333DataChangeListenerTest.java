@@ -19,13 +19,14 @@ import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.OpendaylightMdsalAugmentTestData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
-import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 
 /**
  * This testsuite tries to replicate bug 1333 and tests regresion of it  using test-model with similar construction as
@@ -40,8 +41,9 @@ public class Bug1333DataChangeListenerTest extends AbstractDataTreeChangeListene
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
-        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Top.class),
-            BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
+        return Set.of(
+            OpendaylightMdsalBindingTestData.META.moduleInfo(),
+            OpendaylightMdsalAugmentTestData.META.moduleInfo());
     }
 
     private static Top topWithListItem() {

@@ -34,15 +34,14 @@ import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.OpendaylightMdsalAugmentTestData;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectStep;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
-import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 
 public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     private static final DataObjectIdentifier<Top> TOP_PATH = DataObjectIdentifier.builder(Top.class).build();
@@ -78,8 +77,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
         return Set.of(
-            BindingRuntimeHelpers.getYangModuleInfo(TwoLevelList.class),
-            BindingRuntimeHelpers.getYangModuleInfo(TreeComplexUsesAugment.class));
+            OpendaylightMdsalBindingTestData.META.moduleInfo(),
+            OpendaylightMdsalAugmentTestData.META.moduleInfo());
     }
 
     @Override

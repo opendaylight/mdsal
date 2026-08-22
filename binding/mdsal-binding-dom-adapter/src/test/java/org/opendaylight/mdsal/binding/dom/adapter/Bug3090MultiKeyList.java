@@ -16,13 +16,13 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.OpendaylightTestBug3090Data;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.Root;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.RootBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.root.ListInRoot;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.opendaylight.test.bug._3090.rev160101.root.ListInRootBuilder;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
-import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 
 public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
@@ -30,7 +30,7 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
-        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Root.class));
+        return Set.of(OpendaylightTestBug3090Data.META.moduleInfo());
     }
 
     @Test

@@ -19,6 +19,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -34,12 +35,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.k
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnockInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnockOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnockOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.OpendaylightKnockKnockRpcData;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.binding.BindingInstanceIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
-import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -66,9 +68,9 @@ public class BindingDOMRpcIntegrationTest {
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         testContext = testFactory.getTestContext();
 
-        testContext.setSchemaModuleInfos(ImmutableSet.of(
-            BindingRuntimeHelpers.getYangModuleInfo(KnockKnock.class),
-            BindingRuntimeHelpers.getYangModuleInfo(Top.class)));
+        testContext.setSchemaModuleInfos(Set.of(
+            OpendaylightKnockKnockRpcData.META.moduleInfo(),
+            OpendaylightMdsalBindingTestData.META.moduleInfo()));
         testContext.start();
         baRpcProviderService = testContext.getBindingRpcProviderRegistry();
         baRpcService = testContext.getBindingRpcService();

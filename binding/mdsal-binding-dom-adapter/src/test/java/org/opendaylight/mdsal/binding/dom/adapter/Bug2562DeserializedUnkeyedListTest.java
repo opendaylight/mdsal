@@ -12,19 +12,19 @@ import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.OpendaylightTestBug2562Data;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.Root;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.RootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.FoorootBuilder;
 import org.opendaylight.yang.gen.v1.opendaylight.test.bug._2562.namespace.rev160101.root.fooroot.BarrootBuilder;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
-import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 
 public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeListenerTest {
     @Override
     protected Set<YangModuleInfo> getModuleInfos() {
-        return Set.of(BindingRuntimeHelpers.getYangModuleInfo(Root.class));
+        return Set.of(OpendaylightTestBug2562Data.META.moduleInfo());
     }
 
     @Test
