@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api.query;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -64,10 +63,10 @@ public interface QueryResult<T extends DataObject> extends Iterable<QueryResult.
     }
 
     default List<? extends T> getValues() {
-        return stream().map(Item::object).collect(Collectors.toUnmodifiableList());
+        return stream().map(Item::object).toList();
     }
 
     default List<? extends Item<T>> getItems() {
-        return stream().collect(Collectors.toUnmodifiableList());
+        return stream().toList();
     }
 }
