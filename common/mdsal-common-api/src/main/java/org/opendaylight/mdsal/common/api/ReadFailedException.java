@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.common.api;
 
 import java.io.Serial;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 

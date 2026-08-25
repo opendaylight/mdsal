@@ -7,16 +7,15 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import org.opendaylight.mdsal.common.api.ExceptionMapper;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 
 /**
  * Utility exception mapper which translates Exception to {@link TransactionCommitFailedException}.
  *
  * @see ExceptionMapper
  */
-public final class TransactionCommitFailedExceptionMapper
-                           extends ExceptionMapper<TransactionCommitFailedException> {
+public final class TransactionCommitFailedExceptionMapper extends ExceptionMapper<TransactionCommitFailedException> {
 
     public static final TransactionCommitFailedExceptionMapper PRE_COMMIT_MAPPER = create("preCommit");
 
@@ -33,12 +32,11 @@ public final class TransactionCommitFailedExceptionMapper
     }
 
     @Override
-    public TransactionCommitFailedException apply(final Exception input) {
-        return super.apply(input);
-    }
-
-    @Override
     protected TransactionCommitFailedException newWithCause(final String message, final Throwable cause) {
         return new TransactionCommitFailedException(message, cause);
+    }
+
+    public TransactionCommitFailedException map(final Exception input) {
+        return apply(input);
     }
 }
