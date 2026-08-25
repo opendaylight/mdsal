@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.util.concurrent;
+package org.opendaylight.mdsal.common.api;
 
 import static java.util.Objects.requireNonNull;
 
@@ -57,9 +57,8 @@ public abstract class ExceptionMapper<X extends Exception> implements Function<E
      */
     protected abstract X newWithCause(String message, Throwable cause);
 
-    // FIXME: should be final
     @Override
-    public X apply(final Exception input) {
+    public final X apply(final Exception input) {
         // If exception is of the specified type, return it.
         if (exceptionType.isInstance(input)) {
             return exceptionType.cast(input);
@@ -69,8 +68,8 @@ public abstract class ExceptionMapper<X extends Exception> implements Function<E
             // If exception is ExecutionException whose cause is of the specified type, return the cause.
             case ExecutionException ee -> {
                 final var cause = ee.getCause();
-                if (exceptionType.isInstance(cause)) {
-                    return exceptionType.cast(cause);
+                if (cause instanceof Exception causeEx && exceptionType.isInstance(causeEx)) {
+                    return exceptionType.cast(causeEx);
                 }
                 if (cause != null) {
                     return newWithCause(opName + " execution failed", cause);
