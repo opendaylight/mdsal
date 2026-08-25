@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
+import org.opendaylight.mdsal.common.api.ExceptionMapper;
 
 /**
  * Utility exception mapper which translates Exception to {@link TransactionCommitFailedException}.

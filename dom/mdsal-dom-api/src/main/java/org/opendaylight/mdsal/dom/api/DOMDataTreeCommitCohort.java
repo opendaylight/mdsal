@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.common.api.PostPreCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker.CommitCohortExtension;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
+import org.opendaylight.mdsal.common.api.ExceptionMapper;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
