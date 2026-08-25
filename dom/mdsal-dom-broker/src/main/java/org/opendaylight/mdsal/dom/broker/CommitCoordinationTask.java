@@ -100,7 +100,7 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
         try {
             result = future.get();
         } catch (InterruptedException | ExecutionException e) {
-            throw TransactionCommitFailedExceptionMapper.CAN_COMMIT_ERROR_MAPPER.apply(e);
+            throw TransactionCommitFailedExceptionMapper.CAN_COMMIT_ERROR_MAPPER.map(e);
         }
 
         if (!Boolean.TRUE.equals(result)) {
@@ -120,7 +120,7 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
         try {
             cohort.preCommit().get();
         } catch (InterruptedException | ExecutionException e) {
-            throw TransactionCommitFailedExceptionMapper.PRE_COMMIT_MAPPER.apply(e);
+            throw TransactionCommitFailedExceptionMapper.PRE_COMMIT_MAPPER.map(e);
         }
     }
 
@@ -135,7 +135,7 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
         try {
             cohort.commit().get();
         } catch (InterruptedException | ExecutionException e) {
-            throw TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e);
+            throw TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.map(e);
         }
     }
 
