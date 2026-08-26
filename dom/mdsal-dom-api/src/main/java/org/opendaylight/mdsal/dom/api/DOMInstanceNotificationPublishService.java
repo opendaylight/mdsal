@@ -11,7 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
+import org.opendaylight.mdsal.common.api.FluentFutures;
 
 /**
  * A {@link DOMService} which allows its user to publish instance (YANG 1.1) {@link DOMNotification}s. It provides two

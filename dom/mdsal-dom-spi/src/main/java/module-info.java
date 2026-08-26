@@ -18,7 +18,6 @@ module org.opendaylight.mdsal.dom.spi {
     requires com.google.common;
     requires org.opendaylight.yangtools.concepts;
     requires org.opendaylight.yangtools.odlext.model.api;
-    requires org.opendaylight.yangtools.util;
     requires org.opendaylight.yangtools.yang.data.api;
     requires org.opendaylight.yangtools.yang.data.tree.spi;
     requires org.slf4j;

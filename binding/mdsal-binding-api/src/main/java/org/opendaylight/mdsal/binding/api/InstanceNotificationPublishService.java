@@ -11,10 +11,10 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.FluentFutures;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.InstanceNotification;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * A {@link BindingService} which allows its users to submit YANG-modeled top-level (YANG 1.1)

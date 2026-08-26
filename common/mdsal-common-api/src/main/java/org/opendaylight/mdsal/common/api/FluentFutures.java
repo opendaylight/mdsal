@@ -5,11 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.util.concurrent;
+package org.opendaylight.mdsal.common.api;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.concurrent.Callable;
@@ -27,9 +26,8 @@ import org.eclipse.jdt.annotation.Nullable;
  * {@link #immediateFalseFluentFuture()}, {@link #immediateTrueFluentFuture()} and {@link #immediateNullFluentFuture()}
  * provide low-cardinality constants, which are generally useful to reduce allocations.
  *
- * @author Robert Varga
+ * @since 17.0.0
  */
-@Beta
 @NonNullByDefault
 @SuppressWarnings("null")
 public final class FluentFutures {

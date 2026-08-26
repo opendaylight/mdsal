@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.common.api;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * User implementation of steps following pre-commit from Three-Phase Protocol.
@@ -18,14 +17,10 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 @Beta
 public interface PostPreCommitStep extends ThreePhaseCommitStep {
     /**
-     * No-op implementation of {@link #abort()} and {@link #commit()} method, which always success
-     * calls.
-     * This implementation is intended for users which may not need to implement commit and abort
-     * method.
-     *
+     * No-op implementation of {@link #abort()} and {@link #commit()} method, which always succeeds calls. It is
+     * intended for users which may not need to implement commit and abort method.
      */
     PostPreCommitStep NOOP = new PostPreCommitStep() {
-
         @Override
         public ListenableFuture<?> abort() {
             return ThreePhaseCommitStep.NOOP_ABORT_FUTURE;
@@ -42,11 +37,9 @@ public interface PostPreCommitStep extends ThreePhaseCommitStep {
     @NonNull ListenableFuture<? extends PostPreCommitStep> NOOP_FUTURE = FluentFutures.immediateFluentFuture(NOOP);
 
     /**
-     * Commits cohort transaction.
-     * This callback is invoked by three-phase commit coordinator if associated data transaction
-     * finished pre-commit phase and will be commited.
-     * Implementation should make state, which were derived by implementation from associated data
-     * visible.
+     * Commits cohort transaction. This callback is invoked by three-phase commit coordinator if associated data
+     * transaction finished pre-commit phase and will be committed. Implementation should make state, which were derived
+     * by implementation from associated data visible.
      *
      * @return Listenable Future which will complete once commit is finished.
      */

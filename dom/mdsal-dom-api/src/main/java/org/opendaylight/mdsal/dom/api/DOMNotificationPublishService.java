@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
+import org.opendaylight.mdsal.common.api.FluentFutures;
 
 /**
  * A {@link DOMService} which allows its user to publish top-level (YANG 1.0) {@link DOMNotification}s. It provides two

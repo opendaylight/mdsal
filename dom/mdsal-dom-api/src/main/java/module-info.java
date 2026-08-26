@@ -16,7 +16,6 @@ module org.opendaylight.mdsal.dom.api {
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.mdsal.common.api;
     requires transitive org.opendaylight.yangtools.concepts;
-    requires org.opendaylight.yangtools.util;
 
     // Annotations
     requires static transitive com.google.errorprone.annotations;
