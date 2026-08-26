@@ -17,7 +17,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * actions.
  */
 @Beta
-public interface ThreePhaseCommitStep {
+public sealed interface ThreePhaseCommitStep permits PostCanCommitStep, PostPreCommitStep {
     @NonNull ListenableFuture<?> NOOP_ABORT_FUTURE = FluentFutures.immediateNullFluentFuture();
 
     /**

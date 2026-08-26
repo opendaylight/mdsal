@@ -17,7 +17,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * transaction and data being aborted or committed is needed, use {@link #NOOP} implementation.
  */
 @Beta
-public interface PostCanCommitStep extends ThreePhaseCommitStep {
+public non-sealed interface PostCanCommitStep extends ThreePhaseCommitStep {
     /**
      * No-op implementation of abort, pre-commit and commit steps. This implementation should be used if user logic does
      * only validation of data and does not need to perform any actions associated with pre-commit, commit or abort.

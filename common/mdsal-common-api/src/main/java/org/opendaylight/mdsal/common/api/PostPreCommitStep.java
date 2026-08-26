@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * User implementation of steps following pre-commit from Three-Phase Protocol.
  */
 @Beta
-public interface PostPreCommitStep extends ThreePhaseCommitStep {
+public non-sealed interface PostPreCommitStep extends ThreePhaseCommitStep {
     /**
      * No-op implementation of {@link #abort()} and {@link #commit()} method, which always succeeds calls. It is
      * intended for users which may not need to implement commit and abort method.
