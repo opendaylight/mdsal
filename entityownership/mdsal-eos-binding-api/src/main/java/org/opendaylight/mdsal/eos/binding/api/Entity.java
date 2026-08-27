@@ -13,7 +13,7 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
 /**
  * Binding version of {@link GenericEntity}.
@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Beta
-public class Entity extends GenericEntity<InstanceIdentifier<?>> {
+public class Entity extends GenericEntity<DataObjectIdentifier<?>> {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class Entity extends GenericEntity<InstanceIdentifier<?>> {
      * @param type the entity type
      * @param id the entity id.
      */
-    public Entity(final @NonNull String type, final @NonNull InstanceIdentifier<?> id) {
+    public Entity(final @NonNull String type, final @NonNull DataObjectIdentifier<?> id) {
         super(type, id);
     }
 
@@ -42,7 +42,7 @@ public class Entity extends GenericEntity<InstanceIdentifier<?>> {
      * @param entityName the name of the entity used to construct a general-entity InstanceIdentifier
      */
     public Entity(final @NonNull String type, final @NonNull String entityName) {
-        super(type, InstanceIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
+        super(type, DataObjectIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
                 .mdsal.core.general.entity.rev150930.Entity.class,
                     new EntityKey(requireNonNull(entityName, "entityName should not be null"))).build());
     }

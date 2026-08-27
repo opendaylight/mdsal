@@ -50,7 +50,7 @@ final class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListe
             return;
         }
 
-        final var bindingEntity = new Entity(entity.getType(), bindingId.toLegacy());
+        final var bindingEntity = new Entity(entity.getType(), bindingId.toIdentifier());
         try {
             bindingListener.ownershipChanged(bindingEntity, change, inJeopardy);
         } catch (Exception e) {

@@ -15,8 +15,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Unit tests for Entity.
@@ -27,8 +27,10 @@ public class EntityTest {
 
     static final String ENTITY_TYPE1 = "type1";
     static final String ENTITY_TYPE2 = "type2";
-    static final InstanceIdentifier<TestDataObject1> ID1 = InstanceIdentifier.create(TestDataObject1.class);
-    static final InstanceIdentifier<TestDataObject2> ID2 = InstanceIdentifier.create(TestDataObject2.class);
+    static final DataObjectIdentifier<TestDataObject1> ID1 =
+        DataObjectIdentifier.builder(TestDataObject1.class).build();
+    static final DataObjectIdentifier<TestDataObject2> ID2 =
+        DataObjectIdentifier.builder(TestDataObject2.class).build();
 
     @Test
     public void testHashCode() {
