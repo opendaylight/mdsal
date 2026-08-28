@@ -7,13 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.common.api.FluentFutures.immediateFailedFluentFuture;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -44,15 +44,20 @@ import org.slf4j.LoggerFactory;
  */
 class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
         extends AbstractDOMForwardedTransaction<T> implements DOMDataTreeWriteTransaction {
-    @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction,
-        AbstractDOMForwardedTransactionFactory> IMPL_UPDATER = AtomicReferenceFieldUpdater.newUpdater(
-                DOMForwardedWriteTransaction.class, AbstractDOMForwardedTransactionFactory.class, "commitImpl");
-    @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction, FluentFuture> FUTURE_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(DOMForwardedWriteTransaction.class, FluentFuture.class,
-                "commitFuture");
     private static final Logger LOG = LoggerFactory.getLogger(DOMForwardedWriteTransaction.class);
+    private static final VarHandle FUTURE_VH;
+    private static final VarHandle IMPL_VH;
+
+    static {
+        final var lookup = MethodHandles.lookup();
+        try {
+            FUTURE_VH = lookup.findVarHandle(DOMForwardedWriteTransaction.class, "commitFuture", FluentFuture.class);
+            IMPL_VH = lookup.findVarHandle(DOMForwardedWriteTransaction.class, "commitImpl",
+                AbstractDOMForwardedTransactionFactory.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final @NonNull SettableFuture<@NonNull CommitInfo> settableCompletion = SettableFuture.create();
     private final @NonNull FluentFuture<? extends @NonNull CommitInfo> completionFuture = FluentFuture.from(
@@ -103,10 +108,10 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
 
     @Override
     public final boolean cancel() {
-        final AbstractDOMForwardedTransactionFactory<?> impl = IMPL_UPDATER.getAndSet(this, null);
+        final var impl = acquireImpl();
         if (impl != null) {
             LOG.trace("Transaction {} cancelled before submit", getIdentifier());
-            FUTURE_UPDATER.lazySet(this, FluentFutures.immediateCancelledFluentFuture());
+            FUTURE_VH.setRelease(this, FluentFutures.immediateCancelledFluentFuture());
             closeSubtransactions();
             return true;
         }
@@ -123,7 +128,7 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public final FluentFuture<? extends CommitInfo> commit() {
-        final AbstractDOMForwardedTransactionFactory<?> impl = IMPL_UPDATER.getAndSet(this, null);
+        final var impl = acquireImpl();
         checkRunning(impl);
 
         FluentFuture<? extends CommitInfo> ret;
@@ -139,7 +144,7 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
         }
 
         settableCompletion.setFuture(ret);
-        FUTURE_UPDATER.lazySet(this, ret);
+        FUTURE_VH.setRelease(this, ret);
         return completionFuture;
     }
 
@@ -148,7 +153,13 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
         return completionFuture;
     }
 
+    private AbstractDOMForwardedTransactionFactory<?> acquireImpl() {
+        return (AbstractDOMForwardedTransactionFactory<?>) IMPL_VH.getAndSet(this, null);
+    }
+
     private void checkRunning(final AbstractDOMForwardedTransactionFactory<?> impl) {
-        checkState(impl != null, "Transaction %s is no longer running", getIdentifier());
+        if (impl == null) {
+            throw new IllegalStateException("Transaction %s is no longer running".formatted(getIdentifier()));
+        }
     }
 }
