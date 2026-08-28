@@ -22,12 +22,13 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.errorprone.annotations.concurrent.GuardedBy;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
@@ -96,6 +97,18 @@ final class ActiveServiceGroup extends ServiceGroup {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(ActiveServiceGroup.class);
+    private static final VarHandle DIRTY_VH;
+    private static final VarHandle LOCK_VH;
+
+    static {
+        final var lookup = MethodHandles.lookup();
+        try {
+            DIRTY_VH = lookup.findVarHandle(ActiveServiceGroup.class, "dirty", boolean.class);
+            LOCK_VH = lookup.findVarHandle(ActiveServiceGroup.class, "lock", boolean.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final @NonNull DOMEntityOwnershipService entityOwnershipService;
     private final @NonNull ServiceGroupIdentifier identifier;
@@ -106,18 +119,13 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     private final Set<ServiceRegistration> members = ConcurrentHashMap.newKeySet();
     // Guarded by lock
-    private final Map<ServiceRegistration, ServiceInfo> services = new HashMap<>();
+    private final HashMap<ServiceRegistration, ServiceInfo> services = new HashMap<>();
 
     // Marker for when any state changed
-    private static final AtomicIntegerFieldUpdater<ActiveServiceGroup> DIRTY_UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(ActiveServiceGroup.class, "dirty");
-    private volatile int dirty;
-
+    private volatile boolean dirty;
     // Simplified lock: non-reentrant, support tryLock() only
-    private static final AtomicIntegerFieldUpdater<ActiveServiceGroup> LOCK_UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(ActiveServiceGroup.class, "lock");
-    @SuppressWarnings("unused")
-    private volatile int lock;
+    @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
+    private volatile boolean lock;
 
     /*
      * State tracking is quite involved, as we are tracking up to four asynchronous sources of events:
@@ -388,22 +396,17 @@ final class ActiveServiceGroup extends ServiceGroup {
             LOG.info("Service group {} service entity ownership ascertained", identifier);
         }
 
-        switch (state) {
-            case LOCAL_OWNERSHIP_GRANTED:
-            case LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE:
+        serviceEntityState = switch (state) {
+            case LOCAL_OWNERSHIP_GRANTED, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE -> {
                 LOG.debug("Service group {} acquired service entity ownership", identifier);
-                serviceEntityState = EntityState.OWNED;
-                break;
-            case LOCAL_OWNERSHIP_LOST_NEW_OWNER:
-            case LOCAL_OWNERSHIP_LOST_NO_OWNER:
-            case REMOTE_OWNERSHIP_CHANGED:
-            case REMOTE_OWNERSHIP_LOST_NO_OWNER:
+                yield EntityState.OWNED;
+            }
+            case LOCAL_OWNERSHIP_LOST_NEW_OWNER, LOCAL_OWNERSHIP_LOST_NO_OWNER, REMOTE_OWNERSHIP_CHANGED,
+                 REMOTE_OWNERSHIP_LOST_NO_OWNER -> {
                 LOG.debug("Service group {} lost service entity ownership", identifier);
-                serviceEntityState = EntityState.UNOWNED;
-                break;
-            default:
-                LOG.warn("Service group {} ignoring unhandled cleanup entity change {}", identifier, state);
-        }
+                yield EntityState.UNOWNED;
+            }
+        };
     }
 
     // has to be called with lock asserted, which will be released prior to returning
@@ -588,8 +591,8 @@ final class ActiveServiceGroup extends ServiceGroup {
 
     @SuppressWarnings("illegalCatch")
     private ServiceInfo ensureStopping(final ServiceRegistration reg, final ServiceInfo info) {
-        switch (info.getState()) {
-            case STARTED:
+        return switch (info.getState()) {
+            case STARTED -> {
                 final var service = reg.getInstance();
 
                 LOG.debug("Service group {} stopping service {}", identifier, service);
@@ -599,7 +602,7 @@ final class ActiveServiceGroup extends ServiceGroup {
                 } catch (Exception e) {
                     LOG.warn("Service group {} service {} failed to stop, attempting to continue", identifier, service,
                         e);
-                    return null;
+                    yield null;
                 }
 
                 Futures.addCallback(future, new FutureCallback<Object>() {
@@ -615,36 +618,36 @@ final class ActiveServiceGroup extends ServiceGroup {
                         serviceTransitionCompleted();
                     }
                 }, MoreExecutors.directExecutor());
-                return info.toState(ServiceState.STOPPING, future);
-            case STOPPING:
+                yield info.toState(ServiceState.STOPPING, future);
+            }
+            case STOPPING -> {
                 if (info.getFuture().isDone()) {
                     LOG.debug("Service group {} removed stopped service {}", identifier, reg.getInstance());
-                    return null;
+                    yield null;
                 }
-                return info;
-            default:
-                throw new IllegalStateException("Unhandled state " + info.getState());
-        }
+                yield info;
+            }
+        };
     }
 
     private void markDirty() {
-        dirty = 1;
+        dirty = true;
     }
 
     private boolean isDirty() {
-        return dirty != 0;
+        return dirty;
     }
 
     private boolean conditionalClean() {
-        return DIRTY_UPDATER.compareAndSet(this, 1, 0);
+        return DIRTY_VH.compareAndSet(this, true, false);
     }
 
     private boolean tryLock() {
-        return LOCK_UPDATER.compareAndSet(this, 0, 1);
+        return LOCK_VH.compareAndSet(this, false, true);
     }
 
     private boolean unlock() {
-        verify(LOCK_UPDATER.compareAndSet(this, 1, 0));
+        verify(LOCK_VH.compareAndSet(this, true, false));
         return true;
     }
 
