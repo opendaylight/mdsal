@@ -11,9 +11,13 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction.TransactionClosePrototype;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
@@ -36,7 +40,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
          *
          * @return A new snapshot
          */
-        abstract DataTreeSnapshot getSnapshot();
+        abstract @NonNull DataTreeSnapshot getSnapshot();
     }
 
     private static final class Idle extends State {
@@ -56,29 +60,46 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
      * We have a transaction out there.
      */
     private static final class Allocated extends State {
-        private static final AtomicReferenceFieldUpdater<Allocated, DataTreeSnapshot> SNAPSHOT_UPDATER =
-                AtomicReferenceFieldUpdater.newUpdater(Allocated.class, DataTreeSnapshot.class, "snapshot");
-        private final DOMStoreWriteTransaction transaction;
+        private static final VarHandle VH;
+
+        static {
+            try {
+                VH = MethodHandles.lookup().findVarHandle(Allocated.class, "snapshot", DataTreeSnapshot.class);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
+        private final @NonNull DOMStoreWriteTransaction transaction;
+
+        @SuppressFBWarnings(
+            value = "UWF_UNWRITTEN_FIELD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/2749")
         private volatile DataTreeSnapshot snapshot;
 
         Allocated(final DOMStoreWriteTransaction transaction) {
             this.transaction = requireNonNull(transaction);
         }
 
-        DOMStoreWriteTransaction getTransaction() {
+        @NonNull DOMStoreWriteTransaction getTransaction() {
             return transaction;
         }
 
         @Override
         DataTreeSnapshot getSnapshot() {
-            final DataTreeSnapshot ret = snapshot;
-            checkState(ret != null, "Previous transaction %s is not ready yet", transaction.getIdentifier());
+            final var ret = snapshot;
+            if (ret == null) {
+                throw new IllegalStateException(
+                    "Previous transaction %s is not ready yet".formatted(transaction.getIdentifier()));
+            }
             return ret;
         }
 
         void setSnapshot(final DataTreeSnapshot snapshot) {
-            final boolean success = SNAPSHOT_UPDATER.compareAndSet(this, null, snapshot);
-            checkState(success, "Transaction %s has already been marked as ready", transaction.getIdentifier());
+            if (!VH.compareAndSet(this, null, snapshot)) {
+                throw new IllegalStateException(
+                    "Transaction %s has already been marked as ready".formatted(transaction.getIdentifier()));
+            }
         }
     }
 
@@ -279,7 +300,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
      *
      * @return A new snapshot.
      */
-    protected abstract DataTreeSnapshot takeSnapshot();
+    protected abstract @NonNull DataTreeSnapshot takeSnapshot();
 
     /**
      * Create a cohort for driving the transaction through the commit process.
