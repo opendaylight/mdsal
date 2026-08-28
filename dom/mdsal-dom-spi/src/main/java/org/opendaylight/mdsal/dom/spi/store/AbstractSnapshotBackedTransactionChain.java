@@ -205,11 +205,12 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
     @Override
     public final void close() {
-        final State localState = state;
-
+        State localState;
         do {
-            checkState(!CLOSED.equals(localState), "Transaction chain %s has been closed", this);
-
+            localState = state;
+            if (CLOSED.equals(localState)) {
+                throw new IllegalStateException("Transaction chain %s has been closed".formatted(this));
+            }
             if (FAILED.equals(localState)) {
                 LOG.debug("Ignoring user close in failed state");
                 return;
