@@ -15,10 +15,10 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -45,11 +45,19 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         FAILED,
     }
 
-    private static final AtomicIntegerFieldUpdater<DOMDataBrokerTransactionChainImpl> COUNTER_UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(DOMDataBrokerTransactionChainImpl.class, "counter");
-    private static final AtomicReferenceFieldUpdater<DOMDataBrokerTransactionChainImpl, State> STATE_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(DOMDataBrokerTransactionChainImpl.class, State.class, "state");
     private static final Logger LOG = LoggerFactory.getLogger(DOMDataBrokerTransactionChainImpl.class);
+    private static final VarHandle COUNTER_VH;
+    private static final VarHandle STATE_VH;
+
+    static {
+        final var lookup = MethodHandles.lookup();
+        try {
+            COUNTER_VH = lookup.findVarHandle(DOMDataBrokerTransactionChainImpl.class, "counter", int.class);
+            STATE_VH = lookup.findVarHandle(DOMDataBrokerTransactionChainImpl.class, "state", State.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final @NonNull SettableFuture<Empty> future = SettableFuture.create();
     private final AtomicLong txNum = new AtomicLong();
@@ -57,6 +65,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     private final long chainId;
 
     private volatile State state = State.RUNNING;
+    // number of transactions which are in the process of being committed
     private volatile int counter = 0;
 
     DOMDataBrokerTransactionChainImpl(final long chainId,
@@ -87,7 +96,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         checkNotClosed();
 
         final var ret = broker.commit(transaction, cohort);
-        COUNTER_UPDATER.incrementAndGet(this);
+        COUNTER_VH.getAndAdd(this, 1);
 
         ret.addCallback(new FutureCallback<CommitInfo>() {
             @Override
@@ -106,14 +115,13 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
 
     @Override
     public void close() {
-        final boolean success = STATE_UPDATER.compareAndSet(this, State.RUNNING, State.CLOSING);
-        if (!success) {
+        if (!STATE_VH.compareAndSet(this, State.RUNNING, State.CLOSING)) {
             LOG.debug("Chain {} is no longer running", this);
             return;
         }
 
         super.close();
-        for (DOMStoreTransactionChain subChain : getTxFactories().values()) {
+        for (var subChain : getTxFactories().values()) {
             subChain.close();
         }
 
@@ -128,7 +136,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     }
 
     private void transactionCompleted() {
-        if (COUNTER_UPDATER.decrementAndGet(this) == 0 && state == State.CLOSING) {
+        if ((int) COUNTER_VH.getAndAdd(this, -1) == 1 && state == State.CLOSING) {
             finishClose();
         }
     }
