@@ -15,10 +15,10 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -48,25 +48,29 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     private static final Logger LOG = LoggerFactory.getLogger(DOMDataBrokerTransactionChainImpl.class);
     private static final VarHandle COUNTER_VH;
     private static final VarHandle STATE_VH;
+    private static final VarHandle TXNUM_VH;
 
     static {
         final var lookup = MethodHandles.lookup();
         try {
             COUNTER_VH = lookup.findVarHandle(DOMDataBrokerTransactionChainImpl.class, "counter", int.class);
             STATE_VH = lookup.findVarHandle(DOMDataBrokerTransactionChainImpl.class, "state", State.class);
+            TXNUM_VH = lookup.findVarHandle(DOMDataBrokerTransactionChainImpl.class, "txNum", long.class);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new ExceptionInInitializerError(e);
         }
     }
 
     private final @NonNull SettableFuture<Empty> future = SettableFuture.create();
-    private final AtomicLong txNum = new AtomicLong();
     private final AbstractDOMDataBroker broker;
     private final long chainId;
 
     private volatile State state = State.RUNNING;
     // number of transactions which are in the process of being committed
     private volatile int counter = 0;
+    // linear counter of transactions
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "https://github.com/spotbugs/spotbugs/issues/2749")
+    private volatile long txNum = 0;
 
     DOMDataBrokerTransactionChainImpl(final long chainId,
             final Map<LogicalDatastoreType, DOMStoreTransactionChain> chains, final AbstractDOMDataBroker broker) {
@@ -86,7 +90,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
 
     @Override
     protected Object newTransactionIdentifier() {
-        return "DOM-CHAIN-" + chainId + "-" + txNum.getAndIncrement();
+        return "DOM-CHAIN-" + chainId + "-" + (long) TXNUM_VH.getAndAdd(this, 1L);
     }
 
     @Override
