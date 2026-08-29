@@ -9,26 +9,23 @@ package org.opendaylight.mdsal.binding.api;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface MountPointService extends BindingService {
 
-    Optional<MountPoint> findMountPoint(@NonNull DataObjectIdentifier<?> path);
+    @NonNull Optional<MountPoint> findMountPoint(@NonNull DataObjectIdentifier<?> path);
 
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    default Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
-        return findMountPoint(mountPoint.toIdentifier());
-    }
+    @NonNullByDefault
+    Registration registerListener(DataObjectReference<?> path, MountPointListener listener);
 
-    @NonNull Registration registerListener(DataObjectReference<?> path, MountPointListener listener);
-
+    @NonNullByDefault
     interface MountPointListener {
 
-        void onMountPointCreated(@NonNull MountPoint mountPoint);
+        void onMountPointCreated(MountPoint mountPoint);
 
-        void onMountPointRemoved(@NonNull DataObjectIdentifier<?> path);
+        void onMountPointRemoved(DataObjectIdentifier<?> path);
     }
 }
