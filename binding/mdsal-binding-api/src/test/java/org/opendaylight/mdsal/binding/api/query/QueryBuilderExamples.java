@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api.query;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockito.Mock;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.Foo;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
@@ -15,12 +16,15 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.Alarms;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.third.grp.AffectedUsers;
 import org.opendaylight.yang.gen.v1.mdsal426.norev.BooleanCont;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.DecimalContainer;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @SuppressWarnings("exports")
 public class QueryBuilderExamples {
+    private static final @NonNull DataObjectIdentifier<@NonNull Foo> FOO = DataObjectIdentifier.builder(Foo.class)
+        .build();
+
     @Mock
     private QueryFactory factory;
 
@@ -29,7 +33,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<Foo> selectFoo() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .build();
     }
 
@@ -38,7 +42,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<System> selectFooSystemSome() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class).child(System.class, new SystemKey("some")))
+                .querySubtree(FOO.toBuilder().child(System.class, new SystemKey("some")).build())
                 .build();
     }
 
@@ -47,7 +51,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<System> selectFooSystem() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .extractChild(System.class)
                 .build();
     }
@@ -57,7 +61,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<System> selectFooSystemAliasSome() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .extractChild(System.class)
                 .matching()
                     .leaf(System::getAlias)
@@ -70,7 +74,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<System> selectFooSystemAliasWithNeedle() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .extractChild(System.class)
                 .matching()
                     .leaf(System::getAlias)
@@ -83,7 +87,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<Alarms> selectFooSystemAlarmsCritical() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .extractChild(System.class)
                 .extractChild(Alarms.class)
                 .matching()
@@ -100,7 +104,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<Alarms> selectFooSystemAlarmsCriticalUid() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .extractChild(System.class)
                 .extractChild(Alarms.class)
                 .matching()
@@ -122,7 +126,7 @@ public class QueryBuilderExamples {
      */
     public QueryExpression<System> selectFooSystemCriticalUid() {
         return factory
-                .querySubtree(InstanceIdentifier.create(Foo.class))
+                .querySubtree(FOO)
                 .extractChild(System.class)
                 .matching()
                     .childObject(Alarms.class)
@@ -138,7 +142,7 @@ public class QueryBuilderExamples {
 
     public QueryExpression<BooleanCont> selectBoolean() {
         return factory
-                .querySubtree(InstanceIdentifier.create(BooleanCont.class))
+                .querySubtree(DataObjectIdentifier.builder(BooleanCont.class).build())
                 .matching()
                     .leaf(BooleanCont::getIsFoo)
                     .valueEquals(true)
@@ -147,7 +151,7 @@ public class QueryBuilderExamples {
 
     public QueryExpression<DecimalContainer> selectDecimal64() {
         return factory
-                .querySubtree(InstanceIdentifier.create(DecimalContainer.class))
+                .querySubtree(DataObjectIdentifier.builder(DecimalContainer.class).build())
                 .matching()
                     .leaf(DecimalContainer::getDecimalLeaf5)
                     .valueEquals(Decimal64.valueOf("1.0"))

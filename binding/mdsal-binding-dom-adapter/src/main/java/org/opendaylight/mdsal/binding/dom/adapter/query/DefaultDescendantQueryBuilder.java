@@ -14,18 +14,18 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.Key;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataObject>
         implements DescendantQueryBuilder<T> {
-    private final InstanceIdentifier.Builder<T> childPath;
+    private final DataObjectIdentifier.Builder<T> childPath;
     private final QueryBuilderState builder;
 
-    DefaultDescendantQueryBuilder(final DefaultQueryFactory factory, final InstanceIdentifier<T> rootPath) {
+    DefaultDescendantQueryBuilder(final DefaultQueryFactory factory, final DataObjectIdentifier<T> rootPath) {
         builder = new QueryBuilderState(factory, rootPath);
-        childPath = rootPath.builder();
+        childPath = rootPath.toBuilder();
     }
 
     @Override
@@ -53,7 +53,7 @@ final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataOb
 
     @Override
     public MatchBuilderPath<T, T> matching() {
-        final InstanceIdentifier<T> selectPath = childPath.build();
+        final var selectPath = childPath.build();
         builder.setSelectPath(selectPath);
         return new DefaultMatchBuilderPath<>(builder, selectPath, childPath);
     }

@@ -24,9 +24,9 @@ import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingSchemaMapping;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -86,7 +86,7 @@ public final class DefaultQueryFactory implements QueryFactory {
     }
 
     @Override
-    public <T extends DataObject> DescendantQueryBuilder<T> querySubtree(final InstanceIdentifier<T> rootPath) {
+    public <T extends DataObject> DescendantQueryBuilder<T> querySubtree(final DataObjectIdentifier<T> rootPath) {
         return new DefaultDescendantQueryBuilder<>(this, rootPath);
     }
 
