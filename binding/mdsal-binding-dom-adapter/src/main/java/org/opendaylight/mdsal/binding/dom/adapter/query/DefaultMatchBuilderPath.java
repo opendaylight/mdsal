@@ -18,10 +18,10 @@ import org.opendaylight.yangtools.binding.BaseIdentity;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.ChoiceIn;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.EntryObject;
 import org.opendaylight.yangtools.binding.Key;
 import org.opendaylight.yangtools.binding.TypeObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -31,11 +31,11 @@ import org.opendaylight.yangtools.yang.common.Uint8;
 
 final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> implements MatchBuilderPath<O, T> {
     private final QueryBuilderState builder;
-    private final InstanceIdentifier<O> select;
-    private final InstanceIdentifier.Builder<T> target;
+    private final DataObjectReference<O> select;
+    private final DataObjectReference.Builder<T> target;
 
-    DefaultMatchBuilderPath(final QueryBuilderState builder, final InstanceIdentifier<O> select,
-            final InstanceIdentifier.Builder<T> target) {
+    DefaultMatchBuilderPath(final QueryBuilderState builder, final DataObjectReference<O> select,
+            final DataObjectReference.Builder<T> target) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);
         this.target = requireNonNull(target);

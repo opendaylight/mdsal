@@ -35,11 +35,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedList;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
@@ -47,6 +47,9 @@ import org.slf4j.LoggerFactory;
 
 public class QueryBuilderTest {
     private static final Logger LOG = LoggerFactory.getLogger(QueryBuilderTest.class);
+    private static final @NonNull DataObjectIdentifier<@NonNull Foo> FOO =
+        DataObjectIdentifier.builder(Foo.class).build();
+
     private static BindingCodecTree CODEC;
 
     private final QueryFactory factory = new DefaultQueryFactory(CODEC);
@@ -101,7 +104,8 @@ public class QueryBuilderTest {
     @Test
     public void bar() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<TopLevelList> query = factory.querySubtree(InstanceIdentifier.create(Top.class))
+        final QueryExpression<TopLevelList> query = factory.querySubtree(
+                    DataObjectIdentifier.builder(Top.class).build())
                 .extractChild(TopLevelList.class)
                 .matching()
                     .childObject(NestedList.class)
@@ -116,7 +120,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindCriticalAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
                 .matching()
@@ -131,7 +135,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindNonCriticalAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
                 .matching()
@@ -146,7 +150,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindZeroAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
                 .matching()
@@ -168,7 +172,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindSystemFirstAlarmOne() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class, new SystemKey("first"))
             .extractChild(Alarms.class)
                 .matching()
@@ -183,7 +187,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindGreaterThanAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
             .matching()
@@ -198,7 +202,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindGreaterThanOrEqualsAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
             .matching()
@@ -213,7 +217,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindLessThanAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
             .matching()
@@ -228,7 +232,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindLessThanOrEqualsAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<Alarms> query = factory.querySubtree(FOO)
             .extractChild(System.class)
             .extractChild(Alarms.class)
             .matching()
@@ -243,7 +247,7 @@ public class QueryBuilderTest {
     @Test
     public void testFindSystemFirstWithAlarmOne() {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<System> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<System> query = factory.querySubtree(FOO)
             .extractChild(System.class, new SystemKey("first"))
                 .matching()
                     .childObject(Alarms.class)

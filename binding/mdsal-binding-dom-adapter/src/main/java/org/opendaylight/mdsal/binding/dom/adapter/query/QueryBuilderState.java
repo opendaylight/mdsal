@@ -20,11 +20,11 @@ import org.opendaylight.mdsal.binding.dom.adapter.query.LambdaDecoder.LambdaTarg
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.binding.data.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -49,13 +49,13 @@ final class QueryBuilderState {
     private YangInstanceIdentifier absoluteSelect;
     private YangInstanceIdentifier relativeSelect;
 
-    QueryBuilderState(final DefaultQueryFactory factory, final InstanceIdentifier<?> root) {
+    QueryBuilderState(final DefaultQueryFactory factory, final DataObjectReference<?> root) {
         codec = factory.codec();
         this.factory = factory;
         this.root = fromBinding(root);
     }
 
-    void setSelectPath(final @NonNull InstanceIdentifier<?> selectPath) {
+    void setSelectPath(final @NonNull DataObjectReference<?> selectPath) {
         checkState(root != null, "Root path has not been set yet");
         checkState(relativeSelect == null, "Select path has already been set to %s", relativeSelect);
 
@@ -64,7 +64,7 @@ final class QueryBuilderState {
                 .orElseThrow(() -> new IllegalStateException(root + " is not an ancestor of " + absoluteSelect));
     }
 
-    @NonNull BoundMethod bindMethod(final @NonNull InstanceIdentifier<?> bindingPath,
+    @NonNull BoundMethod bindMethod(final @NonNull DataObjectReference<?> bindingPath,
             final @NonNull LeafReference<?, ?> ref) {
         // Verify bindingPath, which will give us something to fish in
         final CommonDataObjectCodecTreeNode<?> targetCodec = codec.getSubtreeCodec(bindingPath);
@@ -74,7 +74,7 @@ final class QueryBuilderState {
         verify(targetSchema instanceof DataNodeContainer, "Unexpected target schema %s", targetSchema);
 
         final LambdaTarget targetLeaf = LambdaDecoder.resolveLambda(ref);
-        verify(targetLeaf.targetClass().equals(bindingPath.getTargetType().getName()),
+        verify(targetLeaf.targetClass().equals(bindingPath.lastStep().type().getName()),
             "Mismatched target %s and path %s", targetLeaf, bindingPath);
         final NodeIdentifier childId = factory.findChild((DataNodeContainer) targetSchema, targetLeaf.targetMethod());
         final YangInstanceIdentifier absTarget = fromBinding(bindingPath);
@@ -92,7 +92,7 @@ final class QueryBuilderState {
         return new DefaultQuery<>(codec, new DOMQuery(root, relativeSelect, predicates));
     }
 
-    private @NonNull YangInstanceIdentifier fromBinding(final InstanceIdentifier<?> bindingId) {
+    private @NonNull YangInstanceIdentifier fromBinding(final DataObjectReference<?> bindingId) {
         return codec.getInstanceIdentifierCodec().fromBinding(bindingId);
     }
 }

@@ -13,20 +13,20 @@ import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 
 final class DefaultValueMatch<T extends DataObject> implements ValueMatch<T> {
     private final QueryBuilderState builder;
-    private final InstanceIdentifier<T> select;
+    private final DataObjectReference<T> select;
 
-    DefaultValueMatch(final QueryBuilderState builder, final InstanceIdentifier<T> select) {
+    DefaultValueMatch(final QueryBuilderState builder, final DataObjectReference<T> select) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);
     }
 
     @Override
     public MatchBuilderPath<T, T> and() {
-        return new DefaultMatchBuilderPath<>(builder, select, select.builder());
+        return new DefaultMatchBuilderPath<>(builder, select, select.toBuilder());
     }
 
     @Override

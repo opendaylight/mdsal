@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.binding.dom.adapter.query;
 
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 
 final class DefaultValueMatchBuilder<T extends DataObject, V> extends AbstractValueMatchBuilder<T, V> {
-    DefaultValueMatchBuilder(final QueryBuilderState builder, final InstanceIdentifier<T> select,
+    DefaultValueMatchBuilder(final QueryBuilderState builder, final DataObjectReference<T> select,
             final BoundMethod method) {
         super(builder, select, method);
     }

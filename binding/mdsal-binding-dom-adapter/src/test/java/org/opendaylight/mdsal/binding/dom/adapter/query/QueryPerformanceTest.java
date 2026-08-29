@@ -38,7 +38,6 @@ import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.binding.util.BindingMap;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +87,7 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
         final String needle = "alias" + (SYSTEM_COUNT - 1);
 
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryExpression<System> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+        final QueryExpression<System> query = factory.querySubtree(DataObjectIdentifier.builder(Foo.class).build())
             .extractChild(System.class)
                 .matching()
                     .leaf(System::getAlias).valueEquals(needle)

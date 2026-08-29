@@ -16,16 +16,16 @@ import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundM
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
 abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements ValueMatchBuilder<T, V> {
     private final QueryBuilderState builder;
-    private final InstanceIdentifier<T> select;
+    private final DataObjectReference<T> select;
     private final BoundMethod method;
 
-    AbstractValueMatchBuilder(final QueryBuilderState builder, final InstanceIdentifier<T> select,
+    AbstractValueMatchBuilder(final QueryBuilderState builder, final DataObjectReference<T> select,
             final BoundMethod method) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);

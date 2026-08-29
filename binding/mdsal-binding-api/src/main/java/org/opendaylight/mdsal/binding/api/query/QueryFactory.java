@@ -9,8 +9,11 @@ package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataRoot;
+import org.opendaylight.yangtools.binding.EntryObject;
 
 /**
  * Primary entry point to creating {@link QueryExpression} instances.
@@ -19,9 +22,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public interface QueryFactory {
     /**
      * Create a new {@link DescendantQueryBuilder} for a specified root path. Root path must be a non-wildcard
-     * InstanceIdentifier in general sense. If the target type represents a list, the last path argument may be a
-     * wildcard, in which case the path is interpreted to search the specified list. Inner path elements have to be
-     * always non-wildcarded.
+     * InstanceIdentifier in general sense.
      *
      * @param <T> Target object type
      * @param rootPath Subtree root
@@ -29,5 +30,31 @@ public interface QueryFactory {
      * @throws IllegalArgumentException if rootPath is incorrect
      * @throws NullPointerException if rootPath is null
      */
-    <T extends DataObject> @NonNull DescendantQueryBuilder<T> querySubtree(InstanceIdentifier<T> rootPath);
+    <T extends DataObject> @NonNull DescendantQueryBuilder<T> querySubtree(DataObjectIdentifier<T> rootPath);
+
+    /**
+     * Create a new {@link DescendantQueryBuilder} searching all in the specified list of a parent.
+     *
+     * @param <P> parent object type
+     * @param <T> Target object type
+     * @param parentPath parent path
+     * @param list the list to search
+     * @return a subtree query instance
+     * @throws IllegalArgumentException if rootPath is incorrect
+     * @throws NullPointerException if rootPath is null
+     */
+    <P extends DataObject, T extends EntryObject<T, ?> & ChildOf<P>> @NonNull DescendantQueryBuilder<T> querySubtree(
+        DataObjectIdentifier<P> parentPath, Class<T> list);
+
+    /**
+     * Create a new {@link DescendantQueryBuilder} searching all in the specified top-level list.
+     *
+     * @param <T> Target object type
+     * @param list the list to search
+     * @return a subtree query instance
+     * @throws IllegalArgumentException if rootPath is incorrect
+     * @throws NullPointerException if rootPath is null
+     */
+    <T extends EntryObject<T, ?> & ChildOf<? extends DataRoot<?>>> @NonNull DescendantQueryBuilder<T> querySubtree(
+        Class<T> list);
 }

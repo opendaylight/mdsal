@@ -19,10 +19,10 @@ import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
 import org.opendaylight.yangtools.binding.ChildOf;
 import org.opendaylight.yangtools.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
@@ -42,7 +42,7 @@ public final class SimpleQueryExecutor implements QueryExecutor {
     @Override
     public <T extends @NonNull DataObject> QueryResult<T> executeQuery(final QueryExpression<T> query) {
         checkArgument(query instanceof DefaultQuery, "Unsupported expression %s", query);
-        final DefaultQuery<T> defaultQuery = (DefaultQuery<T>) query;
+        final var defaultQuery = (DefaultQuery<T>) query;
         return defaultQuery.toQueryResult(DOMQueryEvaluator.evaluateOnRoot(defaultQuery.asDOMQuery(), root));
     }
 
@@ -62,7 +62,7 @@ public final class SimpleQueryExecutor implements QueryExecutor {
         public <T extends ChildOf<? extends DataRoot>> @NonNull Builder add(final @NonNull T data) {
             @SuppressWarnings({"rawtypes", "unchecked"})
             final BindingDataObjectCodecTreeNode<T> dataCodec = (BindingDataObjectCodecTreeNode<T>)
-                codec.getSubtreeCodec(InstanceIdentifier.create((Class) data.implementedInterface()));
+                codec.getSubtreeCodec(DataObjectReference.builder((Class) data.implementedInterface()).build());
             rootBuilder.withChild((DataContainerChild) verifyNotNull(dataCodec).serialize(data));
             return this;
         }
