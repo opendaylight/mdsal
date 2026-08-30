@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.base.VerifyException;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.HashSet;
@@ -106,7 +104,6 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
 
     @Override
     public final void delete(final LogicalDatastoreType store, final DataObjectIdentifier<?> path) {
-        checkArgument(!path.isWildcarded(), "Cannot delete wildcarded path %s", path);
         final var serializer = adapterContext().currentSerializer();
 
         // Lookup the codec and the corresponding path
