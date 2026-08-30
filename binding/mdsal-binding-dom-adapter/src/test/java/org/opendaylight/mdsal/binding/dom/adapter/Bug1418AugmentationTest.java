@@ -25,7 +25,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 
@@ -57,7 +56,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
 
             final var writeTx = getDataBroker().newWriteOnlyTransaction();
             writeTx.put(CONFIGURATION, TOP, top());
-            writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+            writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY));
             writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
             assertCommit(writeTx.commit());
 
@@ -70,7 +69,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
     public void leafOnlyAugmentationUpdatedTest() {
         var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY));
         final var leafOnlyUsesAugmentBefore = leafOnlyUsesAugment("test leaf");
         writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentBefore);
         assertCommit(writeTx.commit());
@@ -94,7 +93,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
     public void leafOnlyAugmentationDeletedTest() {
         var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY));
         final var leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
         writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
         assertCommit(writeTx.commit());
@@ -118,7 +117,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
             final var complexUsesAugment = complexUsesAugment(LIST_VIA_USES_KEY);
             final var writeTx = getDataBroker().newWriteOnlyTransaction();
             writeTx.put(CONFIGURATION, TOP, top());
-            writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+            writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY));
             writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugment);
             assertCommit(writeTx.commit());
 
@@ -131,7 +130,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
     public void complexAugmentationUpdatedTest() {
         var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY));
         final var complexUsesAugmentBefore = complexUsesAugment(LIST_VIA_USES_KEY);
         writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentBefore);
         assertCommit(writeTx.commit());
