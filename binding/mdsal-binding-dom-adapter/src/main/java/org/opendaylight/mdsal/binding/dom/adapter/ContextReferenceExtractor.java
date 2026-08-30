@@ -80,9 +80,8 @@ abstract sealed class ContextReferenceExtractor {
             final var getValueMethod = findGetValueMethod(returnType, BindingInstanceIdentifier.class);
             if (getValueMethod != null) {
                 return GetValue.create(contextGetter, getValueMethod);
-            } else {
-                LOG.warn("Class {} can not be used to determine context, falling back to NULL_EXTRACTOR.", returnType);
             }
+            LOG.warn("Class {} can not be used to determine context, falling back to NULL_EXTRACTOR.", returnType);
         } catch (final IllegalAccessException e) {
             LOG.warn("Class {} does not conform to Binding Specification v1. Falling back to NULL_EXTRACTOR",
                 returnType, e);
