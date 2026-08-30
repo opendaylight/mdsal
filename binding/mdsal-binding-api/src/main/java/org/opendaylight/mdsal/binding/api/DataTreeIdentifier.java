@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 // FIXME: DataObjectReference has a DataObjectInstance specialization, which makes 'Identifier' part of this class name
 //        a bit confusing. Consider a better name -- like DataTreeMatch?
 public final class DataTreeIdentifier<T extends DataObject>
-        implements LogicalDatastorePath<@NonNull DataTreeIdentifier<?>, @NonNull InstanceIdentifier<?>> {
+        implements LogicalDatastorePath<@NonNull DataTreeIdentifier<?>, @NonNull DataObjectReference<?>> {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
@@ -50,29 +50,19 @@ public final class DataTreeIdentifier<T extends DataObject>
         return new DataTreeIdentifier<>(datastore, path);
     }
 
-    /**
-     * Create a new {@link DataTreeIdentifier} with specified datastore and path.
-     *
-     * @param <T> target {@link DataObject} type
-     * @param datastore {@link LogicalDatastoreType} of this identifier
-     * @param path {@link InstanceIdentifier} path of this identifier
-     * @throws NullPointerException if any argument is {@code null}
-     * @deprecated Use #{@link #of(LogicalDatastoreType, DataObjectReference)} instead
-     */
-    @Deprecated(since = "14.0.0", forRemoval = true)
-    public static <T extends DataObject> @NonNull DataTreeIdentifier<T> of(
-            final @NonNull LogicalDatastoreType datastore, final @NonNull InstanceIdentifier<T> path) {
-        return of(datastore, path.toReference());
-    }
-
     @Override
     public LogicalDatastoreType datastore() {
         return datastore;
     }
 
     @Override
-    public InstanceIdentifier<T> path() {
-        return path.toLegacy();
+    public DataObjectReference<T> path() {
+        return path;
+    }
+
+    @Override
+    public boolean contains(final DataTreeIdentifier<?> other) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
