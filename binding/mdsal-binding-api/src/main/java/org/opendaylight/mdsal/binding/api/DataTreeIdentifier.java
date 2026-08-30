@@ -94,6 +94,6 @@ public final class DataTreeIdentifier<T extends DataObject>
 
     @java.io.Serial
     Object writeReplace() {
-        return new DTIv1(this);
+        return new DTIv2(this);
     }
 }
