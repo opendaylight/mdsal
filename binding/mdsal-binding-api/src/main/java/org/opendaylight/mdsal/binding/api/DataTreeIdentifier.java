@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 // FIXME: DataObjectReference has a DataObjectInstance specialization, which makes 'Identifier' part of this class name
 //        a bit confusing. Consider a better name -- like DataTreeMatch?
 public final class DataTreeIdentifier<T extends DataObject>
-        implements LogicalDatastorePath<@NonNull DataTreeIdentifier<?>, @NonNull InstanceIdentifier<?>> {
+        implements LogicalDatastorePath<@NonNull DataTreeIdentifier<?>, @NonNull DataObjectReference<?>> {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
@@ -71,8 +71,13 @@ public final class DataTreeIdentifier<T extends DataObject>
     }
 
     @Override
-    public InstanceIdentifier<T> path() {
-        return path.toLegacy();
+    public DataObjectReference<T> path() {
+        return path;
+    }
+
+    @Override
+    public boolean contains(final DataTreeIdentifier<?> other) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
