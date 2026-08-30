@@ -9,10 +9,7 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
-import com.github.difflib.patch.Patch;
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import java.util.List;
 
 /**
  * Utility to create diff of text.
@@ -26,19 +23,17 @@ final class DiffUtil {
     // number of lines of context output around each difference
     private static final int CONTEXT_LINES = 3;
 
-    private static final Splitter SPLITTER = Splitter.on(System.getProperty("line.separator"));
-    private static final Joiner JOINER = Joiner.on(System.getProperty("line.separator"));
+    private static final Splitter SPLITTER = Splitter.on(System.lineSeparator());
 
     private DiffUtil() {
         // hidden on purpose
     }
 
     static String diff(final String expectedText, final String actualText) {
-        List<String> originalLines = SPLITTER.splitToList(expectedText);
-        List<String> revisedLines = SPLITTER.splitToList(actualText);
-        Patch<String> patch = DiffUtils.diff(originalLines, revisedLines);
-        List<String> diff =
-            UnifiedDiffUtils.generateUnifiedDiff("expected", "actual", originalLines, patch, CONTEXT_LINES);
+        final var originalLines = SPLITTER.splitToList(expectedText);
+        final var revisedLines = SPLITTER.splitToList(actualText);
+        final var patch = DiffUtils.diff(originalLines, revisedLines);
+        var diff = UnifiedDiffUtils.generateUnifiedDiff("expected", "actual", originalLines, patch, CONTEXT_LINES);
 
         String header = "";
         int deltas = patch.getDeltas().size();
@@ -46,6 +41,6 @@ final class DiffUtil {
             header = "(Too many differences (%d); only showing first %d)%n".formatted(deltas, MAX_DIFFS);
             diff = diff.subList(0, MAX_DIFFS);
         }
-        return header + JOINER.join(diff);
+        return header + String.join(System.lineSeparator(), diff);
     }
 }
