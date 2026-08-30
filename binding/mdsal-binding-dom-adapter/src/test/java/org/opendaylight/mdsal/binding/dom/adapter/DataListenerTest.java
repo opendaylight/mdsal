@@ -23,7 +23,6 @@ import org.opendaylight.yang.gen.v1.mdsal813.norev.RegisterListenerTest;
 import org.opendaylight.yang.gen.v1.mdsal813.norev.RegisterListenerTestBuilder;
 import org.opendaylight.yang.gen.v1.mdsal813.norev.register.listener.test.Item;
 import org.opendaylight.yang.gen.v1.mdsal813.norev.register.listener.test.ItemBuilder;
-import org.opendaylight.yang.gen.v1.mdsal813.norev.register.listener.test.ItemKey;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.common.Uint32;
@@ -46,7 +45,7 @@ public class DataListenerTest extends AbstractDataBrokerTest {
     public void testRegisterDataListener() {
         final Item item = writeItems();
         final var instanceIdentifier = DataObjectIdentifier.builder(RegisterListenerTest.class)
-            .child(Item.class, new ItemKey(item.key())).build();
+            .child(Item.class, item.key()).build();
 
         dataBroker.registerDataListener(LogicalDatastoreType.CONFIGURATION, instanceIdentifier, listener);
 
@@ -57,7 +56,7 @@ public class DataListenerTest extends AbstractDataBrokerTest {
     public void testRegisterDataChangeListener() {
         final Item item = writeItems();
         final var instanceIdentifier = DataObjectIdentifier.builder(RegisterListenerTest.class)
-            .child(Item.class, new ItemKey(item.key())).build();
+            .child(Item.class, item.key()).build();
 
         dataBroker.registerDataChangeListener(LogicalDatastoreType.CONFIGURATION, instanceIdentifier, changeListener);
 
