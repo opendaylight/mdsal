@@ -11,8 +11,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -182,8 +182,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             LegacyRevisionUtils.toYangCommon(obj.getRevision()).orElse(null));
         if (uri != null) {
             try {
-                return SourceReference.of(sourceId, new URL(uri.getValue()));
-            } catch (MalformedURLException e) {
+                return SourceReference.of(sourceId, new URI(uri.getValue()));
+            } catch (URISyntaxException e) {
                 LOG.debug("Ignoring invalid schema location {}", uri, e);
             }
         }
@@ -225,11 +225,11 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         final var sourceId = new SourceIdentifier(Unqualified.of(sourceName.getValue()), revision.orElse(null));
         final SourceReference sourceRef;
         if (uris != null && uris.isEmpty()) {
-            final var locations = new ArrayList<URL>();
+            final var locations = new ArrayList<URI>();
             for (Uri uri : uris) {
                 try {
-                    locations.add(new URL(uri.getValue()));
-                } catch (MalformedURLException e) {
+                    locations.add(new URI(uri.getValue()));
+                } catch (URISyntaxException e) {
                     LOG.debug("Ignoring invalid schema location {}", uri, e);
                 }
             }
