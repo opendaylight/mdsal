@@ -7,14 +7,16 @@
  */
 package org.opendaylight.mdsal.common.api;
 
+import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
+import org.opendaylight.yangtools.concepts.Immutable;
 
 /**
  * A path to a subtree within a particular datastore.
  */
 @NonNullByDefault
-public interface LogicalDatastorePath<T extends LogicalDatastorePath<T, P>, P extends HierarchicalIdentifier<P>>
+public interface LogicalDatastorePath<T extends LogicalDatastorePath<T, P>, P extends Immutable & Serializable>
         extends HierarchicalIdentifier<T> {
     /**
      * Return the {@link LogicalDatastoreType}.
@@ -29,9 +31,4 @@ public interface LogicalDatastorePath<T extends LogicalDatastorePath<T, P>, P ex
      * @return the absolute path
      */
     P path();
-
-    @Override
-    default boolean contains(final T other) {
-        return datastore() == other.datastore() && path().contains(other.path());
-    }
 }
