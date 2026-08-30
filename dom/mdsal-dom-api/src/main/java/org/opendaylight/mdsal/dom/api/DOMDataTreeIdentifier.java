@@ -89,6 +89,11 @@ public final class DOMDataTreeIdentifier implements LogicalDatastorePath<DOMData
     }
 
     @Override
+    public boolean contains(final DOMDataTreeIdentifier other) {
+        return datastore() == other.datastore() && path().contains(other.path());
+    }
+
+    @Override
     public int compareTo(final DOMDataTreeIdentifier domDataTreeIdentifier) {
         int cmp = datastoreType.compareTo(domDataTreeIdentifier.datastoreType);
         if (cmp != 0) {
