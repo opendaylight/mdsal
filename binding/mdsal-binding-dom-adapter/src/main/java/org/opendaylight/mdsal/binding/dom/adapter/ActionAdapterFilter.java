@@ -31,7 +31,7 @@ final class ActionAdapterFilter implements InvocationHandler {
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         if (Naming.ACTION_INVOKE_NAME.equals(method.getName()) && args.length == 2) {
             final var path = (DataObjectIdentifier<?>) requireNonNull(args[0]);
-            checkState(nodes.contains(DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path.toLegacy())),
+            checkState(nodes.contains(DataTreeIdentifier.of(LogicalDatastoreType.OPERATIONAL, path)),
                 "Cannot service %s", path);
         }
         return delegate.invoke(proxy, method, args);

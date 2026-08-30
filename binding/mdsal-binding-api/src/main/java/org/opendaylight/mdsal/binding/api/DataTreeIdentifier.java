@@ -47,7 +47,8 @@ public final class DataTreeIdentifier<T extends DataObject>
      */
     public static <T extends DataObject> @NonNull DataTreeIdentifier<T> of(
             final @NonNull LogicalDatastoreType datastore, final @NonNull DataObjectReference<T> path) {
-        return new DataTreeIdentifier<>(datastore, path);
+        return path instanceof InstanceIdentifier<T> legacy ? of(datastore, legacy)
+            : new DataTreeIdentifier<>(datastore, path);
     }
 
     /**
@@ -62,7 +63,7 @@ public final class DataTreeIdentifier<T extends DataObject>
     @Deprecated(since = "14.0.0", forRemoval = true)
     public static <T extends DataObject> @NonNull DataTreeIdentifier<T> of(
             final @NonNull LogicalDatastoreType datastore, final @NonNull InstanceIdentifier<T> path) {
-        return of(datastore, path.toReference());
+        return new DataTreeIdentifier<>(datastore, path.toReference());
     }
 
     @Override
