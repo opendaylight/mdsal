@@ -38,7 +38,7 @@ final class DTIv2 implements Externalizable {
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         id.datastore().writeTo(out);
-        out.writeObject(id.path().toReference());
+        out.writeObject(id.path());
     }
 
     @Override
