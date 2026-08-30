@@ -42,6 +42,6 @@ public interface DataTreeCommitCohortRegistry {
     @Deprecated(since = "14.0.0", forRemoval = true)
     default <D extends DataObject> @NonNull Registration registerCommitCohort(
             final @NonNull DataTreeIdentifier<D> subtree, final @NonNull DataTreeCommitCohort<D> cohort) {
-        return registerCommitCohort(subtree.datastore(), subtree.path().toReference(), cohort);
+        return registerCommitCohort(subtree.datastore(), subtree.path(), cohort);
     }
 }
