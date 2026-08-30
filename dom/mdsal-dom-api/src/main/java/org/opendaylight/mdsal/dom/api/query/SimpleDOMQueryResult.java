@@ -26,6 +26,11 @@ record SimpleDOMQueryResult(@NonNull ImmutableList<Entry<YangInstanceIdentifier,
     }
 
     @Override
+    public ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode>> items() {
+        return items;
+    }
+
+    @Override
     public Iterator<@NonNull Entry<@NonNull YangInstanceIdentifier, @NonNull NormalizedNode>> iterator() {
         return items.iterator();
     }
