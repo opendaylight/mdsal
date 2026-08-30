@@ -19,20 +19,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.EncapsulatedRouteInGrouping;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedTransitiveEncapsulatedInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedTransitiveEncapsulatedInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
-import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 
-final class ContextExtractorTest {
-    public interface Transitive extends DataObject, EncapsulatedRouteInGrouping {
-        @Override
-        default Class<Transitive> implementedInterface() {
-            return Transitive.class;
-        }
-    }
-
+class ContextExtractorTest {
     private static final DataObjectIdentifier<?> TEST_ROUTE = DataObjectIdentifier.builder(Top.class).build();
-    private static final Transitive TEST_GROUPING = () -> new EncapsulatedRoute(TEST_ROUTE);
+    private static final RoutedTransitiveEncapsulatedInput TRANSITIVE = new RoutedTransitiveEncapsulatedInputBuilder()
+        .setRoute(new EncapsulatedRoute(TEST_ROUTE))
+        .build();
 
     @Test
     void testNonRoutedExtraction() {
@@ -50,12 +46,13 @@ final class ContextExtractorTest {
     void testRoutedEncapsulatedExtraction() {
         final var extractor = assertInstanceOf(GetValue.class,
             ContextReferenceExtractor.of(EncapsulatedRouteInGrouping.class));
-        assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
+        assertSame(TEST_ROUTE, extractor.extract(TRANSITIVE));
     }
 
     @Test
     void testRoutedEncapsulatedTransitiveExtraction() {
-        final var extractor = assertInstanceOf(GetValue.class, ContextReferenceExtractor.of(Transitive.class));
-        assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
+        final var extractor = assertInstanceOf(GetValue.class,
+            ContextReferenceExtractor.of(RoutedTransitiveEncapsulatedInput.class));
+        assertSame(TEST_ROUTE, extractor.extract(TRANSITIVE));
     }
 }

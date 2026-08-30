@@ -43,4 +43,10 @@ module opendaylight-test-routed-rpc {
             }
         }
     }
+
+    rpc routed-transitive-encapsulated {
+        input {
+            uses encapsulated-route-in-grouping;
+        }
+    }
 }
