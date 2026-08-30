@@ -14,8 +14,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.Action;
 import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.RpcInput;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Provides access to registered {@code action} implementations. Each action is defined in a YANG model,
@@ -57,12 +57,12 @@ public interface ActionService extends BindingService {
     }
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
-            final ActionSpec<A, P> spec, final LogicalDatastoreType dataStore, final InstanceIdentifier<P> path) {
+            final ActionSpec<A, P> spec, final LogicalDatastoreType dataStore, final DataObjectReference<P> path) {
         return getActionHandle(spec, ImmutableSet.of(DataTreeIdentifier.of(dataStore, path)));
     }
 
     default <P extends DataObject, A extends Action<? extends DataObjectIdentifier<P>, ?, ?>> A getActionHandle(
-            final ActionSpec<A, P> spec, final InstanceIdentifier<P> path) {
+            final ActionSpec<A, P> spec, final DataObjectReference<P> path) {
         return getActionHandle(spec, LogicalDatastoreType.OPERATIONAL, path);
     }
 
