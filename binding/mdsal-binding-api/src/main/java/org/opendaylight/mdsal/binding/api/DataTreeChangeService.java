@@ -76,7 +76,7 @@ public interface DataTreeChangeService extends BindingService {
     @Deprecated(since = "14.0.0", forRemoval = true)
     default <T extends DataObject> @NonNull Registration registerTreeChangeListener(
             final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataTreeChangeListener<T> listener) {
-        return registerTreeChangeListener(treeId.datastore(), treeId.path().toReference(), listener);
+        return registerTreeChangeListener(treeId.datastore(), treeId.path(), listener);
     }
 
     /**
@@ -129,7 +129,7 @@ public interface DataTreeChangeService extends BindingService {
     @Deprecated(since = "14.0.0", forRemoval = true)
     default <T extends DataObject> @NonNull Registration registerLegacyTreeChangeListener(
             final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataTreeChangeListener<T> listener) {
-        return registerLegacyTreeChangeListener(treeId.datastore(), treeId.path().toReference(), listener);
+        return registerLegacyTreeChangeListener(treeId.datastore(), treeId.path(), listener);
     }
 
     /**
