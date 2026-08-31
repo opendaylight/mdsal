@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.immutables.value.Generated;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style.ImplementationVisibility;
@@ -23,37 +23,41 @@ import org.immutables.value.Value.Style.ImplementationVisibility;
 @Value.Style(
     visibility = ImplementationVisibility.PRIVATE,
     allowedClasspathAnnotations = { Generated.class, SuppressWarnings.class })
+@NonNullByDefault
 public abstract class InMemoryDOMDataStoreConfigProperties {
+    private static final class Holder {
+        static final InMemoryDOMDataStoreConfigProperties DEFAULT = builder().build();
+
+        private Holder() {
+            // hidden on purpose
+        }
+    }
 
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE = 20;
     public static final int DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE = 5000;
 
-    private static final @NonNull InMemoryDOMDataStoreConfigProperties DEFAULT = builder().build();
-
-    /**
-     * Returns the InMemoryDOMDataStoreConfigProperties instance with default values.
-     *
-     * @return the InMemoryDOMDataStoreConfigProperties instance with default values.
-     */
-    public static @NonNull InMemoryDOMDataStoreConfigProperties getDefault() {
-        return DEFAULT;
+    InMemoryDOMDataStoreConfigProperties() {
+        // hidden on purpose
     }
 
     /**
-     * Returns a new {@link InMemoryDOMDataStoreConfigPropertiesBuilder}.
-     *
-     * @return a new {@link InMemoryDOMDataStoreConfigPropertiesBuilder}.
+     * {@return the InMemoryDOMDataStoreConfigProperties instance with default values}
      */
-    public static @NonNull InMemoryDOMDataStoreConfigPropertiesBuilder builder() {
+    public static final InMemoryDOMDataStoreConfigProperties getDefault() {
+        return Holder.DEFAULT;
+    }
+
+    /**
+     * {@return a new {@link InMemoryDOMDataStoreConfigPropertiesBuilder}}
+     */
+    public static final InMemoryDOMDataStoreConfigPropertiesBuilder builder() {
         return new InMemoryDOMDataStoreConfigPropertiesBuilder();
     }
 
     /**
-     * Returns true if transaction allocation debugging should be enabled.
-     *
-     * @return true if transaction allocation debugging should be enabled.
+     * {@return true if transaction allocation debugging should be enabled}
      */
     @Value.Default
     public boolean getDebugTransactions() {
@@ -61,9 +65,7 @@ public abstract class InMemoryDOMDataStoreConfigProperties {
     }
 
     /**
-     * Returns the maximum queue size for the data change notification executor.
-     *
-     * @return the maximum queue size for the data change notification executor.
+     * {@return the maximum queue size for the data change notification executor}
      */
     @Value.Default
     public int getMaxDataChangeExecutorQueueSize() {
@@ -71,9 +73,7 @@ public abstract class InMemoryDOMDataStoreConfigProperties {
     }
 
     /**
-     * Returns the maximum thread pool size for the data change notification executor.
-     *
-     * @return the maximum thread pool size for the data change notification executor.
+     * {@return the maximum thread pool size for the data change notification executor}
      */
     @Value.Default
     public int getMaxDataChangeExecutorPoolSize() {
@@ -81,7 +81,7 @@ public abstract class InMemoryDOMDataStoreConfigProperties {
     }
 
     /**
-     * Returns the maximum queue size for the data change listeners.
+     * {@return the maximum queue size for the data change listeners}
      */
     @Value.Default
     public int getMaxDataChangeListenerQueueSize() {
@@ -89,7 +89,7 @@ public abstract class InMemoryDOMDataStoreConfigProperties {
     }
 
     /**
-     * Returns the maximum queue size for the data store executor.
+     * {@return the maximum queue size for the data store executor}
      */
     @Value.Default
     public int getMaxDataStoreExecutorQueueSize() {
