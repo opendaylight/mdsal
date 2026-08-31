@@ -5,11 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.adapter;
+package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import static com.google.common.base.Verify.verifyNotNull;
 
-import com.google.common.annotations.Beta;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
+import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
 import org.opendaylight.yangtools.binding.data.codec.spi.BindingDOMCodecServices;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -18,8 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Beta
-@Component(immediate = true, service = AdapterContext.class)
+@Component(immediate = true)
 public final class OSGiBlockingBindingNormalizer implements AdapterContext {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiBlockingBindingNormalizer.class);
 
