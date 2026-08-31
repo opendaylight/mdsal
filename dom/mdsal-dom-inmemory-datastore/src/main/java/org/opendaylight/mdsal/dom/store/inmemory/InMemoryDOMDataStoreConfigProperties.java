@@ -14,10 +14,10 @@ import org.immutables.value.Value.Style.ImplementationVisibility;
 
 /**
  * Holds configuration properties when creating an {@link InMemoryDOMDataStore} instance via the
- * {@link InMemoryDOMDataStoreFactory}.
+ * {@link InMemoryDOMStoreFactory}.
  *
  * @author Thomas Pantelis
- * @see InMemoryDOMDataStoreFactory
+ * @see InMemoryDOMStoreFactory
  */
 @Value.Immutable
 @Value.Style(

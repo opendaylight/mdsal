@@ -7,16 +7,19 @@
  */
 module org.opendaylight.mdsal.dom.store.inmemory {
     exports org.opendaylight.mdsal.dom.store.inmemory;
+    exports org.opendaylight.mdsal.dom.store.inmemory.dagger;
 
     requires transitive org.opendaylight.mdsal.dom.spi;
+    requires transitive org.opendaylight.yangtools.yang.data.tree.api;
     requires org.opendaylight.yangtools.yang.data.spi;
-    requires org.opendaylight.yangtools.yang.data.tree;
     requires org.opendaylight.yangtools.yang.data.tree.spi;
     requires org.slf4j;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
-//    requires static com.github.spotbugs.annotations;
-//    requires static com.google.errorprone.annotations;
+    requires static dagger;
+    requires static javax.inject;
+    requires static jakarta.inject;
     requires static org.osgi.annotation.bundle;
+    requires static org.osgi.service.component.annotations;
 }
