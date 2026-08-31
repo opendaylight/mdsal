@@ -14,9 +14,13 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractInMemoryWriteTransactionBenchmark {
+    protected static final DataTreeFactory DATA_TREE_FACTORY = ReferenceDataTreeFactoryModule.provideDataTreeFactory();
+
     protected static final int OUTER_LIST_100K = 100000;
     protected static final int OUTER_LIST_50K = 50000;
     protected static final int OUTER_LIST_10K = 10000;
@@ -79,7 +83,7 @@ public abstract class AbstractInMemoryWriteTransactionBenchmark {
         return outerListItems;
     }
 
-    protected EffectiveModelContext schemaContext;
+    protected EffectiveModelContext modelContext;
 
     public abstract void setUp() throws Exception;
 

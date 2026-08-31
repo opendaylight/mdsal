@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
@@ -35,7 +36,6 @@ import org.openjdk.jmh.annotations.TearDown;
 @Fork(1)
 public class InMemoryDataStoreWithSameThreadedExecutorBenchmark
         extends AbstractInMemoryDatastoreWriteTransactionBenchmark {
-
     private static final int MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE = 20;
     private static final int MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE = 1000;
 
@@ -43,20 +43,22 @@ public class InMemoryDataStoreWithSameThreadedExecutorBenchmark
     @Setup(Level.Trial)
     public void setUp() throws Exception {
         final String name = "DS_BENCHMARK";
-        final ExecutorService dataChangeListenerExecutor = SpecialExecutors.newBlockingBoundedFastThreadPool(
+        final var dataChangeListenerExecutor = SpecialExecutors.newBlockingBoundedFastThreadPool(
                 MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE, MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE, name + "-DCL",
                 InMemoryDataStoreWithSameThreadedExecutorBenchmark.class);
 
-        domStore = new InMemoryDOMDataStore("SINGLE_THREADED_DS_BENCHMARK", dataChangeListenerExecutor);
-        schemaContext = BenchmarkModel.createTestContext();
-        domStore.onModelContextUpdated(schemaContext);
+        domStore = new InMemoryDOMDataStore("SINGLE_THREADED_DS_BENCHMARK", DATA_TREE_FACTORY,
+            DataTreeConfiguration.DEFAULT_OPERATIONAL, dataChangeListenerExecutor,
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+        modelContext = BenchmarkModel.createTestContext();
+        domStore.onModelContextUpdated(modelContext);
         initTestNode();
     }
 
     @Override
     @TearDown
     public void tearDown() {
-        schemaContext = null;
+        modelContext = null;
         domStore = null;
     }
 }

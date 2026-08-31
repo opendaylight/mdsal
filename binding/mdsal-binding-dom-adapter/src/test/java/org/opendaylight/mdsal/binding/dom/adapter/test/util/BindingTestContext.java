@@ -44,8 +44,11 @@ import org.opendaylight.mdsal.dom.broker.RouterDOMRpcService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 @Beta
@@ -106,8 +109,14 @@ public class BindingTestContext implements AutoCloseable {
 
     public void startNewDomDataBroker() {
         checkState(executor != null, "Executor needs to be set");
-        final var operStore = new InMemoryDOMDataStore("OPER", MoreExecutors.newDirectExecutorService());
-        final var configStore = new InMemoryDOMDataStore("CFG", MoreExecutors.newDirectExecutorService());
+        final var dataTreeFactory = ReferenceDataTreeFactoryModule.provideDataTreeFactory();
+
+        final var operStore = new InMemoryDOMDataStore("OPER", dataTreeFactory,
+            DataTreeConfiguration.DEFAULT_OPERATIONAL, MoreExecutors.newDirectExecutorService(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+        final var configStore = new InMemoryDOMDataStore("CFG", dataTreeFactory,
+            DataTreeConfiguration.DEFAULT_CONFIGURATION, MoreExecutors.newDirectExecutorService(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         newDatastores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(LogicalDatastoreType.OPERATIONAL, operStore)
                 .put(LogicalDatastoreType.CONFIGURATION, configStore)

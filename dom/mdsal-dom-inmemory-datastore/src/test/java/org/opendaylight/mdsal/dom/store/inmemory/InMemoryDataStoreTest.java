@@ -43,13 +43,15 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 @ExtendWith(MockitoExtension.class)
 class InMemoryDataStoreTest {
-    private static EffectiveModelContext SCHEMA_CONTEXT;
+    private static EffectiveModelContext MODEL_CONTEXT;
 
     @Mock
     private DataTreeSnapshot mockSnapshot;
@@ -62,18 +64,20 @@ class InMemoryDataStoreTest {
 
     @BeforeAll
     static void beforeAll() {
-        SCHEMA_CONTEXT = TestModel.createTestContext();
+        MODEL_CONTEXT = TestModel.createTestContext();
     }
 
     @AfterAll
     static void afterAll() {
-        SCHEMA_CONTEXT = null;
+        MODEL_CONTEXT = null;
     }
 
     @BeforeEach
     void beforeEach() {
-        domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
-        domStore.onModelContextUpdated(SCHEMA_CONTEXT);
+        domStore = new InMemoryDOMDataStore("TEST", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+            DataTreeConfiguration.DEFAULT_OPERATIONAL, MoreExecutors.newDirectExecutorService(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+        domStore.onModelContextUpdated(MODEL_CONTEXT);
     }
 
     @AfterEach

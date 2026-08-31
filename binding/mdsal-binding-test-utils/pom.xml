@@ -101,6 +101,10 @@
 
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-test-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
         <dependency>
@@ -120,8 +124,8 @@
             <artifactId>binding-data-codec-dynamic</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-test-model</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-data-tree-ri</artifactId>
         </dependency>
     </dependencies>
 </project>
