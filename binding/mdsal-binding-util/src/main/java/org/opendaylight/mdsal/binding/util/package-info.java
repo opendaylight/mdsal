@@ -6,4 +6,5 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 @org.eclipse.jdt.annotation.NonNullByDefault
+@org.osgi.annotation.bundle.Export
 package org.opendaylight.mdsal.binding.util;

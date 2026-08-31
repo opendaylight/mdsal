@@ -18,4 +18,5 @@ module org.opendaylight.mdsal.binding.util {
     requires static transitive com.google.errorprone.annotations;
     requires static transitive org.eclipse.jdt.annotation;
     requires static transitive javax.inject;
+    requires static org.osgi.annotation.bundle;
 }
