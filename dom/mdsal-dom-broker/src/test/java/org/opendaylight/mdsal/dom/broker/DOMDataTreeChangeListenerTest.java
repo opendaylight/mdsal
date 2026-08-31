@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -17,11 +17,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.Iterables;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
@@ -33,13 +34,18 @@ import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
-
     private InMemoryDOMDataStore domStore;
 
     @Before
-    public void setUp() {
-        domStore = new InMemoryDOMDataStore("Mdsal217", MoreExecutors.newDirectExecutorService());
-        domStore.onModelContextUpdated(SCHEMA_CONTEXT);
+    public void before() {
+        domStore = newDOMStore(LogicalDatastoreType.OPERATIONAL);
+    }
+
+    @After
+    public void after() {
+        if (domStore != null) {
+            domStore.close();
+        }
     }
 
     @Test

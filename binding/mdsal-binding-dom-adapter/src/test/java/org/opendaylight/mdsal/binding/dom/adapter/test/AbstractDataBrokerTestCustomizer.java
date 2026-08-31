@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.ExecutorService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -27,7 +27,10 @@ import org.opendaylight.mdsal.dom.broker.RouterDOMPublishNotificationService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 
 public abstract class AbstractDataBrokerTestCustomizer {
     private final DOMNotificationRouter domNotificationRouter = new DOMNotificationRouter(16);
@@ -39,18 +42,22 @@ public abstract class AbstractDataBrokerTestCustomizer {
     public ImmutableMap<LogicalDatastoreType, DOMStore> createDatastores() {
         return ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(LogicalDatastoreType.OPERATIONAL, createOperationalDatastore())
-                .put(LogicalDatastoreType.CONFIGURATION,createConfigurationDatastore())
+                .put(LogicalDatastoreType.CONFIGURATION, createConfigurationDatastore())
                 .build();
     }
 
     public DOMStore createConfigurationDatastore() {
-        final var store = new InMemoryDOMDataStore("CFG", getDataTreeChangeListenerExecutor());
+        final var store = new InMemoryDOMDataStore("CFG", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+            DataTreeConfiguration.DEFAULT_CONFIGURATION, getDataTreeChangeListenerExecutor(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         schemaService.registerSchemaContextListener(store::onModelContextUpdated);
         return store;
     }
 
     public DOMStore createOperationalDatastore() {
-        final var store = new InMemoryDOMDataStore("OPER", getDataTreeChangeListenerExecutor());
+        final var store = new InMemoryDOMDataStore("OPER", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+            DataTreeConfiguration.DEFAULT_OPERATIONAL, getDataTreeChangeListenerExecutor(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         schemaService.registerSchemaContextListener(store::onModelContextUpdated);
         return store;
     }
@@ -69,9 +76,9 @@ public abstract class AbstractDataBrokerTestCustomizer {
             new RouterDOMPublishNotificationService(domNotificationRouter));
     }
 
-    public abstract ListeningExecutorService getCommitCoordinatorExecutor();
+    public abstract ExecutorService getCommitCoordinatorExecutor();
 
-    public ListeningExecutorService getDataTreeChangeListenerExecutor() {
+    public ExecutorService getDataTreeChangeListenerExecutor() {
         return MoreExecutors.newDirectExecutorService();
     }
 

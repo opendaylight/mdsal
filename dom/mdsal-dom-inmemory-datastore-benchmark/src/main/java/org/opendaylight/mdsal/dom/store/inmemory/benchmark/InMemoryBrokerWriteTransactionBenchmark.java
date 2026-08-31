@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +17,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
@@ -41,16 +42,20 @@ public class InMemoryBrokerWriteTransactionBenchmark extends AbstractInMemoryBro
         executor = MoreExecutors.getExitingExecutorService((ThreadPoolExecutor) Executors.newFixedThreadPool(1), 1L,
                         TimeUnit.SECONDS);
 
-        InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER", dsExec);
-        InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG", dsExec);
-        Map<LogicalDatastoreType, DOMStore> datastores = ImmutableMap.of(
-            LogicalDatastoreType.OPERATIONAL, (DOMStore)operStore,
+        var operStore = new InMemoryDOMDataStore("OPER", DATA_TREE_FACTORY,
+            DataTreeConfiguration.DEFAULT_OPERATIONAL, dsExec,
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+        var configStore = new InMemoryDOMDataStore("CFG", DATA_TREE_FACTORY,
+            DataTreeConfiguration.DEFAULT_CONFIGURATION, dsExec,
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+        Map<LogicalDatastoreType, DOMStore> datastores = Map.of(
+            LogicalDatastoreType.OPERATIONAL, operStore,
             LogicalDatastoreType.CONFIGURATION, configStore);
 
         domBroker = new SerializedDOMDataBroker(datastores, executor);
-        schemaContext = BenchmarkModel.createTestContext();
-        configStore.onModelContextUpdated(schemaContext);
-        operStore.onModelContextUpdated(schemaContext);
+        modelContext = BenchmarkModel.createTestContext();
+        configStore.onModelContextUpdated(modelContext);
+        operStore.onModelContextUpdated(modelContext);
         initTestNode();
     }
 

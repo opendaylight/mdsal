@@ -9,21 +9,29 @@ package org.opendaylight.mdsal;
 
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
+import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
+import org.opendaylight.mdsal.dom.store.inmemory.dagger.InMemoryDOMStoreFactoryModule;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +44,26 @@ public final class ScalabilityDemo {
         // Hidden on purpose
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        final var moduleInfos = BindingRuntimeHelpers.loadModuleInfos();
-        final var schema = BindingRuntimeHelpers.createEffectiveModel(moduleInfos);
-        final var dataBroker = StandaloneBrokerFactory.create(schema);
-        run(dataBroker);
+    public static void main(final String[] args) throws InterruptedException {
+        // very simple setup:
+        // - discover all models on the current class loader and wrap them in a DOMSchemaService
+        final var schemaService = new FixedDOMSchemaService(
+            BindingRuntimeHelpers.createEffectiveModel(BindingRuntimeHelpers.loadModuleInfos()));
+        // - instantiate an InMemoryDOMStore with default parameters for operational
+        final var domStoreFactory = InMemoryDOMStoreFactoryModule.provideInMemoryDOMStoreFactory(
+            ReferenceDataTreeFactoryModule.provideDataTreeFactory());
+        try (var operStore = domStoreFactory.create("OPER", DataTreeConfiguration.DEFAULT_OPERATIONAL, schemaService)) {
+            // - a serialized data broker with a single-threaded commit queue, dispatching listeners on the same thread
+            // Note that SerializedDOMDataBroker does not take ownership of the service.
+            // Production environments use a more complicated setup, where the commit queue is single threaded, but
+            // listener dispatch occurs concurrently.
+            // FIXME: replicate that setup here
+            try (var executor = Executors.newSingleThreadExecutor()) {
+                try (var dataBroker = new SerializedDOMDataBroker(Map.of(OPERATIONAL, operStore), executor)) {
+                    run(dataBroker);
+                }
+            }
+        }
     }
 
     private static void run(final DOMDataBroker broker) throws InterruptedException {
@@ -50,13 +73,12 @@ public final class ScalabilityDemo {
         final var latch = new CountDownLatch(ITERATIONS);
 
         final var path = YangInstanceIdentifier.of(COUNTER_QNAME);
-        final var startTime = System.nanoTime();
-
+        final var sw = Stopwatch.createStarted();
 
         // Create the listener
         final var listener = new DOMDataTreeChangeListener() {
             @Override
-            public void onDataTreeChanged(List<DataTreeCandidate> changes) {
+            public void onDataTreeChanged(final List<DataTreeCandidate> changes) {
                 observedEvents.addAndGet(changes.size());
             }
 
@@ -91,8 +113,9 @@ public final class ScalabilityDemo {
         }
 
         latch.await();
-        final var elapsed = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
-        LOG.info("Total tx: {}  Success tx: {}  Failure tx: {} Observed by listener tx: {} Elapsed: {} ms  TPS: {}",
-            ITERATIONS, successfulTx.get(), failedTx.get(), observedEvents, elapsed, (ITERATIONS * 1_000.0) / elapsed);
+        sw.stop();
+        LOG.info("Total tx: {}  Success tx: {}  Failure tx: {} Observed by listener tx: {} Elapsed: {}  TPS: {}",
+            ITERATIONS, successfulTx.get(), failedTx.get(), observedEvents, sw,
+            ITERATIONS * 1_000.0 / sw.elapsed(TimeUnit.MILLISECONDS));
     }
 }
