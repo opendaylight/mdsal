@@ -14,15 +14,15 @@ import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -31,35 +31,36 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class DOMTransactionChainTest extends AbstractDatastoreTest {
-
+    private InMemoryDOMDataStore configStore;
+    private InMemoryDOMDataStore operStore;
     private AbstractDOMDataBroker domBroker;
+    private ExecutorService executor;
 
     @Before
-    public void setupStore() {
-        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
-                MoreExecutors.newDirectExecutorService());
-        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
-                MoreExecutors.newDirectExecutorService());
+    public void before() {
+        configStore = newDOMStore(CONFIGURATION);
+        operStore = newDOMStore(OPERATIONAL);
+        executor = Executors.newSingleThreadExecutor();
+        domBroker = new SerializedDOMDataBroker(Map.of(CONFIGURATION, configStore, OPERATIONAL, operStore), executor);
+    }
 
-        operStore.onModelContextUpdated(SCHEMA_CONTEXT);
-        configStore.onModelContextUpdated(SCHEMA_CONTEXT);
-
-        final ImmutableMap<LogicalDatastoreType, DOMStore> stores =
-                ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
-                .put(CONFIGURATION, configStore)
-                .put(OPERATIONAL, operStore)
-                .build();
-
-        final ListeningExecutorService executor = MoreExecutors.listeningDecorator(
-                Executors.newSingleThreadExecutor());
-        domBroker = new SerializedDOMDataBroker(stores, executor);
+    @After
+    public void after() {
+        if (executor != null) {
+            executor.shutdownNow();
+        }
+        if (operStore != null) {
+            operStore.close();
+        }
+        if (configStore != null) {
+            configStore.close();
+        }
     }
 
     @Test

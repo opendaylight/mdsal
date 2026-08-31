@@ -12,12 +12,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +30,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -46,12 +43,6 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.tree.api.ModificationType;
 
 public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
-
-    private AbstractDOMDataBroker domBroker;
-    private ListeningExecutorService executor;
-    private ExecutorService futureExecutor;
-    private CommitExecutorService commitExecutor;
-
     private static final MapNode OUTER_LIST = ImmutableNodes.newSystemMapBuilder()
         .withNodeIdentifier(new NodeIdentifier(TestModel.OUTER_LIST_QNAME))
         .withChild(TestUtils.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
@@ -78,38 +69,38 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     private static final DOMDataTreeIdentifier OUTER_LIST_DATA_TREE_ID =
         DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
 
+    private InMemoryDOMDataStore configStore;
+    private InMemoryDOMDataStore operStore;
+    private AbstractDOMDataBroker domBroker;
+    private ExecutorService executor;
+    private ExecutorService futureExecutor;
+    private CommitExecutorService commitExecutor;
+
     @Before
-    public void setupStore() {
-        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
-                MoreExecutors.newDirectExecutorService());
-        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
-                MoreExecutors.newDirectExecutorService());
-
-        operStore.onModelContextUpdated(SCHEMA_CONTEXT);
-        configStore.onModelContextUpdated(SCHEMA_CONTEXT);
-
-        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType,
-                DOMStore>builder()
-                .put(CONFIGURATION, configStore)
-                .put(OPERATIONAL, operStore)
-                .build();
-
+    public void before() {
+        configStore = newDOMStore(CONFIGURATION);
+        operStore = newDOMStore(OPERATIONAL);
         commitExecutor = new CommitExecutorService(Executors.newSingleThreadExecutor());
         futureExecutor = SpecialExecutors.newBlockingBoundedCachedThreadPool(1, 5, "FCB",
                 DOMDataTreeListenerTest.class);
         executor = new DeadlockDetectingListeningExecutorService(commitExecutor,
                 TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER, futureExecutor);
-        domBroker = new SerializedDOMDataBroker(stores, executor);
+        domBroker = new SerializedDOMDataBroker(Map.of(CONFIGURATION, configStore, OPERATIONAL, operStore), executor);
     }
 
     @After
-    public void tearDown() {
+    public void after() {
         if (executor != null) {
             executor.shutdownNow();
         }
-
         if (futureExecutor != null) {
             futureExecutor.shutdownNow();
+        }
+        if (operStore != null) {
+            operStore.close();
+        }
+        if (configStore != null) {
+            configStore.close();
         }
     }
 
