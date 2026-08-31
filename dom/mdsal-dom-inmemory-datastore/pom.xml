@@ -8,17 +8,18 @@
  and is available at http://www.eclipse.org/legal/epl-v10.html
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-   <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>bundle-parent</artifactId>
+        <artifactId>bnd-parent</artifactId>
         <version>17.0.0-SNAPSHOT</version>
-        <relativePath>../../bundle-parent/pom.xml</relativePath>
+        <relativePath>../../bnd-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>MD-SAL in-memory DOMStore</description>
 
     <properties>
         <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
@@ -33,6 +34,12 @@
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.annotation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.immutables</groupId>
+            <artifactId>value</artifactId>
+            <classifier>annotations</classifier>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -83,13 +90,6 @@
             <artifactId>yang-model-api</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.immutables</groupId>
-            <artifactId>value</artifactId>
-            <classifier>annotations</classifier>
-            <optional>true</optional>
-        </dependency>
-
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
@@ -101,10 +101,16 @@
         </dependency>
     </dependencies>
 
-    <scm>
-        <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
-        <developerConnection>scm:git:ssh://git.opendaylight.org:29418/controller.git</developerConnection>
-        <tag>HEAD</tag>
-        <url>https://wiki.opendaylight.org/view/OpenDaylight_Controller:MD-SAL:Architecture:Clustering</url>
-    </scm>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <ignoredNonTestScopedDependencies>
+                        <ignoredNonTestScopedDependencies>org.opendaylight.yangtools:yang-data-spi</ignoredNonTestScopedDependencies>
+                    </ignoredNonTestScopedDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
