@@ -14,32 +14,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ForwardingExecutorService;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -49,43 +48,37 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class DOMBrokerTest extends AbstractDatastoreTest {
-
+    private InMemoryDOMDataStore configStore;
+    private InMemoryDOMDataStore operStore;
     private AbstractDOMDataBroker domBroker;
-    private ListeningExecutorService executor;
+    private ExecutorService executor;
     private ExecutorService futureExecutor;
     private CommitExecutorService commitExecutor;
 
     @Before
-    public void setupStore() {
-        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
-                MoreExecutors.newDirectExecutorService());
-        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
-                MoreExecutors.newDirectExecutorService());
-
-        operStore.onModelContextUpdated(SCHEMA_CONTEXT);
-        configStore.onModelContextUpdated(SCHEMA_CONTEXT);
-
-        final ImmutableMap<LogicalDatastoreType, DOMStore> stores =
-                ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
-                .put(CONFIGURATION, configStore)
-                .put(OPERATIONAL, operStore)
-                .build();
-
-        commitExecutor = new CommitExecutorService(Executors.newSingleThreadExecutor());
+    public void before() {
+        configStore = newDOMStore(CONFIGURATION);
+        operStore = newDOMStore(OPERATIONAL);
+        commitExecutor = new CommitExecutorService();
         futureExecutor = SpecialExecutors.newBlockingBoundedCachedThreadPool(1, 5, "FCB", DOMBrokerTest.class);
         executor = new DeadlockDetectingListeningExecutorService(commitExecutor,
                 TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER, futureExecutor);
-        domBroker = new SerializedDOMDataBroker(stores, executor);
+        domBroker = new SerializedDOMDataBroker(Map.of(CONFIGURATION, configStore, OPERATIONAL, operStore), executor);
     }
 
     @After
-    public void tearDown() {
+    public void after() {
         if (executor != null) {
             executor.shutdownNow();
         }
-
         if (futureExecutor != null) {
             futureExecutor.shutdownNow();
+        }
+        if (operStore != null) {
+            operStore.close();
+        }
+        if (configStore != null) {
+            configStore.close();
         }
     }
 
@@ -133,20 +126,19 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         assertTrue(afterCommitRead.isPresent());
     }
 
+    // FIXME: split this test into its own class
     @Test
     public void testRejectedCommit() throws Exception {
-        commitExecutor.delegate = Mockito.mock(ExecutorService.class);
+        commitExecutor.delegate = mock(ExecutorService.class);
         final var thrown = new RejectedExecutionException("mock");
 
-        Mockito.doThrow(thrown)
-            .when(commitExecutor.delegate).execute(Mockito.any(Runnable.class));
-        Mockito.doNothing().when(commitExecutor.delegate).shutdown();
-        Mockito.doReturn(Collections.emptyList()).when(commitExecutor.delegate).shutdownNow();
-        Mockito.doReturn("").when(commitExecutor.delegate).toString();
-        Mockito.doReturn(Boolean.TRUE).when(commitExecutor.delegate)
-            .awaitTermination(Mockito.anyLong(), Mockito.any(TimeUnit.class));
+        doThrow(thrown).when(commitExecutor.delegate).execute(any(Runnable.class));
+        doNothing().when(commitExecutor.delegate).shutdown();
+        doReturn(List.of()).when(commitExecutor.delegate).shutdownNow();
+        doReturn("").when(commitExecutor.delegate).toString();
+        doReturn(Boolean.TRUE).when(commitExecutor.delegate).awaitTermination(anyLong(), any(TimeUnit.class));
 
-        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.newContainerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .build());
@@ -211,19 +203,5 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
             () -> readRx.read(OPERATIONAL, TestModel.TEST_PATH).get());
         final var cause = assertInstanceOf(ReadFailedException.class, ee.getCause());
         assertEquals("Transaction is closed", cause.getMessage());
-    }
-
-    static class CommitExecutorService extends ForwardingExecutorService {
-
-        ExecutorService delegate;
-
-        CommitExecutorService(final ExecutorService delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected ExecutorService delegate() {
-            return delegate;
-        }
     }
 }

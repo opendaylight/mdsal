@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
@@ -32,10 +31,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTree;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedException;
-import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,30 +58,13 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
 
     private volatile AutoCloseable closeable;
 
-    public InMemoryDOMDataStore(final String name, final ExecutorService dataChangeListenerExecutor) {
-        this(name, dataChangeListenerExecutor,
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
-    }
-
-    public InMemoryDOMDataStore(final String name, final ExecutorService dataChangeListenerExecutor,
+    public InMemoryDOMDataStore(final String name, final DataTreeFactory dataTreeFactory,
+            final DataTreeConfiguration config, final ExecutorService dataChangeListenerExecutor,
             final int maxDataChangeListenerQueueSize, final boolean debugTransactions) {
-        this(name, LogicalDatastoreType.OPERATIONAL, dataChangeListenerExecutor, maxDataChangeListenerQueueSize,
-            debugTransactions);
-    }
-
-    public InMemoryDOMDataStore(final String name, final LogicalDatastoreType type,
-            final ExecutorService dataChangeListenerExecutor, final int maxDataChangeListenerQueueSize,
-            final boolean debugTransactions) {
-        this(name, defaultConfig(type), dataChangeListenerExecutor, maxDataChangeListenerQueueSize, debugTransactions);
-    }
-
-    public InMemoryDOMDataStore(final String name, final DataTreeConfiguration config,
-            final ExecutorService dataChangeListenerExecutor, final int maxDataChangeListenerQueueSize,
-            final boolean debugTransactions) {
         this.name = requireNonNull(name);
         this.dataChangeListenerExecutor = requireNonNull(dataChangeListenerExecutor);
         this.debugTransactions = debugTransactions;
-        dataTree = ReferenceDataTreeFactoryModule.provideDataTreeFactory().create(config);
+        dataTree = dataTreeFactory.create(config);
         changePublisher = new InMemoryDOMStoreTreeChangePublisher("name", this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
     }
@@ -96,7 +78,7 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         return name;
     }
 
-    public final synchronized void onModelContextUpdated(final EffectiveModelContext newModelContext) {
+    public final synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
         dataTree.setEffectiveModelContext(newModelContext);
     }
 
@@ -187,12 +169,5 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     synchronized void commit(final DataTreeCandidate candidate) {
         dataTree.commit(candidate);
         changePublisher.publishChange(candidate);
-    }
-
-    private static DataTreeConfiguration defaultConfig(final LogicalDatastoreType type) {
-        return switch (type) {
-            case CONFIGURATION -> DataTreeConfiguration.DEFAULT_CONFIGURATION;
-            case OPERATIONAL -> DataTreeConfiguration.DEFAULT_OPERATIONAL;
-        };
     }
 }

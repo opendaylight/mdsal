@@ -13,19 +13,22 @@ import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 class SchemaUpdateForTransactionTest {
     private static final YangInstanceIdentifier TOP_PATH = YangInstanceIdentifier.of(TestModel.TEST_QNAME);
 
-    private EffectiveModelContext schemaContext;
+    private EffectiveModelContext modelContext;
     private InMemoryDOMDataStore domStore;
 
     @BeforeEach
     void beforeEach() {
-        domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
+        domStore = new InMemoryDOMDataStore("TEST", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+            DataTreeConfiguration.DEFAULT_OPERATIONAL, MoreExecutors.newDirectExecutorService(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         // loadSchemas(RockTheHouseInput.class);
     }
 
@@ -60,7 +63,7 @@ class SchemaUpdateForTransactionTest {
 
         // We allocate transaction, initial schema context does not
         // contain Lists model
-        final DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        final var writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         // we trigger schema context update to contain Lists model

@@ -22,7 +22,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.store.inmemory.dagger.InMemoryDOMStoreFactoryModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 
 @ExtendWith(MockitoExtension.class)
 class InMemoryDOMDataStoreFactoryTest {
@@ -38,19 +41,21 @@ class InMemoryDOMDataStoreFactoryTest {
         final String testStoreName = "TestStore";
         doReturn(null).when(domSchemaService).registerSchemaContextListener(any());
 
-        final var inMemoryDOMDataStore = InMemoryDOMDataStoreFactory.create(testStoreName, domSchemaService);
-        assertNotNull(inMemoryDOMDataStore);
-        assertEquals(testStoreName, inMemoryDOMDataStore.getIdentifier());
+        final var factory = InMemoryDOMStoreFactoryModule.provideInMemoryDOMStoreFactory(
+            ReferenceDataTreeFactoryModule.provideDataTreeFactory());
+        final var store = factory.create(testStoreName, DataTreeConfiguration.DEFAULT_OPERATIONAL, domSchemaService);
+        assertNotNull(store);
+        assertEquals(testStoreName, store.getIdentifier());
 
         doNothing().when(domDataTreeChangeListener).onInitialData();
-        inMemoryDOMDataStore.onModelContextUpdated(TestModel.createTestContext());
-        inMemoryDOMDataStore.registerTreeChangeListener(YangInstanceIdentifier.of(), domDataTreeChangeListener);
+        store.onModelContextUpdated(TestModel.createTestContext());
+        store.registerTreeChangeListener(YangInstanceIdentifier.of(), domDataTreeChangeListener);
 
         doNothing().when(autoCloseable).close();
-        inMemoryDOMDataStore.setCloseable(autoCloseable);
-        inMemoryDOMDataStore.close();
+        store.setCloseable(autoCloseable);
+        store.close();
         doThrow(UnsupportedOperationException.class).when(autoCloseable).close();
-        inMemoryDOMDataStore.close();
+        store.close();
         verify(autoCloseable, atLeast(2)).close();
     }
 }
