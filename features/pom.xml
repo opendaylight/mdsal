@@ -64,6 +64,10 @@
         <module>odl-mdsal-replicate-common</module>
         <module>odl-mdsal-replicate-netty</module>
 
+        <!-- Single node use case -->
+        <module>odl-mdsal-1node-binding</module>
+        <module>odl-mdsal-1node-dom</module>
+
         <!-- Models -->
         <!-- IETF drafts -->
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>

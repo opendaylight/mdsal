@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="odl-mdsal-1node-dom">
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-1node-dom/{{versionAsInProject}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal/odl-mdsal-eos-binding/{{versionAsInProject}}/xml/features</repository>
+    <feature name="odl-mdsal-1node-binding">
+        <feature version="{{semVerRange}}">odl-mdsal-1node-dom</feature>
+        <feature version="{{semVerRange}}">odl-mdsal-eos-binding</feature>
+    </feature>
+</features>
+

@@ -163,5 +163,19 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+
+        <!-- Single-node MD-SAL -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-1node-binding</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-1node-dom</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
     </dependencies>
 </project>
