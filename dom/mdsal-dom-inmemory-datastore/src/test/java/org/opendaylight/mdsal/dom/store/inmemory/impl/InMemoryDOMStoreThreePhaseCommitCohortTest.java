@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -42,7 +42,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedExcepti
 @ExtendWith(MockitoExtension.class)
 class InMemoryDOMStoreThreePhaseCommitCohortTest {
     @Mock
-    private InMemoryDOMDataStore dataStore;
+    private InMemoryDOMStoreImpl dataStore;
     @Mock
     private DataTreeCandidate candidate;
     @Mock

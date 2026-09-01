@@ -12,7 +12,7 @@ import dagger.Provides;
 import jakarta.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreFactory;
-import org.opendaylight.mdsal.dom.store.inmemory.impl.DefaultInMemoryDOMStoreFactory;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreFactoryImpl;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
 
 /**
@@ -27,6 +27,6 @@ public interface InMemoryDOMStoreFactoryModule {
     @Provides
     @Singleton
     static InMemoryDOMStoreFactory provideInMemoryDOMStoreFactory(final DataTreeFactory dataTreeFactory) {
-        return new DefaultInMemoryDOMStoreFactory(dataTreeFactory);
+        return new InMemoryDOMStoreFactoryImpl(dataTreeFactory);
     }
 }

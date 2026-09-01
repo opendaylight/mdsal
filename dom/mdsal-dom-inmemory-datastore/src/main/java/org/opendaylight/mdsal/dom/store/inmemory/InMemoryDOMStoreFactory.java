@@ -12,19 +12,20 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.store.inmemory.impl.DefaultInMemoryDOMStoreFactory;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreFactoryImpl;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreImpl;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 
 /**
- * A factory for creating {@link InMemoryDOMDataStore} instances.
+ * A factory for creating {@link InMemoryDOMStoreImpl} instances.
  *
  * @author Thomas Pantelis
  */
 @Beta
 @NonNullByDefault
-public sealed interface InMemoryDOMStoreFactory permits DefaultInMemoryDOMStoreFactory {
+public sealed interface InMemoryDOMStoreFactory permits InMemoryDOMStoreFactoryImpl {
     /**
-     * Creates an {@link InMemoryDOMDataStore} instance.
+     * Creates an {@link InMemoryDOMStoreImpl} instance.
      *
      * @param name the name of the data store
      * @param dataTreeConfig the {@link DataTreeConfiguration} to use
@@ -33,10 +34,10 @@ public sealed interface InMemoryDOMStoreFactory permits DefaultInMemoryDOMStoreF
      * @return an InMemoryDOMDataStore instance
      */
     InMemoryDOMStore create(String name, DataTreeConfiguration dataTreeConfig,
-        InMemoryDOMDataStoreConfigProperties properties, @Nullable DOMSchemaService schemaService);
+        InMemoryDOMStoreConfigProperties properties, @Nullable DOMSchemaService schemaService);
 
     /**
-     * Creates an {@link InMemoryDOMDataStore} instance with default properties.
+     * Creates an {@link InMemoryDOMStoreImpl} instance with default properties.
      *
      * @param name the name of the data store
      * @param config the {@link DataTreeConfiguration} to use
@@ -45,6 +46,6 @@ public sealed interface InMemoryDOMStoreFactory permits DefaultInMemoryDOMStoreF
      */
     default InMemoryDOMStore create(final String name, final DataTreeConfiguration config,
             final @Nullable DOMSchemaService schemaService) {
-        return create(name, config, InMemoryDOMDataStoreConfigProperties.getDefault(), schemaService);
+        return create(name, config, InMemoryDOMStoreConfigProperties.getDefault(), schemaService);
     }
 }
