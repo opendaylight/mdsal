@@ -16,10 +16,10 @@
         <relativePath>../../bnd-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+    <artifactId>dom-store-inmemory</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <description>MD-SAL in-memory DOMStore</description>
+    <description>DOMStore as on top an in-memory DataTree</description>
 
     <properties>
         <!-- FIXME: fix these up and set maven.javadoc.failOnWarnings=true -->
