@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker.DataTreeChangeExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -90,8 +90,8 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     private static final DOMDataTreeIdentifier OUTER_LIST_DATA_TREE_ID =
         DOMDataTreeIdentifier.of(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
 
-    private InMemoryDOMDataStore configStore;
-    private InMemoryDOMDataStore operStore;
+    private InMemoryDOMStore configStore;
+    private InMemoryDOMStore operStore;
     private AbstractDOMDataBroker domBroker;
     private ExecutorService executor;
     private ExecutorService futureExecutor;

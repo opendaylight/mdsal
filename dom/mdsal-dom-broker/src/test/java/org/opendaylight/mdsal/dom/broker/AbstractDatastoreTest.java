@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.testlib.TestDOMStoreFactory;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
@@ -56,7 +56,7 @@ public abstract class AbstractDatastoreTest {
         DOMSTORE_FACTORY = null;
     }
 
-    static final @NonNull InMemoryDOMDataStore newDOMStore(final LogicalDatastoreType type) {
+    static final @NonNull InMemoryDOMStore newDOMStore(final LogicalDatastoreType type) {
         final String name;
         final DataTreeConfiguration config;
         switch (type) {
