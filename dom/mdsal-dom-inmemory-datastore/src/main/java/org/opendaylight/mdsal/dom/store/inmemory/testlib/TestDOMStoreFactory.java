@@ -16,6 +16,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -69,7 +70,7 @@ public final class TestDOMStoreFactory {
     }
 
     @NonNullByDefault
-    public InMemoryDOMDataStore newDOMStore(final String name, final DataTreeConfiguration config,
+    public InMemoryDOMStore newDOMStore(final String name, final DataTreeConfiguration config,
             final EffectiveModelContext modelContext, final ExecutorService dataChangeListenerExecutor) {
         final var ret = newDOMStore(name, config, dataChangeListenerExecutor);
         ret.onModelContextUpdated(modelContext);
@@ -77,7 +78,7 @@ public final class TestDOMStoreFactory {
     }
 
     @NonNullByDefault
-    public InMemoryDOMDataStore newDOMStore(final String name, final DataTreeConfiguration config,
+    public InMemoryDOMStore newDOMStore(final String name, final DataTreeConfiguration config,
             final DOMSchemaService schemaService, final ExecutorService dataChangeListenerExecutor) {
         final var ret = newDOMStore(name, config, dataChangeListenerExecutor);
         schemaService.registerSchemaContextListener(ret::onModelContextUpdated);
@@ -85,14 +86,14 @@ public final class TestDOMStoreFactory {
     }
 
     @NonNullByDefault
-    public InMemoryDOMDataStore newDirectDOMStore(final String name, final DataTreeConfiguration config,
+    public InMemoryDOMStore newDirectDOMStore(final String name, final DataTreeConfiguration config,
             final EffectiveModelContext modelContext) {
         return newDOMStore(requireNonNull(name), requireNonNull(config), requireNonNull(modelContext),
             MoreExecutors.newDirectExecutorService());
     }
 
     @NonNullByDefault
-    public InMemoryDOMDataStore newDirectDOMStore(final String name, final DataTreeConfiguration config,
+    public InMemoryDOMStore newDirectDOMStore(final String name, final DataTreeConfiguration config,
             final DOMSchemaService schemaService) {
         return newDOMStore(requireNonNull(name), requireNonNull(config), requireNonNull(schemaService),
             MoreExecutors.newDirectExecutorService());

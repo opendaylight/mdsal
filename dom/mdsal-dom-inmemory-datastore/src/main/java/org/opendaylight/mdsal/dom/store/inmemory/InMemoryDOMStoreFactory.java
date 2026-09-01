@@ -12,6 +12,7 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.DefaultInMemoryDOMStoreFactory;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 
 /**
@@ -21,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
  */
 @Beta
 @NonNullByDefault
-public interface InMemoryDOMStoreFactory {
+public sealed interface InMemoryDOMStoreFactory permits DefaultInMemoryDOMStoreFactory {
     /**
      * Creates an {@link InMemoryDOMDataStore} instance.
      *
@@ -31,7 +32,7 @@ public interface InMemoryDOMStoreFactory {
      * @param schemaService the {@link DOMSchemaService} to which to register the data store
      * @return an InMemoryDOMDataStore instance
      */
-    InMemoryDOMDataStore create(String name, DataTreeConfiguration dataTreeConfig,
+    InMemoryDOMStore create(String name, DataTreeConfiguration dataTreeConfig,
         InMemoryDOMDataStoreConfigProperties properties, @Nullable DOMSchemaService schemaService);
 
     /**
@@ -42,7 +43,7 @@ public interface InMemoryDOMStoreFactory {
      * @param schemaService the {@link DOMSchemaService} to which to register the data store
      * @return an InMemoryDOMDataStore instance
      */
-    default InMemoryDOMDataStore create(final String name, final DataTreeConfiguration config,
+    default InMemoryDOMStore create(final String name, final DataTreeConfiguration config,
             final @Nullable DOMSchemaService schemaService) {
         return create(name, config, InMemoryDOMDataStoreConfigProperties.getDefault(), schemaService);
     }

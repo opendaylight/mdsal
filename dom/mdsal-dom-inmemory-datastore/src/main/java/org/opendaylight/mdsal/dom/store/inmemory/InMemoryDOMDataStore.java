@@ -19,12 +19,10 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
-import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -44,8 +42,7 @@ import org.slf4j.LoggerFactory;
  * {@link SnapshotBackedWriteTransaction}.
  * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore} contract.
  */
-public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements DOMStore,
-        Identifiable<String>, AutoCloseable, DOMStoreTreeChangePublisher {
+public final class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements InMemoryDOMStore {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
 
     private final AtomicLong txCounter = new AtomicLong(0);
@@ -55,8 +52,6 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     private final ExecutorService dataChangeListenerExecutor;
     private final boolean debugTransactions;
     private final @NonNull String name;
-
-    private volatile AutoCloseable closeable;
 
     public InMemoryDOMDataStore(final String name, final DataTreeFactory dataTreeFactory,
             final DataTreeConfiguration config, final ExecutorService dataChangeListenerExecutor,
@@ -69,16 +64,12 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
                 maxDataChangeListenerQueueSize);
     }
 
-    public void setCloseable(final AutoCloseable closeable) {
-        this.closeable = closeable;
-    }
-
     @Override
-    public final String getIdentifier() {
+    public String getIdentifier() {
         return name;
     }
 
-    public final synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
+    public synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
         dataTree.setEffectiveModelContext(newModelContext);
     }
 
@@ -105,25 +96,16 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         return new DOMStoreTransactionChainImpl(this);
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public void close() {
         ExecutorServiceUtil.tryGracefulShutdown(dataChangeListenerExecutor, 30, TimeUnit.SECONDS);
-
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (Exception e) {
-                LOG.debug("Error closing instance", e);
-            }
-        }
     }
 
-    public final boolean getDebugTransactions() {
+    public boolean getDebugTransactions() {
         return debugTransactions;
     }
 
-    final DataTreeSnapshot takeSnapshot() {
+    DataTreeSnapshot takeSnapshot() {
         return dataTree.takeSnapshot();
     }
 

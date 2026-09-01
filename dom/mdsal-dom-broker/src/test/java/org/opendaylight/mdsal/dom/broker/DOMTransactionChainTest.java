@@ -31,14 +31,14 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class DOMTransactionChainTest extends AbstractDatastoreTest {
-    private InMemoryDOMDataStore configStore;
-    private InMemoryDOMDataStore operStore;
+    private InMemoryDOMStore configStore;
+    private InMemoryDOMStore operStore;
     private AbstractDOMDataBroker domBroker;
     private ExecutorService executor;
 
