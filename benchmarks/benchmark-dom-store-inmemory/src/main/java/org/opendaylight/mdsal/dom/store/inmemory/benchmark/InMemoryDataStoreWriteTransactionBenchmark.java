@@ -9,9 +9,7 @@ package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
-import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
@@ -35,22 +33,20 @@ import org.openjdk.jmh.annotations.TearDown;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(1)
 public class InMemoryDataStoreWriteTransactionBenchmark extends AbstractInMemoryDatastoreWriteTransactionBenchmark {
-
     @Override
     @Setup(Level.Trial)
     public void setUp() throws Exception {
-        domStore = new InMemoryDOMDataStore("SINGLE_THREADED_DS_BENCHMARK", DATA_TREE_FACTORY,
-            DataTreeConfiguration.DEFAULT_OPERATIONAL, Executors.newSingleThreadExecutor(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         modelContext = BenchmarkModel.createTestContext();
-        domStore.onModelContextUpdated(modelContext);
+        domStore = newIMDS("SINGLE_THREADED_DS_BENCHMARK", LogicalDatastoreType.OPERATIONAL,
+            Executors.newSingleThreadExecutor());
         initTestNode();
     }
 
     @Override
     @TearDown
     public void tearDown() {
-        modelContext = null;
+        domStore.close();
         domStore = null;
+        modelContext = null;
     }
 }

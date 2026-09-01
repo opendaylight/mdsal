@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static java.util.Objects.requireNonNull;
 
@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommitCohort {
     private final DOMStoreTransactionChainImpl txChain;
 
-    ChainedTransactionCommitImpl(final InMemoryDOMDataStore store,
+    ChainedTransactionCommitImpl(final InMemoryDOMStoreImpl store,
                                  final SnapshotBackedWriteTransaction<String> transaction,
                                  final DataTreeModification modification,
                                  final DOMStoreTransactionChainImpl txChain,

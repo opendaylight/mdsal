@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Measurement;
@@ -22,7 +22,7 @@ import org.openjdk.jmh.annotations.Warmup;
  */
 public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
         extends AbstractInMemoryWriteTransactionBenchmark {
-    protected InMemoryDOMDataStore domStore;
+    protected InMemoryDOMStore domStore;
 
     protected void initTestNode() throws InterruptedException, ExecutionException {
         final var testPath = YangInstanceIdentifier.builder(BenchmarkModel.TEST_PATH).build();

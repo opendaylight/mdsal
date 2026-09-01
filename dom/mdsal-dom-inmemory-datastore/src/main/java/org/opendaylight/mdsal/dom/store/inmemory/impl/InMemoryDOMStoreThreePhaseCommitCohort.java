@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -34,13 +34,13 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
     private final SnapshotBackedWriteTransaction<String> transaction;
     private final DataTreeModification modification;
-    private final InMemoryDOMDataStore store;
+    private final InMemoryDOMStoreImpl store;
     private final Exception operationError;
 
     @VisibleForTesting
     DataTreeCandidate candidate;
 
-    InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryDOMDataStore store,
+    InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryDOMStoreImpl store,
             final SnapshotBackedWriteTransaction<String> transaction, final DataTreeModification modification,
             final Exception operationError) {
         this.transaction = requireNonNull(transaction);

@@ -7,6 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
+import java.util.concurrent.ExecutorService;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.testlib.TestDOMStoreFactory;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -14,12 +21,15 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractInMemoryWriteTransactionBenchmark {
-    protected static final DataTreeFactory DATA_TREE_FACTORY = ReferenceDataTreeFactoryModule.provideDataTreeFactory();
+    protected static final TestDOMStoreFactory DOM_STORE_FACTORY =
+        TestDOMStoreFactory.builder(ReferenceDataTreeFactoryModule.provideDataTreeFactory())
+            .setDebugTransactions(false)
+            .build();
 
     protected static final int OUTER_LIST_100K = 100000;
     protected static final int OUTER_LIST_50K = 50000;
@@ -88,6 +98,15 @@ public abstract class AbstractInMemoryWriteTransactionBenchmark {
     public abstract void setUp() throws Exception;
 
     public abstract void tearDown();
+
+    @NonNullByDefault
+    protected final InMemoryDOMStore newIMDS(final String name, final LogicalDatastoreType type,
+            final ExecutorService exec) {
+        return DOM_STORE_FACTORY.newDOMStore(name, switch (type) {
+            case CONFIGURATION -> DataTreeConfiguration.DEFAULT_OPERATIONAL;
+            case OPERATIONAL -> DataTreeConfiguration.DEFAULT_OPERATIONAL;
+        }, verifyNotNull(modelContext, "modelContext not set"), exec);
+    }
 
     protected static ContainerNode provideOuterListNode() {
         return ImmutableNodes.newContainerBuilder()

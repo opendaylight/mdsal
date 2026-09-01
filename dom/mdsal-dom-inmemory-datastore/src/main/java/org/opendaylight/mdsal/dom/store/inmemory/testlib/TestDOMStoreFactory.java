@@ -14,15 +14,15 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutorService;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreConfigProperties;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreImpl;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
- * A factory for instantiating {@link InMemoryDOMDataStore} instances for testing purposes.
+ * A factory for instantiating {@link InMemoryDOMStoreImpl} instances for testing purposes.
  *
  * @since 17.0.0
  */
@@ -63,10 +63,10 @@ public final class TestDOMStoreFactory {
     }
 
     @NonNullByDefault
-    private InMemoryDOMDataStore newDOMStore(final String name, final DataTreeConfiguration config,
+    private InMemoryDOMStoreImpl newDOMStore(final String name, final DataTreeConfiguration config,
             final ExecutorService dataChangeListenerExecutor) {
-        return new InMemoryDOMDataStore(name, dataTreeFactory, config, dataChangeListenerExecutor,
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, debugTransactions);
+        return new InMemoryDOMStoreImpl(name, dataTreeFactory, config, dataChangeListenerExecutor,
+            InMemoryDOMStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, debugTransactions);
     }
 
     @NonNullByDefault

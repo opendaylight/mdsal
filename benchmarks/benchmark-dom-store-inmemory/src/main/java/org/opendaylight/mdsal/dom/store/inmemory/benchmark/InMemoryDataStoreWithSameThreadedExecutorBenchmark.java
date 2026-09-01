@@ -8,10 +8,8 @@
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
-import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
@@ -42,23 +40,20 @@ public class InMemoryDataStoreWithSameThreadedExecutorBenchmark
     @Override
     @Setup(Level.Trial)
     public void setUp() throws Exception {
-        final String name = "DS_BENCHMARK";
-        final var dataChangeListenerExecutor = SpecialExecutors.newBlockingBoundedFastThreadPool(
-                MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE, MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE, name + "-DCL",
-                InMemoryDataStoreWithSameThreadedExecutorBenchmark.class);
-
-        domStore = new InMemoryDOMDataStore("SINGLE_THREADED_DS_BENCHMARK", DATA_TREE_FACTORY,
-            DataTreeConfiguration.DEFAULT_OPERATIONAL, dataChangeListenerExecutor,
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         modelContext = BenchmarkModel.createTestContext();
-        domStore.onModelContextUpdated(modelContext);
+        domStore = newIMDS("SINGLE_THREADED_DS_BENCHMARK", LogicalDatastoreType.OPERATIONAL,
+            SpecialExecutors.newBlockingBoundedFastThreadPool(MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE,
+                MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE, "DS_BENCHMARK-DCL",
+                InMemoryDataStoreWithSameThreadedExecutorBenchmark.class));
+
         initTestNode();
     }
 
     @Override
     @TearDown
     public void tearDown() {
-        modelContext = null;
+        domStore.close();
         domStore = null;
+        modelContext = null;
     }
 }
