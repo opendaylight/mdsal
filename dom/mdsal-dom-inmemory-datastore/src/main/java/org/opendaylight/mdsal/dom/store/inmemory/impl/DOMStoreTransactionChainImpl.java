@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,9 +16,9 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
 final class DOMStoreTransactionChainImpl extends AbstractSnapshotBackedTransactionChain<String> {
-    private final InMemoryDOMDataStore store;
+    private final InMemoryDOMStoreImpl store;
 
-    DOMStoreTransactionChainImpl(final InMemoryDOMDataStore store) {
+    DOMStoreTransactionChainImpl(final InMemoryDOMStoreImpl store) {
         this.store = requireNonNull(store);
     }
 

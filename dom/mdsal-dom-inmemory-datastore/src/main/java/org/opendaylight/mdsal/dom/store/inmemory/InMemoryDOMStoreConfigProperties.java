@@ -11,9 +11,10 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.immutables.value.Generated;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style.ImplementationVisibility;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreImpl;
 
 /**
- * Holds configuration properties when creating an {@link InMemoryDOMDataStore} instance via the
+ * Holds configuration properties when creating an {@link InMemoryDOMStoreImpl} instance via the
  * {@link InMemoryDOMStoreFactory}.
  *
  * @author Thomas Pantelis
@@ -24,9 +25,9 @@ import org.immutables.value.Value.Style.ImplementationVisibility;
     visibility = ImplementationVisibility.PRIVATE,
     allowedClasspathAnnotations = { Generated.class, SuppressWarnings.class })
 @NonNullByDefault
-public abstract class InMemoryDOMDataStoreConfigProperties {
+public abstract class InMemoryDOMStoreConfigProperties {
     private static final class Holder {
-        static final InMemoryDOMDataStoreConfigProperties DEFAULT = builder().build();
+        static final InMemoryDOMStoreConfigProperties DEFAULT = builder().build();
 
         private Holder() {
             // hidden on purpose
@@ -38,22 +39,22 @@ public abstract class InMemoryDOMDataStoreConfigProperties {
     public static final int DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE = 5000;
 
-    InMemoryDOMDataStoreConfigProperties() {
+    InMemoryDOMStoreConfigProperties() {
         // hidden on purpose
     }
 
     /**
      * {@return the InMemoryDOMDataStoreConfigProperties instance with default values}
      */
-    public static final InMemoryDOMDataStoreConfigProperties getDefault() {
+    public static final InMemoryDOMStoreConfigProperties getDefault() {
         return Holder.DEFAULT;
     }
 
     /**
      * {@return a new {@link InMemoryDOMDataStoreConfigPropertiesBuilder}}
      */
-    public static final InMemoryDOMDataStoreConfigPropertiesBuilder builder() {
-        return new InMemoryDOMDataStoreConfigPropertiesBuilder();
+    public static final InMemoryDOMStoreConfigPropertiesBuilder builder() {
+        return new InMemoryDOMStoreConfigPropertiesBuilder();
     }
 
     /**
