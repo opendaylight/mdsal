@@ -8,6 +8,7 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -18,6 +19,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
  *
  * @author Thomas Pantelis
  */
+@Beta
 @NonNullByDefault
 public interface InMemoryDOMStoreFactory {
     /**
