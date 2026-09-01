@@ -54,7 +54,7 @@ class SchemaUpdateForTransactionTest {
      */
     @Test
     @Disabled
-    void testTransactionSchemaUpdate() throws Exception {
+    void testTransactionSchemaUpdate() {
         // FIXME: Rewrite this test to be pure DOM only.
         assertNotNull(domStore);
 

@@ -259,7 +259,7 @@ class DOMRpcRouterTest {
     }
 
     @Test
-    void testActionInstanceThrowing() throws Exception {
+    void testActionInstanceThrowing() {
         try (var rpcRouter = actionsRouter()) {
             final var actionProvider = new RouterDOMActionProviderService(rpcRouter);
             final var actionConsumer = new RouterDOMActionService(rpcRouter);
