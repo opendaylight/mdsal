@@ -9,7 +9,7 @@
         <feature version="{{semVerRange}}">odl-mdsal-eos-single</feature>
         <feature version="{{semVerRange}}">odl-mdsal-singleton-dom</feature>
         <feature version="{{semVerRange}}">odl-yangtools-data</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-inmemory-datastore/{{versionAsInProject}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/dom-store-inmemory/{{versionAsInProject}}</bundle>
     </feature>
 </features>
 

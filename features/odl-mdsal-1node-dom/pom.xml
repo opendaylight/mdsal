@@ -47,10 +47,22 @@
             <classifier>features</classifier>
         </dependency>
 
-        <!-- FIXME: this does not quite work, as the configuration wiring is missing -->
+        <!--
+
+            FIXME: This does not quite work, as the configuration wiring is missing:
+
+            We should be injecting a SCR-based implementation of OPER and CONFIG, each of which
+            is disabled by default, but can be configured via ConfigAdmin.
+
+            Activation be provided separately, in odl-mdsal-oper-imds with a default .json-based
+            configuration.
+
+            dom-store-inmemory should be packaged in od-mdsal-dom as the low-level integration
+            with yang.data.tree.
+        -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+            <artifactId>dom-store-inmemory</artifactId>
         </dependency>
     </dependencies>
 </project>
