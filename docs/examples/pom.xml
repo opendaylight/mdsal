@@ -16,6 +16,8 @@
         <relativePath/>
     </parent>
 
+    <!-- FIXME: promote to a top-level directory? are we doing something magic in w.r.t. docs? -->
+    <!-- FIXME: how can we make these useful as javadoc {@snippets}? -->
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>examples-aggregator</artifactId>
     <version>17.0.0-SNAPSHOT</version>
@@ -27,6 +29,7 @@
     </properties>
 
     <modules>
+        <!-- FIXME: rename to example-dom-databroker -->
         <module>dom-databroker</module>
         <module>dom-databroker-txchain</module>
     </modules>
