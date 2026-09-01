@@ -111,7 +111,7 @@
 
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+            <artifactId>dom-store-inmemory</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -29,10 +29,10 @@
     </properties>
 
     <modules>
+        <module>dom-store-inmemory</module>
         <module>mdsal-dom-api</module>
         <module>mdsal-dom-spi</module>
         <module>mdsal-dom-broker</module>
-        <module>mdsal-dom-inmemory-datastore</module>
         <module>mdsal-dom-schema-osgi</module>
     </modules>
 </project>
