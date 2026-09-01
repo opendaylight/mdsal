@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreConfigProperties;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
@@ -22,13 +23,13 @@ class SchemaUpdateForTransactionTest {
     private static final YangInstanceIdentifier TOP_PATH = YangInstanceIdentifier.of(TestModel.TEST_QNAME);
 
     private EffectiveModelContext modelContext;
-    private InMemoryDOMDataStore domStore;
+    private InMemoryDOMStoreImpl domStore;
 
     @BeforeEach
     void beforeEach() {
-        domStore = new InMemoryDOMDataStore("TEST", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+        domStore = new InMemoryDOMStoreImpl("TEST", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
             DataTreeConfiguration.DEFAULT_OPERATIONAL, MoreExecutors.newDirectExecutorService(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+            InMemoryDOMStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         // loadSchemas(RockTheHouseInput.class);
     }
 

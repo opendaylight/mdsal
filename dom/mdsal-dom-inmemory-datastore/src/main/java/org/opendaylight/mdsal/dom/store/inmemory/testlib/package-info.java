@@ -7,7 +7,7 @@
  */
 /**
  * Package exposing test utilities for instantiating
- * {@link org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore} for testing purposes.
+ * {@link org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreImpl} for testing purposes.
  *
  * <p>This package is not exposed to OSGi runtime on purpose: use OSGi Service Registry to acquire
  * {@link org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreFactory} instead.

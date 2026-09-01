@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +37,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreConfigProperties;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -60,7 +61,7 @@ class InMemoryDataStoreTest {
     @Mock
     private TransactionReadyPrototype<String> mockReady;
 
-    private InMemoryDOMDataStore domStore;
+    private InMemoryDOMStoreImpl domStore;
 
     @BeforeAll
     static void beforeAll() {
@@ -74,9 +75,9 @@ class InMemoryDataStoreTest {
 
     @BeforeEach
     void beforeEach() {
-        domStore = new InMemoryDOMDataStore("TEST", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+        domStore = new InMemoryDOMStoreImpl("TEST", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
             DataTreeConfiguration.DEFAULT_OPERATIONAL, MoreExecutors.newDirectExecutorService(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+            InMemoryDOMStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         domStore.onModelContextUpdated(MODEL_CONTEXT);
     }
 

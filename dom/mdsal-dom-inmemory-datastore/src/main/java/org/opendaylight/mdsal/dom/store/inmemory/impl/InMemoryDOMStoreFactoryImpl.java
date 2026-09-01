@@ -14,8 +14,7 @@ import java.util.concurrent.ExecutorService;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreConfigProperties;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStoreFactory;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
@@ -29,19 +28,19 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component
 @NonNullByDefault
-public final class DefaultInMemoryDOMStoreFactory implements InMemoryDOMStoreFactory {
+public final class InMemoryDOMStoreFactoryImpl implements InMemoryDOMStoreFactory {
     private final DataTreeFactory dataTreeFactory;
 
     @Activate
-    public DefaultInMemoryDOMStoreFactory(@Reference final DataTreeFactory dataTreeFactory) {
+    public InMemoryDOMStoreFactoryImpl(@Reference final DataTreeFactory dataTreeFactory) {
         this.dataTreeFactory = requireNonNull(dataTreeFactory);
     }
 
     @Override
-    public InMemoryDOMDataStore create(final String name, final DataTreeConfiguration dataTreeConfig,
-            final InMemoryDOMDataStoreConfigProperties properties, final @Nullable DOMSchemaService schemaService) {
+    public InMemoryDOMStoreImpl create(final String name, final DataTreeConfiguration dataTreeConfig,
+            final InMemoryDOMStoreConfigProperties properties, final @Nullable DOMSchemaService schemaService) {
         final var dataChangeListenerExecutor = createExecutorService(name, properties);
-        final var dataStore = new InMemoryDOMDataStore(name, dataTreeFactory, dataTreeConfig,
+        final var dataStore = new InMemoryDOMStoreImpl(name, dataTreeFactory, dataTreeConfig,
             dataChangeListenerExecutor, properties.getMaxDataChangeListenerQueueSize(),
             properties.getDebugTransactions());
 
@@ -53,7 +52,7 @@ public final class DefaultInMemoryDOMStoreFactory implements InMemoryDOMStoreFac
     }
 
     private static ExecutorService createExecutorService(final String name,
-            final InMemoryDOMDataStoreConfigProperties props) {
+            final InMemoryDOMStoreConfigProperties props) {
         // For DataChangeListener notifications we use an executor that provides the fastest task execution time to get
         // higher throughput as DataChangeListeners typically provide much of the business logic for a data model.
         // If the executor queue size limit is reached, subsequent submitted notifications will block the calling
