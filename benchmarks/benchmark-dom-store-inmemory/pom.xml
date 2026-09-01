@@ -15,12 +15,13 @@
         <relativePath>../../bundle-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>mdsal-dom-inmemory-datastore-benchmark</artifactId>
+    <artifactId>benchmark-dom-store-inmemory</artifactId>
     <packaging>jar</packaging>
 
     <properties>
-        <odlparent.spotbugs.skip>true</odlparent.spotbugs.skip>
         <doclint>all,-missing</doclint>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <odlparent.spotbugs.skip>true</odlparent.spotbugs.skip>
     </properties>
 
     <dependencies>

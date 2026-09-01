@@ -71,12 +71,6 @@
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
                 <version>17.0.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-dom-inmemory-datastore-benchmark</artifactId>
-                <version>17.0.0-SNAPSHOT</version>
-                <scope>test</scope>
-            </dependency>
 
             <!-- Binding MD-SAL -->
             <dependency>
