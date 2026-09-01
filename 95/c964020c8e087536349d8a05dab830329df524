@@ -1,0 +1,8 @@
+Verified+1: ODL Required.GHA <releng+odl.required.gha@linuxfoundation.org>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Verified+1: ODL GitHub Actions <releng+odl-github-actions@linuxfoundation.org>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Tue, 01 Sep 2026 14:33:10 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/c/mdsal/+/125659
+Project: mdsal
+Branch: refs/heads/master
