@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.mdsal.dom.store.inmemory.impl.InMemoryDOMStoreImpl;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
@@ -16,7 +17,7 @@ import org.opendaylight.yangtools.concepts.Identifiable;
  */
 public sealed interface InMemoryDOMStore
         extends AutoCloseable, DOMStore, DOMStoreTreeChangePublisher, Identifiable<String>
-        permits InMemoryDOMDataStore {
+        permits InMemoryDOMStoreImpl {
     @Override
     void close();
 }

@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -42,8 +43,8 @@ import org.slf4j.LoggerFactory;
  * {@link SnapshotBackedWriteTransaction}.
  * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore} contract.
  */
-public final class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements InMemoryDOMStore {
-    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
+public final class InMemoryDOMStoreImpl extends TransactionReadyPrototype<String> implements InMemoryDOMStore {
+    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreImpl.class);
 
     private final AtomicLong txCounter = new AtomicLong(0);
     private final DataTree dataTree;
@@ -53,7 +54,7 @@ public final class InMemoryDOMDataStore extends TransactionReadyPrototype<String
     private final boolean debugTransactions;
     private final @NonNull String name;
 
-    public InMemoryDOMDataStore(final String name, final DataTreeFactory dataTreeFactory,
+    public InMemoryDOMStoreImpl(final String name, final DataTreeFactory dataTreeFactory,
             final DataTreeConfiguration config, final ExecutorService dataChangeListenerExecutor,
             final int maxDataChangeListenerQueueSize, final boolean debugTransactions) {
         this.name = requireNonNull(name);
@@ -64,13 +65,13 @@ public final class InMemoryDOMDataStore extends TransactionReadyPrototype<String
                 maxDataChangeListenerQueueSize);
     }
 
+    public synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
+        dataTree.setEffectiveModelContext(newModelContext);
+    }
+
     @Override
     public String getIdentifier() {
         return name;
-    }
-
-    public synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
-        dataTree.setEffectiveModelContext(newModelContext);
     }
 
     @Override
@@ -101,7 +102,7 @@ public final class InMemoryDOMDataStore extends TransactionReadyPrototype<String
         ExecutorServiceUtil.tryGracefulShutdown(dataChangeListenerExecutor, 30, TimeUnit.SECONDS);
     }
 
-    public boolean getDebugTransactions() {
+    boolean getDebugTransactions() {
         return debugTransactions;
     }
 
