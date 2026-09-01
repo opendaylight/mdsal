@@ -12,7 +12,6 @@ import static com.google.common.base.Preconditions.checkState;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -43,8 +42,7 @@ import org.opendaylight.mdsal.dom.broker.RouterDOMRpcProviderService;
 import org.opendaylight.mdsal.dom.broker.RouterDOMRpcService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
+import org.opendaylight.mdsal.dom.store.inmemory.testlib.TestDOMStoreFactory;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
@@ -109,23 +107,19 @@ public class BindingTestContext implements AutoCloseable {
 
     public void startNewDomDataBroker() {
         checkState(executor != null, "Executor needs to be set");
-        final var dataTreeFactory = ReferenceDataTreeFactoryModule.provideDataTreeFactory();
+        final var domStoreFactory = TestDOMStoreFactory.builder(ReferenceDataTreeFactoryModule.provideDataTreeFactory())
+            .build();
 
-        final var operStore = new InMemoryDOMDataStore("OPER", dataTreeFactory,
-            DataTreeConfiguration.DEFAULT_OPERATIONAL, MoreExecutors.newDirectExecutorService(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
-        final var configStore = new InMemoryDOMDataStore("CFG", dataTreeFactory,
-            DataTreeConfiguration.DEFAULT_CONFIGURATION, MoreExecutors.newDirectExecutorService(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+        final var operStore = domStoreFactory.newDirectDOMStore("OPER", DataTreeConfiguration.DEFAULT_OPERATIONAL,
+            mockSchemaService);
+        final var configStore = domStoreFactory.newDirectDOMStore("CFG", DataTreeConfiguration.DEFAULT_CONFIGURATION,
+            mockSchemaService);
         newDatastores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(LogicalDatastoreType.OPERATIONAL, operStore)
                 .put(LogicalDatastoreType.CONFIGURATION, configStore)
                 .build();
 
         newDOMDataBroker = new SerializedDOMDataBroker(newDatastores, executor);
-
-        mockSchemaService.registerSchemaContextListener(configStore::onModelContextUpdated);
-        mockSchemaService.registerSchemaContextListener(operStore::onModelContextUpdated);
     }
 
     public void startBindingDataBroker() {
