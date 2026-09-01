@@ -26,13 +26,15 @@ import org.opendaylight.mdsal.dom.broker.RouterDOMNotificationService;
 import org.opendaylight.mdsal.dom.broker.RouterDOMPublishNotificationService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
+import org.opendaylight.mdsal.dom.store.inmemory.testlib.TestDOMStoreFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 
 public abstract class AbstractDataBrokerTestCustomizer {
+   private static final TestDOMStoreFactory DOMSTORE_FACTORY =
+       TestDOMStoreFactory.builder(ReferenceDataTreeFactoryModule.provideDataTreeFactory()).build();
+
     private final DOMNotificationRouter domNotificationRouter = new DOMNotificationRouter(16);
     private final MockSchemaService schemaService = new MockSchemaService();
 
@@ -47,19 +49,13 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public DOMStore createConfigurationDatastore() {
-        final var store = new InMemoryDOMDataStore("CFG", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
-            DataTreeConfiguration.DEFAULT_CONFIGURATION, getDataTreeChangeListenerExecutor(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
-        schemaService.registerSchemaContextListener(store::onModelContextUpdated);
-        return store;
+        return DOMSTORE_FACTORY.newDOMStore("CFG", DataTreeConfiguration.DEFAULT_CONFIGURATION, schemaService,
+            getDataTreeChangeListenerExecutor());
     }
 
     public DOMStore createOperationalDatastore() {
-        final var store = new InMemoryDOMDataStore("OPER", ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
-            DataTreeConfiguration.DEFAULT_OPERATIONAL, getDataTreeChangeListenerExecutor(),
-            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
-        schemaService.registerSchemaContextListener(store::onModelContextUpdated);
-        return store;
+        return DOMSTORE_FACTORY.newDOMStore("OPER", DataTreeConfiguration.DEFAULT_OPERATIONAL, schemaService,
+            getDataTreeChangeListenerExecutor());
     }
 
     public DOMDataBroker createDOMDataBroker() {

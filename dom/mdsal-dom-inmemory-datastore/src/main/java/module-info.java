@@ -8,6 +8,7 @@
 module org.opendaylight.mdsal.dom.store.inmemory {
     exports org.opendaylight.mdsal.dom.store.inmemory;
     exports org.opendaylight.mdsal.dom.store.inmemory.dagger;
+    exports org.opendaylight.mdsal.dom.store.inmemory.testlib;
 
     requires transitive org.opendaylight.mdsal.dom.spi;
     requires transitive org.opendaylight.yangtools.yang.data.tree.api;
