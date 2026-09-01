@@ -48,6 +48,9 @@
 
         <!-- IETF YANG (Module) Library -->
         <module>yanglib</module>
+
+        <!-- various benchmarks -->
+        <module>benchmarks</module>
     </modules>
 
     <properties>
