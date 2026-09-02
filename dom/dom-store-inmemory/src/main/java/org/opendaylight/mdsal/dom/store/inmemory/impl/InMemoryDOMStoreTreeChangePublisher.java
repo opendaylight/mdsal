@@ -80,8 +80,14 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
             }
         }
 
+        // FIXME: this is somewhat of a workaround: we create a new instance to which forwards to the the same notifier,
+        //        register the listener there and pretend a new write has occurred: if the listener matches, it will
+        //        be notified. If not, we just tell the listener no data is present.
         final var candidate = DataTreeCandidates.fromNormalizedNode(YangInstanceIdentifier.of(), data);
         final var publisher = new InMemoryDOMStoreTreeChangePublisher(notificationManager);
+        // FIXME: I do not think this works as expected: this results in a new key for the listener, i.e. now there
+        //        so if we send a change here and immediately we publish a commit, then the listener is known under two
+        //        keys and thus can have two tasks dispatching!
         publisher.registerTreeChangeListener(treeId, listener);
         if (!publisher.publishChange(candidate)) {
             // There is no data in the conceptual data tree then notify with 'onInitialData()'.
