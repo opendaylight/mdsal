@@ -37,7 +37,6 @@ public abstract class InMemoryDOMStoreConfigProperties {
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE = 20;
     public static final int DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE = 5000;
 
     InMemoryDOMStoreConfigProperties() {
         // hidden on purpose
@@ -87,13 +86,5 @@ public abstract class InMemoryDOMStoreConfigProperties {
     @Value.Default
     public int getMaxDataChangeListenerQueueSize() {
         return DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE;
-    }
-
-    /**
-     * {@return the maximum queue size for the data store executor}
-     */
-    @Value.Default
-    public int getMaxDataStoreExecutorQueueSize() {
-        return DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE;
     }
 }
