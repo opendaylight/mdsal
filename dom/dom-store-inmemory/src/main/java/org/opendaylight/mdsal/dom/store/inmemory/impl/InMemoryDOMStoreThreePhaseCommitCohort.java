@@ -8,7 +8,6 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -34,23 +33,23 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
     private final SnapshotBackedWriteTransaction<String> transaction;
     private final DataTreeModification modification;
-    private final InMemoryDOMStoreImpl store;
     private final Exception operationError;
+    private final InMemoryTree tree;
 
     @VisibleForTesting
     DataTreeCandidate candidate;
 
-    InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryDOMStoreImpl store,
+    InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryTree tree,
             final SnapshotBackedWriteTransaction<String> transaction, final DataTreeModification modification,
             final Exception operationError) {
         this.transaction = requireNonNull(transaction);
         this.modification = requireNonNull(modification);
-        this.store = requireNonNull(store);
+        this.tree = requireNonNull(tree);
         this.operationError = operationError;
     }
 
     private static void warnDebugContext(final AbstractDOMStoreTransaction<?> transaction) {
-        final Throwable ctx = transaction.getDebugContext();
+        final var ctx = transaction.getDebugContext();
         if (ctx != null) {
             LOG.warn("Transaction {} has been allocated in the following context", transaction.getIdentifier(), ctx);
         }
@@ -64,7 +63,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
         }
 
         try {
-            store.validate(modification);
+            tree.validate(modification);
             LOG.debug("Store Transaction: {} can be committed", getTransaction().getIdentifier());
             return CAN_COMMIT_FUTURE;
         } catch (ConflictingModificationAppliedException e) {
@@ -79,8 +78,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
             // For debugging purposes, allow dumping of the modification. Coupled with the above
             // precondition log, it should allow us to understand what went on.
-            LOG.trace("Store Tx: {} modifications: {} tree: {}", getTransaction().getIdentifier(),
-                    modification, store);
+            LOG.trace("Store Tx: {} modifications: {} tree: {}", getTransaction().getIdentifier(), modification, tree);
 
             return Futures.immediateFailedFuture(
                     new TransactionCommitFailedException("Data did not pass validation.", e));
@@ -94,7 +92,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     @Override
     public final ListenableFuture<Empty> preCommit() {
         try {
-            candidate = store.prepare(modification);
+            candidate = tree.prepare(modification);
             return Empty.immediateFuture();
         } catch (Exception e) {
             LOG.warn("Unexpected failure in pre-commit phase", e);
@@ -114,10 +112,13 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
     @Override
     public ListenableFuture<CommitInfo> commit() {
-        checkState(candidate != null, "Proposed subtree must be computed");
+        final var local = candidate;
+        if (local == null) {
+            throw new IllegalStateException("Proposed subtree must be computed");
+        }
 
         // The commit has to occur atomically with regard to listener registrations.
-        store.commit(candidate);
+        tree.commit(local);
         return CommitInfo.emptyFluentFuture();
     }
 }

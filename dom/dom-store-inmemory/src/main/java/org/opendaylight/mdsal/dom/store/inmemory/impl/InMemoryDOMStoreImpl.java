@@ -9,10 +9,8 @@ package org.opendaylight.mdsal.dom.store.inmemory.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
@@ -25,15 +23,10 @@ import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMStore;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.util.ExecutorServiceUtil;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTree;
-import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
-import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
-import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
-import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedException;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,114 +36,89 @@ import org.slf4j.LoggerFactory;
  * {@link SnapshotBackedWriteTransaction}.
  * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore} contract.
  */
-public final class InMemoryDOMStoreImpl extends TransactionReadyPrototype<String> implements InMemoryDOMStore {
+public final class InMemoryDOMStoreImpl extends TransactionReadyPrototype<@NonNull String> implements InMemoryDOMStore {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreImpl.class);
 
-    private final AtomicLong txCounter = new AtomicLong(0);
-    private final DataTree dataTree;
+    private final InMemoryTree tree;
 
-    private final InMemoryDOMStoreTreeChangePublisher changePublisher;
-    private final ExecutorService dataChangeListenerExecutor;
-    private final boolean debugTransactions;
-    private final @NonNull String name;
-
-    public InMemoryDOMStoreImpl(final String name, final DataTreeFactory dataTreeFactory,
-            final DataTreeConfiguration config, final ExecutorService dataChangeListenerExecutor,
-            final int maxDataChangeListenerQueueSize, final boolean debugTransactions) {
-        this.name = requireNonNull(name);
-        this.dataChangeListenerExecutor = requireNonNull(dataChangeListenerExecutor);
-        this.debugTransactions = debugTransactions;
-        dataTree = dataTreeFactory.create(config);
-        changePublisher = new InMemoryDOMStoreTreeChangePublisher("name", this.dataChangeListenerExecutor,
-                maxDataChangeListenerQueueSize);
+    public InMemoryDOMStoreImpl(final InMemoryTree tree) {
+        this.tree = requireNonNull(tree);
     }
 
-    public synchronized void onModelContextUpdated(final @NonNull EffectiveModelContext newModelContext) {
-        dataTree.setEffectiveModelContext(newModelContext);
+    public void onModelContextUpdated(final EffectiveModelContext newModelContext) {
+        synchronized (tree) {
+            tree.dataTree.setEffectiveModelContext(newModelContext);
+        }
     }
 
     @Override
     public String getIdentifier() {
-        return name;
+        return tree.name;
+    }
+
+    @NonNullByDefault
+    private DataTree dataTree() {
+        return tree.dataTree;
+    }
+
+    private boolean debug() {
+        return tree.debug();
+    }
+
+    @NonNullByDefault
+    private String nextId() {
+        return tree.nextId();
+    }
+
+    @NonNullByDefault
+    DataTreeSnapshot takeSnapshot() {
+        return dataTree().takeSnapshot();
     }
 
     @Override
     public DOMStoreReadTransaction newReadOnlyTransaction() {
-        return SnapshotBackedTransactions.newReadTransaction(nextIdentifier(), debugTransactions,
-            dataTree.takeSnapshot());
+        return SnapshotBackedTransactions.newReadTransaction(nextId(), debug(), takeSnapshot());
     }
 
     @Override
     public DOMStoreReadWriteTransaction newReadWriteTransaction() {
-        return SnapshotBackedTransactions.newReadWriteTransaction(nextIdentifier(), debugTransactions,
-            dataTree.takeSnapshot(), this);
+        return SnapshotBackedTransactions.newReadWriteTransaction(nextId(), debug(), takeSnapshot(), this);
     }
 
     @Override
     public DOMStoreWriteTransaction newWriteOnlyTransaction() {
-        return SnapshotBackedTransactions.newWriteTransaction(nextIdentifier(), debugTransactions,
-            dataTree.takeSnapshot(), this);
+        return SnapshotBackedTransactions.newWriteTransaction(nextId(), debug(), takeSnapshot(), this);
     }
 
     @Override
     public DOMStoreTransactionChain createTransactionChain() {
-        return new DOMStoreTransactionChainImpl(this);
+        return new DOMStoreTransactionChainImpl(tree);
     }
 
     @Override
-    public void close() {
-        ExecutorServiceUtil.tryGracefulShutdown(dataChangeListenerExecutor, 30, TimeUnit.SECONDS);
-    }
-
-    boolean getDebugTransactions() {
-        return debugTransactions;
-    }
-
-    DataTreeSnapshot takeSnapshot() {
-        return dataTree.takeSnapshot();
-    }
-
-    @Override
-    public synchronized Registration registerTreeChangeListener(final YangInstanceIdentifier treeId,
+    public Registration registerTreeChangeListener(final YangInstanceIdentifier treeId,
             final DOMDataTreeChangeListener listener) {
-        // Make sure commit is not occurring right now. Listener has to be registered and its state capture enqueued at
-        // a consistent point.
-        return changePublisher.registerTreeChangeListener(treeId, listener, dataTree.takeSnapshot());
+        synchronized (tree) {
+            return tree.publisher.registerTreeChangeListener(treeId, listener, takeSnapshot());
+        }
     }
 
     @Override
-    @Deprecated(since = "13.0.0", forRemoval = true)
-    public Registration registerLegacyTreeChangeListener(final YangInstanceIdentifier treeId,
-            final DOMDataTreeChangeListener listener) {
-        return registerTreeChangeListener(treeId, listener);
-    }
-
-    @Override
-    protected void transactionAborted(final SnapshotBackedWriteTransaction<String> tx) {
+    protected void transactionAborted(final SnapshotBackedWriteTransaction<@NonNull String> tx) {
         LOG.debug("Tx: {} is closed.", tx.getIdentifier());
     }
 
     @Override
-    protected DOMStoreThreePhaseCommitCohort transactionReady(final SnapshotBackedWriteTransaction<String> tx,
+    protected DOMStoreThreePhaseCommitCohort transactionReady(final SnapshotBackedWriteTransaction<@NonNull String> tx,
             final DataTreeModification modification, final Exception readyError) {
         LOG.debug("Tx: {} is submitted. Modifications: {}", tx.getIdentifier(), modification);
         return new InMemoryDOMStoreThreePhaseCommitCohort(this, tx, modification, readyError);
     }
 
-    String nextIdentifier() {
-        return name + "-" + txCounter.getAndIncrement();
-    }
-
-    void validate(final DataTreeModification modification) throws DataValidationFailedException {
-        dataTree.validate(modification);
-    }
-
-    DataTreeCandidate prepare(final DataTreeModification modification) throws DataValidationFailedException {
-        return dataTree.prepare(modification);
-    }
-
-    synchronized void commit(final DataTreeCandidate candidate) {
-        dataTree.commit(candidate);
-        changePublisher.publishChange(candidate);
+    @Override
+    public void close() {
+        synchronized (tree) {
+            tree.close();
+        }
     }
 }

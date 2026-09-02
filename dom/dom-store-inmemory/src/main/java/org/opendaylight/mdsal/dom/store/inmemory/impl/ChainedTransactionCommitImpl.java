@@ -17,12 +17,10 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommitCohort {
     private final DOMStoreTransactionChainImpl txChain;
 
-    ChainedTransactionCommitImpl(final InMemoryDOMStoreImpl store,
-                                 final SnapshotBackedWriteTransaction<String> transaction,
-                                 final DataTreeModification modification,
-                                 final DOMStoreTransactionChainImpl txChain,
-                                 final Exception operationError) {
-        super(store, transaction, modification, operationError);
+    ChainedTransactionCommitImpl(final InMemoryTree tree, final SnapshotBackedWriteTransaction<String> transaction,
+            final DataTreeModification modification, final DOMStoreTransactionChainImpl txChain,
+            final Exception operationError) {
+        super(tree, transaction, modification, operationError);
         this.txChain = requireNonNull(txChain);
     }
 
