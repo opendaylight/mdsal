@@ -61,7 +61,7 @@ public final class InMemoryDOMStoreImpl extends TransactionReadyPrototype<String
         this.dataChangeListenerExecutor = requireNonNull(dataChangeListenerExecutor);
         this.debugTransactions = debugTransactions;
         dataTree = dataTreeFactory.create(config);
-        changePublisher = new InMemoryDOMStoreTreeChangePublisher("name", this.dataChangeListenerExecutor,
+        changePublisher = new InMemoryDOMStoreTreeChangePublisher(name, this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
     }
 
