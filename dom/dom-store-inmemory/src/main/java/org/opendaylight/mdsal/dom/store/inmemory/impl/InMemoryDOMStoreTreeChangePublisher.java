@@ -67,17 +67,16 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
 
         final var data = preExistingData.orElseThrow();
         if (treeId.isEmpty()) {
-            if (data instanceof DataContainerNode container) {
-                if (container.isEmpty()) {
-                    // If we are listening on root of data tree we still get empty normalized node, root is always
-                    // present, we should filter this out separately and notify it by 'onInitialData()' once.
-                    // Otherwise, it is just a valid data node with empty value which also should be notified by
-                    // "onDataTreeChanged(List<DataTreeCandidate>)".
-                    listener.onInitialData();
-                    return reg;
-                }
-            } else {
+            if (!(data instanceof DataContainerNode container)) {
                 throw new IllegalStateException("Unexpected root node type " + data.contract());
+            }
+            if (container.isEmpty()) {
+                // If we are listening on root of data tree we still get empty normalized node, root is always
+                // present, we should filter this out separately and notify it by 'onInitialData()' once.
+                // Otherwise, it is just a valid data node with empty value which also should be notified by
+                // "onDataTreeChanged(List<DataTreeCandidate>)".
+                listener.onInitialData();
+                return reg;
             }
         }
 
