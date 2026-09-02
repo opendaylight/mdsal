@@ -29,7 +29,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
     private final EqualityQueuedNotificationManager<Reg, DataTreeCandidate> notificationManager;
 
     InMemoryDOMStoreTreeChangePublisher(final String dsName, final Executor listenerExecutor, final int maxQueueSize) {
-        notificationManager = new EqualityQueuedNotificationManager<>("DataTreeChangeListenerQueueMgr + dsName",
+        notificationManager = new EqualityQueuedNotificationManager<>("DataTreeChangeListenerQueueMgr" + dsName,
             listenerExecutor, maxQueueSize,
             (listener, notifications) -> {
                 if (listener.notClosed()) {
