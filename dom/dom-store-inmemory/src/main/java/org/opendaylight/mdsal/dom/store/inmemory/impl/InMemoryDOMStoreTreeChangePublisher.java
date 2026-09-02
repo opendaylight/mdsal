@@ -43,10 +43,6 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
         this.notificationManager = notificationManager;
     }
 
-    EqualityQueuedNotificationManager<?, ?> getNotificationManager() {
-        return notificationManager;
-    }
-
     @Override
     protected void notifyListener(final Reg registration, final List<DataTreeCandidate> changes) {
         LOG.debug("Enqueueing candidates {} for registration {}", changes, registration);
