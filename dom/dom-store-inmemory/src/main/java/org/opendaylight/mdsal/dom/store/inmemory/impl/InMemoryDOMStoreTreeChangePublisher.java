@@ -29,7 +29,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
     private final EqualityQueuedNotificationManager<Reg, DataTreeCandidate> notificationManager;
 
     InMemoryDOMStoreTreeChangePublisher(final String dsName, final Executor listenerExecutor, final int maxQueueSize) {
-        notificationManager = new EqualityQueuedNotificationManager<>("DataTreeChangeListenerQueueMgr + dsName",
+        notificationManager = new EqualityQueuedNotificationManager<>("DataTreeChangeListenerQueueMgr " + dsName,
             listenerExecutor, maxQueueSize,
             (listener, notifications) -> {
                 if (listener.notClosed()) {
@@ -71,20 +71,22 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
 
         final var data = preExistingData.orElseThrow();
         if (treeId.isEmpty()) {
-            if (data instanceof DataContainerNode container) {
-                if (container.isEmpty()) {
-                    // If we are listening on root of data tree we still get empty normalized node, root is always
-                    // present, we should filter this out separately and notify it by 'onInitialData()' once.
-                    // Otherwise, it is just a valid data node with empty value which also should be notified by
-                    // "onDataTreeChanged(List<DataTreeCandidate>)".
-                    listener.onInitialData();
-                    return reg;
-                }
-            } else {
+            if (!(data instanceof DataContainerNode container)) {
                 throw new IllegalStateException("Unexpected root node type " + data.contract());
+            }
+            if (container.isEmpty()) {
+                // If we are listening on root of data tree we still get empty normalized node, root is always
+                // present, we should filter this out separately and notify it by 'onInitialData()' once.
+                // Otherwise, it is just a valid data node with empty value which also should be notified by
+                // "onDataTreeChanged(List<DataTreeCandidate>)".
+                listener.onInitialData();
+                return reg;
             }
         }
 
+        // FIXME: this is somewhat of a workaround: we create a new instance to which forwards to the the same notifier,
+        //        register the listener there and pretend a new write has occurred: if the listener matches, it will
+        //        be notified. If not, we just tell the listener no data is present.
         final var candidate = DataTreeCandidates.fromNormalizedNode(YangInstanceIdentifier.of(), data);
         final var publisher = new InMemoryDOMStoreTreeChangePublisher(notificationManager);
         publisher.registerTreeChangeListener(treeId, listener);
