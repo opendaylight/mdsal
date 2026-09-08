@@ -20,7 +20,7 @@
     <!-- FIXME: how can we make these useful as javadoc {@snippets}? -->
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>examples-aggregator</artifactId>
-    <version>17.0.0</version>
+    <version>17.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
