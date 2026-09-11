@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutorService;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -32,7 +33,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 
 public abstract class AbstractDataBrokerTestCustomizer {
-    private static final TestDOMStoreFactory DOMSTORE_FACTORY =
+    protected static final @NonNull TestDOMStoreFactory DOMSTORE_FACTORY =
         TestDOMStoreFactory.builder(ReferenceDataTreeFactoryModule.provideDataTreeFactory()).build();
 
     private final DOMNotificationRouter domNotificationRouter = new DOMNotificationRouter(16);
@@ -42,10 +43,9 @@ public abstract class AbstractDataBrokerTestCustomizer {
     private ImmutableMap<LogicalDatastoreType, DOMStore> datastores;
 
     public ImmutableMap<LogicalDatastoreType, DOMStore> createDatastores() {
-        return ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
-                .put(LogicalDatastoreType.OPERATIONAL, createOperationalDatastore())
-                .put(LogicalDatastoreType.CONFIGURATION, createConfigurationDatastore())
-                .build();
+        return ImmutableMap.of(
+            LogicalDatastoreType.OPERATIONAL, createOperationalDatastore(),
+            LogicalDatastoreType.CONFIGURATION, createConfigurationDatastore());
     }
 
     public DOMStore createConfigurationDatastore() {
