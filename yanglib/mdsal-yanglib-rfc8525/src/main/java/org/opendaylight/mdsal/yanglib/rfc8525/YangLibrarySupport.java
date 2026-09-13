@@ -21,7 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingIdentityCodec;
 import org.opendaylight.yangtools.binding.data.codec.dynamic.BindingDataCodecFactory;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.runtime.api.DefaultBindingRuntimeContext;
@@ -47,7 +46,6 @@ public final class YangLibrarySupport implements YangLibSupport {
     private final BindingDataObjectCodecTreeNode<YangLibrary> codec;
     @SuppressWarnings("deprecation")
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
-    private final BindingIdentityCodec identityCodec;
     private final EffectiveModelContext modelContext;
     private final BindingCodecTree codecTree;
 
@@ -66,8 +64,6 @@ public final class YangLibrarySupport implements YangLibSupport {
 
         codecTree = codecFactory.newBindingDataCodec(new DefaultBindingRuntimeContext(
             generator.generateTypeMapping(modelContext), snapshot)).tree();
-
-        identityCodec = codecTree.getIdentityCodec();
         codec = codecTree.getDataObjectCodec(DataObjectIdentifier.builder(YangLibrary.class).build());
         legacyCodec = codecTree.getDataObjectCodec(DataObjectIdentifier.builder(ModulesState.class).build());
     }
@@ -75,7 +71,8 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Override
     public MountPointContextFactory createMountPointContextFactory(final MountPointLabel label,
             final SchemaContextResolver resolver) {
-        return new MountPointContextFactoryImpl(label, resolver, modelContext, identityCodec, codec, legacyCodec);
+        return new MountPointContextFactoryImpl(label, resolver, modelContext, codecTree.getIdentityCodec(), codec,
+            legacyCodec);
     }
 
     @Override
