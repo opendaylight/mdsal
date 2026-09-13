@@ -25,7 +25,8 @@ final class Rpcs {
         final var yangExt = YangExtData.META.moduleInfo();
 
         CONTEXT = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT, null,
-            new DelegatedYangTextSource(SourceIdentifier.ofQName(yangExt.getName()), yangExt.getYangTextCharSource()),
+            // FIXME: binding.runtime.api.BindingYangTextSource.of(YangExtData.META)
+            new DelegatedYangTextSource(SourceIdentifier.ofQName(yangExt.name()), yangExt.getYangTextCharSource()),
             new URLYangTextSource(Rpcs.class.getResource("/rpcs.yang")));
     }
 

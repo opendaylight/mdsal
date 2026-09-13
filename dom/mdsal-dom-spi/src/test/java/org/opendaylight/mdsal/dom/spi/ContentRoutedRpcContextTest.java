@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,12 +32,12 @@ class ContentRoutedRpcContextTest {
         final var yangExt = YangExtData.META.moduleInfo();
 
         final var modelContext = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT, null,
-            new DelegatedYangTextSource(SourceIdentifier.ofQName(yangExt.getName()), yangExt.getYangTextCharSource()),
+            new DelegatedYangTextSource(SourceIdentifier.ofQName(yangExt.name()), yangExt.getYangTextCharSource()),
             new URLYangTextSource(ContentRoutedRpcContext.class.getResource("/rpc-routing-strategy.yang")));
 
         RPCS = modelContext.findModuleStatements("foo").iterator().next()
             .streamEffectiveSubstatements(RpcEffectiveStatement.class)
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
     }
 
     @AfterAll
