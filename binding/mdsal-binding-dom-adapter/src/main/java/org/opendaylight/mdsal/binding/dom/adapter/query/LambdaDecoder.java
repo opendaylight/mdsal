@@ -16,12 +16,10 @@ import com.google.common.cache.LoadingCache;
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
+import org.opendaylight.yangtools.concepts.AccessControllerCompat;
 
 /**
  * Utility class for forcing decoding lambda instances to the method being invoked. The theory here is that
@@ -57,9 +55,14 @@ final class LambdaDecoder {
     private static final LoadingCache<Class<?>, Method> REPLACE_CACHE = CacheBuilder.newBuilder()
         .weakKeys().weakValues().build(new CacheLoader<Class<?>, Method>() {
             @Override
-            public Method load(final Class<?> key) throws PrivilegedActionException {
-                return AccessController.doPrivileged((PrivilegedExceptionAction<Method>) () -> {
-                    final var method = key.getDeclaredMethod("writeReplace");
+            public Method load(final Class<?> key) {
+                return AccessControllerCompat.get(() -> {
+                    final Method method;
+                    try {
+                        method = key.getDeclaredMethod("writeReplace");
+                    } catch (NoSuchMethodException e) {
+                        throw new LinkageError("Failed to find writeReplace", e);
+                    }
                     method.setAccessible(true);
                     return method;
                 });
