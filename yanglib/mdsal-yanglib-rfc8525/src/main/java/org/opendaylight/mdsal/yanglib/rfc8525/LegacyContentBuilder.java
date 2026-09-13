@@ -32,6 +32,7 @@ import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
+@SuppressWarnings("deprecation")
 final class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy {
     private static final CommonLeafs.Revision EMPTY_REV = new CommonLeafs.Revision("");
 

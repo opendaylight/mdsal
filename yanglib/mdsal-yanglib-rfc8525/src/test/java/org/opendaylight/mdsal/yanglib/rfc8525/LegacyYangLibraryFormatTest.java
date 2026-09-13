@@ -23,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.util.BindingMap;
 
+@SuppressWarnings("deprecation")
 class LegacyYangLibraryFormatTest extends AbstractYangLibraryTest {
     @Test
     void testLegacyFormat() {
