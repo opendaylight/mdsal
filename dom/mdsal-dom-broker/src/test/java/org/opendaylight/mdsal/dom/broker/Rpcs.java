@@ -9,10 +9,9 @@ package org.opendaylight.mdsal.dom.broker;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.YangExtData;
+import org.opendaylight.yangtools.binding.runtime.api.BindingYangTextSource;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.model.spi.source.URLYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserConfiguration;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -25,8 +24,7 @@ final class Rpcs {
         final var yangExt = YangExtData.META.moduleInfo();
 
         CONTEXT = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT, null,
-            // FIXME: binding.runtime.api.BindingYangTextSource.of(YangExtData.META)
-            new DelegatedYangTextSource(SourceIdentifier.ofQName(yangExt.name()), yangExt.getYangTextCharSource()),
+            BindingYangTextSource.of(YangExtData.META),
             new URLYangTextSource(Rpcs.class.getResource("/rpcs.yang")));
     }
 
