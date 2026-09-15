@@ -16,10 +16,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.YangExtData;
+import org.opendaylight.yangtools.binding.runtime.api.BindingYangTextSource;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.model.spi.source.URLYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserConfiguration;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -32,7 +31,7 @@ class ContentRoutedRpcContextTest {
         final var yangExt = YangExtData.META.moduleInfo();
 
         final var modelContext = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT, null,
-            new DelegatedYangTextSource(SourceIdentifier.ofQName(yangExt.name()), yangExt.getYangTextCharSource()),
+            BindingYangTextSource.of(YangExtData.META),
             new URLYangTextSource(ContentRoutedRpcContext.class.getResource("/rpc-routing-strategy.yang")));
 
         RPCS = modelContext.findModuleStatements("foo").iterator().next()
