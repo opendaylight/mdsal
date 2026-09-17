@@ -18,7 +18,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-docs</artifactId>
-    <version>17.0.1-SNAPSHOT</version>
+    <version>17.0.1</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>MD-SAL documentation</description>
