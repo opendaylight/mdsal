@@ -64,19 +64,19 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
     private final @NonNull FluentFuture<? extends @NonNull CommitInfo> completionFuture = FluentFuture.from(
         new UncancellableListenableFuture<>(settableCompletion));
 
-    /*
+    /**
      * Implementation of real commit. It also acts as an indication that the transaction is running -- which we flip
      * atomically using {@link #IMPL_UPDATER}.
      */
     private volatile AbstractDOMForwardedTransactionFactory<?> commitImpl;
 
-    /*
-     * Future task of transaction commit. It starts off as null, but is set appropriately on {@link #submit()} and
-     * {@link #cancel()} via {@link AtomicReferenceFieldUpdater#lazySet(Object, Object)}.
+    /**
+     * Future task of transaction commit. It starts off as null, but is set appropriately on {@link #commit()} and
+     * {@link #cancel()} via {@link VarHandle#setRelease(Object...)}.
      *
-     * Lazy set is safe for use because it is only referenced to in the {@link #cancel()} slow path, where we will
-     * busy-wait for it. The fast path gets the benefit of a store-store barrier instead of the usual store-load
-     * barrier.
+     * Lower memory consistency is safe for use because it is only referenced to in the {@link #cancel()} slow path,
+     * where we will busy-wait for it. The fast path gets the benefit of a store-store barrier instead of the usual
+     * store-load barrier.
      */
     @SuppressFBWarnings(
         value = "UWF_UNWRITTEN_FIELD",
